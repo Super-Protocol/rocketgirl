@@ -1,0 +1,8 @@
+.icon {
+  color: var(--grey1);
+  margin-right: 7px;
+  cursor: copy;
+  &:hover {
+    color: var(--black2);
+  }
+}

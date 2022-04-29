@@ -1,0 +1,34 @@
+@mixin img {
+  background-size: 20px;
+  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAABQCAYAAACOEfKtAAAACXBIWXMAACxLAAAsSwGlPZapAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAATfSURBVHgB7ZyLcdw2EIZXqkAdBK5AcgVhKohSgZ0K5A58HVipQEoFSirgpQO5AjIVyKngD2BA4zOPxOK1JEjzm9nhzBFHgMsFsAAWINrZ2dn5cbmgBQFwpS9Ky89a3mj5ScuNu60GyXstX5x81tKZ68XFxZF+JIzStNxpabW8oAytlndaFG2RgdKkaY0yaQs4xX1EOUuLoXN5K1obCytuSKflI60FXdjGFbo2Oi0N1Qqs1X1C/ZgyXlEhirgxsO1MS+euR630Wn7RLlBPmWQrELZaPGlJ/arGr3sm69s9O/kyfDn3kZTLp9Fy7a6pmHx/1/n8RUsB65qkYDqXJ9j2Mrk6wTYbt1oekc4HWgLYXjZFcQcUbINOyqO0vEdaBzZvL414yxNT3ET5DgmKnMcSYatMDKaqKpoZWIuMrdoNSeIKFeocm3TLtC/fl/lDZJkVSQDbYHeBBTHpbqgS3IePKXv5pgbhTnKHCsefkUr8RCVBeLvX1ai8VyKV2FApAjPtalbeKxFKNGnyqzLC/D25xlcAXdYbhHUsB8oh4mst3tvGAts7hxhGuhUizPoeqDDuw7X4ZiUivqR7LseBUgFvfV3pF8O0r/kyY17DfOOtEHZcKfd1pvP1WUVLhYEd9nHEN1HgF4A6EoDJ84UKAztA4Kww7sPBmjaHyMoX9zIkAMKscLQaX048syGef0iGZ8+9v0mGe7ITrD7eUyjgq2/xnvck79k6kUG+XI8cXo3B8ysJ4pT4dKK4FsKOOuzsuI+w3jjgQcBME6NzgrDO5GyGaawN5KahjnohhmsvVod7p2cmWTP8YUyBivx8pu3CvZsa/jCmwGvyU9yZrQjOAtXwhzEFcu3bf7RdOAWeGVeKAnvaLtFt+1lkgulqvH/Q0IaJff9L2smiSgVipvlAERhHUmQwP8h/kaHcSf557w9+ElWRIJh5PnCQNzcLdTaFl1KFpYdxt5570ov1irl/1kuPKZDzhZaMOJD+eNzzgxT4L/mpJmRDgIa5fzbUG1NgT364od6a4d6tH/4wpsAj+TGL0pucziLeAs+atykL9A1pTEZbrMYNl2BsX97lSKKQebE72h63zP0jhQI+7CEv5MGftxcSABmrkFN+4CP5McpbXTyMhyYgTdwqJPiVOREr5MyABAA/+pocAflGItwa7CasEHaLg2KSPVLCg0NWqSQCfmaLTEBY+J43hGXSAl1v/Af5MVZYNp543siEA/HW9yelEmiFhmJVGTNNZyFss1CXnSfCAm/MyxVzriEcmYDw/S4HygXh+0M6rGDWGBFB5lQKhIV7VK/ECOUZGiqJfuB9YMZdjUqMVN49lQbxW70UVQLstoaYssvMNmGdmw3vIsusSBKEt4evPGABa8T3PXkotzQHCNukckqHmXaFI/3MmnlrC8L8wzFFvoPMppmcw34OtASIt8RTHmB3geYeOmGalKdExRmyLK/EsSem3TBB5zk915Hsipe5mjF4P3HsyetygpFrd805buW33OPz9oN3MikSXOQK8pb42ZsaMGV8W0J5Irh2rUN9dKj58LEhSDu7RYJZz6wpCqwzu5Qi16u4MWC3z7aQp4Udvm0ueuIr+HbGVYsyvCyptMUDxmEbduPTvXHXKydqkLR3V7NmYiLIzISnWavtt7hzamdnZ2cN/A8CcWyq/Z82ygAAAABJRU5ErkJggg==) !important;
+}
+
+.toast-top-right {
+  top: 74px;
+}
+
+#toast-container {
+  & > div {
+    opacity: 1;
+    border: none;
+    box-shadow: none;
+    border-radius: 4px;
+  }
+  & > .toast-success {
+    background-color: var(--green);
+    @include img;
+  }
+
+  & > .toast-error {
+    background-color: var(--red);
+    @include img;
+  }
+
+  & > .toast-warning {
+    background-color: var(--orange);
+  }
+
+  & > .toast-info {
+    background-color: var(--grey2);
+  }
+}

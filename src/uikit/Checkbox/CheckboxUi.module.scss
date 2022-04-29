@@ -1,0 +1,132 @@
+$color-white: var(--white1);
+$color-black: #242C37;
+
+.checkbox {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin: 0;
+  cursor: pointer;
+
+  &__control {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    border: 0;
+    clip: rect(0 0 0 0);
+    overflow: hidden;
+
+    &:checked + .checkbox {
+      &__checkmark {
+        &.light {
+          border-color: $color-black;
+          background: $color-black;
+        }
+
+        &.dark {
+          border-color: $color-white;
+          background: $color-white;
+        }
+
+        &_invalid {
+          border-color: #e30613 !important;
+          background: #e30613 !important;
+        }
+
+        svg {
+          stroke-dashoffset: 0;
+        }
+
+        &_disabled {
+          opacity: 0.4;
+        }
+
+        &_semi {
+          opacity: 0.4 !important;
+        }
+      }
+
+      &__label {
+        &_invalid {
+          color: #e30613;
+        }
+      }
+    }
+  }
+
+  &__checkmark {
+    position: relative;
+    display: block;
+    vertical-align: top;
+    width: 18px;
+    min-width: 18px;
+    height: 18px;
+    margin-right: 10px;
+    border: 2px solid #CFD1D5;
+    border-radius: 2px;
+    &.dark {
+      border-color: $color-white;
+      background: $color-white;
+    }
+
+    &_invalid {
+      border-color: #e30613;
+    }
+
+    svg {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      stroke-dashoffset: 35px;
+      stroke-dasharray: 35px;
+      transition: stroke-dashoffset .25s linear;
+    }
+
+    &.light {
+      svg {
+        stroke: $color-white;
+      }
+    }
+
+    &.dark {
+      svg {
+        stroke: $color-black;
+      }
+    }
+
+    &_disabled {
+      opacity: 0.4;
+    }
+  }
+
+  &__label {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 19px;
+    color: $color-black;
+
+    a:link, a:visited {
+      color: black;
+      text-decoration: none;
+    }
+
+    a:hover, a:active, a:focus {
+      text-decoration: underline;
+    }
+
+    &_disabled {
+      opacity: 0.4;
+    }
+  }
+}
+
+.disabled {
+  cursor: default;
+}
+
+.labelTooltip {
+  margin-left: 0 !important;
+}

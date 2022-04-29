@@ -1,0 +1,1 @@
+export { DetailWidgetToggle } from './DetailWidgetToggle';

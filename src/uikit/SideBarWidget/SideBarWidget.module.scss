@@ -1,0 +1,24 @@
+.accordion {
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.dark {
+  &.accordion {
+    background-color: var(--black3);
+  }
+}
+
+.light {
+  &.accordion {
+    background-color: var(--white);
+  }
+}
+
+.accordionCollapse {
+  padding: 16px;
+}
+
+.fullWidth {
+  width: 100%;
+}

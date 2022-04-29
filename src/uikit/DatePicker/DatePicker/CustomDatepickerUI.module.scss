@@ -1,0 +1,211 @@
+.errorEmpty {
+  height: 20px;
+  line-height: 20px;
+  min-width: 1px;
+}
+
+.customDatepickerError {
+  :global(.react-datepicker__input-container) {
+    border: 1px solid #E30613 !important;
+  }
+}
+
+@keyframes react-datepicker-popper-enter {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.customDatepicker {
+  &:global(.react-datepicker-popper) {
+    z-index: 100;
+    animation-name: react-datepicker-popper-enter;
+    animation-duration: 0.3s;
+    animation-delay: 0;
+    animation-fill-mode: forwards;
+  }
+
+  :global(.form-group) {
+    margin-bottom: 0;
+  }
+
+  :global {
+    .react-datepicker__day--today {
+      > div {
+        background-image: linear-gradient(0deg,
+         rgba(0, 0, 0, 0.8) 0,
+         rgba(0, 0, 0, 0.5) 0,
+         rgba(255, 255, 255, 0.24) 1px,
+         rgba(255, 255, 255, 0) 0
+        );
+        line-height: 1.5;
+      }
+
+      &.react-datepicker__day--disabled > div {
+        background-image: linear-gradient(0deg,
+         rgba(0, 0, 0, 0.2) 0,
+         rgba(0, 0, 0, 0.2) 0,
+         rgba(255, 255, 255, 0.1) 1px,
+         rgba(255, 255, 255, 0) 0
+        );
+      }
+    }
+  }
+
+  :global {
+    .react-datepicker__day-names {
+      display: flex;
+      margin: 0 0.4rem;
+    }
+    .react-datepicker__day-name {
+      font-weight: 600;
+      display: block !important;
+      &::first-letter {
+        text-transform: uppercase;
+      }
+    }
+  }
+
+  :global(.react-datepicker) {
+    font-family: "Open Sans", sans-serif;
+
+    &__current-month {
+      display: none;
+    }
+
+    &__triangle {
+      border-bottom-color: #fff !important;
+    }
+
+    &__header {
+      background: none;
+      border: none;
+    }
+
+    &-wrapper {
+      width: 100%;
+    }
+
+    &-popper {
+      z-index: 1100;
+    }
+
+    &__input-container {
+      height: 40px;
+      border: 1px solid #cfd1d5;
+      border-radius: 4px;
+      background-color: #fff;
+    }
+
+    &__day {
+      border-radius: 4px;
+      width: 40px;
+      height: 40px;
+      box-sizing: border-box;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+
+      &-name{
+        width: 40px;
+        box-sizing: border-box;
+        display: inline-flex;
+        justify-content: center;
+      }
+
+      &--selected,
+      &--keyboard-selected {
+        background: var(--black1);
+
+        &:hover {
+          background: var(--black1) !important;
+        }
+      }
+
+      &--in-range:hover {
+        background: var(--black1) !important;
+      }
+
+      &--outside-month {
+        color: #CFD1D5;
+      }
+
+      &--disabled {
+        color: #F0F3F7;
+      }
+
+      &:hover {
+        background: var(--white1);
+      }
+    }
+  }
+  :global(.invalid-feedback) {
+    display: block;
+    max-width: 150px;
+  }
+}
+
+.customDatepicker {
+  :global(.focused) {
+
+    :global(.feather) {
+      color: #000;
+    }
+  }
+}
+
+.customHeader {
+  display: flex;
+  width: 100%;
+  padding: 20px 0 0 20px;
+  margin-bottom: 10px;
+  text-align: left;
+
+  label {
+    margin-bottom: 8px;
+  }
+}
+
+.month {
+  width: 50%;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.monthName {
+  width: 70px;
+  text-align: center;
+}
+
+.chevronIcon {
+  font-size: 17px;
+  &.disabled {
+    opacity: 0.3;
+  }
+}
+
+.year {
+  width: 50%;
+  margin-right: 24px;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.yearName {
+  width: 40px;
+  text-align: center;
+}

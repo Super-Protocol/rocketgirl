@@ -1,0 +1,5 @@
+node_modules
+build
+src/gql/graphql.ts
+config-overrides.js
+.env

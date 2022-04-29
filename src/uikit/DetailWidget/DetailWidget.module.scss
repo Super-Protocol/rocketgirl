@@ -1,0 +1,19 @@
+.accordion {
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+}
+
+.accordionCollapse {
+  padding: 8px;
+  background-color: var(--black2);
+  border-radius: 4px;
+}
+
+.fullWidth {
+  width: 100%;
+}
+
+.toggle {
+  margin-bottom: 4px;
+}

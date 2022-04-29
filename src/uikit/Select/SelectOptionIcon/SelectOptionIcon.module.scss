@@ -1,0 +1,28 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+}
+
+.textWrap {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.title {
+  font-size: 8px;
+}
+
+.icon {
+  width: 30px;
+}
+
+.children {
+  align-items: center;
+}
+
+.inner {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}

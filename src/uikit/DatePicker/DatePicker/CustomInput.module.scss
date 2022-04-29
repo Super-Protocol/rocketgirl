@@ -1,0 +1,45 @@
+.root {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding-right: 16px;
+  padding-left: 16px;
+
+  &.appearance-narrow {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  :global {
+    input {
+      height: 37px;
+      border: none;
+      width: 77px !important;
+      outline: none;
+      padding: 0;
+      color: var(--black1);
+      transition: opacity 0.3s ease;
+    }
+
+    i {
+      font-size: 16px;
+      color: #cfd1d5;
+    }
+  }
+}
+
+.wrap {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.inactive {
+  opacity: 0.4;
+}
+
+.wrapWithoutLabel {
+  width: 100%;
+  justify-content: center;
+}

@@ -1,0 +1,18 @@
+.item {
+  position: relative;
+  opacity: 0.2;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  &_active {
+    opacity: 1;
+  }
+}
+
+.itemMn {
+  margin-right: 24px;
+}
+
+.itemBtn {
+  font-size: 18px;
+  font-weight: 600;
+}
