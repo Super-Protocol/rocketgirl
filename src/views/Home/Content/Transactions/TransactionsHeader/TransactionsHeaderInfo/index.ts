@@ -1,1 +1,0 @@
-export { TransactionsHeaderInfo } from './TransactionsHeaderInfo';

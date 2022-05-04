@@ -5,7 +5,6 @@ export type Config = {
     // base app config
     REACT_APP_API_ENDPOINT?: string;
     REACT_APP_POLYGON_SCAN: string;
-    REACT_APP_FETCH_INTERVAL?: number;
     REACT_APP_BLOCKCHAIN_URL?: string;
     REACT_APP_METAMASK_CHAIN_ID?: string;
     REACT_APP_SP_MAIN_CONTRACT_ADDRESS: string;
@@ -18,7 +17,6 @@ export type Config = {
 const DEFAULT_CONFIG: Config = {
     // base app config
     REACT_APP_API_ENDPOINT: '',
-    REACT_APP_FETCH_INTERVAL: 5000,
     REACT_APP_POLYGON_SCAN: 'https://mumbai.polygonscan.com/tx',
     REACT_APP_METAMASK_CHAIN_ID: '0x13881',
     REACT_APP_BLOCKCHAIN_URL: 'wss://wandering-snowy-sun.matic-testnet.quiknode.pro/98e3f8f8fe7ef3c53743ba59fbe6fd6771638d61/',

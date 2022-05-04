@@ -5,7 +5,6 @@ import { Box } from '@/uikit';
 import { WalletContext } from '@/views/Home/context/walletContext';
 import { ContentProps } from './types';
 import { MainTable } from './MainTable';
-import { Transactions } from './Transactions';
 import classes from './Content.module.scss';
 import { FilterContext } from './FilterPopover/FilterContext';
 import { getTables, getFilters } from './helpers';
@@ -40,7 +39,6 @@ export const Content: FC<ContentProps> = memo(() => {
                     fetcher={queryFetcher}
                 />
             </FilterContext>
-            <Transactions />
         </Box>
     );
 });

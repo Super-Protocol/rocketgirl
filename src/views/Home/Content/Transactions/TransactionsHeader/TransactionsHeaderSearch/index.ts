@@ -1,1 +1,0 @@
-export { TransactionsHeaderSearch } from './TransactionsHeaderSearch';
