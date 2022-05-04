@@ -1,8 +1,6 @@
 import { Tables } from '@/views/Home/types';
 
-export interface ContentProps {
-    consensusIsOpen?: boolean;
-}
+export interface ContentProps {}
 
 export interface GetTablesProps {
     hide?: Tables[];

@@ -32,6 +32,7 @@ export const getColumns = (): Array<ColumnProps<TeeOffersColumns>> => [
         width: 'auto',
         isEllipsis: true,
     },
+    // todo add link support, add tooltip support
     {
         Header: 'Description',
         id: 'description',
@@ -39,45 +40,7 @@ export const getColumns = (): Array<ColumnProps<TeeOffersColumns>> => [
         width: 'auto',
         isEllipsis: true,
     },
-    {
-        Header: 'Group',
-        id: 'group',
-        Cell: () => 'Processing',
-        width: 'auto',
-        isEllipsis: true,
-    },
-    {
-        Header: 'Type',
-        id: 'type',
-        Cell: ({ row }) => {
-            const { teeOfferInfo } = row.original || {};
-            const { teeType } = teeOfferInfo || {};
-            return getOfferTypeName(teeType) || '-';
-        },
-        width: 'auto',
-        isEllipsis: true,
-    },
-    {
-        Header: 'Slots',
-        id: 'slots',
-        Cell: ({ row }) => row.original?.teeOfferInfo?.slots || '-',
-        width: 'auto',
-        isEllipsis: true,
-    },
-    {
-        Header: 'Properties',
-        id: 'properties',
-        Cell: ({ row }) => row.original?.teeOfferInfo?.properties || '-',
-        width: 'auto',
-        isEllipsis: true,
-    },
-    {
-        Header: 'DisabledAfter',
-        id: 'disabledAfter',
-        Cell: ({ row }) => row.original?.disabledAfter || '-',
-        width: 'auto',
-        isEllipsis: true,
-    },
+    // todo Total Cores, Free Cores, Orders in queue
     {
         Header: 'ModifiedDate',
         id: 'modifiedDate',

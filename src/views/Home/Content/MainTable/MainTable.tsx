@@ -84,6 +84,7 @@ export const MainTable: FC<MainTableProps> = memo(({
                 spinnerProps={spinnerProps}
                 loading={active?.loading}
                 error={active?.error ? 'Error' : ''}
+                noDataMessage={active?.noDataMessage}
                 called
                 showLoader
                 isUseCursor

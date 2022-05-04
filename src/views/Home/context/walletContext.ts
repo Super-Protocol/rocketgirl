@@ -1,11 +1,12 @@
 import React, {
-    useCallback,
+    useCallback, useEffect,
     useMemo,
     useState,
 } from 'react';
 import Web3 from 'web3';
 import { useConnectToMetaMask } from '@/common/hooks/useConnectToMetaMask';
 import { useErrorModal } from '@/common/hooks/useErrorModal';
+import { useLocalStorage } from '@/common/hooks/useLocalStorage';
 
 export interface WalletMetaMask {
     address: string | null;
@@ -13,28 +14,31 @@ export interface WalletMetaMask {
     instance: any;
 }
 
-export enum WalletList {
+export enum WalletType {
     metaMask = 'metaMask'
 }
 
 export interface Wallet {
-    [WalletList.metaMask]?: WalletMetaMask;
+    [WalletType.metaMask]?: WalletMetaMask;
 }
+
+export type SelectedWalletType = WalletType | null;
+export type SelectedWallet = WalletMetaMask | null;
 
 export interface UseWalletResult {
     wallet: Wallet;
-    selected: WalletList | null;
+    selectedWalletType?: SelectedWalletType;
     loading: boolean;
-    onChangeWallet: (wallet: WalletList) => Promise<void>;
-    selectedWallet: WalletMetaMask | null;
+    onChangeWallet: (wallet: SelectedWalletType) => Promise<void>;
+    selectedWallet: SelectedWallet;
 }
 
 export interface WalletContextProps extends UseWalletResult {}
 
-export const getInitialWallet = (): Wallet => ({ [WalletList.metaMask]: undefined });
+export const getInitialWallet = (): Wallet => ({ [WalletType.metaMask]: undefined });
 
 export const useWallet = (): UseWalletResult => {
-    const [selected, setSelected] = useState<WalletList | null>(null);
+    const [selectedWalletType, setSelectedWalletType] = useLocalStorage<SelectedWalletType>('wallet', null);
     const { showErrorModal } = useErrorModal();
     const [loading, setLoading] = useState(false);
     const [wallet, setWallet] = useState(getInitialWallet);
@@ -44,16 +48,16 @@ export const useWallet = (): UseWalletResult => {
         const { accounts, instance, chainId } = props;
         const address = accounts[0];
         const metaMask = { address, instance: instance ? new Web3(instance) : null, chainId };
-        setWallet((s) => ({ ...s, [WalletList.metaMask]: metaMask }));
+        setWallet((s) => ({ ...s, [WalletType.metaMask]: metaMask }));
         return metaMask;
     }, [connectToMetaMaskCb]);
-    const onChangeWallet = useCallback(async (wallet: WalletList) => {
+    const onChangeWallet = useCallback(async (wallet?: SelectedWalletType) => {
         setLoading(true);
         try {
             switch (wallet) {
-                case WalletList.metaMask:
+                case WalletType.metaMask:
                     await connectToMetaMask();
-                    setSelected(wallet);
+                    setSelectedWalletType(wallet);
                     return;
                 default:
                     return;
@@ -62,11 +66,15 @@ export const useWallet = (): UseWalletResult => {
             showErrorModal(e);
         }
         setLoading(false);
-    }, [connectToMetaMask, showErrorModal]);
-    const selectedWallet = useMemo(() => wallet[selected as WalletList] || null, [wallet, selected]);
+    }, [connectToMetaMask, showErrorModal, setSelectedWalletType]);
+    const selectedWallet = useMemo(() => wallet[selectedWalletType as WalletType] || null, [wallet, selectedWalletType]);
+    useEffect(() => {
+        onChangeWallet(selectedWalletType);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selectedWalletType]);
     return {
         wallet,
-        selected,
+        selectedWalletType,
         selectedWallet,
         loading,
         onChangeWallet,
@@ -75,7 +83,7 @@ export const useWallet = (): UseWalletResult => {
 
 export const WalletContext = React.createContext<WalletContextProps>({
     wallet: getInitialWallet(),
-    selected: null,
+    selectedWalletType: null,
     loading: false,
     onChangeWallet: () => Promise.resolve(),
     selectedWallet: null,

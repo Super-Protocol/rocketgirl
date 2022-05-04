@@ -20,6 +20,7 @@ export const getColumns = (): Array<ColumnProps<ProviderColumns>> => [
         width: 'auto',
         isEllipsis: true,
     },
+    // todo add link support, add tooltip support
     {
         Header: 'Description',
         id: 'description',
@@ -35,27 +36,13 @@ export const getColumns = (): Array<ColumnProps<ProviderColumns>> => [
         isEllipsis: true,
     },
     {
-        Header: 'ActionAccount',
-        id: 'actionAccount',
+        Header: 'Account',
+        id: 'account',
         Cell: ({ row }) => (
             row.original?.providerInfo?.actionAccount
                 ? <CopyToClipboard>{row.original?.providerInfo.actionAccount}</CopyToClipboard>
                 : '-'
         ),
-        width: 'auto',
-        isEllipsis: true,
-    },
-    {
-        Header: 'MetaData',
-        id: 'metadata',
-        Cell: ({ row }) => row.original?.providerInfo?.metadata || '-',
-        width: 'auto',
-        isEllipsis: true,
-    },
-    {
-        Header: 'Available Deposit',
-        id: 'availableDeposit',
-        Cell: ({ row }) => row.original?.availableDeposit ?? '-',
         width: 'auto',
         isEllipsis: true,
     },

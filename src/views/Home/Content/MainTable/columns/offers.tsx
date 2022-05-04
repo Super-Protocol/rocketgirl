@@ -32,17 +32,11 @@ export const getColumns = (): Array<ColumnProps<OffersColumns>> => [
         width: 'auto',
         isEllipsis: true,
     },
+    // todo add link support, add tooltip support
     {
         Header: 'Description',
         id: 'description',
         Cell: ({ row }) => row.original?.offerInfo?.description || '-',
-        width: 'auto',
-        isEllipsis: true,
-    },
-    {
-        Header: 'Group',
-        id: 'group',
-        Cell: ({ row }) => (row.original?.offerInfo?.group ? getOfferGroupName(row.original.offerInfo.group) || '-' : '-'),
         width: 'auto',
         isEllipsis: true,
     },
@@ -62,46 +56,6 @@ export const getColumns = (): Array<ColumnProps<OffersColumns>> => [
         Cell: ({ row }) => (
             typeof row.original?.offerInfo?.cancelable === 'boolean' ? `${row.original?.offerInfo?.cancelable}` : '-'
         ),
-        width: 'auto',
-        isEllipsis: true,
-    },
-    {
-        Header: 'HoldSum',
-        id: 'holdSum',
-        Cell: ({ row }) => row.original?.offerInfo?.holdSum || '-',
-        width: 'auto',
-        isEllipsis: true,
-    },
-    {
-        Header: () => <Ellipsis>Restrictions</Ellipsis>,
-        id: 'restrictions',
-        Cell: ({ row }) => {
-            const { restrictions } = row.original || {};
-            const { offers } = restrictions || {};
-            return (Array.isArray(offers) && offers.length
-                ? (
-                    <>
-                        {offers.map((restriction) => <CopyToClipboard key={restriction}>{restriction}</CopyToClipboard>)}
-                    </>
-                )
-                : '-');
-        },
-        width: 'auto',
-    },
-    {
-        Header: 'Properties',
-        id: 'properties',
-        Cell: ({ row }) => row.original?.offerInfo?.properties || '-',
-        width: 'auto',
-        isEllipsis: true,
-    },
-    {
-        id: 'allowedAccounts',
-        Cell: ({ row }) => {
-            const { allowedAccounts } = row.original?.offerInfo || {};
-            return (Array.isArray(allowedAccounts) && allowedAccounts.length ? allowedAccounts.join(', ') : '-');
-        },
-        Header: 'allowedAccounts',
         width: 'auto',
         isEllipsis: true,
     },

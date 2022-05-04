@@ -3,7 +3,7 @@ import {
 } from 'react';
 import { Box } from '@/uikit';
 import { ModalOkCancelProvider } from '@/common/context/ModalOkCancelProvider/ModalOkCancelProvider';
-// import { Content } from './Content';
+import { Content } from './Content';
 import { Header } from './Header';
 import { HomeProps } from './types';
 import { WalletContextProvider, useWallet } from './context/walletContext';
@@ -15,7 +15,7 @@ const Home: FC<HomeProps> = () => {
             <ModalOkCancelProvider>
                 <Box direction="column">
                     <Header />
-                    {/*<Content />*/}
+                    <Content />
                 </Box>
             </ModalOkCancelProvider>
         </WalletContextProvider>

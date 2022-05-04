@@ -67,7 +67,8 @@ export interface UseTableQueryFetcherResult<
     getQueryData: (options?: QueryLazyOptions<TVariables>) => Promise<LazyQueryResult<TData, TVariables>>;
     updateDiff: (values: string[]) => void;
     subscriptionKey?: string;
-    queryOptions?: UseTableQueryFetcherQueryOptions<TData, TVariables>,
+    queryOptions?: UseTableQueryFetcherQueryOptions<TData, TVariables>;
+    noDataMessage?: string;
 }
 
 export const DEFAULT_PAGE_SIZE = 5;
@@ -102,6 +103,7 @@ export interface UseTableQueryFetcherProps<TData, TVariables> {
     queryOptions?: UseTableQueryFetcherQueryOptions<TData, TVariables>,
     options?: UseTableQueryFetcherOptions;
     subscriptionKey?: string;
+    noDataMessage?: string;
 }
 
 export interface GetVariablesProps {
@@ -132,6 +134,7 @@ export const useTableQueryFetcher = <
             queryOptions: queryOptionsProps,
             options,
             subscriptionKey,
+            noDataMessage,
         }: UseTableQueryFetcherProps<TData, TVariables>,
     ): UseTableQueryFetcherResult<TNode, TData, TVariables> => {
     const [pageIndex, setPageIndex] = useState(0);
@@ -245,7 +248,11 @@ export const useTableQueryFetcher = <
     }, [pageData]);
 
     const onChangePage = useCallback(async (props: OnPageChangeProps) => {
-        const { pageClick, pageIndex, filter } = props;
+        const {
+            pageClick,
+            pageIndex,
+            filter,
+        } = props;
         if (pageClick === PageClick.LAST) {
             setIsReverse(true);
         } else if (pageClick === PageClick.FIRST) {
@@ -310,5 +317,6 @@ export const useTableQueryFetcher = <
         updateDiff,
         subscriptionKey,
         queryOptions: queryOptionsProps,
+        noDataMessage,
     };
 };

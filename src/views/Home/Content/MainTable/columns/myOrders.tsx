@@ -8,31 +8,6 @@ import { getTableDate } from '@/views/Home/Content/MainTable/helpers';
 export type OrdersColumns = UseTableQueryFetcherResultList<Order>;
 
 export const getColumns = (): Array<ColumnProps<OrdersColumns>> => [
-    // {
-    //     Header: 'Consumer',
-    //     id: 'consumer',
-    //     Cell: ({ row }) => {
-    //         const { consumer } = row.original || {};
-    //         if (!consumer) return '-';
-    //         return <CopyToClipboard title={cache.providers.get(consumer)}>{consumer}</CopyToClipboard>;
-    //     },
-    //     width: 'auto',
-    // },
-    {
-        Header: 'Offer',
-        id: 'offer',
-        Cell: ({ row }) => {
-            const { offerInfo, teeOfferInfo, orderInfo } = row.original || {};
-            const offerAddress = orderInfo?.offer;
-            const name = offerInfo?.name || teeOfferInfo?.name;
-            return (
-                offerAddress
-                    ? <CopyToClipboard title={name}>{offerAddress}</CopyToClipboard>
-                    : '-'
-            );
-        },
-        width: 'auto',
-    },
     {
         Header: 'Id',
         id: 'id',
@@ -43,18 +18,6 @@ export const getColumns = (): Array<ColumnProps<OrdersColumns>> => [
         },
     },
     {
-        Header: 'Args',
-        id: 'args',
-        Cell: ({ row }) => {
-            const { orderInfo } = row.original || {};
-            const { encryptedArgs } = orderInfo || {};
-            if (!encryptedArgs) return '-';
-            return <CopyToClipboard>{encryptedArgs}</CopyToClipboard>;
-        },
-        width: 'auto',
-        isEllipsis: true,
-    },
-    {
         Header: 'Status',
         id: 'status',
         Cell: ({ row }) => {
@@ -63,30 +26,6 @@ export const getColumns = (): Array<ColumnProps<OrdersColumns>> => [
             return status ? getOrderStatusName(status) : '-';
         },
         width: 100,
-        isEllipsis: true,
-    },
-    {
-        Header: 'Parent',
-        id: 'parent',
-        Cell: ({ row }) => {
-            const { parentOrder } = row.original || {};
-            const { offerName, orderAddress } = parentOrder || {};
-            if (!orderAddress) return '-';
-            return <CopyToClipboard title={offerName}>{orderAddress}</CopyToClipboard>;
-        },
-        width: 'auto',
-        isEllipsis: true,
-    },
-    {
-        Header: 'Result',
-        id: 'result',
-        Cell: ({ row }) => {
-            const { orderResult } = row.original || {};
-            const { encryptedResult } = orderResult || {};
-            if (!encryptedResult) return '-';
-            return <CopyToClipboard>{encryptedResult}</CopyToClipboard>;
-        },
-        width: 'auto',
         isEllipsis: true,
     },
     {

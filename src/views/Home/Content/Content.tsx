@@ -1,8 +1,8 @@
 import {
-    memo, FC, useMemo, useCallback,
+    memo, FC, useMemo, useCallback, useContext,
 } from 'react';
 import { Box } from '@/uikit';
-import { Tables } from '@/views/Home/types';
+import { WalletContext } from '@/views/Home/context/walletContext';
 import { ContentProps } from './types';
 import { MainTable } from './MainTable';
 import { Transactions } from './Transactions';
@@ -11,18 +11,15 @@ import { FilterContext } from './FilterPopover/FilterContext';
 import { getTables, getFilters } from './helpers';
 import { useTables } from '../hooks/useTables';
 
-export const Content: FC<ContentProps> = memo(({ consensusIsOpen }) => {
+export const Content: FC<ContentProps> = memo(() => {
+    const { selectedWalletType } = useContext(WalletContext);
     const tables = useMemo(
-        () => getTables(
-            {
-                hide: [], // todo
-            },
-        ),
-        [consensusIsOpen],
+        () => getTables({}),
+        [],
     );
     const {
         queryFetcher, table, onChangeTable,
-    } = useTables(tables[0]?.[0]?.value);
+    } = useTables(tables[0]?.[0]?.value, selectedWalletType);
     const onSubmit = useCallback(({ values }) => {
         onChangeTable(table, getFilters(values));
     }, [onChangeTable, table]);
