@@ -22,7 +22,7 @@ export const Dropdown: FC<DropdownProps> = memo(({
     const activeItemInList = useMemo(() => list.find(({ value }) => value === active), [list, active]);
     const activeItem = useMemo(() => activeItemInList || defaultActive || list[0], [activeItemInList, list, defaultActive]);
     return (
-        <DropdownBootstrap className={classNameWrap}>
+        <DropdownBootstrap className={cn(classes.wrap, classNameWrap)}>
             <DropdownBootstrap.Toggle
                 as={DropdownToggleComponent || DropdownToggle}
                 id="dropdown-ui"

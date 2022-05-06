@@ -4,7 +4,8 @@ export type variants = 'red'
     | 'white'
     | 'grey'
     | 'grey-light'
-    | 'transparent-black';
+    | 'transparent-black'
+    | 'orange';
 
 export type sizes = 'sm' | 'lg';
 

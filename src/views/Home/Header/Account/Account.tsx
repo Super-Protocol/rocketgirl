@@ -6,12 +6,13 @@ import React, {
     useMemo, useEffect,
 } from 'react';
 import Web3 from 'web3';
-import { Box } from '@/uikit';
+import { Box, Dropdown, Button } from '@/uikit';
 import { WalletContext, WalletType } from '@/views/Home/context/walletContext';
 import { AccountProps } from './types';
+import classes from './Account.module.scss';
 
 export const Account: FC<AccountProps> = memo(() => {
-    const { onChangeWallet, wallet } = useContext(WalletContext);
+    const { onChangeWallet, wallet, logout } = useContext(WalletContext);
     const onClickMetamask = useCallback(async () => {
         await onChangeWallet(WalletType.metaMask);
     }, [onChangeWallet]);
@@ -23,12 +24,31 @@ export const Account: FC<AccountProps> = memo(() => {
             // todo get balance
         }
     }, []);
+    const list = useMemo(() => (
+        address
+            ? [{ value: address, label: address }, { value: null, label: 'logout' }]
+            : []
+    ), [address]);
+    const onChange = useCallback((value) => {
+        if (!value) logout();
+    }, [logout]);
+
     useEffect(() => {
         updateBalance(address);
     }, [address, updateBalance]);
+
     return (
         <Box>
-            {!address ? <button onClick={onClickMetamask}>connect</button> : address}
+            {
+                !address
+                    ? <Button variant="orange" onClick={onClickMetamask}>Connect wallet</Button>
+                    : (
+                        <Box alignItems="center">
+                            <Box className={classes.balance}>BALANCE HERE</Box>
+                            <Dropdown active={address} list={list} classNameWrap={classes.wrap} onChange={onChange} />
+                        </Box>
+                    )
+            }
         </Box>
     );
 });

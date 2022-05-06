@@ -1,3 +1,3 @@
 import { ButtonProps } from '@/uikit/buttons/Button/types';
 
-export interface GetMaticTokensProps extends ButtonProps {}
+export interface GetTeeProps extends ButtonProps {}

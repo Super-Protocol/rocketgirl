@@ -8,9 +8,10 @@ import React, {
 import { WalletContext } from '@/views/Home/context/walletContext';
 import { transferTokens } from '@/connectors/faucetMaticApi';
 import { useErrorModal } from '@/common/hooks/useErrorModal';
+import { Button } from '@/uikit';
 import { GetMaticTokensProps } from './types';
 
-export const GetMaticTokens: FC<GetMaticTokensProps> = memo(() => {
+export const GetMaticTokens: FC<GetMaticTokensProps> = memo(({ className }) => {
     const { selectedWallet } = useContext(WalletContext);
     const { showErrorModal, showSuccessModal } = useErrorModal();
     const address = useMemo(() => selectedWallet?.address, [selectedWallet]);
@@ -32,5 +33,5 @@ export const GetMaticTokens: FC<GetMaticTokensProps> = memo(() => {
         }
     }, [refillMatic, showErrorModal, showSuccessModal]);
     if (!address) return null;
-    return <button onClick={refillMaticNotification}>GetMaticTokens</button>;
+    return <Button onClick={refillMaticNotification} variant="orange" className={className}>Get MATIC</Button>;
 });

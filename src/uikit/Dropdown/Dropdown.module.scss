@@ -1,11 +1,15 @@
+.wrap {
+  display: flex;
+  background-color: var(--white1);
+  padding: 7px 5px;
+  justify-content: flex-end;
+  border-radius: 4px;
+}
+
 .item {
   padding: 10px 20px;
   font-size: 14px;
 }
-.toggle {
-  opacity: 0.2;
-}
+.toggle {}
 
-.toggleActive {
-  opacity: 1;
-}
+.toggleActive {}
