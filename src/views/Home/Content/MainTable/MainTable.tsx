@@ -1,5 +1,5 @@
 import {
-    memo, FC, useMemo, useCallback, useContext,
+    memo, FC, useMemo, useCallback,
 } from 'react';
 import isEqual from 'lodash.isequal';
 import cn from 'classnames';
@@ -20,6 +20,8 @@ import {
     Columns,
     getDiff,
     getDiffIndexes,
+    styles,
+    classNames,
 } from './helpers';
 
 export const MainTable: FC<MainTableProps> = memo(({
@@ -86,7 +88,9 @@ export const MainTable: FC<MainTableProps> = memo(({
                 error={active?.error ? 'Error' : ''}
                 noDataMessage={active?.noDataMessage}
                 called
+                styles={styles}
                 showLoader
+                classNames={classNames}
                 isUseCursor
             />
         </Box>

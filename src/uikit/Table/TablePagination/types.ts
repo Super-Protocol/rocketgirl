@@ -1,4 +1,5 @@
 import { UsePaginationInstanceProps } from 'react-table';
+import { TableTheme } from '../types';
 
 export enum PageClick {
     FIRST = 'FIRST',
@@ -25,4 +26,5 @@ export interface TablePaginationProps extends UsePaginationInstanceProps<any> {
     diff?: Map<number, Set<string>> | null;
     onPageChange?: OnPageChange;
     isUseCursor?: boolean;
+    theme?: TableTheme;
 }

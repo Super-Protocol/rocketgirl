@@ -9,7 +9,7 @@ import { ArrowUp, ArrowDown } from 'react-feather';
 import { Box, Ellipsis, Spinner } from '@/uikit';
 import classes from './Table.module.scss';
 import { TablePagination } from './TablePagination';
-import { TableProps } from './types';
+import { TableProps, TableTheme } from './types';
 
 const iconProps = { color: '#bcbbba', size: 17 };
 
@@ -77,8 +77,8 @@ export const Table: <T extends Record<string, unknown>>(p: PropsWithChildren<Tab
         }, ...hooks);
         const {
             expandedSpecialStyle = false,
-            gray = false,
             small = false,
+            theme = undefined,
         } = styles;
         const haveSomeData = !!data.length;
         const dontHaveData = !data?.length;
@@ -119,7 +119,8 @@ export const Table: <T extends Record<string, unknown>>(p: PropsWithChildren<Tab
                     <table
                         className={cn(classes.table, classNames.table, {
                             [classes.small]: small,
-                            [classes.gray]: gray,
+                            [classes.gray]: theme === TableTheme.gray,
+                            [classes.beige]: theme === TableTheme.beige,
                         })}
                         {...getTableProps()}
                     >
@@ -239,6 +240,7 @@ export const Table: <T extends Record<string, unknown>>(p: PropsWithChildren<Tab
                             diff,
                             onPageChange,
                             isUseCursor,
+                            theme,
                         }}
                     />
                 )}

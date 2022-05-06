@@ -29,7 +29,7 @@ export const Content: FC<ContentProps> = memo(() => {
     }, [onChangeTable, table]);
 
     return (
-        <Box direction="column">
+        <Box direction="column" className={classes.content}>
             <FilterContext table={table} onSubmit={onSubmit}>
                 <MainTable
                     classNameWrap={classes.mainTableWrap}
