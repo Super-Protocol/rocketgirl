@@ -32,6 +32,7 @@ export interface UseWalletResult {
     loading: boolean;
     onChangeWallet: (wallet: SelectedWalletType) => Promise<void>;
     selectedWallet: SelectedWallet;
+    logout: () => void;
 }
 
 export interface WalletContextProps extends UseWalletResult {}
@@ -69,6 +70,11 @@ export const useWallet = (): UseWalletResult => {
         setLoading(false);
     }, [connectToMetaMask, showErrorModal, setSelectedWalletType]);
     const selectedWallet = useMemo(() => wallet[selectedWalletType as WalletType] || null, [wallet, selectedWalletType]);
+    const logout = useCallback(() => {
+        setSelectedWalletType(null);
+        setWallet({});
+    }, [setSelectedWalletType]);
+
     useEffect(() => {
         onChangeWallet(selectedWalletType);
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -79,6 +85,7 @@ export const useWallet = (): UseWalletResult => {
         selectedWallet,
         loading,
         onChangeWallet,
+        logout,
     };
 };
 
@@ -88,6 +95,7 @@ export const WalletContext = React.createContext<WalletContextProps>({
     loading: false,
     onChangeWallet: () => Promise.resolve(),
     selectedWallet: null,
+    logout: () => {},
 });
 
 export const WalletContextConsumer = WalletContext.Consumer;

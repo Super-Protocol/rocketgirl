@@ -1,5 +1,6 @@
 import React, { forwardRef } from 'react';
 import cn from 'classnames';
+import { Ellipsis } from '@/uikit';
 import classes from './DropdownToggle.module.scss';
 import { DropdownToggleProps } from './types';
 
@@ -12,6 +13,6 @@ export const DropdownToggle = forwardRef<HTMLButtonElement, DropdownToggleProps>
             onClick?.(e);
         }}
     >
-        {children}
+        <Ellipsis>{children}</Ellipsis>
     </button>
 ));
