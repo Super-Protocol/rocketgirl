@@ -9,6 +9,7 @@ import {
 import cn from 'classnames';
 import { Box, Icon } from '@/uikit';
 import { PageClick, TablePaginationProps } from './types';
+import { TableTheme } from '../types';
 import classes from './TablePagination.module.scss';
 import { getActiveIndexes, getPagesGroups } from './helpers';
 
@@ -24,6 +25,7 @@ export const TablePagination: FC<TablePaginationProps> = memo(({
     // diff,
     onPageChange: onPageChangeProp = () => {},
     isUseCursor = false,
+    theme,
 }) => {
     const pageGroups = useMemo(() => getPagesGroups(pageIndex + 1, pageCount, isUseCursor), [pageIndex, pageCount, isUseCursor]);
     // const diffsIndexes = useMemo(() => (diff ? Array.from(diff.keys()) : []), [diff]);
@@ -67,7 +69,11 @@ export const TablePagination: FC<TablePaginationProps> = memo(({
         <Box className={classes.wrap}>
             <div className={classes.left}>
                 <Pagination>
-                    <Pagination.First onClick={goFirstPage} disabled={!canPreviousPage}>
+                    <Pagination.First
+                        onClick={goFirstPage}
+                        disabled={!canPreviousPage}
+                        className={cn({ [classes.beige]: theme === TableTheme.beige })}
+                    >
                         <Icon name="chevronallleft" width={14} />
                     </Pagination.First>
                     <Pagination.Prev onClick={goPreviousPage} disabled={!canPreviousPage}>

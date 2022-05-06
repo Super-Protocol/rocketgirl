@@ -12,6 +12,7 @@ import {
 } from '@/views/Home/Content/FilterPopover';
 import useMemoCompare from '@/common/hooks/useMemoCompare';
 import { FetcherByTable } from '@/views/Home/hooks/useTablesQueryFetcher';
+import { TableTheme } from '@/uikit/Table/types';
 import { GetDiffIndexesResult, MainTableProps } from './types';
 import { MainTableList } from './MainTableList';
 import classes from './MainTable.module.scss';
@@ -86,7 +87,11 @@ export const MainTable: FC<MainTableProps> = memo(({
                 error={active?.error ? 'Error' : ''}
                 noDataMessage={active?.noDataMessage}
                 called
+                styles={{ theme: TableTheme.beige }}
                 showLoader
+                classNames={{
+                    th: classes.th,
+                }}
                 isUseCursor
             />
         </Box>
