@@ -2,6 +2,9 @@
   background: #FFFFFF;
   box-shadow: 0 12px 20px rgba(58, 69, 86, 0.04);
   padding: 13px 24px 13px 20px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
 .btn {
