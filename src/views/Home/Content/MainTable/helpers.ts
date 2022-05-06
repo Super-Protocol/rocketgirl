@@ -7,7 +7,9 @@ import { getColumns as getColumnsProvider, ProviderColumns } from './columns/pro
 import { getColumns as getColumnsTEEOffers, TeeOffersColumns } from './columns/teeOffers';
 import { getColumns as getColumnsOffers, OffersColumns } from './columns/offers';
 import { getColumns as getColumnsOrders, OrdersColumns } from './columns/myOrders';
+import { TableTheme } from '@/uikit/Table/types';
 import { GetDiffIndexesResult } from './types';
+import classes from './MainTable.module.scss';
 
 export const getTableDate = (date: number): string => {
     if (!date) return '-';
@@ -67,4 +69,11 @@ export const getDiffIndexes = (active?: FetcherByTable): GetDiffIndexesResult =>
         }
         return acc;
     }, new Map());
+};
+
+export const styles = { theme: TableTheme.beige };
+
+export const classNames = {
+    th: classes.th,
+    td: classes.td,
 };

@@ -1,5 +1,5 @@
 import {
-    memo, FC, useMemo, useCallback, useContext,
+    memo, FC, useMemo, useCallback,
 } from 'react';
 import isEqual from 'lodash.isequal';
 import cn from 'classnames';
@@ -12,7 +12,6 @@ import {
 } from '@/views/Home/Content/FilterPopover';
 import useMemoCompare from '@/common/hooks/useMemoCompare';
 import { FetcherByTable } from '@/views/Home/hooks/useTablesQueryFetcher';
-import { TableTheme } from '@/uikit/Table/types';
 import { GetDiffIndexesResult, MainTableProps } from './types';
 import { MainTableList } from './MainTableList';
 import classes from './MainTable.module.scss';
@@ -21,6 +20,8 @@ import {
     Columns,
     getDiff,
     getDiffIndexes,
+    styles,
+    classNames,
 } from './helpers';
 
 export const MainTable: FC<MainTableProps> = memo(({
@@ -87,11 +88,9 @@ export const MainTable: FC<MainTableProps> = memo(({
                 error={active?.error ? 'Error' : ''}
                 noDataMessage={active?.noDataMessage}
                 called
-                styles={{ theme: TableTheme.beige }}
+                styles={styles}
                 showLoader
-                classNames={{
-                    th: classes.th,
-                }}
+                classNames={classNames}
                 isUseCursor
             />
         </Box>
