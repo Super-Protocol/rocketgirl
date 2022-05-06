@@ -9,6 +9,11 @@ export interface ColumnProps {
     isEllipsis?: boolean;
 }
 
+export enum TableTheme {
+    gray = 'gray',
+    beige = 'beige',
+}
+
 export interface TableProps<T extends Record<string, unknown>> extends TableOptions<T> {
     expandRow?: ({ row }: { row: Row<T> }) => ReactNode;
     loading?: boolean;
@@ -41,7 +46,7 @@ export interface TableProps<T extends Record<string, unknown>> extends TableOpti
 
     styles?: {
         expandedSpecialStyle?: boolean;
-        gray?: boolean;
+        theme?: TableTheme;
         small?: boolean;
     };
 

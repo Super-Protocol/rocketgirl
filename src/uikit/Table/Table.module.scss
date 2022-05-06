@@ -158,6 +158,23 @@
   }
 }
 
+.beige {
+  :global(thead) {
+    background-color: var(--biege);
+  }
+  :global(tbody) {
+    background-color: var(--white)
+  }
+  :global(th) {
+    height: 42px;
+    padding: 0;
+  }
+  :global(td) {
+    height: 4px;
+    padding: 0;
+  }
+}
+
 .small {
   :global(th) {
     font-size: 12px;
