@@ -5,6 +5,7 @@ import React, {
     useState,
 } from 'react';
 import Web3 from 'web3';
+import { useApolloClient } from '@apollo/client';
 import { useConnectToMetaMask } from '@/common/hooks/useConnectToMetaMask';
 import { useErrorModal } from '@/common/hooks/useErrorModal';
 import { useLocalStorage } from '@/common/hooks/useLocalStorage';
@@ -40,6 +41,7 @@ export interface WalletContextProps extends UseWalletResult {}
 export const getInitialWallet = (): Wallet => ({ [WalletType.metaMask]: undefined });
 
 export const useWallet = (): UseWalletResult => {
+    const client = useApolloClient();
     const [selectedWalletType, setSelectedWalletType] = useLocalStorage<SelectedWalletType>('wallet', null);
     const { showErrorModal } = useErrorModal();
     const [loading, setLoading] = useState(false);
@@ -70,10 +72,11 @@ export const useWallet = (): UseWalletResult => {
         setLoading(false);
     }, [connectToMetaMask, showErrorModal, setSelectedWalletType]);
     const selectedWallet = useMemo(() => wallet[selectedWalletType as WalletType] || null, [wallet, selectedWalletType]);
-    const logout = useCallback(() => {
+    const logout = useCallback(async () => {
         setSelectedWalletType(null);
         setWallet({});
-    }, [setSelectedWalletType]);
+        await client.resetStore();
+    }, [setSelectedWalletType, client]);
 
     useEffect(() => {
         onChangeWallet(selectedWalletType);

@@ -54,7 +54,9 @@ export const MainTable: FC<MainTableProps> = memo(({
     const activeDiffIndexes = useMemo(() => getDiffIndexes(active), [active]);
     const activeDiffIndexesMemoCompare = useMemoCompare<GetDiffIndexesResult>(activeDiffIndexes, isEqual);
     const spinnerProps = useMemo(() => ({ fullscreen: true }), []);
-    const data = useMemo(() => active?.list || [], [active]);
+    const skip = useMemo(() => active?.queryOptions?.skip, [active]);
+    const data = useMemo(() => (!skip && active?.list ? active?.list : []), [active, skip]);
+    const pageCount = useMemo(() => (!skip ? active?.pageCount : 0), [active, skip]);
 
     return (
         <Box direction="column" className={cn(classes.wrap, classNameWrap)}>
@@ -78,7 +80,7 @@ export const MainTable: FC<MainTableProps> = memo(({
                 diff={activeDiffIndexesMemoCompare}
                 columns={columns}
                 data={data}
-                pageCount={active?.pageCount}
+                pageCount={pageCount}
                 pageSize={active?.pageSize}
                 diffTimeout={3000}
                 onPageChange={onPageChange}

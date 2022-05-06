@@ -30,6 +30,7 @@ export const useTables = (initialTable: Tables, selectedWalletType?: SelectedWal
         if (!skipByWallet.some(({ table }) => table === newTable)) {
             queryFetcher[newTable]?.onChangePage({ filter, pageClick: PageClick.FIRST });
         }
+        // reset query data
     }, [queryFetcher, skipByWallet]);
     useEffect(() => {
         onChangeTable(table);
