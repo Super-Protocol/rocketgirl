@@ -68,7 +68,7 @@ export const MainTable: FC<MainTableProps> = memo(({
                         diff={diff}
                         onChange={onChangeTable}
                     />
-                    <FilterBtn />
+                    {!skip && <FilterBtn />}
                 </Box>
                 <FilterPanel className={classes.filterPanel}>
                     <FilterForm />
