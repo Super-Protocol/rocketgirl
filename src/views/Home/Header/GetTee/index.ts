@@ -1,0 +1,1 @@
+export { GetTee } from './GetTee';
