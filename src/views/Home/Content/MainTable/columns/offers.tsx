@@ -1,6 +1,6 @@
 import { ColumnProps } from 'react-table';
-import { CopyToClipboard, Ellipsis } from '@/uikit';
-import { getOfferTypeName, getOfferGroupName } from '@/common/helpers';
+import { CopyToClipboard } from '@/uikit';
+import { getOfferTypeName } from '@/common/helpers';
 import { getTableDate } from '@/views/Home/Content/MainTable/helpers';
 import { UseTableQueryFetcherResultList } from '@/common/hooks/useTableQueryFetcher';
 import { Offer } from '@/gql/graphql';

@@ -3,7 +3,6 @@ import { TeeOffer } from '@/gql/graphql';
 import { CopyToClipboard } from '@/uikit';
 import { getTableDate } from '@/views/Home/Content/MainTable/helpers';
 import { UseTableQueryFetcherResultList } from '@/common/hooks/useTableQueryFetcher';
-import { getOfferTypeName } from '@/common/helpers';
 
 export type TeeOffersColumns = UseTableQueryFetcherResultList<TeeOffer>;
 
