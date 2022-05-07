@@ -1,14 +1,10 @@
 const { generate } = require('@graphql-codegen/cli');
-const dotenv = require('dotenv');
-
-dotenv.config();
-const { REACT_APP_API_ENDPOINT } = process.env;
 
 async function generateGraphQLCode() {
     await generate(
         {
             overwrite: true,
-            schema: REACT_APP_API_ENDPOINT,
+            schema: 'schema.graphql',
             documents: './src/gql/schemas/*.graphql',
             config: {
                 apolloReactHooksImportFrom: '@/apollo/hooks',
