@@ -1,5 +1,5 @@
 import { ColumnProps } from 'react-table';
-import { CopyToClipboard } from '@/uikit';
+import { CopyToClipboard, HtmlBox } from '@/uikit';
 import { getOfferTypeName } from '@/common/helpers';
 import { getTableDate } from '@/views/Home/Content/MainTable/helpers';
 import { UseTableQueryFetcherResultList } from '@/common/hooks/useTableQueryFetcher';
@@ -36,7 +36,10 @@ export const getColumns = (): Array<ColumnProps<OffersColumns>> => [
     {
         Header: 'Description',
         id: 'description',
-        Cell: ({ row }) => row.original?.offerInfo?.description || '-',
+        Cell: ({ row }) => {
+            const { description } = row.original?.offerInfo || {};
+            return description ? <HtmlBox text={description} /> : '-';
+        },
         width: 'auto',
         isEllipsis: true,
     },

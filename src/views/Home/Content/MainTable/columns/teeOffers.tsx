@@ -1,6 +1,6 @@
 import { ColumnProps } from 'react-table';
 import { TeeOffer } from '@/gql/graphql';
-import { CopyToClipboard } from '@/uikit';
+import { CopyToClipboard, HtmlBox } from '@/uikit';
 import { getTableDate } from '@/views/Home/Content/MainTable/helpers';
 import { UseTableQueryFetcherResultList } from '@/common/hooks/useTableQueryFetcher';
 
@@ -35,11 +35,34 @@ export const getColumns = (): Array<ColumnProps<TeeOffersColumns>> => [
     {
         Header: 'Description',
         id: 'description',
-        Cell: ({ row }) => row.original?.teeOfferInfo?.description || '-',
+        Cell: ({ row }) => {
+            const { description } = row.original?.teeOfferInfo || {};
+            return description ? <HtmlBox text={description} /> : '-';
+        },
         width: 'auto',
         isEllipsis: true,
     },
-    // todo Total Cores, Free Cores, Orders in queue
+    {
+        Header: 'Total Cores',
+        id: 'slots',
+        Cell: ({ row }) => row.original?.teeOfferInfo?.slots || '-',
+        width: 'auto',
+        isEllipsis: true,
+    },
+    {
+        Header: 'Free Cores',
+        id: 'freeCores',
+        Cell: ({ row }) => row.original?.stats?.freeCores || '-',
+        width: 'auto',
+        isEllipsis: true,
+    },
+    {
+        Header: 'Orders in queue',
+        id: 'ordersInQueue',
+        Cell: ({ row }) => row.original?.stats?.ordersInQueue || '-',
+        width: 'auto',
+        isEllipsis: true,
+    },
     {
         Header: 'ModifiedDate',
         id: 'modifiedDate',

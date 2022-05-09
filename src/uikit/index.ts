@@ -7,6 +7,7 @@ export * from './DetailWidget';
 export * from './Dropdown';
 export * from './Icon';
 export * from './Input';
+export * from './HtmlBox';
 export * from './Ellipsis';
 export * from './Modals';
 export * from './EyeLink';

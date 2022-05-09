@@ -25,6 +25,10 @@ query TeeOffers($pagination: ConnectionArgs!, $filter: TeeOfferFilter) {
                         name
                         tokenReceiver
                     }
+                    stats {
+                        freeCores
+                        ordersInQueue
+                    }
                     teeOfferInfo {
                         argsPublicKey
                         description

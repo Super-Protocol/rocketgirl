@@ -1,6 +1,6 @@
 import { ColumnProps } from 'react-table';
 import { Provider } from '@/gql/graphql';
-import { CopyToClipboard } from '@/uikit';
+import { CopyToClipboard, HtmlBox } from '@/uikit';
 import { getTableDate } from '@/views/Home/Content/MainTable/helpers';
 import { UseTableQueryFetcherResultList } from '@/common/hooks/useTableQueryFetcher';
 
@@ -24,7 +24,10 @@ export const getColumns = (): Array<ColumnProps<ProviderColumns>> => [
     {
         Header: 'Description',
         id: 'description',
-        Cell: ({ row }) => row.original?.providerInfo?.description || '-',
+        Cell: ({ row }) => {
+            const { description } = row.original?.providerInfo || {};
+            return description ? <HtmlBox text={description} /> : '-';
+        },
         width: 'auto',
         isEllipsis: true,
     },

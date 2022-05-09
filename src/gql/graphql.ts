@@ -1451,7 +1451,7 @@ export type TeeOffersQueryVariables = Exact<{
 }>;
 
 
-export type TeeOffersQuery = { __typename?: 'Query', result: { __typename?: 'ListTeeOffersResponse', pageData?: { __typename?: 'PageDataDto', count: number, limit: number, offset: number } | null, page: { __typename?: 'TeeOfferConnection', edges?: Array<{ __typename?: 'TeeOfferEdge', cursor?: string | null, node?: { __typename?: 'TeeOffer', _id: string, address: string, authority?: string | null, disabledAfter: number, providerAddress: string, origins?: { __typename?: 'Origins', createdBy: string, createdDate: number, modifiedBy: string, modifiedDate: number } | null, providerInfo: { __typename?: 'ProviderInformation', actionAccount: string, description: string, metadata: string, name: string, tokenReceiver: string }, teeOfferInfo: { __typename?: 'TeeOfferInfo', argsPublicKey: string, description: string, minTimeMinutes: number, name: string, properties: string, slots: number, tcb: string, teeType: string, tlb: string } } | null }> | null, pageInfo?: { __typename?: 'TeeOfferPageInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } | null } } };
+export type TeeOffersQuery = { __typename?: 'Query', result: { __typename?: 'ListTeeOffersResponse', pageData?: { __typename?: 'PageDataDto', count: number, limit: number, offset: number } | null, page: { __typename?: 'TeeOfferConnection', edges?: Array<{ __typename?: 'TeeOfferEdge', cursor?: string | null, node?: { __typename?: 'TeeOffer', _id: string, address: string, authority?: string | null, disabledAfter: number, providerAddress: string, origins?: { __typename?: 'Origins', createdBy: string, createdDate: number, modifiedBy: string, modifiedDate: number } | null, providerInfo: { __typename?: 'ProviderInformation', actionAccount: string, description: string, metadata: string, name: string, tokenReceiver: string }, stats?: { __typename?: 'Stats', freeCores: number, ordersInQueue: number } | null, teeOfferInfo: { __typename?: 'TeeOfferInfo', argsPublicKey: string, description: string, minTimeMinutes: number, name: string, properties: string, slots: number, tcb: string, teeType: string, tlb: string } } | null }> | null, pageInfo?: { __typename?: 'TeeOfferPageInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } | null } } };
 
 export const PageDataDtoFragmentFragmentDoc = gql`
     fragment PageDataDtoFragment on PageDataDto {
@@ -1949,6 +1949,10 @@ export const TeeOffersDocument = gql`
             metadata
             name
             tokenReceiver
+          }
+          stats {
+            freeCores
+            ordersInQueue
           }
           teeOfferInfo {
             argsPublicKey
