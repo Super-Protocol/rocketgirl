@@ -1,7 +1,9 @@
 import { createUploadLink } from 'apollo-upload-client';
+
 import { getQSFromObj } from '@/utils';
-import CONFIG from '@/config';
 import fetchUpload from '../fetchUpload';
+
+const { REACT_APP_AUTH } = process.env;
 
 const uploadLink = (): createUploadLink => {
     return createUploadLink({
@@ -9,11 +11,13 @@ const uploadLink = (): createUploadLink => {
             const queries = getQSFromObj({
                 op: req.operationName,
             });
-
-            return `${CONFIG.REACT_APP_API_ENDPOINT}/graphql${queries.length ? `?${queries}` : ''}`;
+            return `/graphql${queries.length ? `?${queries}` : ''}`;
         },
         credentials: 'same-origin',
         fetch: fetchUpload,
+        headers: {
+            authorization: REACT_APP_AUTH,
+        },
     });
 };
 
