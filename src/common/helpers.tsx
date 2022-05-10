@@ -6,7 +6,6 @@ import BlockchainConnector, {
     TcbStatus,
     OrderStatus,
 } from '@super-protocol/sp-sdk-js';
-import { formatBytes32String } from 'ethers/lib/utils';
 import { TOfferType } from '@/gql/graphql';
 import { Item } from '@/uikit/Select/types';
 import CONFIG from '@/config';
@@ -94,7 +93,5 @@ export const getFormattedSatoshi = (num: number, count: number): string => {
 export const genRanHex = (size: number): string => [...Array(size)]
     .map(() => Math.floor(Math.random() * 16).toString(16))
     .join('');
-
-export const getBytes32 = (): string => formatBytes32String(genRanHex(16));
 
 export const getOfferOptions = (): Item[] => Object.values(TOfferType).map((value) => ({ label: value, value }));
