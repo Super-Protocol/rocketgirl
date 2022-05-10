@@ -3,7 +3,7 @@
   "version": "0.0.2",
   "private": true,
   "dependencies": {
-    "@apollo/client": "^3.5.10",
+    "@apollo/client": "^3.6.2",
     "@super-protocol/sp-dto-js": "^0.0.10",
     "@super-protocol/sp-sdk-js": "^0.1.7",
     "@types/node": "^16.4.13",
