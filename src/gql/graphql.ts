@@ -27,21 +27,23 @@ export type BallotInfo = {
   quorum: Scalars['Float'];
   /**
    * description of values:
-   *
+   * 
    *     NoQuorum = '0',
    *
    *     MajorityDecision = '1',
+   *
    */
   reason: Scalars['String'];
   request: ModifyRequest;
   /**
    * description of values:
-   *
+   * 
    *     InProgress = '0',
    *
    *     Applied = '1',
    *
    *     Rejected = '2',
+   *
    */
   state: Scalars['String'];
   totalHoldedVotes: Scalars['Float'];
@@ -59,21 +61,23 @@ export type BallotInfoInput = {
   quorum: Scalars['Float'];
   /**
    * description of values:
-   *
+   * 
    *     NoQuorum = '0',
    *
    *     MajorityDecision = '1',
+   *
    */
   reason: Scalars['String'];
   request: ModifyRequestInput;
   /**
    * description of values:
-   *
+   * 
    *     InProgress = '0',
    *
    *     Applied = '1',
    *
    *     Rejected = '2',
+   *
    */
   state: Scalars['String'];
   totalHoldedVotes: Scalars['Float'];
@@ -311,8 +315,7 @@ export type ModifyRequest = {
   __typename?: 'ModifyRequest';
   /**
    * description of values:
-   *
-   *
+   * 
    *     Orders = "0",
    *
    *     ProviderRegistry = "1",
@@ -336,14 +339,14 @@ export type ModifyRequest = {
    *     LastBlocks = "10",
    *
    *      Epochs = "11"
+   *
    */
   contractName: Scalars['String'];
   newContractAddress?: Maybe<Scalars['String']>;
   newParamValue?: Maybe<Scalars['Float']>;
   /**
    * description of values:
-   *
-   *
+   * 
    *   OrderMinimumDeposit = "0",
    *
    *   ProfitWithdrawDelayDays = "1",
@@ -377,15 +380,16 @@ export type ModifyRequest = {
    *   Threshold = "15",
    *
    *   EpochDurationSeconds = "16"
+   *
    */
   paramName: Scalars['String'];
   /**
    * description of values:
-   *
-   *
+   * 
    *     NewContractAddress = "0",
    *
    *     NewParamValue = "1"
+   *
    */
   requestType: Scalars['String'];
 };
@@ -393,8 +397,7 @@ export type ModifyRequest = {
 export type ModifyRequestInput = {
   /**
    * description of values:
-   *
-   *
+   * 
    *     Orders = "0",
    *
    *     ProviderRegistry = "1",
@@ -418,14 +421,14 @@ export type ModifyRequestInput = {
    *     LastBlocks = "10",
    *
    *      Epochs = "11"
+   *
    */
   contractName: Scalars['String'];
   newContractAddress?: InputMaybe<Scalars['String']>;
   newParamValue?: InputMaybe<Scalars['Float']>;
   /**
    * description of values:
-   *
-   *
+   * 
    *   OrderMinimumDeposit = "0",
    *
    *   ProfitWithdrawDelayDays = "1",
@@ -459,15 +462,16 @@ export type ModifyRequestInput = {
    *   Threshold = "15",
    *
    *   EpochDurationSeconds = "16"
+   *
    */
   paramName: Scalars['String'];
   /**
    * description of values:
-   *
-   *
+   * 
    *     NewContractAddress = "0",
    *
    *     NewParamValue = "1"
+   *
    */
   requestType: Scalars['String'];
 };
@@ -576,6 +580,7 @@ export type OfferInfo = {
    *   Solution = '2',
    *
    *   Data = '3'
+   *
    */
   group: Scalars['String'];
   hash: Scalars['String'];
@@ -590,6 +595,7 @@ export type OfferInfo = {
    *      0 - Input,
    *
    *      1 - Output
+   *
    */
   offerType: Scalars['String'];
   outputFormat: Scalars['String'];
@@ -615,6 +621,7 @@ export type OfferInfoInput = {
    *   Solution = '2',
    *
    *   Data = '3'
+   *
    */
   group: Scalars['String'];
   hash: Scalars['String'];
@@ -629,6 +636,7 @@ export type OfferInfoInput = {
    *      0 - Input,
    *
    *      1 - Output
+   *
    */
   offerType: Scalars['String'];
   outputFormat: Scalars['String'];
@@ -722,7 +730,7 @@ export type OrderInfo = {
   resultPublicKey: Scalars['String'];
   /**
    * description of values:
-   *
+   * 
    *     New = '0',
    *
    *     Processing = '1',
@@ -740,6 +748,8 @@ export type OrderInfo = {
    *     Suspended = '7',
    *
    *     AwaitingPayment = '8'
+   *
+   *
    */
   status: Scalars['String'];
 };
@@ -752,7 +762,7 @@ export type OrderInfoInput = {
   resultPublicKey: Scalars['String'];
   /**
    * description of values:
-   *
+   * 
    *     New = '0',
    *
    *     Processing = '1',
@@ -770,6 +780,8 @@ export type OrderInfoInput = {
    *     Suspended = '7',
    *
    *     AwaitingPayment = '8'
+   *
+   *
    */
   status: Scalars['String'];
 };
