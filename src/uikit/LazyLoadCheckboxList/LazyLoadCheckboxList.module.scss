@@ -1,0 +1,18 @@
+.wrap {}
+
+.option {
+  padding: 9px 30px 11px 16px;
+  &:hover {
+    background-color: var(--orange4);
+  }
+}
+
+.description {
+  flex: 2;
+  color: var(--black1);
+}
+
+.check {
+  flex: 1;
+  padding-right: 30px;
+}

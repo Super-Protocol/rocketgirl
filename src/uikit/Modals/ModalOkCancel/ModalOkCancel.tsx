@@ -13,12 +13,13 @@ export const ModalOkCancel: FC<ModalOkCancelProps> = memo(({
     onContinue = () => {},
     classNameTitle,
     classNameHeader,
+    classNameWrap,
     messages,
     children,
     components,
 }) => {
     return (
-        <Modal show={show} onHide={onClose} size="lg" dialogClassName={classes.root} centered>
+        <Modal show={show} onHide={onClose} size="lg" dialogClassName={cn(classes.root, classNameWrap)} centered>
             <Modal.Body className={classes.body}>
                 {components?.main || (
                     <>

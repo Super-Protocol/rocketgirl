@@ -64,7 +64,7 @@ export type SelectUiResult<TData> = ReactElement<
 
 export type SelectLazyLoadFetcherResult = { options: Item[] | undefined, cursor?: string | null, input?: string | null };
 
-export type SelectLazyLoadFetcherProps = { cursor: string | null | undefined; search: string | null | undefined; signal?: AbortSignal };
+export type SelectLazyLoadFetcherProps = { cursor?: string | null; search?: string | null; signal?: AbortSignal };
 
 export type SelectLazyLoadFetcher = (props: SelectLazyLoadFetcherProps) => Promise<SelectLazyLoadFetcherResult>
 

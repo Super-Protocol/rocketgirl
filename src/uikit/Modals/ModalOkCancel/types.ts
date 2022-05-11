@@ -23,4 +23,5 @@ export interface ModalOkCancelProps {
     classNameTitle?: string;
     classNameHeader?: string;
     components?: ModalComponents;
+    classNameWrap?: string;
 }

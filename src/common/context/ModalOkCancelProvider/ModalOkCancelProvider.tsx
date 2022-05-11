@@ -11,15 +11,32 @@ export const ModalOkCancelContext = createContext<ModalOkCancelContextProps>({
     onClose: () => {},
     goBack: () => {},
     goNext: () => {},
+    history: [],
 });
 
 export const ModalOkCancelProvider = memo(({ children }: ModalOkCancelProviderProps): ModalOkCancelProviderResult => {
     const [active, setActive] = useState<string | null>(null);
     const [history, setHistory] = useState<{ id: string, props: ModalOkCancelProps }[]>([]);
     const activeModal = useMemo(() => (active ? history.find(({ id }) => id === active) : null), [active, history]);
-    const goBack = useCallback(async (count) => {
+    const goBack = useCallback(async ({ count, props } = {}) => {
         const newHistory = history.slice(0, history.length - ((typeof count === 'number' ? count : 0) + 1));
-        setHistory(newHistory);
+        setHistory(
+            props
+                ? newHistory.map((history) => ({
+                    ...history,
+                    props: {
+                        ...history.props,
+                        children: {
+                            ...(history.props.children || {}),
+                            props: {
+                                ...(history.props.children as { props: {} })?.props || {},
+                                ...props,
+                            },
+                        },
+                    },
+                }))
+                : newHistory,
+        );
         setActive(newHistory?.length ? newHistory[newHistory.length - 1]?.id : null);
     }, [history]);
 
@@ -51,7 +68,8 @@ export const ModalOkCancelProvider = memo(({ children }: ModalOkCancelProviderPr
         goNext,
         reset,
         onClose,
-    }), [showModal, onClose, reset, goNext, goBack]);
+        history,
+    }), [showModal, onClose, reset, goNext, goBack, history]);
 
     const onCancel = useCallback(() => {
         onClose();
@@ -69,7 +87,8 @@ export const ModalOkCancelProvider = memo(({ children }: ModalOkCancelProviderPr
         onCancel,
         onContinue,
         show: !!activeModal,
-    }), [activeModal, onClose, onCancel, onContinue]);
+        history,
+    }), [activeModal, onClose, onCancel, onContinue, history]);
 
     return (
         <ModalOkCancelContext.Provider value={value}>

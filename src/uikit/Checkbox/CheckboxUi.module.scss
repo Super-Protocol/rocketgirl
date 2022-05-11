@@ -1,5 +1,6 @@
 $color-white: var(--white1);
 $color-black: #242C37;
+$color-orange: var(--orange3);
 
 .checkbox {
   position: relative;
@@ -28,6 +29,11 @@ $color-black: #242C37;
         &.dark {
           border-color: $color-white;
           background: $color-white;
+        }
+
+        &.orange {
+          border-color: $color-orange;
+          background: $color-orange;
         }
 
         &_invalid {
@@ -71,6 +77,10 @@ $color-black: #242C37;
       background: $color-white;
     }
 
+    &.orange {
+      border-color: $color-orange;
+    }
+
     &_invalid {
       border-color: #e30613;
     }
@@ -94,6 +104,12 @@ $color-black: #242C37;
     &.dark {
       svg {
         stroke: $color-black;
+      }
+    }
+
+    &.orange {
+      svg {
+        stroke: $color-white;
       }
     }
 

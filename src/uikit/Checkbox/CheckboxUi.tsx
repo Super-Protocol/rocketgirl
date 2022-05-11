@@ -27,7 +27,7 @@ export const CheckboxUi: FC<CheckboxUiProps> = memo(({
     classNameCheckboxCheckmark,
     labelClickDisabled,
     dataTestId,
-    theme = themes.light,
+    theme = themes.orange,
     labelLimit,
     localState,
     withLabelTooltip = false,

@@ -12,7 +12,8 @@ export interface Item {
 
 export enum themes {
     light = 'light',
-    dark = 'dark'
+    dark = 'dark',
+    orange = 'orange'
 }
 
 export interface CheckboxUiProps {
