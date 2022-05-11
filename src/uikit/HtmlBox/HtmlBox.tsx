@@ -1,13 +1,11 @@
-import { useCallback, memo } from 'react';
+import { useMemo, FC } from 'react';
 
 import { HtmlBoxProps } from './types';
 
-export const HtmlBox = memo<HtmlBoxProps>(({ text }) => {
-    const createMarkup = useCallback(() => {
-        return { __html: text };
-    }, []);
+export const HtmlBox: FC<HtmlBoxProps> = ({ text }) => {
+    const markup = useMemo(() => ({ __html: text }), [text]);
 
     return (
-        <div dangerouslySetInnerHTML={createMarkup()} /> // eslint-disable-line react/no-danger
+        <div dangerouslySetInnerHTML={markup} /> // eslint-disable-line react/no-danger
     );
-});
+};
