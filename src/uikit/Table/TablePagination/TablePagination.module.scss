@@ -153,5 +153,35 @@
 }
 
 .beige {
-  color: var(--orange1);
+  :global {
+    .page-link {
+      color: var(--orange1);
+      background-color: transparent;
+      &:hover {
+        color: var(--orange1);
+        background-color: transparent;
+      }
+    }
+    .page-item.active .page-link {
+      background-color: transparent;
+      color: var(--black);
+    }
+    .page-item.disabled .page-link {
+      color: var(--orange3);
+    }
+
+    .dropdown-toggle {
+      background-color: var(--white1);
+      color: var(--black);
+      width: 55px;
+      padding: 6px 10px;
+      &:hover {
+        color: var(--black);
+        background-color: var(--white1);
+      }
+      &:after {
+        color: var(--orange1);
+      }
+    }
+  }
 }

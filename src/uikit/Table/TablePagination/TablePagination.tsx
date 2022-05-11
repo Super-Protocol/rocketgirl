@@ -66,13 +66,12 @@ export const TablePagination: FC<TablePaginationProps> = memo(({
     if (!pageCount) return null;
 
     return (
-        <Box className={classes.wrap}>
+        <Box className={cn(classes.wrap, { [classes.beige]: theme === TableTheme.beige })}>
             <div className={classes.left}>
                 <Pagination>
                     <Pagination.First
                         onClick={goFirstPage}
                         disabled={!canPreviousPage}
-                        className={cn({ [classes.beige]: theme === TableTheme.beige })}
                     >
                         <Icon name="chevronallleft" width={14} />
                     </Pagination.First>
@@ -111,7 +110,7 @@ export const TablePagination: FC<TablePaginationProps> = memo(({
                     variant="default"
                     id="items-per-page-select"
                     size="sm"
-                    className={classes.dropdown}
+                    className={cn(classes.dropdown, { [classes.beige]: theme === TableTheme.beige })}
                 >
                     {(itemsPageSizeOptions || []).map((option) => (
                         <Dropdown.Item
