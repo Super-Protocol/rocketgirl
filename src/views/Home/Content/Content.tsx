@@ -1,4 +1,4 @@
-import {
+import React, {
     memo, FC, useMemo, useCallback, useContext,
 } from 'react';
 import { Box } from '@/uikit';

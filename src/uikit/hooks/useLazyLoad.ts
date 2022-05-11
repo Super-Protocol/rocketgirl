@@ -1,8 +1,7 @@
 import {
-    useEffect, useCallback, MutableRefObject,
+    useEffect, useCallback, MutableRefObject, useRef,
 } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
-import { Item } from '@/uikit/Select/types';
 
 const INTERSECTION_THRESHOLD = 5;
 const DELAY = 100;
@@ -11,40 +10,31 @@ export interface State {
     loading: boolean;
 }
 
-export type Cursor = string | null | undefined;
+export type FetchData = () => Promise<void>;
 
-export type FetchDataResult = { cursor?: Cursor; options?: Item[] };
-
-export type FetchData = (cursor: Cursor) => Promise<FetchDataResult>;
-
-export interface UseLazyLoadCursorProps {
+export interface useLazyLoadProps {
     triggerRef: MutableRefObject<null | undefined>;
     fetchData: FetchData;
-    cursor: Cursor;
-    loading: boolean;
     delay?: number;
 }
 
-const useLazyLoadCursor = ({
+export const useLazyLoad = ({
     triggerRef,
     fetchData,
-    loading,
-    cursor,
     delay = DELAY,
-}: UseLazyLoadCursorProps): void => {
-    const refetch = useCallback(async () => {
-        return fetchData(cursor).catch(() => ({ cursor: null, options: [] }));
-    }, [cursor, fetchData]);
-
+}: useLazyLoadProps): void => {
+    const initFetch = useRef(false);
     const handleEntry = useCallback(async (entry) => {
         const { intersectionRect, boundingClientRect } = entry || {};
-        if (!loading
-            && cursor !== null
-            && (entry.isIntersecting && intersectionRect.bottom - boundingClientRect.bottom <= INTERSECTION_THRESHOLD)
+        if (
+            !initFetch.current
+            || !(entry.isIntersecting && intersectionRect.bottom - boundingClientRect.bottom <= INTERSECTION_THRESHOLD
+            )
         ) {
-            await refetch();
+            initFetch.current = true;
+            await fetchData();
         }
-    }, [loading, cursor, refetch]);
+    }, [fetchData]);
 
     const handleEntryDebounce = useDebouncedCallback(handleEntry, delay);
 
@@ -66,7 +56,5 @@ const useLazyLoadCursor = ({
                 observer.disconnect();
             };
         }
-    }, [triggerRef, onIntersect, cursor]);
+    }, [triggerRef, onIntersect]);
 };
-
-export default useLazyLoadCursor;

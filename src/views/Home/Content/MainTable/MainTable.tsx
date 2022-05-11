@@ -1,4 +1,4 @@
-import {
+import React, {
     memo, FC, useMemo, useCallback,
 } from 'react';
 import isEqual from 'lodash.isequal';
@@ -12,6 +12,7 @@ import {
 } from '@/views/Home/Content/FilterPopover';
 import useMemoCompare from '@/common/hooks/useMemoCompare';
 import { FetcherByTable } from '@/views/Home/hooks/useTablesQueryFetcher';
+import { CreateOrder } from '@/views/Home/Content/CreateOrder/CreateOrder';
 import { GetDiffIndexesResult, MainTableProps } from './types';
 import { MainTableList } from './MainTableList';
 import classes from './MainTable.module.scss';
@@ -60,19 +61,24 @@ export const MainTable: FC<MainTableProps> = memo(({
 
     return (
         <Box direction="column" className={cn(classes.wrap, classNameWrap)}>
-            <Box direction="column">
-                <Box alignItems="center" className={classes.listWrap}>
-                    <MainTableList
-                        list={tables}
-                        active={table}
-                        diff={diff}
-                        onChange={onChangeTable}
-                    />
-                    {!skip && <FilterBtn />}
+            <Box direction="row" justifyContent="space-between" alignItems="flex-start">
+                <Box direction="column">
+                    <Box alignItems="center" className={classes.listWrap}>
+                        <MainTableList
+                            list={tables}
+                            active={table}
+                            diff={diff}
+                            onChange={onChangeTable}
+                        />
+                        {!skip && <FilterBtn />}
+                    </Box>
+                    <FilterPanel className={classes.filterPanel}>
+                        <FilterForm />
+                    </FilterPanel>
                 </Box>
-                <FilterPanel className={classes.filterPanel}>
-                    <FilterForm />
-                </FilterPanel>
+                <Box>
+                    <CreateOrder />
+                </Box>
             </Box>
             <Table
                 <Columns>

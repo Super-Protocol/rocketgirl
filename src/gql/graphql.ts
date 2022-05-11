@@ -1423,7 +1423,7 @@ export type OffersSelectQueryVariables = Exact<{
 }>;
 
 
-export type OffersSelectQuery = { __typename?: 'Query', result: { __typename?: 'ListOffersResponse', pageData?: { __typename?: 'PageDataDto', count: number, limit: number, offset: number } | null, page: { __typename?: 'OfferConnection', pageInfo?: { __typename?: 'OfferPageInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } | null, edges?: Array<{ __typename?: 'OfferEdge', cursor?: string | null, node?: { __typename?: 'Offer', address: string, offerInfo: { __typename?: 'OfferInfo', name: string } } | null }> | null } } };
+export type OffersSelectQuery = { __typename?: 'Query', result: { __typename?: 'ListOffersResponse', pageData?: { __typename?: 'PageDataDto', count: number, limit: number, offset: number } | null, page: { __typename?: 'OfferConnection', pageInfo?: { __typename?: 'OfferPageInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } | null, edges?: Array<{ __typename?: 'OfferEdge', cursor?: string | null, node?: { __typename?: 'Offer', address: string, offerInfo: { __typename?: 'OfferInfo', name: string, description: string } } | null }> | null } } };
 
 export type OffersRestrictionsQueryVariables = Exact<{
   pagination: ConnectionArgs;
@@ -1611,6 +1611,7 @@ export const OffersSelectDocument = gql`
           address
           offerInfo {
             name
+            description
           }
         }
         cursor
