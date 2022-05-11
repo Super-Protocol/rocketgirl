@@ -3,6 +3,7 @@ import { Box, LazyLoadList, CheckboxUi } from '@/uikit';
 import { Value } from '@/uikit/Select/types';
 import { LazyLoadCheckboxListProps } from './types';
 import classes from './LazyLoadCheckboxList.module.scss';
+import { LazyLoadCheckboxListDescription } from './LazyLoadCheckboxListDescription';
 
 export const LazyLoadCheckboxList: FC<LazyLoadCheckboxListProps> = memo(({
     fetcher,
@@ -35,9 +36,7 @@ export const LazyLoadCheckboxList: FC<LazyLoadCheckboxListProps> = memo(({
                                     checked={isMulti ? ((values || []) as Value[]).includes(value) : value === values}
                                 />
                             </Box>
-                            <Box className={classes.description}>
-                                {description}
-                            </Box>
+                            <LazyLoadCheckboxListDescription classNameWrap={classes.description} value={description} />
                         </Box>
                     );
                 })}
