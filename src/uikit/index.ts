@@ -2,7 +2,6 @@ export * from './Box';
 export * from './buttons';
 export * from './Checkbox';
 export * from './CopyToClipboard';
-export * from './DatePicker';
 export * from './DetailWidget';
 export * from './Dropdown';
 export * from './Icon';
