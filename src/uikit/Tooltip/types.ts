@@ -4,6 +4,12 @@ export type Placement = 'auto-start' | 'auto' | 'auto-end' | 'top-start' | 'top'
                 'top-end' | 'right-start' | 'right' | 'right-end' | 'bottom-end' |
                 'bottom' | 'bottom-start' | 'left-end' | 'left' | 'left-start'
 
+export enum TooltipTheme {
+    gray = 'gray',
+    beige = 'beige',
+    white = 'white',
+}
+
 export interface TooltipProps {
     placement?: Placement;
     tooltip?: ReactNode | string;
@@ -23,6 +29,8 @@ export interface TooltipProps {
     hideArrow?: boolean;
     block?: boolean;
     noMargin?: boolean;
+    theme?: TooltipTheme;
+    containerRef?: any | null;
 }
 
 export interface TooltipWithEllipsisProps {

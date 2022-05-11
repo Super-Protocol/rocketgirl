@@ -14,7 +14,7 @@ import { ButtonToolbar, Overlay } from 'react-bootstrap';
 
 import { Icon } from '@/uikit';
 import { TooltipPopover } from './TooltipPopover';
-import { TooltipProps } from './types';
+import { TooltipProps, TooltipTheme } from './types';
 import classes from './Tooltip.module.scss';
 
 export const Tooltip: FC<TooltipProps> = memo(({
@@ -36,6 +36,8 @@ export const Tooltip: FC<TooltipProps> = memo(({
     hideArrow,
     block = false,
     noMargin = false,
+    theme = TooltipTheme.beige,
+    containerRef = null,
 }) => {
     const [show, setShow] = useState(initialShow);
     const [id] = useState(uuidv1());
@@ -66,7 +68,13 @@ export const Tooltip: FC<TooltipProps> = memo(({
         setShow(initialShow);
     }, [initialShow]);
 
-    const popupsContainerDomNode = window.document.getElementById('popups');
+    const themeClassName = useMemo(() => {
+        return {
+            [classes.gray]: theme === TooltipTheme.gray,
+            [classes.beige]: theme === TooltipTheme.beige,
+            [classes.white]: theme === TooltipTheme.white,
+        };
+    }, [theme]);
 
     return (
         <ButtonToolbar
@@ -78,7 +86,8 @@ export const Tooltip: FC<TooltipProps> = memo(({
                 placement={placement}
                 target={target.current}
                 show={show}
-                container={popupsContainerDomNode}
+                container={containerRef}
+                transition={false}
             >
                 {(props) => {
                     return (
@@ -86,12 +95,12 @@ export const Tooltip: FC<TooltipProps> = memo(({
                             popoverProps,
                             overlayProps: props,
                             hideArrow,
-                            classNamePopover,
+                            classNamePopover: cn(classNamePopover, themeClassName),
                             onMouseEnter,
                             onMouseLeave,
                             id,
                             dataTestId,
-                            classNamePopoverText,
+                            classNamePopoverText: cn(classNamePopoverText, themeClassName),
                             tooltip,
                         }}
                         />
