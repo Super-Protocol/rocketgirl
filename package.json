@@ -59,6 +59,7 @@
     "build": "react-app-rewired build",
     "start:watch:generate": "concurrently \"npm run watch:graphql\" \"npm run devserver\"",
     "watch:graphql": "watch \"npm run generate-graphql-code\" src/gql/schemas src/gql/mockSchemas",
+    "download-schema": "node scripts/download-schema.js",
     "generate-graphql-code": "node scripts/generate-graphql-code.js",
     "analyze": "source-map-explorer 'build/static/js/*.js'"
   },
