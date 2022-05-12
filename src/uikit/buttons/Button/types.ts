@@ -5,6 +5,8 @@ export type variants = 'red'
     | 'grey'
     | 'grey-light'
     | 'transparent-black'
+    | 'transparent-black-hover'
+    | 'transparent-orange'
     | 'orange';
 
 export type sizes = 'sm' | 'lg';
