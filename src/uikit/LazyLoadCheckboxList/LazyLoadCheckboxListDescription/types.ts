@@ -1,4 +1,4 @@
 export interface LazyLoadCheckboxListDescriptionProps {
-    classNameWrap?: string;
+    classes?: { wrap?: string; toggle?: string; };
     value?: string;
 }

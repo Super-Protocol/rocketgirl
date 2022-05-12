@@ -19,7 +19,6 @@ export const CreateOrderModal: FC<CreateOrderModalProps> = memo(({ initialValues
                         query={OffersSelectDocument}
                         label="Solution"
                         name="solution"
-                        isMulti
                         filter={useMemo(() => ({ offerType: TOfferType.Solution }), [])}
                     />
                     <OffersAdder

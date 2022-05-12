@@ -10,8 +10,9 @@ import { RenderListProps } from '@/uikit/LazyLoadList/types';
 import { LazyLoadCheckboxListFetcherData, LazyLoadCheckboxListProps } from './types';
 import classes from './LazyLoadCheckboxList.module.scss';
 import { LazyLoadCheckboxListDescription } from './LazyLoadCheckboxListDescription';
+import { lazyLoadCheckboxListDescriptionClasses } from './helpers';
 
-export const LazyLoadCheckboxList: FC<LazyLoadCheckboxListProps> = memo(({ // todo
+export const LazyLoadCheckboxList: FC<LazyLoadCheckboxListProps> = memo(({
     fetcher,
     isMulti = false,
     values,
@@ -33,16 +34,30 @@ export const LazyLoadCheckboxList: FC<LazyLoadCheckboxListProps> = memo(({ // to
             <Box direction="column" className={classes.listWrap}>
                 {options.map((option) => {
                     const { value, label, data } = option;
+                    const checked = isMulti ? ((values || []) as Value[]).includes(value) : value === values;
                     return (
-                        <Box key={value as string} className={classes.option}>
+                        <Box
+                            key={value as string}
+                            className={classes.option}
+                            alignItems="flex-start"
+                            onClick={() => onChange(value, !checked)}
+                        >
                             <Box className={classes.check}>
-                                <CheckboxUi
-                                    label={label}
-                                    onChange={(checked) => onChange(value, checked)}
-                                    checked={isMulti ? ((values || []) as Value[]).includes(value) : value === values}
-                                />
+                                {isMulti ? (
+                                    <CheckboxUi
+                                        label={label}
+                                        checked={checked}
+                                        onChange={(checked, e) => {
+                                            e.preventDefault();
+                                            onChange(value, !checked);
+                                        }}
+                                    />
+                                ) : label}
                             </Box>
-                            <LazyLoadCheckboxListDescription classNameWrap={classes.description} value={data?.description} />
+                            <LazyLoadCheckboxListDescription
+                                classes={lazyLoadCheckboxListDescriptionClasses}
+                                value={data?.description}
+                            />
                         </Box>
                     );
                 })}
