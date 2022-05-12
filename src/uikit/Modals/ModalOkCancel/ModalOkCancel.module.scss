@@ -22,3 +22,18 @@
 .title {
   margin-bottom: 24px;
 }
+
+.body {
+  padding: 24px;
+  box-shadow: 0 12px 24px rgba(58, 69, 86, 0.24);
+}
+
+.backdrop {
+  background: rgba(0, 0, 0, 0.21);
+}
+
+.content {
+  box-shadow: 0 12px 24px rgba(58, 69, 86, 0.24);
+  border: none;
+  border-radius: 0;
+}

@@ -11,14 +11,14 @@ export interface UseSelectQueryCursorSPFetcherProps<TNode> {
     inputFilterFields?: string[];
 }
 
-export interface UseSelectQueryCursorSPFetcherResult extends UseSelectQueryCursorFetcherResult {}
+export interface UseSelectQueryCursorSPFetcherResult<Data> extends UseSelectQueryCursorFetcherResult<Data> {}
 
-export const useSelectQueryCursorSPFetcher = <TNode>({
+export const useSelectQueryCursorSPFetcher = <TNode, Data>({
     query,
     convertNode,
     variablesFilter,
     inputFilterFields,
-}: UseSelectQueryCursorSPFetcherProps<TNode>): UseSelectQueryCursorSPFetcherResult => {
+}: UseSelectQueryCursorSPFetcherProps<TNode>): UseSelectQueryCursorSPFetcherResult<Data> => {
     const { fetcher } = useSelectQueryCursorFetcher<TDataDefault<TNode>>({
         query,
         convertCursor: (data) => data?.result?.page?.pageInfo?.endCursor,

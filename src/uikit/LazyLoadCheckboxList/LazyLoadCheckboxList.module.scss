@@ -1,4 +1,7 @@
-.wrap {}
+.listWrap {
+  border: 1px solid var(--orange7);
+  border-radius: 4px;
+}
 
 .option {
   padding: 9px 30px 11px 16px;
@@ -14,4 +17,8 @@
 .check {
   flex: 1;
   padding-right: 30px;
+}
+
+.wrap {
+  margin-bottom: 24px;
 }

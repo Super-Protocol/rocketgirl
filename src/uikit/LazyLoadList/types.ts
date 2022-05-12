@@ -1,12 +1,13 @@
 import { ReactNode } from 'react';
-import { Item, SelectLazyLoadFetcher } from '@/uikit/Select/types';
+import { Item, LazyLoadFetcher, Value } from '@/uikit/types';
 
-export interface RenderListProps {
-    options: Item[];
+export interface RenderListProps<TData> {
+    options: Item<Value, TData>[];
     loading: boolean;
 }
 
-export interface LazyLoadListProps {
-    fetcher?: SelectLazyLoadFetcher | null;
-    renderList: (props: RenderListProps) => ReactNode;
+export interface LazyLoadListProps<TData> {
+    fetcher?: LazyLoadFetcher<TData> | null;
+    renderList: (props: RenderListProps<TData>) => ReactNode;
+    classes?: { wrap?: string };
 }
