@@ -1,0 +1,6 @@
+.linkto {
+    &:visited, &:active, &:link {
+        color: var(--black);
+        text-decoration: none;
+    }
+}

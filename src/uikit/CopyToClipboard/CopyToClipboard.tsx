@@ -1,6 +1,10 @@
-import { memo, FC, useCallback } from 'react';
+import {
+    memo, FC, useCallback, useMemo,
+} from 'react';
 import copy from 'copy-to-clipboard';
+
 import { Box, Icon, Ellipsis } from '@/uikit';
+import { LinkTo } from './LinkTo';
 import toastr from '@/services/Toastr/toastr';
 import { CopyToClipboardProps } from './types';
 import classes from './CopyToClipboard.module.scss';
@@ -11,6 +15,7 @@ export const CopyToClipboard: FC<CopyToClipboardProps> = memo(({
     notification = true,
     isEllipsis = true,
     title,
+    url,
 }) => {
     const onCopy = useCallback((event) => {
         copy(children);
@@ -19,6 +24,7 @@ export const CopyToClipboard: FC<CopyToClipboardProps> = memo(({
         }
         onClick(event);
     }, [onClick, children, notification]);
+    const element = useMemo(() => <LinkTo address={children} url={url} />, [children, url]);
     if (!children && !title) return null;
     return (
         <Box alignItems="center">
@@ -30,7 +36,7 @@ export const CopyToClipboard: FC<CopyToClipboardProps> = memo(({
                     onClick={onCopy}
                 />
             </Box>
-            {isEllipsis ? <Ellipsis>{title || children}</Ellipsis> : children}
+            {isEllipsis ? <Ellipsis>{title || element}</Ellipsis> : element}
         </Box>
     );
 });

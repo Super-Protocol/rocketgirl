@@ -2,7 +2,7 @@ import React, {
     memo, FC, useMemo, useCallback, useContext,
 } from 'react';
 import { Box } from '@/uikit';
-import { WalletContext } from '@/views/Home/context/walletContext';
+import { WalletContext } from '@/common/context/WalletProvider';
 import { ContentProps } from './types';
 import { MainTable } from './MainTable';
 import classes from './Content.module.scss';

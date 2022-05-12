@@ -6,7 +6,7 @@ import React, {
     useMemo,
 } from 'react';
 import { Box, Dropdown, Button } from '@/uikit';
-import { WalletContext, WalletType } from '@/views/Home/context/walletContext';
+import { WalletContext, WalletType } from '@/common/context/WalletProvider';
 import { AccountProps } from './types';
 import classes from './Account.module.scss';
 

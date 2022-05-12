@@ -10,35 +10,9 @@ import { useConnectToMetaMask } from '@/common/hooks/useConnectToMetaMask';
 import { useErrorModal } from '@/common/hooks/useErrorModal';
 import { useLocalStorage } from '@/common/hooks/useLocalStorage';
 
-export interface WalletMetaMask {
-    address: string | null;
-    chainId: string | null;
-    instance: any;
-}
-
-export enum WalletType {
-    metaMask = 'metaMask'
-}
-
-export interface Wallet {
-    [WalletType.metaMask]?: WalletMetaMask;
-}
-
-export type SelectedWalletType = WalletType | null;
-export type SelectedWallet = WalletMetaMask | null;
-export interface Balance { matic: string | null, tee: string | null }
-
-export interface UseWalletResult {
-    wallet: Wallet;
-    selectedWalletType?: SelectedWalletType;
-    loading: boolean;
-    onChangeWallet: (wallet: SelectedWalletType) => Promise<void>;
-    selectedWallet: SelectedWallet;
-    logout: () => void;
-    balance: Balance;
-}
-
-export interface WalletContextProps extends UseWalletResult {}
+import {
+    Balance, Wallet, WalletType, UseWalletResult, SelectedWalletType, WalletContextProps,
+} from './types';
 
 export const getInitialWallet = (): Wallet => ({ [WalletType.metaMask]: undefined });
 export const getInitialBalance = (): Balance => ({ matic: null, tee: null });
