@@ -1,4 +1,4 @@
-import { ReactNode, SyntheticEvent } from 'react';
+import { ReactNode, SyntheticEvent, LegacyRef } from 'react';
 
 export type flexDirection = 'row' | 'row-reverse' | 'column' | 'column-reverse';
 export type flexJusifyContent = 'flex-start' | 'flex-end' | 'center' | 'space-around' | 'space-between';
@@ -14,5 +14,6 @@ export interface BoxProps {
     alignItems?: flexAlignItems;
     className?: string;
     onClick?: (event: SyntheticEvent) => void;
+    ref?: LegacyRef<HTMLDivElement>;
     'data-testid'?: string;
 }

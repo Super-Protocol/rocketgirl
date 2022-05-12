@@ -1,5 +1,6 @@
 export * from './Box';
 export * from './buttons';
+export * from './Card';
 export * from './Checkbox';
 export * from './Content';
 export * from './CopyToClipboard';
@@ -13,6 +14,7 @@ export * from './Ellipsis';
 export * from './Modals';
 export * from './EyeLink';
 export * from './Overlays';
+export * from './Paper';
 export * from './Select';
 export * from './SideBarWidget';
 export * from './Spinner';
