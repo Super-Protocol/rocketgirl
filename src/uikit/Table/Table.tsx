@@ -82,7 +82,7 @@ export const Table: <T extends Record<string, unknown>>(p: PropsWithChildren<Tab
         } = styles;
 
         useEffect(() => {
-            if (pageIndexProp !== pageIndex) {
+            if (pageIndexProp !== undefined && pageIndexProp !== pageIndex) {
                 gotoPage(pageIndexProp || 0);
             }
         }, [pageIndexProp, pageIndex, gotoPage]);
