@@ -46,7 +46,7 @@ export const useSelectQueryCursorFetcher = <TData>({
         return { pagination: { first: count, after: cursor }, filter };
     }, [getVariablesProps, filter]);
     const client = useApolloClient();
-    const fetcher: LazyLoadFetcher<any> = useCallback(async ({ cursor, search, signal }) => { // todo
+    const fetcher: LazyLoadFetcher<TData> = useCallback(async ({ cursor, search, signal }) => {
         if (!query) return { options: [], cursor: null, input: null };
         try {
             const { data } = await client.query<TData>({
