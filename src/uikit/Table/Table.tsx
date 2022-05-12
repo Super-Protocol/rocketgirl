@@ -1,5 +1,5 @@
 import {
-    PropsWithChildren, useMemo, Fragment, ReactElement, memo, useCallback, JSXElementConstructor,
+    PropsWithChildren, useMemo, Fragment, ReactElement, memo, useCallback, JSXElementConstructor, useEffect,
 } from 'react';
 import {
     useTable, useExpanded, usePagination, useSortBy, ColumnWithCustomProps,
@@ -80,6 +80,13 @@ export const Table: <T extends Record<string, unknown>>(p: PropsWithChildren<Tab
             small = false,
             theme = undefined,
         } = styles;
+
+        useEffect(() => {
+            if (pageIndexProp !== undefined && pageIndexProp !== pageIndex) {
+                gotoPage(pageIndexProp || 0);
+            }
+        }, [pageIndexProp, pageIndex, gotoPage]);
+
         const haveSomeData = !!data.length;
         const dontHaveData = !data?.length;
         const worthShowTableSettings = !hideTableSettings && (!!title || !!leftBtns || !!btns);

@@ -16,75 +16,6 @@ export type Scalars = {
   Float: number;
 };
 
-export type BallotInfo = {
-  __typename?: 'BallotInfo';
-  closeDate: Scalars['Float'];
-  depositAmount: Scalars['Float'];
-  execDate: Scalars['Float'];
-  issuer: Scalars['String'];
-  no: Scalars['Float'];
-  openDate: Scalars['Float'];
-  quorum: Scalars['Float'];
-  /**
-   * description of values:
-   * 
-   *     NoQuorum = '0',
-   *
-   *     MajorityDecision = '1',
-   *
-   */
-  reason: Scalars['String'];
-  request: ModifyRequest;
-  /**
-   * description of values:
-   * 
-   *     InProgress = '0',
-   *
-   *     Applied = '1',
-   *
-   *     Rejected = '2',
-   *
-   */
-  state: Scalars['String'];
-  totalHoldedVotes: Scalars['Float'];
-  voters?: Maybe<Array<VoterInfo>>;
-  yes: Scalars['Float'];
-};
-
-export type BallotInfoInput = {
-  closeDate: Scalars['Float'];
-  depositAmount: Scalars['Float'];
-  execDate: Scalars['Float'];
-  issuer: Scalars['String'];
-  no: Scalars['Float'];
-  openDate: Scalars['Float'];
-  quorum: Scalars['Float'];
-  /**
-   * description of values:
-   * 
-   *     NoQuorum = '0',
-   *
-   *     MajorityDecision = '1',
-   *
-   */
-  reason: Scalars['String'];
-  request: ModifyRequestInput;
-  /**
-   * description of values:
-   * 
-   *     InProgress = '0',
-   *
-   *     Applied = '1',
-   *
-   *     Rejected = '2',
-   *
-   */
-  state: Scalars['String'];
-  totalHoldedVotes: Scalars['Float'];
-  voters?: InputMaybe<Array<VoterInfoInput>>;
-  yes: Scalars['Float'];
-};
-
 export type Config = {
   __typename?: 'Config';
   /** system identifier */
@@ -243,12 +174,6 @@ export type ListTeeOffersResponse = {
   pageData?: Maybe<PageDataDto>;
 };
 
-export type ListVotingResponse = {
-  __typename?: 'ListVotingResponse';
-  page: VotingConnection;
-  pageData?: Maybe<PageDataDto>;
-};
-
 export type LockInfo = {
   __typename?: 'LockInfo';
   amount: Scalars['Float'];
@@ -311,177 +236,14 @@ export type MockSchemaExample = {
   id?: Maybe<Scalars['String']>;
 };
 
-export type ModifyRequest = {
-  __typename?: 'ModifyRequest';
-  /**
-   * description of values:
-   * 
-   *     Orders = "0",
-   *
-   *     ProviderRegistry = "1",
-   *
-   *     Staking = "2",
-   *
-   *     Superpro = "3",
-   *
-   *     TeeOffersFactory = "4",
-   *
-   *     Token = "5",
-   *
-   *     ValueOffersFactory = "6",
-   *
-   *     Voting = "7",
-   *
-   *     Consensus = "8",
-   *
-   *     Suspicious = "9",
-   *
-   *     LastBlocks = "10",
-   *
-   *      Epochs = "11"
-   *
-   */
-  contractName: Scalars['String'];
-  newContractAddress?: Maybe<Scalars['String']>;
-  newParamValue?: Maybe<Scalars['Float']>;
-  /**
-   * description of values:
-   * 
-   *   OrderMinimumDeposit = "0",
-   *
-   *   ProfitWithdrawDelayDays = "1",
-   *
-   *   MinSecDeposit = "2",
-   *
-   *   StakingPercentPerDay = "3",
-   *
-   *   StopDelayDays = "4",
-   *
-   *   TeeOfferSecDeposit = "5",
-   *
-   *   OfferSecDeposit = "6",
-   *
-   *   TeeRewardPerEpoch = "7",
-   *
-   *   VotingDeposit = "8",
-   *
-   *   VotingDurationDays = "9",
-   *
-   *   VotingExecutionTimeoutDays = "10",
-   *
-   *   VotingHoldDays = "11",
-   *
-   *   VotingMinimumTurnout = "12",
-   *
-   *   L1 = "13",
-   *
-   *   L2 = "14",
-   *
-   *   Threshold = "15",
-   *
-   *   EpochDurationSeconds = "16"
-   *
-   */
-  paramName: Scalars['String'];
-  /**
-   * description of values:
-   * 
-   *     NewContractAddress = "0",
-   *
-   *     NewParamValue = "1"
-   *
-   */
-  requestType: Scalars['String'];
-};
-
-export type ModifyRequestInput = {
-  /**
-   * description of values:
-   * 
-   *     Orders = "0",
-   *
-   *     ProviderRegistry = "1",
-   *
-   *     Staking = "2",
-   *
-   *     Superpro = "3",
-   *
-   *     TeeOffersFactory = "4",
-   *
-   *     Token = "5",
-   *
-   *     ValueOffersFactory = "6",
-   *
-   *     Voting = "7",
-   *
-   *     Consensus = "8",
-   *
-   *     Suspicious = "9",
-   *
-   *     LastBlocks = "10",
-   *
-   *      Epochs = "11"
-   *
-   */
-  contractName: Scalars['String'];
-  newContractAddress?: InputMaybe<Scalars['String']>;
-  newParamValue?: InputMaybe<Scalars['Float']>;
-  /**
-   * description of values:
-   * 
-   *   OrderMinimumDeposit = "0",
-   *
-   *   ProfitWithdrawDelayDays = "1",
-   *
-   *   MinSecDeposit = "2",
-   *
-   *   StakingPercentPerDay = "3",
-   *
-   *   StopDelayDays = "4",
-   *
-   *   TeeOfferSecDeposit = "5",
-   *
-   *   OfferSecDeposit = "6",
-   *
-   *   TeeRewardPerEpoch = "7",
-   *
-   *   VotingDeposit = "8",
-   *
-   *   VotingDurationDays = "9",
-   *
-   *   VotingExecutionTimeoutDays = "10",
-   *
-   *   VotingHoldDays = "11",
-   *
-   *   VotingMinimumTurnout = "12",
-   *
-   *   L1 = "13",
-   *
-   *   L2 = "14",
-   *
-   *   Threshold = "15",
-   *
-   *   EpochDurationSeconds = "16"
-   *
-   */
-  paramName: Scalars['String'];
-  /**
-   * description of values:
-   * 
-   *     NewContractAddress = "0",
-   *
-   *     NewParamValue = "1"
-   *
-   */
-  requestType: Scalars['String'];
-};
-
 export type Mutation = {
   __typename?: 'Mutation';
   createProvider: Provider;
   removeConfig: Config;
   removeOffer: TeeOffer;
   removeProvider: Provider;
+  /** Transfers specific amount of SP tokens to specific address */
+  transfer: Scalars['String'];
   updateConfig: Config;
   updateOffer: TeeOffer;
   updateProvider: Provider;
@@ -505,6 +267,11 @@ export type MutationRemoveOfferArgs = {
 
 export type MutationRemoveProviderArgs = {
   _id: Scalars['String'];
+};
+
+
+export type MutationTransferArgs = {
+  transfer: TransferInputType;
 };
 
 
@@ -947,13 +714,13 @@ export type ProviderPageInfo = {
 
 export type Query = {
   __typename?: 'Query';
+  balanceOf: Scalars['Float'];
   config: Config;
   configs: ListConfigResponse;
   erc20: Erc20;
   listErc20: ListErc20Response;
   listLocking: ListLockingResponse;
   listStaking: ListStakingResponse;
-  listVoting: ListVotingResponse;
   locking: Locking;
   offer: Offer;
   offers: ListOffersResponse;
@@ -964,7 +731,11 @@ export type Query = {
   staking: Staking;
   teeOffer: TeeOffer;
   teeOffers: ListTeeOffersResponse;
-  voting: Voting;
+};
+
+
+export type QueryBalanceOfArgs = {
+  address: Scalars['String'];
 };
 
 
@@ -998,12 +769,6 @@ export type QueryListLockingArgs = {
 
 export type QueryListStakingArgs = {
   filter?: InputMaybe<StakingFilter>;
-  pagination: ConnectionArgs;
-};
-
-
-export type QueryListVotingArgs = {
-  filter?: InputMaybe<VotingFilter>;
   pagination: ConnectionArgs;
 };
 
@@ -1059,11 +824,6 @@ export type QueryTeeOfferArgs = {
 export type QueryTeeOffersArgs = {
   filter?: InputMaybe<TeeOfferFilter>;
   pagination: ConnectionArgs;
-};
-
-
-export type QueryVotingArgs = {
-  _id: Scalars['String'];
 };
 
 export type StakeInfo = {
@@ -1259,6 +1019,26 @@ export type TeeOfferPageInfo = {
   startCursor?: Maybe<Scalars['String']>;
 };
 
+export type TransactionOptions = {
+  __typename?: 'TransactionOptions';
+  from: Scalars['String'];
+  gas: Scalars['Float'];
+  gasPrice: Scalars['String'];
+  web3: Web3;
+};
+
+export type TransactionOptionsInputType = {
+  from: Scalars['String'];
+  gas: Scalars['Float'];
+  gasPrice: Scalars['String'];
+  web3: Web3InputType;
+};
+
+export type TransferInputType = {
+  to: Scalars['String'];
+  transactionOptions?: InputMaybe<TransactionOptionsInputType>;
+};
+
 export type UpdateConfigInput = {
   _id: Scalars['String'];
   /** config name */
@@ -1349,57 +1129,17 @@ export type ValueObjectType = {
   votingMinimumTurnout?: InputMaybe<Scalars['Float']>;
 };
 
-export type VoterInfo = {
-  __typename?: 'VoterInfo';
-  voter: Scalars['String'];
-  yes: Scalars['Boolean'];
+export type Web3 = {
+  __typename?: 'Web3';
+  defaultAccount?: Maybe<Scalars['String']>;
+  defaultBlock?: Maybe<Scalars['String']>;
+  version?: Maybe<Scalars['String']>;
 };
 
-export type VoterInfoInput = {
-  voter: Scalars['String'];
-  yes: Scalars['Boolean'];
-};
-
-export type Voting = {
-  __typename?: 'Voting';
-  /** system identifier */
-  _id: Scalars['String'];
-  /** ballot address */
-  ballotAddress: Scalars['String'];
-  ballotInfo: BallotInfo;
-};
-
-export type VotingConnection = {
-  __typename?: 'VotingConnection';
-  edges?: Maybe<Array<VotingEdge>>;
-  pageInfo?: Maybe<VotingPageInfo>;
-};
-
-export type VotingEdge = {
-  __typename?: 'VotingEdge';
-  cursor?: Maybe<Scalars['String']>;
-  node?: Maybe<Voting>;
-};
-
-export type VotingFilter = {
-  /** filter by ballot address */
-  ballotAddress?: InputMaybe<Scalars['String']>;
-};
-
-export type VotingInputType = {
-  /** system identifier */
-  _id: Scalars['String'];
-  /** ballot address */
-  ballotAddress: Scalars['String'];
-  ballotInfo: BallotInfoInput;
-};
-
-export type VotingPageInfo = {
-  __typename?: 'VotingPageInfo';
-  endCursor?: Maybe<Scalars['String']>;
-  hasNextPage: Scalars['Boolean'];
-  hasPreviousPage: Scalars['Boolean'];
-  startCursor?: Maybe<Scalars['String']>;
+export type Web3InputType = {
+  defaultAccount?: InputMaybe<Scalars['String']>;
+  defaultBlock?: InputMaybe<Scalars['String']>;
+  version?: InputMaybe<Scalars['String']>;
 };
 
 export type PageDataDtoFragmentFragment = { __typename?: 'PageDataDto', count: number, limit: number, offset: number };
