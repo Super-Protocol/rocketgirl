@@ -1,6 +1,7 @@
 export * from './Box';
 export * from './buttons';
 export * from './Checkbox';
+export * from './Content';
 export * from './CopyToClipboard';
 export * from './DetailWidget';
 export * from './Dropdown';

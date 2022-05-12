@@ -1,7 +1,7 @@
 import React, {
     memo, FC, useMemo, useCallback, useContext,
 } from 'react';
-import { Box } from '@/uikit';
+import { Content as ContentUIKit } from '@/uikit';
 import { WalletContext } from '@/common/context/WalletProvider';
 import { ContentProps } from './types';
 import { MainTable } from './MainTable';
@@ -29,7 +29,7 @@ export const Content: FC<ContentProps> = memo(() => {
     }, [onChangeTable, table]);
 
     return (
-        <Box direction="column" className={classes.content}>
+        <ContentUIKit>
             <FilterContext table={table} onSubmit={onSubmit}>
                 <MainTable
                     classNameWrap={classes.mainTableWrap}
@@ -39,6 +39,6 @@ export const Content: FC<ContentProps> = memo(() => {
                     fetcher={queryFetcher}
                 />
             </FilterContext>
-        </Box>
+        </ContentUIKit>
     );
 });
