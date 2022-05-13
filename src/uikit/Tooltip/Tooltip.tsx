@@ -36,7 +36,7 @@ export const Tooltip: FC<TooltipProps> = memo(({
     hideArrow,
     block = false,
     noMargin = false,
-    theme = TooltipTheme.beige,
+    theme = TooltipTheme.orange,
     containerRef = null,
 }) => {
     const [show, setShow] = useState(initialShow);
@@ -71,7 +71,7 @@ export const Tooltip: FC<TooltipProps> = memo(({
     const themeClassName = useMemo(() => {
         return {
             [classes.gray]: theme === TooltipTheme.gray,
-            [classes.beige]: theme === TooltipTheme.beige,
+            [classes.orange]: theme === TooltipTheme.orange,
             [classes.white]: theme === TooltipTheme.white,
         };
     }, [theme]);

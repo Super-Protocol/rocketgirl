@@ -6,7 +6,7 @@ export type Placement = 'auto-start' | 'auto' | 'auto-end' | 'top-start' | 'top'
 
 export enum TooltipTheme {
     gray = 'gray',
-    beige = 'beige',
+    orange = 'orange',
     white = 'white',
 }
 
