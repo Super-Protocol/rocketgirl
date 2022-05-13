@@ -6,7 +6,7 @@ import React, {
     useMemo,
     useState,
 } from 'react';
-import { WalletContext } from '@/views/Home/context/walletContext';
+import { WalletContext } from '@/common/context/WalletProvider';
 import { transferTokens } from '@/connectors/faucetMaticApi';
 import { useErrorModal } from '@/common/hooks/useErrorModal';
 import { Button } from '@/uikit';

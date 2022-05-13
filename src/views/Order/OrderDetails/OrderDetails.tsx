@@ -1,13 +1,11 @@
-import {
-    memo, FC,
-} from 'react';
-import { Box } from '@/uikit';
-import { Content } from './Content';
-import { Header } from './Header';
-import { HomeProps } from './types';
-import { WalletContextProvider, useWallet } from '@/common/context/WalletProvider';
+import { memo } from 'react';
 
-const Home: FC<HomeProps> = () => {
+import { WalletContextProvider, useWallet } from '@/common/context/WalletProvider';
+import { Box } from '@/uikit';
+import { Header } from './Header';
+import { Content } from './Content';
+
+const OrderDetails = () => {
     const wallet = useWallet();
     return (
         <WalletContextProvider value={wallet}>
@@ -19,4 +17,4 @@ const Home: FC<HomeProps> = () => {
     );
 };
 
-export default memo(Home);
+export default memo(OrderDetails);
