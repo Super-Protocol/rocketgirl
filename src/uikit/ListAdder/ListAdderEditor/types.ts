@@ -1,7 +1,9 @@
-import { SelectLazyLoadFetcher, Value } from '@/uikit/Select/types';
+import { LazyLoadFetcher, Value } from '@/uikit/types';
+
+export interface ListAdderEditorFetcherData { description?: string }
 
 export interface ListAdderEditorProps {
-    fetcher?: SelectLazyLoadFetcher | null;
+    fetcher?: LazyLoadFetcher<ListAdderEditorFetcherData> | null;
     isMulti?: boolean;
     values: Value[] | Value;
     onSave?: (values: Value[] | Value) => void;

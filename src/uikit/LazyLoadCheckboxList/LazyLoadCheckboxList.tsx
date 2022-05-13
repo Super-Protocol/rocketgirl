@@ -1,9 +1,16 @@
-import React, { memo, FC, useCallback } from 'react';
+import React, {
+    memo,
+    FC,
+    useCallback,
+    useMemo,
+} from 'react';
 import { Box, LazyLoadList, CheckboxUi } from '@/uikit';
 import { Value } from '@/uikit/Select/types';
-import { LazyLoadCheckboxListProps } from './types';
+import { RenderListProps } from '@/uikit/LazyLoadList/types';
+import { LazyLoadCheckboxListFetcherData, LazyLoadCheckboxListProps } from './types';
 import classes from './LazyLoadCheckboxList.module.scss';
 import { LazyLoadCheckboxListDescription } from './LazyLoadCheckboxListDescription';
+import { lazyLoadCheckboxListDescriptionClasses } from './helpers';
 
 export const LazyLoadCheckboxList: FC<LazyLoadCheckboxListProps> = memo(({
     fetcher,
@@ -22,26 +29,46 @@ export const LazyLoadCheckboxList: FC<LazyLoadCheckboxListProps> = memo(({
             onChangeProp?.(checked ? value : undefined);
         }
     }, [values, onChangeProp, isMulti]);
-    const renderList = useCallback(({ options }) => {
+    const renderList = useCallback(({ options }: RenderListProps<LazyLoadCheckboxListFetcherData>) => {
         return (
-            <Box direction="column" className={classes.wrap}>
+            <Box direction="column" className={classes.listWrap}>
                 {options.map((option) => {
-                    const { value, label, description } = option;
+                    const { value, label, data } = option;
+                    const checked = isMulti ? ((values || []) as Value[]).includes(value) : value === values;
                     return (
-                        <Box key={value} className={classes.option}>
+                        <Box
+                            key={value as string}
+                            className={classes.option}
+                            alignItems="flex-start"
+                            onClick={() => onChange(value, !checked)}
+                        >
                             <Box className={classes.check}>
-                                <CheckboxUi
-                                    label={label}
-                                    onChange={(checked) => onChange(value, checked)}
-                                    checked={isMulti ? ((values || []) as Value[]).includes(value) : value === values}
-                                />
+                                {isMulti ? (
+                                    <CheckboxUi
+                                        label={label}
+                                        checked={checked}
+                                        onChange={(checked, e) => {
+                                            e.preventDefault();
+                                            onChange(value, !checked);
+                                        }}
+                                    />
+                                ) : label}
                             </Box>
-                            <LazyLoadCheckboxListDescription classNameWrap={classes.description} value={description} />
+                            <LazyLoadCheckboxListDescription
+                                classes={lazyLoadCheckboxListDescriptionClasses}
+                                value={data?.description}
+                            />
                         </Box>
                     );
                 })}
             </Box>
         );
     }, [values, isMulti, onChange]);
-    return <LazyLoadList fetcher={fetcher} renderList={renderList} />;
+    return (
+        <LazyLoadList <LazyLoadCheckboxListFetcherData>
+            fetcher={fetcher}
+            renderList={renderList}
+            classes={useMemo(() => ({ wrap: classes.wrap }), [])}
+        />
+    );
 });

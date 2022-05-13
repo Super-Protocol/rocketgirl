@@ -22,12 +22,12 @@ export const OffersAdder: FC<OffersAdderProps> = memo(({
     const { values } = useFormikContext<FormValues>();
     const value = useMemo(() => values?.[name], [values, name]);
     const { goNext } = useContext(ModalOkCancelContext);
-    const { fetcher } = useSelectQueryCursorSPFetcher<any>({ // todo
+    const { fetcher } = useSelectQueryCursorSPFetcher<any, { description?: string}>({ // todo
         query,
         convertNode: ({ node }) => ({
             value: node?.address,
             label: node?.offerInfo?.name || '',
-            description: node?.offerInfo?.description || '',
+            data: { description: node?.offerInfo?.description || '' },
         }),
         variablesFilter: filter,
     });

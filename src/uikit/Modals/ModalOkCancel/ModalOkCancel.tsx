@@ -19,7 +19,15 @@ export const ModalOkCancel: FC<ModalOkCancelProps> = memo(({
     components,
 }) => {
     return (
-        <Modal show={show} onHide={onClose} size="lg" dialogClassName={cn(classes.root, classNameWrap)} centered>
+        <Modal
+            show={show}
+            onHide={onClose}
+            size="lg"
+            dialogClassName={cn(classes.root, classNameWrap)}
+            centered
+            backdropClassName={classes.backdrop}
+            contentClassName={classes.content}
+        >
             <Modal.Body className={classes.body}>
                 {components?.main || (
                     <>

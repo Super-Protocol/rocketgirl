@@ -1,5 +1,5 @@
 import React, {
-    FC, memo, useState, SyntheticEvent, useMemo,
+    FC, memo, useState, SyntheticEvent, useMemo, useCallback,
 } from 'react';
 import { Link } from 'react-router-dom';
 import cn from 'classnames';
@@ -35,12 +35,12 @@ export const CheckboxUi: FC<CheckboxUiProps> = memo(({
 }) => {
     const [nameFor] = useState(name || uuidv1());
 
-    const handleOnClick = (e: SyntheticEvent) => {
+    const handleOnClick = useCallback((e: SyntheticEvent) => {
         if (labelClickDisabled) {
             e.preventDefault();
             onClick();
         }
-    };
+    }, [labelClickDisabled, onClick]);
 
     const renderLabel = useMemo(() => {
         if (labelLimit && typeof label === 'string' && label.length > labelLimit) {

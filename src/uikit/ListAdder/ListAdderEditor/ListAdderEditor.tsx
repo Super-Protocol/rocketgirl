@@ -17,7 +17,13 @@ export const ListAdderEditor: FC<ListAdderEditorProps> = memo(({
     classes: classesProps,
 }) => {
     const [values, setValues] = useState(initialValues);
-    const onChange = useCallback((v) => setValues(v), []);
+    const onChange = useCallback((v) => {
+        if (isMulti) {
+            setValues(v);
+        } else {
+            onSaveProps?.(v);
+        }
+    }, [onSaveProps, isMulti]);
     const onSave = useCallback(() => {
         onSaveProps?.(values);
     }, [onSaveProps, values]);
@@ -25,8 +31,8 @@ export const ListAdderEditor: FC<ListAdderEditorProps> = memo(({
         <Box direction="column" className={classesProps?.wrap}>
             <LazyLoadCheckboxList fetcher={fetcher} isMulti={isMulti} values={values} onChange={onChange} />
             <Box justifyContent="flex-end">
-                <Button variant="grey-light" onClick={onCancel} className={classes.btnCancel}>Cancel</Button>
-                <Button variant="orange" onClick={onSave}>Add</Button>
+                <Button variant="grey-light" onClick={onCancel}>Cancel</Button>
+                {isMulti && <Button variant="orange" onClick={onSave} className={classes.btnSave}>Add</Button>}
             </Box>
         </Box>
     );

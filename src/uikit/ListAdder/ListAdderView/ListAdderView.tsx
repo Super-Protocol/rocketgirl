@@ -19,8 +19,9 @@ export const ListAdderView: FC<ListAdderViewProps> = memo(({
         onAddProps?.({ isMulti, values });
     }, [onAddProps, isMulti, values]);
     const list = useMemo(() => {
-        return ((isMulti ? values : values) || []) as Value[];
+        return ((isMulti ? values : (values ? [values] : [])) || []) as Value[];
     }, [isMulti, values]);
+
     return (
         <Box direction="column">
             <Box>{label}</Box>
