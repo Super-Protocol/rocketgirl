@@ -14,7 +14,11 @@ export const getColumns = (): Array<ColumnProps<OrdersColumns>> => [
         Cell: ({ row }) => {
             const { address } = row.original || {};
             if (!address) return '-';
-            return <CopyToClipboard>{address}</CopyToClipboard>;
+            return (
+                <CopyToClipboard url="order">
+                    {address}
+                </CopyToClipboard>
+            );
         },
     },
     {

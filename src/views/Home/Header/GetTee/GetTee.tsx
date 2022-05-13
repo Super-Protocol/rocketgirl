@@ -5,7 +5,7 @@ import React, {
     useMemo,
 } from 'react';
 import { Button } from '@/uikit';
-import { WalletContext } from '@/views/Home/context/walletContext';
+import { WalletContext } from '@/common/context/WalletProvider';
 import { GetTeeProps } from './types';
 
 export const GetTee: FC<GetTeeProps> = memo(({ className }) => {

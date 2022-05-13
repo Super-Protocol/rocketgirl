@@ -72,6 +72,20 @@
   border: 1px solid var(--black2);
 }
 
+.transparent-orange {
+  background-color: transparent;
+  color: var(--orange1);
+}
+
+.transparent-black-hover {
+  background-color: transparent;
+  color: var(--black2);
+  &:hover {
+    background-color: var(--orange7);
+    opacity: 1 !important;
+  }
+}
+
 .white {
   background-color: var(--white);
   box-sizing: border-box;
