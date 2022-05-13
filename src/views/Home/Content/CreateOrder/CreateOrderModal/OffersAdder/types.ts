@@ -11,4 +11,5 @@ export interface OffersAdderProps<TNode> {
     btnLabel?: string;
     className?: string;
     convertNode?: ConvertNode<TNode>;
+    showError?: boolean;
 }

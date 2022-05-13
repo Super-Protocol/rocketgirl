@@ -1,16 +1,16 @@
 import React, {
     memo,
-    FC,
     useCallback,
-    useContext, ReactElement, JSXElementConstructor,
+    useContext, ReactElement, JSXElementConstructor, useMemo,
 } from 'react';
 import { useField, useFormikContext } from 'formik';
-import { ListAdderView } from '@/uikit';
+import { ListAdderViewFormik } from '@/uikit';
 import { useSelectQueryCursorSPFetcher } from '@/common/hooks/useSelectQueryCursorSPFetcher';
 import { ModalOkCancelContext } from '@/common/context/ModalOkCancelProvider/ModalOkCancelProvider';
 import { OffersAdderProps } from './types';
 import { OffersListModal } from '../OffersListModal';
 import { FormValues } from '../types';
+import classes from './OffersAdder.module.scss';
 
 export const OffersAdder: <TNode>(p: OffersAdderProps<TNode>) =>
     ReactElement<any, string | JSXElementConstructor<any>> | null = memo(({
@@ -22,6 +22,7 @@ export const OffersAdder: <TNode>(p: OffersAdderProps<TNode>) =>
         btnLabel,
         className,
         convertNode,
+        showError,
     }) => {
         const { values } = useFormikContext<FormValues>();
         const [, { value }, { setValue }] = useField(name);
@@ -45,25 +46,28 @@ export const OffersAdder: <TNode>(p: OffersAdderProps<TNode>) =>
                 messages: {
                     header: `Add ${label}`,
                 },
+                classNameWrap: classes.modalAdder,
             });
         }, [goNext, fetcher, value, name, values, label]);
         const onDeleteOffer = useCallback(({ isMulti, value: newValue }) => {
             if (isMulti) {
-                setValue(value?.filter((oldValue) => oldValue !== newValue));
+                const newValues = value?.filter((oldValue) => oldValue !== newValue);
+                setValue(newValues?.length ? newValues : undefined);
             } else {
                 setValue(undefined);
             }
         }, [setValue, value]);
 
         return (
-            <ListAdderView
-                values={value}
+            <ListAdderViewFormik
+                name={name}
                 label={label}
                 isMulti={isMulti}
                 onAdd={onAddOffer}
                 onDelete={onDeleteOffer}
                 btnLabel={btnLabel}
                 className={className}
+                showError={showError}
             />
         );
     });

@@ -5,11 +5,11 @@ import isEqual from 'lodash.isequal';
 import cn from 'classnames';
 import { Table, Box } from '@/uikit';
 import { useErrorModal } from '@/common/hooks/useErrorModal';
-import {
-    FilterForm,
-    FilterPanel,
-    FilterBtn,
-} from '@/views/Home/Content/FilterPopover';
+// import {
+//     FilterForm,
+//     FilterPanel,
+//     FilterBtn,
+// } from '@/views/Home/Content/FilterPopover';
 import useMemoCompare from '@/common/hooks/useMemoCompare';
 import { FetcherByTable } from '@/views/Home/hooks/useTablesQueryFetcher';
 import { CreateOrder } from '@/views/Home/Content/CreateOrder/CreateOrder';
@@ -70,11 +70,11 @@ export const MainTable: FC<MainTableProps> = memo(({
                             diff={diff}
                             onChange={onChangeTable}
                         />
-                        {!skip && <FilterBtn />}
+                        {/*{!skip && <FilterBtn />}*/}
                     </Box>
-                    <FilterPanel className={classes.filterPanel}>
-                        <FilterForm />
-                    </FilterPanel>
+                    {/*<FilterPanel className={classes.filterPanel}>*/}
+                    {/*    <FilterForm />*/}
+                    {/*</FilterPanel>*/}
                 </Box>
                 <Box>
                     <CreateOrder />

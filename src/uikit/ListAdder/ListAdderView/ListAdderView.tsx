@@ -4,6 +4,7 @@ import React, {
     useCallback,
     useMemo,
 } from 'react';
+import cn from 'classnames';
 import { Box, Button, Icon } from '@/uikit';
 import { Value } from '@/uikit/types';
 import { ListAdderViewProps } from './types';
@@ -16,8 +17,11 @@ export const ListAdderView: FC<ListAdderViewProps> = memo(({
     isMulti = false,
     onAdd: onAddProps,
     onDelete: onDeleteProps,
+    showError = false,
     btnLabel,
     className,
+    error,
+    isInvalid,
 }) => {
     const onAdd = useCallback(() => {
         onAddProps?.({ isMulti, values });
@@ -30,7 +34,7 @@ export const ListAdderView: FC<ListAdderViewProps> = memo(({
     }, [isMulti, values]);
 
     return (
-        <Box direction="column" className={className}>
+        <Box direction="column" className={cn(className, { [classes.invalid]: isInvalid })}>
             <Box className={classes.label}>{label}</Box>
             <ListAdderViewList list={list} onDelete={onDelete} />
             {(isMulti || !values) && (
@@ -43,6 +47,11 @@ export const ListAdderView: FC<ListAdderViewProps> = memo(({
                     {!!btnLabel && <span className={classes.text}>{btnLabel}</span>}
                 </Button>
             )}
+            {showError && (isInvalid && error ? (
+                <span className={cn(classes.error)}>{error}</span>
+            ) : (
+                <div className={cn(classes.errorEmpty)} />
+            ))}
         </Box>
     );
 });

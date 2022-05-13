@@ -18,4 +18,11 @@ export interface ListAdderViewProps {
     onAdd?: (props: OnAddProps) => void;
     onDelete?: (props: OnDeleteProps) => void;
     className?: string;
+    error?: string;
+    isInvalid?: boolean;
+    showError?: boolean;
+}
+
+export interface ListAdderViewFormikProps extends ListAdderViewProps {
+    name: string;
 }
