@@ -1,7 +1,7 @@
 import React, {
     memo,
     useCallback,
-    useContext, ReactElement, JSXElementConstructor, useMemo,
+    useContext, ReactElement, JSXElementConstructor,
 } from 'react';
 import { useField, useFormikContext } from 'formik';
 import { ListAdderViewFormik } from '@/uikit';
