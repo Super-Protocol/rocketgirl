@@ -1,8 +1,9 @@
-import { Box, Button } from '@/uikit';
+import { ReactElement } from 'react';
 
+import { Box, Button } from '@/uikit';
 import classes from './Title.module.scss';
 
-export const Title = () => {
+export const Title = (): ReactElement => {
     return (
         <Box justifyContent="space-between" className={classes.wrap}>
             <div className={classes.title}>Order details</div>

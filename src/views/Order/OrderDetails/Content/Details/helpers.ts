@@ -45,7 +45,12 @@ const tee = [
     },
 ];
 
-export const getOrderInfo = (id: string) => {
+export type OrderMock = {
+    key: string;
+    value: string | number;
+};
+
+export const getOrderInfo = (id: string): OrderMock[] => {
     return info.map((item) => {
         if (item.key === 'Id') {
             return { ...item, value: id };
@@ -54,7 +59,7 @@ export const getOrderInfo = (id: string) => {
     });
 };
 
-export const getOrderTee = (id: string) => {
+export const getOrderTee = (id: string): OrderMock[] => {
     return tee.map((item) => {
         if (item.key === 'Id') {
             return { ...item, value: id };
