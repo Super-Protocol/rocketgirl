@@ -1,10 +1,10 @@
-import { useCallback } from 'react';
+import { ReactElement, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import { Button, Header as HeaderUIKit } from '@/uikit';
 import { Account } from '@/views/Home/Header/Account';
 
-export const Header = () => {
+export const Header = (): ReactElement => {
     const history = useHistory();
     const onClick = useCallback(() => {
         history.push('/');
