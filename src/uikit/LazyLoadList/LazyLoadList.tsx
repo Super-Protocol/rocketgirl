@@ -13,7 +13,12 @@ import { LazyLoadListProps } from './types';
 import classes from './LazyLoadList.module.scss';
 
 export const LazyLoadList: <TData>(p: LazyLoadListProps<TData>) =>
-    ReactElement<any, string | JSXElementConstructor<any>> | null = memo(({ fetcher, renderList, classes: classesProps }) => {
+    ReactElement<any, string | JSXElementConstructor<any>> | null = memo(({
+        fetcher,
+        renderList,
+        classes: classesProps,
+        onError,
+    }) => {
         const triggerRef = useRef(null);
         const [options, setOptions] = useState<Item[]>([]);
         const [loading, setLoading] = useState(false);
@@ -26,9 +31,10 @@ export const LazyLoadList: <TData>(p: LazyLoadListProps<TData>) =>
                 } = fetcher ? await fetcher({ cursor }) : { options: [], cursor: null };
                 return { cursor: newCursor, options: options || [] };
             } catch (e) {
+                onError?.(e);
                 return { cursor: undefined, options: [] };
             }
-        }, [fetcher]);
+        }, [fetcher, onError]);
         const fetchData = useCallback(async () => {
             if (loading || cursor.current === null) return;
             setLoading(true);

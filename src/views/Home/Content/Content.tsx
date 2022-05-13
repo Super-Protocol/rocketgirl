@@ -6,8 +6,11 @@ import { WalletContext } from '@/common/context/WalletProvider';
 import { ContentProps } from './types';
 import { MainTable } from './MainTable';
 import classes from './Content.module.scss';
-import { FilterContext } from './FilterPopover/FilterContext';
-import { getTables, getFilters } from './helpers';
+// import { FilterContext } from './FilterPopover/FilterContext';
+import {
+    getTables,
+    // getFilters,
+} from './helpers';
 import { useTables } from '../hooks/useTables';
 
 export const Content: FC<ContentProps> = memo(() => {
@@ -19,9 +22,9 @@ export const Content: FC<ContentProps> = memo(() => {
     const {
         queryFetcher, table, onChangeTable,
     } = useTables(tables[0]?.[0]?.value, selectedWalletType);
-    const onSubmit = useCallback(({ values }) => {
-        onChangeTable(table, getFilters(values));
-    }, [onChangeTable, table]);
+    // const onSubmit = useCallback(({ values }) => {
+    //     onChangeTable(table, getFilters(values));
+    // }, [onChangeTable, table]);
     const handleTable = useCallback((newTable) => {
         if (table !== newTable) {
             onChangeTable(newTable, null);
@@ -30,15 +33,14 @@ export const Content: FC<ContentProps> = memo(() => {
 
     return (
         <ContentUIKit>
-            <FilterContext table={table} onSubmit={onSubmit}>
-                <MainTable
-                    classNameWrap={classes.mainTableWrap}
-                    table={table}
-                    onChangeTable={handleTable}
-                    tables={tables}
-                    fetcher={queryFetcher}
-                />
-            </FilterContext>
+            {/*<FilterContext table={table} onSubmit={onSubmit}>*/}
+            <MainTable
+                classNameWrap={classes.mainTableWrap}
+                table={table}
+                onChangeTable={handleTable}
+                tables={tables}
+                fetcher={queryFetcher}
+            />
         </ContentUIKit>
     );
 });

@@ -4,6 +4,7 @@ import React, {
     useContext,
     useCallback,
 } from 'react';
+import toastr from '@/services/Toastr/toastr';
 import { ModalOkCancelContext } from '@/common/context/ModalOkCancelProvider/ModalOkCancelProvider';
 import { ListAdderEditor } from '@/uikit';
 import { OffersListModalProps } from './types';
@@ -24,6 +25,9 @@ export const OffersListModal: FC<OffersListModalProps> = memo(({
     const onCancel = useCallback(() => {
         goBack();
     }, [goBack]);
+    const onError = useCallback((e) => {
+        toastr.error(e);
+    }, []);
     return (
         <ListAdderEditor
             fetcher={fetcher}
@@ -31,6 +35,7 @@ export const OffersListModal: FC<OffersListModalProps> = memo(({
             values={value}
             onSave={onSave}
             onCancel={onCancel}
+            onError={onError}
         />
     );
 });
