@@ -30,6 +30,7 @@ export const LazyLoadCheckboxList: FC<LazyLoadCheckboxListProps> = memo(({
         }
     }, [values, onChangeProp, isMulti]);
     const renderList = useCallback(({ options }: RenderListProps<LazyLoadCheckboxListFetcherData>) => {
+        if (!options?.length) return null;
         return (
             <Box direction="column" className={classes.listWrap}>
                 {options.map((option) => {

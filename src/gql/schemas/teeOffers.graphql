@@ -51,3 +51,29 @@ query TeeOffers($pagination: ConnectionArgs!, $filter: TeeOfferFilter) {
         }
     }
 }
+
+query TeeOffersSelect($pagination: ConnectionArgs!, $filter: TeeOfferFilter) {
+    result: teeOffers (pagination: $pagination, filter: $filter) {
+        pageData {
+            ...PageDataDtoFragment
+        }
+        page {
+            pageInfo {
+                endCursor
+                hasNextPage
+                hasPreviousPage
+                startCursor
+            }
+            edges {
+                node {
+                    address
+                    teeOfferInfo {
+                        name
+                        description
+                    }
+                }
+                cursor
+            }
+        }
+    }
+}

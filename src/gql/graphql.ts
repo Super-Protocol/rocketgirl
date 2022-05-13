@@ -1205,6 +1205,14 @@ export type TeeOffersQueryVariables = Exact<{
 
 export type TeeOffersQuery = { __typename?: 'Query', result: { __typename?: 'ListTeeOffersResponse', pageData?: { __typename?: 'PageDataDto', count: number, limit: number, offset: number } | null, page: { __typename?: 'TeeOfferConnection', edges?: Array<{ __typename?: 'TeeOfferEdge', cursor?: string | null, node?: { __typename?: 'TeeOffer', _id: string, address: string, authority?: string | null, disabledAfter: number, providerAddress: string, origins?: { __typename?: 'Origins', createdBy: string, createdDate: number, modifiedBy: string, modifiedDate: number } | null, providerInfo: { __typename?: 'ProviderInformation', actionAccount: string, description: string, metadata: string, name: string, tokenReceiver: string }, stats?: { __typename?: 'Stats', freeCores: number, ordersInQueue: number } | null, teeOfferInfo: { __typename?: 'TeeOfferInfo', argsPublicKey: string, description: string, minTimeMinutes: number, name: string, properties: string, slots: number, tcb: string, teeType: string, tlb: string } } | null }> | null, pageInfo?: { __typename?: 'TeeOfferPageInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } | null } } };
 
+export type TeeOffersSelectQueryVariables = Exact<{
+  pagination: ConnectionArgs;
+  filter?: InputMaybe<TeeOfferFilter>;
+}>;
+
+
+export type TeeOffersSelectQuery = { __typename?: 'Query', result: { __typename?: 'ListTeeOffersResponse', pageData?: { __typename?: 'PageDataDto', count: number, limit: number, offset: number } | null, page: { __typename?: 'TeeOfferConnection', pageInfo?: { __typename?: 'TeeOfferPageInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } | null, edges?: Array<{ __typename?: 'TeeOfferEdge', cursor?: string | null, node?: { __typename?: 'TeeOffer', address: string, teeOfferInfo: { __typename?: 'TeeOfferInfo', name: string, description: string } } | null }> | null } } };
+
 export const PageDataDtoFragmentFragmentDoc = gql`
     fragment PageDataDtoFragment on PageDataDto {
   count
@@ -1759,3 +1767,59 @@ export function useTeeOffersLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHo
 export type TeeOffersQueryHookResult = ReturnType<typeof useTeeOffersQuery>;
 export type TeeOffersLazyQueryHookResult = ReturnType<typeof useTeeOffersLazyQuery>;
 export type TeeOffersQueryResult = Apollo.QueryResult<TeeOffersQuery, TeeOffersQueryVariables>;
+export const TeeOffersSelectDocument = gql`
+    query TeeOffersSelect($pagination: ConnectionArgs!, $filter: TeeOfferFilter) {
+  result: teeOffers(pagination: $pagination, filter: $filter) {
+    pageData {
+      ...PageDataDtoFragment
+    }
+    page {
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+      }
+      edges {
+        node {
+          address
+          teeOfferInfo {
+            name
+            description
+          }
+        }
+        cursor
+      }
+    }
+  }
+}
+    ${PageDataDtoFragmentFragmentDoc}`;
+
+/**
+ * __useTeeOffersSelectQuery__
+ *
+ * To run a query within a React component, call `useTeeOffersSelectQuery` and pass it any options that fit your needs.
+ * When your component renders, `useTeeOffersSelectQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useTeeOffersSelectQuery({
+ *   variables: {
+ *      pagination: // value for 'pagination'
+ *      filter: // value for 'filter'
+ *   },
+ * });
+ */
+export function useTeeOffersSelectQuery(baseOptions: ApolloReactHooks.QueryHookOptions<TeeOffersSelectQuery, TeeOffersSelectQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<TeeOffersSelectQuery, TeeOffersSelectQueryVariables>(TeeOffersSelectDocument, options);
+      }
+export function useTeeOffersSelectLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<TeeOffersSelectQuery, TeeOffersSelectQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<TeeOffersSelectQuery, TeeOffersSelectQueryVariables>(TeeOffersSelectDocument, options);
+        }
+export type TeeOffersSelectQueryHookResult = ReturnType<typeof useTeeOffersSelectQuery>;
+export type TeeOffersSelectLazyQueryHookResult = ReturnType<typeof useTeeOffersSelectLazyQuery>;
+export type TeeOffersSelectQueryResult = Apollo.QueryResult<TeeOffersSelectQuery, TeeOffersSelectQueryVariables>;

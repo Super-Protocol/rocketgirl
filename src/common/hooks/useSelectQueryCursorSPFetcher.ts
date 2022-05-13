@@ -1,12 +1,14 @@
 import { DocumentNode } from 'graphql';
 import { OperationVariables } from '@apollo/client';
-import { Item } from '@/uikit/Select/types';
+import { Item } from '@/uikit/types';
 import { useSelectQueryCursorFetcher, UseSelectQueryCursorFetcherResult } from './useSelectQueryCursorFetcher';
 import { TDataDefault } from './types';
 
+export type ConvertNode<TNode> = (data: { node: TNode, cursor: string }) => Item;
+
 export interface UseSelectQueryCursorSPFetcherProps<TNode> {
     query?: DocumentNode;
-    convertNode?: (data: { node: TNode, cursor: string }) => Item;
+    convertNode?: ConvertNode<TNode>;
     variablesFilter?: OperationVariables;
     inputFilterFields?: string[];
 }
