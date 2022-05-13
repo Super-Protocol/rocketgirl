@@ -7,7 +7,7 @@ const toastrProxy = (method: any, message: any): void => {
         positionClass: 'toast-top-right',
         closeButton: false,
         hideDuration: 1000,
-        timeOut: 15000,
+        timeOut: 5000,
         showDuration: 300,
         showMethod: 'fadeIn',
         hideMethod: 'fadeOut',

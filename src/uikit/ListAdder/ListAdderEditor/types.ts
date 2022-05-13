@@ -1,3 +1,4 @@
+import { ApolloError } from '@apollo/client';
 import { LazyLoadFetcher, Value } from '@/uikit/types';
 
 export interface ListAdderEditorFetcherData { description?: string }
@@ -11,4 +12,5 @@ export interface ListAdderEditorProps {
     classes?: {
         wrap?: string;
     };
+    onError?: (e?: ApolloError | unknown) => void;
 }

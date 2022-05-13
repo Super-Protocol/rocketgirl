@@ -17,6 +17,7 @@ export const LazyLoadCheckboxList: FC<LazyLoadCheckboxListProps> = memo(({
     isMulti = false,
     values,
     onChange: onChangeProp,
+    onError,
 }) => {
     const onChange = useCallback((value: Value, checked: boolean) => {
         if (isMulti) {
@@ -70,6 +71,7 @@ export const LazyLoadCheckboxList: FC<LazyLoadCheckboxListProps> = memo(({
             fetcher={fetcher}
             renderList={renderList}
             classes={useMemo(() => ({ wrap: classes.wrap }), [])}
+            onError={onError}
         />
     );
 });

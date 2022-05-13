@@ -15,6 +15,7 @@ export const ListAdderEditor: FC<ListAdderEditorProps> = memo(({
     onCancel,
     values: initialValues,
     classes: classesProps,
+    onError,
 }) => {
     const [values, setValues] = useState(initialValues);
     const onChange = useCallback((v) => {
@@ -29,7 +30,13 @@ export const ListAdderEditor: FC<ListAdderEditorProps> = memo(({
     }, [onSaveProps, values]);
     return (
         <Box direction="column" className={classesProps?.wrap}>
-            <LazyLoadCheckboxList fetcher={fetcher} isMulti={isMulti} values={values} onChange={onChange} />
+            <LazyLoadCheckboxList
+                fetcher={fetcher}
+                isMulti={isMulti}
+                values={values}
+                onChange={onChange}
+                onError={onError}
+            />
             <Box justifyContent="flex-end">
                 <Button variant="grey-light" onClick={onCancel}>Cancel</Button>
                 {isMulti && <Button variant="orange" onClick={onSave} className={classes.btnSave}>Add</Button>}

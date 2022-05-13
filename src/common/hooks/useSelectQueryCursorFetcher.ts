@@ -48,24 +48,20 @@ export const useSelectQueryCursorFetcher = <TData>({
     const client = useApolloClient();
     const fetcher: LazyLoadFetcher<TData> = useCallback(async ({ cursor, search, signal }) => {
         if (!query) return { options: [], cursor: null, input: null };
-        try {
-            const { data } = await client.query<TData>({
-                query,
-                variables: getVariables({ count, cursor, search }),
-                ...(signal ? {
-                    context: {
-                        fetchOptions: {
-                            signal,
-                        },
+        const { data } = await client.query<TData>({
+            query,
+            variables: getVariables({ count, cursor, search }),
+            ...(signal ? {
+                context: {
+                    fetchOptions: {
+                        signal,
                     },
-                } : {}),
-            });
-            const options = convertOptions(data);
-            const newCursor = convertCursor(data);
-            return { options, cursor: newCursor };
-        } catch (e) {
-            return { options: [], cursor: null };
-        }
+                },
+            } : {}),
+        });
+        const options = convertOptions(data);
+        const newCursor = convertCursor(data);
+        return { options, cursor: newCursor };
     }, [query, getVariables, client, convertCursor, convertOptions, count]);
     if (!query) return { fetcher: null };
     return {
