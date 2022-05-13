@@ -1,0 +1,51 @@
+.row {
+    margin-bottom: 16px;
+  }
+  
+  .col {
+    min-width: 280px;
+  }
+  
+  .wrap {
+    background-color: #F5F6F6;
+    padding: 50px;
+  }
+  
+  .checkboxWrap {
+    margin-top: 10px;
+  }
+  
+  .limitWidth {
+    :global(.popover-body) {
+      width: 300px;
+    }
+  }
+  
+  .icon {
+    cursor: help;
+  }
+  
+  .popover {
+    border-radius: 5px;
+  }
+
+  .popoverWhite {
+    padding: 17px 15px;
+  }
+
+  .tooltip {
+    color: var(--black);
+  }
+
+  .description {
+    font-weight: 600;
+    margin-bottom: 5px;
+  }
+
+  .link {
+    color: var(--orange4);
+    &:visited, &:active, &:link {
+      color: var(--orange4);
+      text-decoration: none;
+    }
+  }

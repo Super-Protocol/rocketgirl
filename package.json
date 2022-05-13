@@ -61,6 +61,7 @@
     "watch:graphql": "watch \"npm run generate-graphql-code\" src/gql/schemas src/gql/mockSchemas",
     "download-schema": "node scripts/download-schema.js",
     "generate-graphql-code": "node scripts/generate-graphql-code.js",
+    "storybook": "start-storybook -p 9009 -s public",
     "analyze": "source-map-explorer 'build/static/js/*.js'"
   },
   "browser": {
@@ -103,6 +104,13 @@
     "@graphql-codegen/typescript": "^2.4.7",
     "@graphql-codegen/typescript-operations": "^2.3.4",
     "@graphql-codegen/typescript-react-apollo": "^3.2.10",
+    "@storybook/addon-actions": "^6.3.5",
+    "@storybook/addon-essentials": "^6.3.6",
+    "@storybook/addon-links": "^6.3.5",
+    "@storybook/addons": "6.3.7",
+    "@storybook/node-logger": "^6.3.7",
+    "@storybook/preset-create-react-app": "^3.2.0",
+    "@storybook/react": "^6.3.7",
     "@types/react": "^17.0.17",
     "@types/react-dom": "^17.0.9",
     "@types/uuid": "^8.3.1",
@@ -120,6 +128,6 @@
     "eslint-plugin-react": "^7.24.0",
     "identity-obj-proxy": "^3.0.0",
     "react-app-rewired": "^2.1.8",
-    "webpack": "^4.44.2"
+    "webpack": "4.44.2"
   }
 }
