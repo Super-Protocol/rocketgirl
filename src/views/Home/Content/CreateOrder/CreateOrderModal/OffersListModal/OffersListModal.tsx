@@ -8,7 +8,7 @@ import { ModalOkCancelContext } from '@/common/context/ModalOkCancelProvider/Mod
 import { ListAdderEditor } from '@/uikit';
 import { OffersListModalProps } from './types';
 
-export const OffersListModal: FC<OffersListModalProps> = memo(({ // todo
+export const OffersListModal: FC<OffersListModalProps> = memo(({
     isMulti,
     fetcher,
     onSave: onSaveProps,
