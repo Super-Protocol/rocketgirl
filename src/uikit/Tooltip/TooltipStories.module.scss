@@ -1,0 +1,27 @@
+.row {
+    margin-bottom: 16px;
+  }
+  
+  .col {
+    min-width: 280px;
+  }
+  
+  .wrap {
+    background-color: #F5F6F6;
+    padding: 50px;
+  }
+  
+  .checkboxWrap {
+    margin-top: 10px;
+  }
+  
+  .limitWidth {
+    :global(.popover-body) {
+      width: 300px;
+    }
+  }
+  
+  .icon {
+    cursor: help;
+  }
+  

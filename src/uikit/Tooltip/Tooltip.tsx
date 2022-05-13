@@ -86,7 +86,7 @@ export const Tooltip: FC<TooltipProps> = memo(({
                 placement={placement}
                 target={target.current}
                 show={show}
-                container={containerRef}
+                container={containerRef || target.current}
                 transition={false}
             >
                 {(props) => {
