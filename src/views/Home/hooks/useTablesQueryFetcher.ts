@@ -1,6 +1,10 @@
 import { useCallback } from 'react';
 import { Tables } from '@/views/Home/types';
-import { useTableQueryFetcher, UseTableQueryFetcherResult } from '@/common/hooks/useTableQueryFetcher';
+import {
+    useTableQueryFetcher,
+    UseTableQueryFetcherResult,
+    UseTableQueryFetcherPropsSkip,
+} from '@/common/hooks/useTableQueryFetcher';
 import {
     ProvidersDocument,
     Provider,
@@ -29,42 +33,47 @@ export type FetcherByTable = UseTablesQueryFetcherResult[Tables.Providers]
     | UseTablesQueryFetcherResult[Tables.Orders]
     | null;
 
-export interface UseTablesQueryFetcherPropsSkip {
+export interface UseTablesQueryFetcherPropsSkip<SkipType> extends UseTableQueryFetcherPropsSkip<SkipType> {
     table: Tables;
-    reason: string;
 }
 
-export interface UseTablesQueryFetcherProps {
+export interface UseTablesQueryFetcherProps<SkipType> {
     table: Tables;
-    skip?: UseTablesQueryFetcherPropsSkip[];
+    skip?: UseTablesQueryFetcherPropsSkip<SkipType>[];
 }
 
-export const useTablesQueryFetcher = (props: UseTablesQueryFetcherProps): UseTablesQueryFetcherResult => {
+export const useTablesQueryFetcher = <SkipType>(
+    props: UseTablesQueryFetcherProps<SkipType>,
+): UseTablesQueryFetcherResult => {
     const { table, skip } = props;
     const getSkipQuery = useCallback((currentTable: Tables) => {
-        if (table !== currentTable) return { table, reason: undefined };
-        return skip?.find(({ table: skipTable }) => skipTable === currentTable) || null;
+        if (table !== currentTable) return undefined;
+        return skip?.find(({ table: skipTable }) => skipTable === currentTable) || undefined;
     }, [table, skip]);
     const providers = useTableQueryFetcher<Provider, ProvidersQuery>({
         gql: ProvidersDocument,
-        queryOptions: { skip: !!getSkipQuery(Tables.Providers), variables: { pagination: { sortBy: 'origins.modifiedDate' } } },
+        queryOptions: { variables: { pagination: { sortBy: 'origins.modifiedDate' } } },
         subscriptionKey: 'address',
+        skip: getSkipQuery(Tables.Providers),
     });
     const offers = useTableQueryFetcher<Offer, OffersQuery>({
         gql: OffersDocument,
-        queryOptions: { skip: !!getSkipQuery(Tables.Offers), variables: { pagination: { sortBy: 'origins.modifiedDate' } } },
+        queryOptions: { variables: { pagination: { sortBy: 'origins.modifiedDate' } } },
         subscriptionKey: 'address',
+        skip: getSkipQuery(Tables.Offers),
     });
     const teeOffers = useTableQueryFetcher<TeeOffer, TeeOffersQuery>({
         gql: TeeOffersDocument,
         queryOptions: { skip: !!getSkipQuery(Tables.TEEOffers), variables: { pagination: { sortBy: 'origins.modifiedDate' } } },
         subscriptionKey: 'address',
+        skip: getSkipQuery(Tables.TEEOffers),
     });
     const orders = useTableQueryFetcher<Order, OrdersQuery>({
         gql: OrdersDocument,
         queryOptions: { skip: !!getSkipQuery(Tables.Orders), variables: { pagination: { sortBy: 'origins.modifiedDate' } } },
         subscriptionKey: 'address',
-        noDataMessage: getSkipQuery(Tables.Orders)?.reason,
+        noDataMessage: getSkipQuery(Tables.Orders)?.message,
+        skip: getSkipQuery(Tables.Orders),
     });
     return {
         [Tables.Providers]: providers,

@@ -6,16 +6,19 @@ import { getTableDate } from '@/views/Home/Content/MainTable/helpers';
 import { StatusBar } from '@/common/components/StatusBar';
 
 export type OrdersColumns = UseTableQueryFetcherResultList<Order>;
+export interface GetColumnsProps {
+    urlBack: string;
+}
 
-export const getColumns = (): Array<ColumnProps<OrdersColumns>> => [
+export const getColumns = ({ urlBack }: GetColumnsProps): Array<ColumnProps<OrdersColumns>> => [
     {
-        Header: 'Id',
+        Header: 'ID',
         id: 'id',
         Cell: ({ row }) => {
             const { address } = row.original || {};
             if (!address) return '-';
             return (
-                <CopyToClipboard url="order">
+                <CopyToClipboard url={`order/${address}?${urlBack}`}>
                     {address}
                 </CopyToClipboard>
             );
@@ -33,7 +36,7 @@ export const getColumns = (): Array<ColumnProps<OrdersColumns>> => [
         isEllipsis: true,
     },
     {
-        Header: 'ModifiedDate',
+        Header: 'Modified Date',
         id: 'modifiedDate',
         Cell: ({ row }) => {
             const { origins } = row.original || {};

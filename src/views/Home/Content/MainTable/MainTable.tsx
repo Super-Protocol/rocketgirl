@@ -10,11 +10,13 @@ import { useErrorModal } from '@/common/hooks/useErrorModal';
 //     FilterPanel,
 //     FilterBtn,
 // } from '@/views/Home/Content/FilterPopover';
+import { useGoBackUrl } from '@/common/hooks/useGoBackUrl';
 import useMemoCompare from '@/common/hooks/useMemoCompare';
 import { FetcherByTable } from '@/views/Home/hooks/useTablesQueryFetcher';
 import { CreateOrder } from '@/views/Home/Content/CreateOrder/CreateOrder';
 import { GetDiffIndexesResult, MainTableProps } from './types';
 import { MainTableList } from './MainTableList';
+import { SkipBlock } from './SkipBlock';
 import classes from './MainTable.module.scss';
 import {
     getColumns,
@@ -32,14 +34,16 @@ export const MainTable: FC<MainTableProps> = memo(({
     fetcher,
 }) => {
     const { showErrorModal, showSuccessModal } = useErrorModal();
+    const urlBack = useGoBackUrl();
     const active: FetcherByTable = useMemo(() => fetcher[table], [fetcher, table]);
     const columns = useMemo(
         () => getColumns({
             table,
             showErrorModal,
             showSuccessModal,
+            urlBack,
         }),
-        [table, showErrorModal, showSuccessModal],
+        [table, showErrorModal, showSuccessModal, urlBack],
     );
     const onPageChange = useCallback(({ pageIndex, pageClick }) => {
         active?.onChangePage({
@@ -54,7 +58,7 @@ export const MainTable: FC<MainTableProps> = memo(({
     const activeDiffIndexes = useMemo(() => getDiffIndexes(active), [active]);
     const activeDiffIndexesMemoCompare = useMemoCompare<GetDiffIndexesResult>(activeDiffIndexes, isEqual);
     const spinnerProps = useMemo(() => ({ fullscreen: true }), []);
-    const skip = useMemo(() => active?.queryOptions?.skip, [active]);
+    const skip = useMemo(() => active?.skip, [active]);
     const data = useMemo(() => (!skip && active?.list ? active?.list : []), [active, skip]);
     const pageCount = useMemo(() => (!skip ? active?.pageCount : 0), [active, skip]);
 
@@ -79,26 +83,28 @@ export const MainTable: FC<MainTableProps> = memo(({
                     <CreateOrder />
                 </Box>
             </Box>
-            <Table
-                <Columns>
-                pageIndex={active?.pageIndex}
-                diff={activeDiffIndexesMemoCompare}
-                columns={columns}
-                data={data}
-                pageCount={pageCount}
-                pageSize={active?.pageSize}
-                diffTimeout={3000}
-                onPageChange={onPageChange}
-                onChangePageSize={onChangePageSize}
-                spinnerProps={spinnerProps}
-                loading={active?.loading}
-                error={active?.error ? 'Error' : ''}
-                noDataMessage={active?.noDataMessage}
-                called
-                styles={styles}
-                showLoader
-                isUseCursor
-            />
+            {!skip ? (
+                <Table
+                    <Columns>
+                    pageIndex={active?.pageIndex}
+                    diff={activeDiffIndexesMemoCompare}
+                    columns={columns}
+                    data={data}
+                    pageCount={pageCount}
+                    pageSize={active?.pageSize}
+                    diffTimeout={3000}
+                    onPageChange={onPageChange}
+                    onChangePageSize={onChangePageSize}
+                    spinnerProps={spinnerProps}
+                    loading={active?.loading}
+                    error={active?.error ? 'Error' : ''}
+                    noDataMessage={active?.noDataMessage}
+                    called
+                    styles={styles}
+                    showLoader
+                    isUseCursor
+                />
+            ) : <SkipBlock skip={skip} />}
         </Box>
     );
 });

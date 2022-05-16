@@ -5,7 +5,11 @@ import React, {
     useCallback,
     useMemo,
 } from 'react';
-import { Box, Dropdown, Button } from '@/uikit';
+import {
+    Box,
+    Dropdown,
+    Button,
+} from '@/uikit';
 import { WalletContext, WalletType } from '@/common/context/WalletProvider';
 import { AccountProps } from './types';
 import classes from './Account.module.scss';
@@ -41,7 +45,13 @@ export const Account: FC<AccountProps> = memo(() => {
                             <Box className={classes.balance}>
                                 {balance.matic || '-'} MATIC / {balance.tee || '-'} TEE
                             </Box>
-                            <Dropdown active={address} list={list} classNameWrap={classes.wrap} onChange={onChange} />
+                            <Dropdown
+                                active={address}
+                                list={list}
+                                classNameWrap={classes.wrap}
+                                onChange={onChange}
+                                loading={loading}
+                            />
                         </Box>
                     )
             }

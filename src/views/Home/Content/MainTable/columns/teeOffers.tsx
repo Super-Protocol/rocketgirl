@@ -21,7 +21,7 @@ export const getColumns = (): Array<ColumnProps<TeeOffersColumns>> => [
         width: 'auto',
     },
     {
-        Header: 'Id',
+        Header: 'ID',
         id: 'id',
         Cell: ({ row }) => (row.original?.address ? <CopyToClipboard>{row.original?.address}</CopyToClipboard> : '-'),
         width: 'auto',
@@ -66,7 +66,7 @@ export const getColumns = (): Array<ColumnProps<TeeOffersColumns>> => [
         isEllipsis: true,
     },
     {
-        Header: 'ModifiedDate',
+        Header: 'Modified Date',
         id: 'modifiedDate',
         Cell: ({ row }) => getTableDate(row.original?.origins?.modifiedDate / 1000),
         width: 'auto',

@@ -22,7 +22,7 @@ export const getColumns = (): Array<ColumnProps<OffersColumns>> => [
         width: 'auto',
     },
     {
-        Header: 'Id',
+        Header: 'ID',
         id: 'id',
         Cell: ({ row }) => <CopyToClipboard>{row.original?.address || '-'}</CopyToClipboard>,
         width: 'auto',
@@ -67,7 +67,7 @@ export const getColumns = (): Array<ColumnProps<OffersColumns>> => [
         isEllipsis: true,
     },
     {
-        Header: 'ModifiedDate',
+        Header: 'Modified Date',
         id: 'modifiedDate',
         Cell: ({ row }) => getTableDate(row.original?.origins?.modifiedDate / 1000),
         width: 'auto',

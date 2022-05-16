@@ -9,7 +9,7 @@ export type ProviderColumns = UseTableQueryFetcherResultList<Provider>;
 
 export const getColumns = (): Array<ColumnProps<ProviderColumns>> => [
     {
-        Header: 'Id',
+        Header: 'ID',
         id: 'id',
         Cell: ({ row }) => <CopyToClipboard>{row.original?.address || '-'}</CopyToClipboard>,
         width: 'auto',

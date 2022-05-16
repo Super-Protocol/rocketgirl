@@ -13,4 +13,5 @@ export interface DropdownProps {
     DropdownItemComponent?: ElementType;
     renderToggleLabel?: (value: Value) => ReactElement;
     renderItemLabel?: (value: Value) => ReactElement;
+    loading?: boolean;
 }

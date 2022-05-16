@@ -46,9 +46,15 @@ export interface OnPageChangeProps {
 
 export type UseTableQueryFetcherResultList<TNode> = TNode & { cursor: string; }
 
+export interface UseTableQueryFetcherPropsSkip<SkipType> {
+    message: string;
+    type: SkipType;
+}
+
 export interface UseTableQueryFetcherResult<
     TNode,
-    TData extends TDataDefault<TNode> = TDataDefault<TNode>, TVariables = OperationVariables
+    TData extends TDataDefault<TNode> = TDataDefault<TNode>, TVariables = OperationVariables,
+    SkipType = any
     > {
     list: UseTableQueryFetcherResultList<TNode>[];
     pageSize: number | null;
@@ -69,6 +75,7 @@ export interface UseTableQueryFetcherResult<
     subscriptionKey?: string;
     queryOptions?: UseTableQueryFetcherQueryOptions<TData, TVariables>;
     noDataMessage?: string;
+    skip?: UseTableQueryFetcherPropsSkip<SkipType>;
 }
 
 export const DEFAULT_PAGE_SIZE = 5;
@@ -98,12 +105,13 @@ export interface UseTableQueryFetcherOptions {
     pageSize?: number;
 }
 
-export interface UseTableQueryFetcherProps<TData, TVariables> {
+export interface UseTableQueryFetcherProps<TData, TVariables, SkipType> {
     gql: DocumentNode,
     queryOptions?: UseTableQueryFetcherQueryOptions<TData, TVariables>,
     options?: UseTableQueryFetcherOptions;
     subscriptionKey?: string;
     noDataMessage?: string;
+    skip?: UseTableQueryFetcherPropsSkip<SkipType>;
 }
 
 export interface GetVariablesProps {
@@ -126,7 +134,7 @@ export const getList = <TNode>({ data, isReverse }: GetListProps<TNode>): UseTab
 };
 
 export const useTableQueryFetcher = <
-    TNode, TData extends TDataDefault<TNode> = TDataDefault<TNode>, TVariables = OperationVariables
+    TNode, TData extends TDataDefault<TNode> = TDataDefault<TNode>, TVariables = OperationVariables, SkipType = any
     >
     (
         {
@@ -135,7 +143,8 @@ export const useTableQueryFetcher = <
             options,
             subscriptionKey,
             noDataMessage,
-        }: UseTableQueryFetcherProps<TData, TVariables>,
+            skip,
+        }: UseTableQueryFetcherProps<TData, TVariables, SkipType>,
     ): UseTableQueryFetcherResult<TNode, TData, TVariables> => {
     const [pageIndex, setPageIndex] = useState(0);
     const [isReverse, setIsReverse] = useState(false);
@@ -231,7 +240,8 @@ export const useTableQueryFetcher = <
         onCompleted: (data) => {
             updateCache(getList({ data, isReverse }).map((item) => item[subscriptionKey as string]));
         },
-    }), [queryOptionsProps, getVariables, isReverse, pageSize, updateCache, subscriptionKey]);
+        skip: !!skip,
+    }), [queryOptionsProps, getVariables, isReverse, pageSize, updateCache, subscriptionKey, skip]);
 
     const [
         getQueryData,
@@ -293,7 +303,7 @@ export const useTableQueryFetcher = <
     }, [getQueryData, getVariables]);
 
     useMount(() => {
-        if (!queryOptions.skip) {
+        if (!skip) {
             refetch();
         }
     });
@@ -318,5 +328,6 @@ export const useTableQueryFetcher = <
         subscriptionKey,
         queryOptions: queryOptionsProps,
         noDataMessage,
+        skip,
     };
 };
