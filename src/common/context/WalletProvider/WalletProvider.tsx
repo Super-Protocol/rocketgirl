@@ -10,6 +10,7 @@ import { getBalance as getBalanceMetamask, useConnectToMetaMask } from '@/common
 import { getBalance as getBalanceWalletConnect, useConnectToWalletConnect } from '@/common/hooks/useConnectToWalletConnect';
 import { useErrorModal } from '@/common/hooks/useErrorModal';
 import { useLocalStorage } from '@/common/hooks/useLocalStorage';
+import CONFIG from '@/config';
 import {
     Balance, Wallet, WalletType, UseWalletResult, SelectedWalletType, WalletContextProps,
 } from './types';
@@ -50,12 +51,12 @@ export const useWallet = (): UseWalletResult => {
         update: async (stateUpdate: Web3ReactStateUpdate) => {
             setLoading(true);
             const { chainId, accounts } = stateUpdate || {};
-            // if (chainId && CONFIG.REACT_APP_CHAIN_ID !== chainId) {
-            //     setWallet((s) => ({ ...s, [walletType]: undefined }));
-            //     setSelectedWalletType(null);
-            //     showErrorModal(new Error('ChainId is not supported'));
-            //     return;
-            // }
+            if (chainId && CONFIG.REACT_APP_CHAIN_ID !== chainId) {
+                setWallet((s) => ({ ...s, [walletType]: undefined }));
+                setSelectedWalletType(null);
+                showErrorModal(new Error('ChainId is not supported'));
+                return;
+            }
             const selected = accounts?.[0];
             setWallet((s) => ({
                 ...s,
