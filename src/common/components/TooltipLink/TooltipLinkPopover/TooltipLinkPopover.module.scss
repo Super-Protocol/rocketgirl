@@ -1,0 +1,18 @@
+.description {
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.link {
+  color: var(--orange4);
+  &:visited, &:active, &:link {
+    color: var(--orange4);
+    text-decoration: none;
+  }
+}
+
+.tooltip {
+  color: var(--black);
+  padding: 15px 15px 28px 15px;
+  max-width: 332px;
+}

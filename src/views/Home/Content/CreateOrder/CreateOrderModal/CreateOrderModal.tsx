@@ -45,7 +45,7 @@ export const CreateOrderModal: FC<CreateOrderModalProps> = memo(({ initialValues
                 validationSchema={validationSchema}
                 onSubmit={onSubmit}
             >
-                {({ errors, values, submitForm }) => {
+                {({ submitForm }) => {
                     return (
                         <Box direction="column">
                             <Box direction="column">

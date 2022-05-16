@@ -1,5 +1,7 @@
+import React from 'react';
 import { ColumnProps } from 'react-table';
-import { CopyToClipboard, HtmlBox } from '@/uikit';
+import { CopyToClipboard } from '@/uikit';
+import { TooltipLink } from '@/common/components/TooltipLink';
 import { getOfferTypeName } from '@/common/helpers';
 import { getTableDate } from '@/views/Home/Content/MainTable/helpers';
 import { UseTableQueryFetcherResultList } from '@/common/hooks/useTableQueryFetcher';
@@ -32,13 +34,13 @@ export const getColumns = (): Array<ColumnProps<OffersColumns>> => [
         width: 'auto',
         isEllipsis: true,
     },
-    // todo add link support, add tooltip support
+    // todo add link support
     {
         Header: 'Description',
         id: 'description',
         Cell: ({ row }) => {
             const { description } = row.original?.offerInfo || {};
-            return description ? <HtmlBox text={description} /> : '-';
+            return description ? <TooltipLink description={description} /> : '-';
         },
         width: 'auto',
         isEllipsis: true,
@@ -56,9 +58,11 @@ export const getColumns = (): Array<ColumnProps<OffersColumns>> => [
     {
         Header: 'Cancelable',
         id: 'cancelable',
-        Cell: ({ row }) => (
-            typeof row.original?.offerInfo?.cancelable === 'boolean' ? `${row.original?.offerInfo?.cancelable}` : '-'
-        ),
+        Cell: ({ row }) => {
+            const { offerInfo } = row.original;
+            const { cancelable } = offerInfo || [];
+            return typeof cancelable === 'boolean' ? cancelable ? 'yes' : 'no' : '-';
+        },
         width: 'auto',
         isEllipsis: true,
     },

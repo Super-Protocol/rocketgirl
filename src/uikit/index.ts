@@ -24,4 +24,5 @@ export * from './TrippleContainer';
 export * from './LazyLoadList';
 export * from './LazyLoadCheckboxList';
 export * from './ListAdder';
+export * from './StatusBar';
 export * from './hooks';

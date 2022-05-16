@@ -5,5 +5,5 @@ export enum Tables {
     Providers = 'Providers',
     TEEOffers = 'TEEOffers',
     Offers = 'Offers',
-    MyOrders = 'MyOrders',
+    Orders = 'Orders',
 }

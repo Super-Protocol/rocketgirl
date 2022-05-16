@@ -22,7 +22,6 @@ import {
     getDiff,
     getDiffIndexes,
     styles,
-    classNames,
 } from './helpers';
 
 export const MainTable: FC<MainTableProps> = memo(({
@@ -98,7 +97,6 @@ export const MainTable: FC<MainTableProps> = memo(({
                 called
                 styles={styles}
                 showLoader
-                classNames={classNames}
                 isUseCursor
             />
         </Box>

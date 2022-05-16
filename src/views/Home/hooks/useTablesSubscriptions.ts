@@ -11,7 +11,7 @@ export const getFetcherBySubSource = (subscriptionSource?: SubscriptionSource): 
         case SubscriptionSource.TeeOffer:
             return Tables.TEEOffers;
         case SubscriptionSource.Order:
-            return Tables.MyOrders;
+            return Tables.Orders;
         default:
             return null;
     }

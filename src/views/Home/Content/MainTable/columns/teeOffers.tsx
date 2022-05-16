@@ -1,8 +1,10 @@
+import React from 'react';
 import { ColumnProps } from 'react-table';
 import { TeeOffer } from '@/gql/graphql';
-import { CopyToClipboard, HtmlBox } from '@/uikit';
+import { CopyToClipboard } from '@/uikit';
 import { getTableDate } from '@/views/Home/Content/MainTable/helpers';
 import { UseTableQueryFetcherResultList } from '@/common/hooks/useTableQueryFetcher';
+import { TooltipLink } from '@/common/components/TooltipLink';
 
 export type TeeOffersColumns = UseTableQueryFetcherResultList<TeeOffer>;
 
@@ -31,13 +33,13 @@ export const getColumns = (): Array<ColumnProps<TeeOffersColumns>> => [
         width: 'auto',
         isEllipsis: true,
     },
-    // todo add link support, add tooltip support
+    // todo add link support
     {
         Header: 'Description',
         id: 'description',
         Cell: ({ row }) => {
             const { description } = row.original?.teeOfferInfo || {};
-            return description ? <HtmlBox text={description} /> : '-';
+            return description ? <TooltipLink description={description} /> : '-';
         },
         width: 'auto',
         isEllipsis: true,

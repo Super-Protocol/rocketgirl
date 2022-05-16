@@ -15,7 +15,7 @@ export const filtersOffers = [
     new Filter({ name: 'offerType', label: 'Type', options: getOfferOptions() }),
 ];
 
-export const filtersMyOrders = [
+export const filtersOrders = [
     new Filter({
         name: 'address',
         label: 'search',
@@ -46,8 +46,8 @@ export const getFilters = (table: Tables): Filter[] => {
     switch (table) {
         case Tables.Offers:
             return filtersOffers;
-        case Tables.MyOrders:
-            return filtersMyOrders;
+        case Tables.Orders:
+            return filtersOrders;
         case Tables.TEEOffers:
             return filtersTeeOffers;
         case Tables.Providers:
