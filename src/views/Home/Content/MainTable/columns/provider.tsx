@@ -1,8 +1,9 @@
 import { ColumnProps } from 'react-table';
 import { Provider } from '@/gql/graphql';
-import { CopyToClipboard, HtmlBox } from '@/uikit';
+import { CopyToClipboard } from '@/uikit';
 import { getTableDate } from '@/views/Home/Content/MainTable/helpers';
 import { UseTableQueryFetcherResultList } from '@/common/hooks/useTableQueryFetcher';
+import { TooltipLink } from '@/common/components/TooltipLink';
 
 export type ProviderColumns = UseTableQueryFetcherResultList<Provider>;
 
@@ -20,13 +21,13 @@ export const getColumns = (): Array<ColumnProps<ProviderColumns>> => [
         width: 'auto',
         isEllipsis: true,
     },
-    // todo add link support, add tooltip support
+    // todo add link support
     {
         Header: 'Description',
         id: 'description',
         Cell: ({ row }) => {
             const { description } = row.original?.providerInfo || {};
-            return description ? <HtmlBox text={description} /> : '-';
+            return description ? <TooltipLink description={description} /> : '-';
         },
         width: 'auto',
         isEllipsis: true,
@@ -50,7 +51,7 @@ export const getColumns = (): Array<ColumnProps<ProviderColumns>> => [
         isEllipsis: true,
     },
     {
-        Header: 'ModifiedDate',
+        Header: 'Modified Date',
         id: 'modifiedDate',
         Cell: ({ row }) => getTableDate(row.original?.origins?.modifiedDate / 1000),
         width: 'auto',

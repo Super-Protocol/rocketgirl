@@ -8,7 +8,7 @@ export const getTables = (props: GetTablesProps): { value: Tables, label: string
         [{ value: Tables.Providers, label: 'Providers' }],
         [{ value: Tables.TEEOffers, label: 'TEE Offers' }],
         [{ value: Tables.Offers, label: 'Offers' }],
-        [{ value: Tables.MyOrders, label: 'My Orders' }],
+        [{ value: Tables.Orders, label: 'Orders' }],
     ].reduce((acc, list) => {
         const filteredList = list.filter(({ value }) => !hide?.length || !hide.includes(value));
         if (filteredList.length) {

@@ -19,7 +19,7 @@ export interface UseTablesResult {
 
 export const useTables = (initialTable: Tables, selectedWalletType?: SelectedWalletType): UseTablesResult => {
     const skipByWallet = useMemo(() => {
-        return (!selectedWalletType ? [Tables.MyOrders] : [])
+        return (!selectedWalletType ? [Tables.Orders] : [])
             .map((table) => ({ table, reason: 'Connect wallet to see your orders' }));
     }, [selectedWalletType]);
     const [table, setTable] = useState(initialTable);

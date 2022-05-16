@@ -6,15 +6,14 @@ import { UseTableQueryFetcherResultList } from '@/common/hooks/useTableQueryFetc
 import { getColumns as getColumnsProvider, ProviderColumns } from './columns/provider';
 import { getColumns as getColumnsTEEOffers, TeeOffersColumns } from './columns/teeOffers';
 import { getColumns as getColumnsOffers, OffersColumns } from './columns/offers';
-import { getColumns as getColumnsOrders, OrdersColumns } from './columns/myOrders';
+import { getColumns as getColumnsOrders, OrdersColumns } from './columns/orders';
 import { TableTheme } from '@/uikit/Table/types';
 import { GetDiffIndexesResult } from './types';
-import classes from './MainTable.module.scss';
 
 export const getTableDate = (date: number): string => {
     if (!date) return '-';
     const dj = dayjs(date * 1000);
-    return dj.isValid() ? dj.format('YYYY-MM-DD HH:mm:ss') : '-';
+    return dj.isValid() ? dj.format('DD.MM.YYYY HH:mm') : '-';
 };
 
 export type Columns = ProviderColumns
@@ -41,7 +40,7 @@ export const getColumns = ({
             return getColumnsTEEOffers();
         case Tables.Offers:
             return getColumnsOffers();
-        case Tables.MyOrders:
+        case Tables.Orders:
             return getColumnsOrders();
         default:
             return [];
@@ -72,8 +71,3 @@ export const getDiffIndexes = (active?: FetcherByTable): GetDiffIndexesResult =>
 };
 
 export const styles = { theme: TableTheme.orange };
-
-export const classNames = {
-    th: classes.th,
-    td: classes.td,
-};

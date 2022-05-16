@@ -20,13 +20,13 @@ export interface UseTablesQueryFetcherResult {
     [Tables.Providers]: UseTableQueryFetcherResult<Provider, ProvidersQuery>;
     [Tables.Offers]: UseTableQueryFetcherResult<Offer, OffersQuery>;
     [Tables.TEEOffers]: UseTableQueryFetcherResult<TeeOffer, TeeOffersQuery>;
-    [Tables.MyOrders]: UseTableQueryFetcherResult<Order, OrdersQuery>;
+    [Tables.Orders]: UseTableQueryFetcherResult<Order, OrdersQuery>;
 }
 
 export type FetcherByTable = UseTablesQueryFetcherResult[Tables.Providers]
     | UseTablesQueryFetcherResult[Tables.Offers]
     | UseTablesQueryFetcherResult[Tables.TEEOffers]
-    | UseTablesQueryFetcherResult[Tables.MyOrders]
+    | UseTablesQueryFetcherResult[Tables.Orders]
     | null;
 
 export interface UseTablesQueryFetcherPropsSkip {
@@ -62,14 +62,14 @@ export const useTablesQueryFetcher = (props: UseTablesQueryFetcherProps): UseTab
     });
     const orders = useTableQueryFetcher<Order, OrdersQuery>({
         gql: OrdersDocument,
-        queryOptions: { skip: !!getSkipQuery(Tables.MyOrders), variables: { pagination: { sortBy: 'origins.modifiedDate' } } },
+        queryOptions: { skip: !!getSkipQuery(Tables.Orders), variables: { pagination: { sortBy: 'origins.modifiedDate' } } },
         subscriptionKey: 'address',
-        noDataMessage: getSkipQuery(Tables.MyOrders)?.reason,
+        noDataMessage: getSkipQuery(Tables.Orders)?.reason,
     });
     return {
         [Tables.Providers]: providers,
         [Tables.Offers]: offers,
         [Tables.TEEOffers]: teeOffers,
-        [Tables.MyOrders]: orders,
+        [Tables.Orders]: orders,
     };
 };
