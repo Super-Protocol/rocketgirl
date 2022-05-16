@@ -11,7 +11,7 @@ export interface ColumnProps {
 
 export enum TableTheme {
     gray = 'gray',
-    beige = 'beige',
+    orange = 'orange',
 }
 
 export interface TableProps<T extends Record<string, unknown>> extends TableOptions<T> {

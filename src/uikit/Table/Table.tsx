@@ -1,5 +1,5 @@
 import {
-    PropsWithChildren, useMemo, Fragment, ReactElement, memo, useCallback, JSXElementConstructor, useEffect,
+    PropsWithChildren, useMemo, Fragment, ReactElement, memo, useCallback, JSXElementConstructor,
 } from 'react';
 import {
     useTable, useExpanded, usePagination, useSortBy, ColumnWithCustomProps,
@@ -71,6 +71,15 @@ export const Table: <T extends Record<string, unknown>>(p: PropsWithChildren<Tab
             data,
             autoResetPage,
             initialState: { pageSize: pageSizeProp || itemsPageSizeOptions[0], pageIndex: pageIndexProp || 0 },
+            useControlledState: (state) => (
+                useMemo(
+                    () => ({
+                        ...state,
+                        pageIndex: pageIndexProp || 0,
+                    }),
+                    [state, pageIndexProp], // eslint-disable-line react-hooks/exhaustive-deps
+                )
+            ),
             defaultCanSort,
             manualPagination,
             pageCount: pageCountProp,
@@ -80,12 +89,6 @@ export const Table: <T extends Record<string, unknown>>(p: PropsWithChildren<Tab
             small = false,
             theme = undefined,
         } = styles;
-
-        useEffect(() => {
-            if (pageIndexProp !== undefined && pageIndexProp !== pageIndex) {
-                gotoPage(pageIndexProp || 0);
-            }
-        }, [pageIndexProp, pageIndex, gotoPage]);
 
         const haveSomeData = !!data.length;
         const dontHaveData = !data?.length;
@@ -127,7 +130,7 @@ export const Table: <T extends Record<string, unknown>>(p: PropsWithChildren<Tab
                         className={cn(classes.table, classNames.table, {
                             [classes.small]: small,
                             [classes.gray]: theme === TableTheme.gray,
-                            [classes.beige]: theme === TableTheme.beige,
+                            [classes.orange]: theme === TableTheme.orange,
                         })}
                         {...getTableProps()}
                     >

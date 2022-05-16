@@ -71,7 +71,7 @@ export const getDiffIndexes = (active?: FetcherByTable): GetDiffIndexesResult =>
     }, new Map());
 };
 
-export const styles = { theme: TableTheme.beige };
+export const styles = { theme: TableTheme.orange };
 
 export const classNames = {
     th: classes.th,
