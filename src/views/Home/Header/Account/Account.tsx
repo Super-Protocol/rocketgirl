@@ -17,15 +17,15 @@ import classes from './Account.module.scss';
 export const Account: FC<AccountProps> = memo(() => {
     const {
         onChangeWallet,
-        wallet,
         logout,
         balance,
         loading,
+        selectedWallet,
     } = useContext(WalletContext);
     const onClickMetamask = useCallback(async () => {
         await onChangeWallet(WalletType.metaMask);
     }, [onChangeWallet]);
-    const address = useMemo(() => wallet.metaMask?.address, [wallet.metaMask]);
+    const address = useMemo(() => selectedWallet?.address, [selectedWallet]);
     const list = useMemo(() => (
         address
             ? [{ value: address, label: address }, { value: null, label: 'logout' }]
