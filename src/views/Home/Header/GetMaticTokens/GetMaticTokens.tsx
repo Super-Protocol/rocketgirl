@@ -43,7 +43,7 @@ export const GetMaticTokens: FC<GetMaticTokensProps> = memo(({ className }) => {
         <Button
             onClick={refillMaticNotification}
             loading={loading}
-            variant="orange"
+            variant="transparent-orange"
             className={className}
         >
             Get MATIC

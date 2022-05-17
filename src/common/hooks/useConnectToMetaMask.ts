@@ -3,8 +3,9 @@ import Web3 from 'web3';
 import { Actions } from '@web3-react/types';
 import { MetaMask } from '@web3-react/metamask';
 import CONFIG from '@/config';
+import { getSuperproTokenCatched } from '@/connectors/superproToken';
 
-export interface Balance { matic: string | null, tee: string | null }
+export interface Balance { matic: string | null, tee: number | null }
 
 export interface ConnectResult {
     accounts: string[];
@@ -20,20 +21,20 @@ export interface UseConnectToMetaMaskResult {
 
 export const getMaticBalance = async (): Promise<string | null> => {
     try {
-        return (window as any).ethereum.request({
+        const response = await (window as any).ethereum.request({
             method: 'eth_getBalance', params: [CONFIG.REACT_APP_MATIC_ADDRESS, 'latest'],
         });
+        return Web3.utils.fromWei(response);
     } catch (e) {
         console.error('Error get matic balance');
         return null;
     }
 };
 
-export const getBalance = async (): Promise<Balance> => {
-    const maticBalance = await getMaticBalance();
+export const getBalance = async (address?: string): Promise<Balance> => {
     return {
-        matic: maticBalance ? Web3.utils.fromWei(maticBalance) : null,
-        tee: null, // todo
+        matic: await getMaticBalance(),
+        tee: await getSuperproTokenCatched(address),
     };
 };
 

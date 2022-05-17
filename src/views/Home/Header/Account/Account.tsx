@@ -8,23 +8,19 @@ import React, {
 import {
     Box,
     Dropdown,
-    Button,
 } from '@/uikit';
-import { WalletContext, WalletType } from '@/common/context/WalletProvider';
+import { WalletContext } from '@/common/context/WalletProvider';
+import { WalletConnectorBtn } from '@/common/components/WalletConnectorBtn';
 import { AccountProps } from './types';
 import classes from './Account.module.scss';
 
 export const Account: FC<AccountProps> = memo(() => {
     const {
-        onChangeWallet,
         logout,
         balance,
         loading,
         selectedWallet,
     } = useContext(WalletContext);
-    const onClickMetamask = useCallback(async () => {
-        await onChangeWallet(WalletType.metaMask);
-    }, [onChangeWallet]);
     const address = useMemo(() => selectedWallet?.address, [selectedWallet]);
     const list = useMemo(() => (
         address
@@ -39,7 +35,7 @@ export const Account: FC<AccountProps> = memo(() => {
         <Box>
             {
                 !address
-                    ? <Button variant="orange" onClick={onClickMetamask} loading={loading}>Connect wallet</Button>
+                    ? <WalletConnectorBtn />
                     : (
                         <Box alignItems="center">
                             <Box className={classes.balance}>

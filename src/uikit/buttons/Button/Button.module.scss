@@ -8,7 +8,7 @@
   user-select: none;
   background-color: transparent;
   border: 1px solid transparent;
-  padding: 8px 1.5rem;
+  padding: 8px 16px;
   line-height: 1.5;
   border-radius: 4px;
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
@@ -75,6 +75,10 @@
 .transparent-orange {
   background-color: transparent;
   color: var(--orange1);
+  &:hover {
+    background-color: var(--orange7);
+    opacity: 1 !important;
+  }
 }
 
 .transparent-black-hover {

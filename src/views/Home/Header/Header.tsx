@@ -14,7 +14,7 @@ export const Header: FC<HeaderProps> = memo(() => {
                 <img src={logoPng} alt="super protocol" className={classes.img} />
             </Box>
             <Box>
-                <GetMaticTokens className={classes.btn} />
+                <GetMaticTokens />
                 <GetTee className={classes.btn} />
                 <Account />
             </Box>
