@@ -47,7 +47,7 @@ export const useTablesQueryFetcher = <SkipType>(
 ): UseTablesQueryFetcherResult => {
     const { table, skip } = props;
     const getSkipQuery = useCallback((currentTable: Tables) => {
-        if (table !== currentTable) return undefined;
+        if (table !== currentTable) return { type: null, message: undefined };
         return skip?.find(({ table: skipTable }) => skipTable === currentTable) || undefined;
     }, [table, skip]);
     const providers = useTableQueryFetcher<Provider, ProvidersQuery>({
@@ -64,13 +64,13 @@ export const useTablesQueryFetcher = <SkipType>(
     });
     const teeOffers = useTableQueryFetcher<TeeOffer, TeeOffersQuery>({
         gql: TeeOffersDocument,
-        queryOptions: { skip: !!getSkipQuery(Tables.TEEOffers), variables: { pagination: { sortBy: 'origins.modifiedDate' } } },
+        queryOptions: { variables: { pagination: { sortBy: 'origins.modifiedDate' } } },
         subscriptionKey: 'address',
         skip: getSkipQuery(Tables.TEEOffers),
     });
     const orders = useTableQueryFetcher<Order, OrdersQuery>({
         gql: OrdersDocument,
-        queryOptions: { skip: !!getSkipQuery(Tables.Orders), variables: { pagination: { sortBy: 'origins.modifiedDate' } } },
+        queryOptions: { variables: { pagination: { sortBy: 'origins.modifiedDate' } } },
         subscriptionKey: 'address',
         noDataMessage: getSkipQuery(Tables.Orders)?.message,
         skip: getSkipQuery(Tables.Orders),

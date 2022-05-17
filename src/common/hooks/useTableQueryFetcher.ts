@@ -47,8 +47,8 @@ export interface OnPageChangeProps {
 export type UseTableQueryFetcherResultList<TNode> = TNode & { cursor: string; }
 
 export interface UseTableQueryFetcherPropsSkip<SkipType> {
-    message: string;
-    type: SkipType;
+    message?: string;
+    type: SkipType | null;
 }
 
 export interface UseTableQueryFetcherResult<
