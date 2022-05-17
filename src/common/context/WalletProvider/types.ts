@@ -18,7 +18,7 @@ export interface Wallet {
 
 export type SelectedWalletType = WalletType | null;
 export type SelectedWallet = WalletInfo | null;
-export interface Balance { matic: string | null, tee: string | null }
+export interface Balance { matic: string | null, tee: number | null }
 
 export interface UseWalletResult {
     wallet: Wallet;
@@ -28,7 +28,8 @@ export interface UseWalletResult {
     selectedWallet: SelectedWallet;
     logout: () => void;
     balance: Balance;
-    instance: Web3 | null;
+    instance?: Web3;
+    isConnected: boolean;
 }
 
 export interface WalletContextProps extends UseWalletResult {}

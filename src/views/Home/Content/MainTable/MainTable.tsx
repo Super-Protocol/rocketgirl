@@ -12,11 +12,11 @@ import { useErrorModal } from '@/common/hooks/useErrorModal';
 // } from '@/views/Home/Content/FilterPopover';
 import { useGoBackUrl } from '@/common/hooks/useGoBackUrl';
 import useMemoCompare from '@/common/hooks/useMemoCompare';
+import { NoAccountBlock } from '@/common/components/NoAccountBlock';
 import { FetcherByTable } from '@/views/Home/hooks/useTablesQueryFetcher';
 import { CreateOrder } from '@/views/Home/Content/CreateOrder/CreateOrder';
 import { GetDiffIndexesResult, MainTableProps } from './types';
 import { MainTableList } from './MainTableList';
-import { SkipBlock } from './SkipBlock';
 import classes from './MainTable.module.scss';
 import {
     getColumns,
@@ -104,7 +104,7 @@ export const MainTable: FC<MainTableProps> = memo(({
                     showLoader
                     isUseCursor
                 />
-            ) : <SkipBlock skip={skip} />}
+            ) : <NoAccountBlock message={skip?.message} />}
         </Box>
     );
 });

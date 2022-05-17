@@ -21,7 +21,7 @@ export const getInitialBalance = (): Balance => ({ matic: null, tee: null });
 export const getBalance = async (walletType: SelectedWalletType, address?: string): Promise<Balance> => {
     switch (walletType) {
         case WalletType.metaMask:
-            return getBalanceMetamask();
+            return getBalanceMetamask(address);
         case WalletType.walletConnect:
             return getBalanceWalletConnect(address);
         default:
@@ -38,9 +38,9 @@ export const useWallet = (): UseWalletResult => {
     const instance = useMemo(() => {
         switch (selectedWalletType) {
             case WalletType.metaMask:
-                return window?.ethereum ? new Web3((window as any).ethereum) : null;
+                return window?.ethereum ? new Web3((window as any).ethereum) : undefined;
             default:
-                return null;
+                return undefined;
         }
     }, [selectedWalletType]);
     const updateBalance = useCallback(async (walletType: SelectedWalletType, address?: string) => {
@@ -103,6 +103,7 @@ export const useWallet = (): UseWalletResult => {
         setSelectedWalletType(null);
         setWallet(getInitialWallet());
     }, [setSelectedWalletType]);
+    const isConnected = useMemo(() => !!selectedWallet?.address, [selectedWallet]);
     useMount(() => {
         onChangeWallet(selectedWalletType);
     });
@@ -116,6 +117,7 @@ export const useWallet = (): UseWalletResult => {
         logout,
         balance,
         instance,
+        isConnected,
     };
 };
 
@@ -127,7 +129,8 @@ export const WalletContext = React.createContext<WalletContextProps>({
     selectedWallet: null,
     logout: () => {},
     balance: getInitialBalance(),
-    instance: null,
+    instance: undefined,
+    isConnected: false,
 });
 
 export const WalletContextConsumer = WalletContext.Consumer;

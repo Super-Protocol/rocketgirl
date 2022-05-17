@@ -1,8 +1,9 @@
 import { useCallback } from 'react';
 import { WalletConnect } from '@web3-react/walletconnect';
 import { Actions } from '@web3-react/types';
+import { getSuperproTokenCatched } from '@/connectors/superproToken';
 
-export interface Balance { matic: string | null, tee: string | null }
+export interface Balance { matic: string | null, tee: number | null }
 
 export interface ConnectResult {
     accounts: string[];
@@ -19,7 +20,7 @@ export const getInitialBalance = (): Balance => ({ matic: null, tee: null });
 export const getBalance = async (address?: string): Promise<Balance> => {
     return {
         matic: null, // todo
-        tee: null, // todo
+        tee: await getSuperproTokenCatched(address),
     };
 };
 
