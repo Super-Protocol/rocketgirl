@@ -1,57 +1,93 @@
 import React, {
     useCallback,
-    useEffect,
     useMemo,
     useState,
 } from 'react';
 import Web3 from 'web3';
-import { useApolloClient } from '@apollo/client';
-import { useConnectToMetaMask } from '@/common/hooks/useConnectToMetaMask';
+import { useMount } from 'react-use';
+import { Web3ReactStateUpdate } from '@web3-react/types';
+import { getBalance as getBalanceMetamask, useConnectToMetaMask } from '@/common/hooks/useConnectToMetaMask';
+import { getBalance as getBalanceWalletConnect, useConnectToWalletConnect } from '@/common/hooks/useConnectToWalletConnect';
 import { useErrorModal } from '@/common/hooks/useErrorModal';
 import { useLocalStorage } from '@/common/hooks/useLocalStorage';
-
+import CONFIG from '@/config';
 import {
     Balance, Wallet, WalletType, UseWalletResult, SelectedWalletType, WalletContextProps,
 } from './types';
 
-export const getInitialWallet = (): Wallet => ({ [WalletType.metaMask]: undefined });
+export const getInitialWallet = (): Wallet => ({});
 export const getInitialBalance = (): Balance => ({ matic: null, tee: null });
 
+export const getBalance = async (walletType: SelectedWalletType, address?: string): Promise<Balance> => {
+    switch (walletType) {
+        case WalletType.metaMask:
+            return getBalanceMetamask();
+        case WalletType.walletConnect:
+            return getBalanceWalletConnect(address);
+        default:
+            return getInitialBalance();
+    }
+};
+
 export const useWallet = (): UseWalletResult => {
-    const client = useApolloClient();
     const [balance, setBalance] = useState(getInitialBalance);
     const [selectedWalletType, setSelectedWalletType] = useLocalStorage<SelectedWalletType>('wallet', null);
     const { showErrorModal } = useErrorModal();
     const [loading, setLoading] = useState(false);
     const [wallet, setWallet] = useState(getInitialWallet);
-    const { connect: connectMetaMask, getBalance: getBalanceMetamask } = useConnectToMetaMask();
-    const connectToMetaMask = useCallback(async () => {
-        const props = await connectMetaMask();
-        const { accounts, instance, chainId } = props;
-        const address = accounts[0];
-        const metaMask = { address, instance: instance ? new Web3(instance) : null, chainId };
-        setWallet((s) => ({ ...s, [WalletType.metaMask]: metaMask }));
-        return metaMask;
-    }, [connectMetaMask]);
-    const getBalance = useCallback(async (walletType: SelectedWalletType) => {
-        switch (walletType) {
+    const instance = useMemo(() => {
+        switch (selectedWalletType) {
             case WalletType.metaMask:
-                return getBalanceMetamask();
+                return window?.ethereum ? new Web3((window as any).ethereum) : null;
             default:
-                return getInitialBalance();
+                return null;
         }
-    }, [getBalanceMetamask]);
-    const updateBalance = useCallback(async (walletType: SelectedWalletType) => {
-        setBalance(await getBalance(walletType));
-    }, [getBalance]);
+    }, [selectedWalletType]);
+    const updateBalance = useCallback(async (walletType: SelectedWalletType, address?: string) => {
+        setBalance(await getBalance(walletType, address));
+    }, []);
+    const actions = useCallback((walletType: WalletType) => ({
+        startActivation: () => () => { setSelectedWalletType(walletType); },
+        update: async (stateUpdate: Web3ReactStateUpdate) => {
+            setLoading(true);
+            const { chainId, accounts } = stateUpdate || {};
+            if (chainId && CONFIG.REACT_APP_CHAIN_ID !== chainId) {
+                setSelectedWalletType(null);
+                showErrorModal(new Error('ChainId is not supported'));
+                setLoading(false);
+                return;
+            }
+            const selected = accounts?.[0];
+            setWallet((s) => ({
+                ...s,
+                [walletType]: {
+                    ...s[walletType],
+                    ...(chainId ? { chainId } : {}),
+                    ...(selected ? { address: selected } : {}),
+                    ...(accounts ? { accounts } : {}),
+                },
+            }));
+            setSelectedWalletType(walletType);
+            await updateBalance(walletType, selected);
+            setLoading(false);
+        },
+        reportError: (error: Error | undefined) => {
+            showErrorModal(error);
+            setSelectedWalletType(null);
+        },
+    }), [showErrorModal, setSelectedWalletType, updateBalance]);
+    const { connect: connectMetaMask } = useConnectToMetaMask(actions(WalletType.metaMask));
+    const { connect: connectWalletConnect } = useConnectToWalletConnect(actions(WalletType.walletConnect));
     const onChangeWallet = useCallback(async (walletType?: SelectedWalletType) => {
+        if (loading || !walletType) return;
         setLoading(true);
         try {
             switch (walletType) {
                 case WalletType.metaMask:
-                    await connectToMetaMask();
-                    await updateBalance(walletType);
-                    setSelectedWalletType(walletType);
+                    await connectMetaMask();
+                    break;
+                case WalletType.walletConnect:
+                    await connectWalletConnect();
                     break;
                 default:
                     break;
@@ -61,18 +97,15 @@ export const useWallet = (): UseWalletResult => {
             setSelectedWalletType(null);
         }
         setLoading(false);
-    }, [connectToMetaMask, showErrorModal, setSelectedWalletType, updateBalance]);
+    }, [connectMetaMask, showErrorModal, setSelectedWalletType, connectWalletConnect, loading]);
     const selectedWallet = useMemo(() => wallet[selectedWalletType as WalletType] || null, [wallet, selectedWalletType]);
     const logout = useCallback(async () => {
         setSelectedWalletType(null);
-        setWallet({});
-        await client.resetStore();
-    }, [setSelectedWalletType, client]);
-
-    useEffect(() => {
+        setWallet(getInitialWallet());
+    }, [setSelectedWalletType]);
+    useMount(() => {
         onChangeWallet(selectedWalletType);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [selectedWalletType]);
+    });
 
     return {
         wallet,
@@ -82,6 +115,7 @@ export const useWallet = (): UseWalletResult => {
         onChangeWallet,
         logout,
         balance,
+        instance,
     };
 };
 
@@ -93,6 +127,7 @@ export const WalletContext = React.createContext<WalletContextProps>({
     selectedWallet: null,
     logout: () => {},
     balance: getInitialBalance(),
+    instance: null,
 });
 
 export const WalletContextConsumer = WalletContext.Consumer;

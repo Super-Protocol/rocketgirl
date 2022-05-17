@@ -5,7 +5,11 @@ import React, {
     useCallback,
     useMemo,
 } from 'react';
-import { Box, Dropdown, Button } from '@/uikit';
+import {
+    Box,
+    Dropdown,
+    Button,
+} from '@/uikit';
 import { WalletContext, WalletType } from '@/common/context/WalletProvider';
 import { AccountProps } from './types';
 import classes from './Account.module.scss';
@@ -13,15 +17,15 @@ import classes from './Account.module.scss';
 export const Account: FC<AccountProps> = memo(() => {
     const {
         onChangeWallet,
-        wallet,
         logout,
         balance,
         loading,
+        selectedWallet,
     } = useContext(WalletContext);
     const onClickMetamask = useCallback(async () => {
         await onChangeWallet(WalletType.metaMask);
     }, [onChangeWallet]);
-    const address = useMemo(() => wallet.metaMask?.address, [wallet.metaMask]);
+    const address = useMemo(() => selectedWallet?.address, [selectedWallet]);
     const list = useMemo(() => (
         address
             ? [{ value: address, label: address }, { value: null, label: 'logout' }]
@@ -41,7 +45,13 @@ export const Account: FC<AccountProps> = memo(() => {
                             <Box className={classes.balance}>
                                 {balance.matic || '-'} MATIC / {balance.tee || '-'} TEE
                             </Box>
-                            <Dropdown active={address} list={list} classNameWrap={classes.wrap} onChange={onChange} />
+                            <Dropdown
+                                active={address}
+                                list={list}
+                                classNameWrap={classes.wrap}
+                                onChange={onChange}
+                                loading={loading}
+                            />
                         </Box>
                     )
             }

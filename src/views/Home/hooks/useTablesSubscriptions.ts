@@ -34,7 +34,6 @@ export const useTablesSubscriptions = (fetcher: UseTablesQueryFetcherResult): vo
                     Array.isArray(data)
                     && data.length
                     && [SubscriptionType.Add, SubscriptionType.Update].includes(type as SubscriptionType)
-                    && !queryOptions?.skip
                 ) {
                     updateDiff?.([...data]);
                     // todo refetch if need

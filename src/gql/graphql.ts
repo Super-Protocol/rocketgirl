@@ -1189,6 +1189,13 @@ export type OrdersSelectQueryVariables = Exact<{
 
 export type OrdersSelectQuery = { __typename?: 'Query', result: { __typename?: 'ListOrdersResponse', pageData?: { __typename?: 'PageDataDto', count: number, limit: number, offset: number } | null, page: { __typename?: 'OrderConnection', edges?: Array<{ __typename?: 'OrderEdge', cursor?: string | null, node?: { __typename?: 'Order', address: string } | null }> | null, pageInfo?: { __typename?: 'OrderPageInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } | null } } };
 
+export type OrderQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type OrderQuery = { __typename?: 'Query', order: { __typename?: 'Order', _id: string } };
+
 export type ProvidersQueryVariables = Exact<{
   pagination: ConnectionArgs;
   filter: ProviderFilter;
@@ -1613,6 +1620,41 @@ export function useOrdersSelectLazyQuery(baseOptions?: ApolloReactHooks.LazyQuer
 export type OrdersSelectQueryHookResult = ReturnType<typeof useOrdersSelectQuery>;
 export type OrdersSelectLazyQueryHookResult = ReturnType<typeof useOrdersSelectLazyQuery>;
 export type OrdersSelectQueryResult = Apollo.QueryResult<OrdersSelectQuery, OrdersSelectQueryVariables>;
+export const OrderDocument = gql`
+    query Order($id: String!) {
+  order(_id: $id) {
+    _id
+  }
+}
+    `;
+
+/**
+ * __useOrderQuery__
+ *
+ * To run a query within a React component, call `useOrderQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOrderQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOrderQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useOrderQuery(baseOptions: ApolloReactHooks.QueryHookOptions<OrderQuery, OrderQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<OrderQuery, OrderQueryVariables>(OrderDocument, options);
+      }
+export function useOrderLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<OrderQuery, OrderQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<OrderQuery, OrderQueryVariables>(OrderDocument, options);
+        }
+export type OrderQueryHookResult = ReturnType<typeof useOrderQuery>;
+export type OrderLazyQueryHookResult = ReturnType<typeof useOrderLazyQuery>;
+export type OrderQueryResult = Apollo.QueryResult<OrderQuery, OrderQueryVariables>;
 export const ProvidersDocument = gql`
     query Providers($pagination: ConnectionArgs!, $filter: ProviderFilter!) {
   result: providers(pagination: $pagination, filter: $filter) {

@@ -8,7 +8,7 @@ export const LinkTo: FC<LinkToProps> = ({ url, address }) => {
     return (
         <>
             {url
-                ? <Link to={`${url}/${address}`} className={classes.linkto}>{address}</Link>
+                ? <Link to={url} className={classes.linkto}>{address}</Link>
                 : <span>{address}</span>}
         </>
     );

@@ -1,6 +1,7 @@
 import React, { memo, FC, useMemo } from 'react';
 import cn from 'classnames';
 import { Dropdown as DropdownBootstrap } from 'react-bootstrap';
+import { Spinner } from '@/uikit';
 import { DropdownProps } from './types';
 import { DropdownToggle } from './DropdownToggle';
 import { DropdownMenu } from './DropdownMenu';
@@ -18,11 +19,15 @@ export const Dropdown: FC<DropdownProps> = memo(({
     renderToggleLabel,
     renderItemLabel,
     defaultActive,
+    loading,
 }) => {
     const activeItemInList = useMemo(() => list.find(({ value }) => value === active), [list, active]);
     const activeItem = useMemo(() => activeItemInList || defaultActive || list[0], [activeItemInList, list, defaultActive]);
     return (
         <DropdownBootstrap className={cn(classes.wrap, classNameWrap)}>
+            {loading && (
+                <Spinner fullscreen />
+            )}
             <DropdownBootstrap.Toggle
                 as={DropdownToggleComponent || DropdownToggle}
                 id="dropdown-ui"

@@ -2,14 +2,23 @@ import {
     useCallback,
     useEffect,
     useMemo,
-    useState,
 } from 'react';
+import qs from 'query-string';
+import { useLocation } from 'react-router-dom';
+import { useHistory } from 'react-router';
 import { OperationVariables } from '@apollo/client';
 import { Tables } from '@/views/Home/types';
 import { PageClick } from '@/uikit/Table/TablePagination/types';
 import { SelectedWalletType } from '@/common/context/WalletProvider';
 import { useTablesSubscriptions } from './useTablesSubscriptions';
-import { useTablesQueryFetcher, UseTablesQueryFetcherResult } from './useTablesQueryFetcher';
+import {
+    useTablesQueryFetcher,
+    UseTablesQueryFetcherResult,
+} from './useTablesQueryFetcher';
+
+export enum UseTablesSkipType {
+    wallet = 'wallet'
+}
 
 export interface UseTablesResult {
     queryFetcher: UseTablesQueryFetcherResult;
@@ -18,20 +27,27 @@ export interface UseTablesResult {
 }
 
 export const useTables = (initialTable: Tables, selectedWalletType?: SelectedWalletType): UseTablesResult => {
+    const history = useHistory();
+    const location = useLocation();
+    const query = useMemo(() => qs.parse(location.search), [location]);
+    const table = useMemo<Tables>(() => (query?.table as Tables) || initialTable, [query, initialTable]);
     const skipByWallet = useMemo(() => {
         return (!selectedWalletType ? [Tables.Orders] : [])
-            .map((table) => ({ table, reason: 'Connect wallet to see your orders' }));
+            .map((table) => ({
+                table,
+                message: 'Connect wallet to see your orders',
+                type: UseTablesSkipType.wallet,
+            }));
     }, [selectedWalletType]);
-    const [table, setTable] = useState(initialTable);
-    const queryFetcher = useTablesQueryFetcher({ table, skip: skipByWallet });
+    const queryFetcher = useTablesQueryFetcher<UseTablesSkipType>({ table, skip: skipByWallet });
     useTablesSubscriptions(queryFetcher);
     const onChangeTable = useCallback((newTable: Tables, filter?: OperationVariables | null) => {
-        setTable(newTable);
+        history.push(`?table=${newTable}`);
         if (!skipByWallet.some(({ table }) => table === newTable)) {
             queryFetcher[newTable]?.onChangePage({ filter, pageClick: PageClick.FIRST });
         }
         // reset query data
-    }, [queryFetcher, skipByWallet]);
+    }, [queryFetcher, skipByWallet, history]);
     useEffect(() => {
         onChangeTable(table);
         // eslint-disable-next-line react-hooks/exhaustive-deps

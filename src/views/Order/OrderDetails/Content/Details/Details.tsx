@@ -1,13 +1,15 @@
 import { memo, useMemo } from 'react';
 import cn from 'classnames';
-
 import { Box, CardUi } from '@/uikit';
+import { useOrderQuery } from '@/gql/graphql';
 import { DetailsProps } from './types';
 import { Title } from './Title';
 import { getOrderInfo, getOrderTee } from './helpers';
 import classes from './Details.module.scss';
 
 export const Details = memo<DetailsProps>(({ id }) => {
+    const order = useOrderQuery({ variables: { id } });
+    console.log('order', order);
     const orderInfo = useMemo(() => getOrderInfo(id), [id]);
     const orderTee = useMemo(() => getOrderTee(id), [id]);
 

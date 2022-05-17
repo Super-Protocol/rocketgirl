@@ -25,6 +25,7 @@ export interface GetColumnsProps {
     table: Tables;
     showErrorModal: Function;
     showSuccessModal: Function;
+    urlBack: string;
 }
 
 // todo type
@@ -32,6 +33,7 @@ export const getColumns = ({
     table,
     showErrorModal,
     showSuccessModal,
+    urlBack,
 }: GetColumnsProps): any => {
     switch (table) {
         case Tables.Providers:
@@ -41,7 +43,7 @@ export const getColumns = ({
         case Tables.Offers:
             return getColumnsOffers();
         case Tables.Orders:
-            return getColumnsOrders();
+            return getColumnsOrders({ urlBack });
         default:
             return [];
     }
