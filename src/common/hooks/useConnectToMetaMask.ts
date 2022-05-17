@@ -39,7 +39,7 @@ export const getBalance = async (): Promise<Balance> => {
 
 export const useConnectToMetaMask = (actions: Actions): UseConnectToMetaMaskResult => {
     const connect = useCallback(async () => {
-        await new MetaMask(actions);
+        await new MetaMask(actions).activate();
     }, [actions]);
 
     return {

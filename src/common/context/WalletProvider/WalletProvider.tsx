@@ -1,10 +1,10 @@
 import React, {
     useCallback,
-    useEffect,
     useMemo,
     useState,
 } from 'react';
 import Web3 from 'web3';
+import { useMount } from 'react-use';
 import { Web3ReactStateUpdate } from '@web3-react/types';
 import { getBalance as getBalanceMetamask, useConnectToMetaMask } from '@/common/hooks/useConnectToMetaMask';
 import { getBalance as getBalanceWalletConnect, useConnectToWalletConnect } from '@/common/hooks/useConnectToWalletConnect';
@@ -47,32 +47,33 @@ export const useWallet = (): UseWalletResult => {
         setBalance(await getBalance(walletType, address));
     }, []);
     const actions = useCallback((walletType: WalletType) => ({
-        startActivation: () => () => {},
+        startActivation: () => () => { setSelectedWalletType(walletType); },
         update: async (stateUpdate: Web3ReactStateUpdate) => {
             setLoading(true);
             const { chainId, accounts } = stateUpdate || {};
             if (chainId && CONFIG.REACT_APP_CHAIN_ID !== chainId) {
-                setWallet((s) => ({ ...s, [walletType]: undefined }));
                 setSelectedWalletType(null);
                 showErrorModal(new Error('ChainId is not supported'));
+                setLoading(false);
                 return;
             }
             const selected = accounts?.[0];
             setWallet((s) => ({
                 ...s,
                 [walletType]: {
+                    ...s[walletType],
                     ...(chainId ? { chainId } : {}),
                     ...(selected ? { address: selected } : {}),
                     ...(accounts ? { accounts } : {}),
                 },
             }));
+            setSelectedWalletType(walletType);
             await updateBalance(walletType, selected);
             setLoading(false);
         },
         reportError: (error: Error | undefined) => {
             showErrorModal(error);
             setSelectedWalletType(null);
-            setWallet((s) => ({ ...s, walletType: undefined }));
         },
     }), [showErrorModal, setSelectedWalletType, updateBalance]);
     const { connect: connectMetaMask } = useConnectToMetaMask(actions(WalletType.metaMask));
@@ -91,7 +92,6 @@ export const useWallet = (): UseWalletResult => {
                 default:
                     break;
             }
-            setSelectedWalletType(walletType);
         } catch (e) {
             showErrorModal(e);
             setSelectedWalletType(null);
@@ -103,11 +103,9 @@ export const useWallet = (): UseWalletResult => {
         setSelectedWalletType(null);
         setWallet(getInitialWallet());
     }, [setSelectedWalletType]);
-
-    useEffect(() => {
+    useMount(() => {
         onChangeWallet(selectedWalletType);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [selectedWalletType]);
+    });
 
     return {
         wallet,
