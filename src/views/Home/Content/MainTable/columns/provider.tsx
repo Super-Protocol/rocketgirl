@@ -27,7 +27,7 @@ export const getColumns = (): Array<ColumnProps<ProviderColumns>> => [
         id: 'description',
         Cell: ({ row }) => {
             const { description } = row.original?.providerInfo || {};
-            return description ? <TooltipLink description={description} /> : '-';
+            return description ? <TooltipLink text={description} /> : '-';
         },
         width: 'auto',
         isEllipsis: true,

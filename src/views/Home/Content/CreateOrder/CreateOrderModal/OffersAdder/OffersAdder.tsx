@@ -4,12 +4,13 @@ import React, {
     useContext, ReactElement, JSXElementConstructor,
 } from 'react';
 import { useField, useFormikContext } from 'formik';
+import { TooltipLink } from '@/common/components/TooltipLink';
 import { ListAdderViewFormik } from '@/uikit';
 import { useSelectQueryCursorSPFetcher } from '@/common/hooks/useSelectQueryCursorSPFetcher';
 import { ModalOkCancelContext } from '@/common/context/ModalOkCancelProvider/ModalOkCancelProvider';
 import { OffersAdderProps } from './types';
 import { OffersListModal } from '../OffersListModal';
-import { FormValues } from '../types';
+import { FormValues, Info } from '../types';
 import classes from './OffersAdder.module.scss';
 
 export const OffersAdder: <TNode>(p: OffersAdderProps<TNode>) =>
@@ -24,10 +25,10 @@ export const OffersAdder: <TNode>(p: OffersAdderProps<TNode>) =>
         convertNode,
         showError,
     }) => {
-        const { values } = useFormikContext<FormValues>();
+        const { values } = useFormikContext<FormValues<Info>>();
         const [, { value }, { setValue }] = useField(name);
         const { goNext } = useContext(ModalOkCancelContext);
-        const { fetcher } = useSelectQueryCursorSPFetcher<any, { description?: string}>({ // todo
+        const { fetcher } = useSelectQueryCursorSPFetcher<any, any>({ // todo
             query,
             convertNode,
             variablesFilter: filter,
@@ -51,12 +52,19 @@ export const OffersAdder: <TNode>(p: OffersAdderProps<TNode>) =>
         }, [goNext, fetcher, value, name, values, label]);
         const onDeleteOffer = useCallback(({ isMulti, value: newValue }) => {
             if (isMulti) {
-                const newValues = value?.filter((oldValue) => oldValue !== newValue);
+                const newValues = (value || [])?.filter((oldValue) => oldValue?.value !== newValue?.value);
                 setValue(newValues?.length ? newValues : undefined);
             } else {
                 setValue(undefined);
             }
         }, [setValue, value]);
+        const renderItem = useCallback((item) => (
+            <TooltipLink
+                title="Description"
+                message={item?.info?.description}
+                text={item?.info?.name}
+            />
+        ), []);
 
         return (
             <ListAdderViewFormik
@@ -68,6 +76,7 @@ export const OffersAdder: <TNode>(p: OffersAdderProps<TNode>) =>
                 btnLabel={btnLabel}
                 className={className}
                 showError={showError}
+                renderItem={renderItem}
             />
         );
     });

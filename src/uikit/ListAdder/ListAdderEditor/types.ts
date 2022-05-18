@@ -1,13 +1,14 @@
 import { ApolloError } from '@apollo/client';
-import { LazyLoadFetcher, Value } from '@/uikit/types';
+import { LazyLoadFetcher } from '@/uikit/types';
+import { Item } from '@/uikit/LazyLoadCheckboxList/types';
 
 export interface ListAdderEditorFetcherData { description?: string }
 
-export interface ListAdderEditorProps {
+export interface ListAdderEditorProps<Info> {
     fetcher?: LazyLoadFetcher<ListAdderEditorFetcherData> | null;
     isMulti?: boolean;
-    values: Value[] | Value;
-    onSave?: (values: Value[] | Value) => void;
+    values: Item<Info>[] | Item<Info>;
+    onSave?: (values: Item<Info>[] | Item<Info>) => void;
     onCancel?: () => void;
     classes?: {
         wrap?: string;

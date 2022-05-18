@@ -1,4 +1,6 @@
 export interface TooltipLinkProps {
-    description: string;
+    title?: string;
     link?: string;
+    message?: string;
+    text: string;
 }

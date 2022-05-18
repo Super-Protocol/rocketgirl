@@ -6,12 +6,12 @@ import React, {
 } from 'react';
 import cn from 'classnames';
 import { Box, Button, Icon } from '@/uikit';
-import { Value } from '@/uikit/types';
-import { ListAdderViewProps } from './types';
+import { Item } from '@/uikit/LazyLoadCheckboxList/types';
+import { ListAdderViewProps, Info } from './types';
 import classes from './ListAdderView.module.scss';
 import { ListAdderViewList } from './ListAdderViewList';
 
-export const ListAdderView: FC<ListAdderViewProps> = memo(({
+export const ListAdderView: FC<ListAdderViewProps<Info>> = memo(({
     label,
     values,
     isMulti = false,
@@ -22,6 +22,7 @@ export const ListAdderView: FC<ListAdderViewProps> = memo(({
     className,
     error,
     isInvalid,
+    renderItem,
 }) => {
     const onAdd = useCallback(() => {
         onAddProps?.({ isMulti, values });
@@ -30,13 +31,13 @@ export const ListAdderView: FC<ListAdderViewProps> = memo(({
         onDeleteProps?.({ isMulti, value });
     }, [isMulti, onDeleteProps]);
     const list = useMemo(() => {
-        return ((isMulti ? values : (values ? [values] : [])) || []) as Value[];
+        return ((isMulti ? values : (values ? [values] : [])) || []) as Item<Info>[];
     }, [isMulti, values]);
 
     return (
         <Box direction="column" className={cn(className, { [classes.invalid]: isInvalid })}>
             <Box className={classes.label}>{label}</Box>
-            <ListAdderViewList list={list} onDelete={onDelete} />
+            <ListAdderViewList list={list} onDelete={onDelete} renderItem={renderItem} />
             {(isMulti || !values) && (
                 <Button className={classes.btn} onClick={onAdd}>
                     <Icon

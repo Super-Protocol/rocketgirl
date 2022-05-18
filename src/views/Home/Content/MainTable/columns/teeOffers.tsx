@@ -39,7 +39,7 @@ export const getColumns = (): Array<ColumnProps<TeeOffersColumns>> => [
         id: 'description',
         Cell: ({ row }) => {
             const { description } = row.original?.teeOfferInfo || {};
-            return description ? <TooltipLink description={description} /> : '-';
+            return description ? <TooltipLink text={description} /> : '-';
         },
         width: 'auto',
         isEllipsis: true,

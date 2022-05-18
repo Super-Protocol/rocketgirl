@@ -1,0 +1,1 @@
+export { TextCounter } from './TextCounter';

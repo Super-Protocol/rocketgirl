@@ -1,28 +1,32 @@
-import { Value } from '@/uikit/types';
+import { ReactNode } from 'react';
+import { Item } from '@/uikit/LazyLoadCheckboxList/types';
 
-export interface OnAddProps {
+export interface OnAddProps<Info> {
     isMulti: boolean;
-    values: Value | Value[];
+    values?: Item<Info> | Item<Info>[];
 }
 
-export interface OnDeleteProps {
+export interface OnDeleteProps<Info> {
     isMulti: boolean;
-    value: Value;
+    value: Item<Info>;
 }
 
-export interface ListAdderViewProps {
+export interface ListAdderViewProps<Info> {
     label?: string;
     btnLabel?: string;
-    values?: Value | Value[];
+    values?: Item<Info> | Item<Info>[];
     isMulti?: boolean;
-    onAdd?: (props: OnAddProps) => void;
-    onDelete?: (props: OnDeleteProps) => void;
+    onAdd?: (props: OnAddProps<Info>) => void;
+    onDelete?: (props: OnDeleteProps<Info>) => void;
     className?: string;
     error?: string;
     isInvalid?: boolean;
     showError?: boolean;
+    renderItem?: (value: Item<Info>) => ReactNode;
 }
 
-export interface ListAdderViewFormikProps extends ListAdderViewProps {
+export interface ListAdderViewFormikProps<Info> extends ListAdderViewProps<Info> {
     name: string;
 }
+
+export type Info = { description: string; name: string; };

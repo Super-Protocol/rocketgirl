@@ -25,4 +25,5 @@ export * from './LazyLoadList';
 export * from './LazyLoadCheckboxList';
 export * from './ListAdder';
 export * from './StatusBar';
+export * from './TextCounter';
 export * from './hooks';

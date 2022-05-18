@@ -17,6 +17,7 @@ export const GetTee: FC<GetTeeProps> = memo(({ className }) => {
     const onRefillTee = useCallback(async () => {
         setLoading(true);
         setLoading(false);
+        // todo
     }, [instance, address]);
     if (!address) return null;
 
