@@ -3,10 +3,15 @@ import { LazyLoadFetcher, Value } from '@/uikit/types';
 
 export interface LazyLoadCheckboxListFetcherData { description?: string }
 
-export interface LazyLoadCheckboxListProps {
+export interface Item<Info> {
+    value?: Value;
+    info?: Info;
+}
+
+export interface LazyLoadCheckboxListProps<Info> {
     fetcher?: LazyLoadFetcher<LazyLoadCheckboxListFetcherData> | null;
     isMulti?: boolean;
-    values: Value[] | Value;
-    onChange: (values: Value[] | Value) => void;
+    values: Item<Info>[] | Item<Info>;
+    onChange: (values?: Item<Info>[] | Item<Info>) => void;
     onError?: (e?: ApolloError | unknown) => void;
 }

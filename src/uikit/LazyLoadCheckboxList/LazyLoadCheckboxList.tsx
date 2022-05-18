@@ -4,30 +4,32 @@ import React, {
     useCallback,
     useMemo,
 } from 'react';
+import uniqby from 'lodash.uniqby';
 import { Box, LazyLoadList, CheckboxUi } from '@/uikit';
-import { Value } from '@/uikit/Select/types';
 import { RenderListProps } from '@/uikit/LazyLoadList/types';
-import { LazyLoadCheckboxListFetcherData, LazyLoadCheckboxListProps } from './types';
+import { LazyLoadCheckboxListFetcherData, LazyLoadCheckboxListProps, Item } from './types';
 import classes from './LazyLoadCheckboxList.module.scss';
 import { LazyLoadCheckboxListDescription } from './LazyLoadCheckboxListDescription';
 import { lazyLoadCheckboxListDescriptionClasses } from './helpers';
 
-export const LazyLoadCheckboxList: FC<LazyLoadCheckboxListProps> = memo(({
+type Info = any; // todo
+
+export const LazyLoadCheckboxList: FC<LazyLoadCheckboxListProps<Info>> = memo(({
     fetcher,
     isMulti = false,
     values,
     onChange: onChangeProp,
     onError,
 }) => {
-    const onChange = useCallback((value: Value, checked: boolean) => {
+    const onChange = useCallback((newItem: Item<Info>, checked: boolean) => {
         if (isMulti) {
             onChangeProp?.(
                 checked
-                    ? [...new Set([...(values || []) as Value[], value])]
-                    : ((values || []) as Value[]).filter((v) => v !== value),
+                    ? uniqby([...(values || []) as Item<Info>[], newItem], 'value')
+                    : ((values || []) as Item<Info>[]).filter((item) => item?.value !== newItem?.value),
             );
         } else {
-            onChangeProp?.(checked ? value : undefined);
+            onChangeProp?.(checked ? newItem as Item<Info> : undefined);
         }
     }, [values, onChangeProp, isMulti]);
     const renderList = useCallback(({ options }: RenderListProps<LazyLoadCheckboxListFetcherData>) => {
@@ -36,13 +38,15 @@ export const LazyLoadCheckboxList: FC<LazyLoadCheckboxListProps> = memo(({
             <Box direction="column" className={classes.listWrap}>
                 {options.map((option) => {
                     const { value, label, data } = option;
-                    const checked = isMulti ? ((values || []) as Value[]).includes(value) : value === values;
+                    const checked = isMulti
+                        ? ((values || []) as Item<Info>[]).some((option) => option?.value === value)
+                        : value === (values as Item<Info>)?.value;
                     return (
                         <Box
                             key={value as string}
                             className={classes.option}
                             alignItems="flex-start"
-                            onClick={() => onChange(value, !checked)}
+                            onClick={() => onChange({ value, info: data }, !checked)}
                         >
                             <Box className={classes.check}>
                                 {isMulti ? (
@@ -51,7 +55,7 @@ export const LazyLoadCheckboxList: FC<LazyLoadCheckboxListProps> = memo(({
                                         checked={checked}
                                         onChange={(checked, e) => {
                                             e.preventDefault();
-                                            onChange(value, !checked);
+                                            onChange({ value, info: data }, !checked);
                                         }}
                                     />
                                 ) : label}

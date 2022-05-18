@@ -12,49 +12,19 @@ query Orders($pagination: ConnectionArgs!, $filter: OrdersFilter) {
                     authority
                     consumer
                     parentOrder {
-                        offerName
-                        orderAddress
+                        offerInfo {
+                            name
+                        }
+                        address
                     }
                     offerInfo {
-                        allowedAccounts,
-                        allowedArgs
-                        argsPublicKey
-                        cancelable
-                        description
-                        disabledAfter
-                        group
-                        hash
-                        holdSum
-                        inputFormat
-                        linkage
-                        maxDurationTimeMinutes
                         name
                         offerType
-                        outputFormat
-                        properties
-                        restrictions {
-                            offers
-                            types
-                        }
-                        resultUrl
                     }
                     offerType
                     orderInfo {
-                        args {
-                            inputOffers
-                            selectedOffers
-                            slots
-                        }
-                        encryptedArgs
-                        encryptedRequirements
                         offer
-                        resultPublicKey
                         status
-                    }
-                    orderResult {
-                        encryptedError
-                        encryptedResult
-                        orderPrice
                     }
                     origins {
                         createdBy
@@ -63,15 +33,16 @@ query Orders($pagination: ConnectionArgs!, $filter: OrdersFilter) {
                         modifiedDate
                     }
                     teeOfferInfo {
-                        argsPublicKey
-                        description
-                        minTimeMinutes
                         name
-                        properties
-                        slots
-                        tcb
-                        teeType
-                        tlb
+                    }
+                    subOrders {
+                        teeOfferInfo {
+                            name
+                        }
+                        offerInfo {
+                            name
+                        }
+                        offerType
                     }
                 }
             }

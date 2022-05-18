@@ -40,7 +40,7 @@ export const getColumns = (): Array<ColumnProps<OffersColumns>> => [
         id: 'description',
         Cell: ({ row }) => {
             const { description } = row.original?.offerInfo || {};
-            return description ? <TooltipLink description={description} /> : '-';
+            return description ? <TooltipLink text={description} /> : '-';
         },
         width: 'auto',
         isEllipsis: true,

@@ -4,17 +4,21 @@ import { ListAdderViewListProps } from './types';
 import { ListAdderViewListItem } from './ListAdderViewListItem';
 import classes from './ListAdderViewList.module.scss';
 
-export const ListAdderViewList: FC<ListAdderViewListProps> = memo(({ list, onDelete }) => {
+export const ListAdderViewList: FC<ListAdderViewListProps<{ description: string; name: string; }>> = memo(({
+    list,
+    onDelete,
+    renderItem,
+}) => {
     if (!list?.length) return null;
     return (
         <Box direction="column">
-            {list.map((value) => (
+            {list.map((item) => (
                 <ListAdderViewListItem
-                    key={value as string}
-                    onDelete={() => onDelete?.(value)}
+                    key={item?.value as string}
+                    onDelete={() => onDelete?.(item)}
                     className={classes.listItem}
                 >
-                    {value}
+                    {renderItem ? renderItem?.(item) : item?.value}
                 </ListAdderViewListItem>
             ))}
         </Box>

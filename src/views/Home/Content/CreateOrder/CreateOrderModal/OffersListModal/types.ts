@@ -1,12 +1,13 @@
-import { LazyLoadFetcher, Value } from '@/uikit/types';
+import { LazyLoadFetcher } from '@/uikit/types';
+import { Item } from '@/uikit/LazyLoadCheckboxList/types';
 
 export interface OffersListModalPropsFetcherData { description?: string }
 
-export interface OffersListModalProps {
+export interface OffersListModalProps<Info> {
     isMulti?: boolean;
     fetcher?: LazyLoadFetcher<OffersListModalPropsFetcherData> | null;
-    value: Value[] | Value;
-    onSave?: (values: Value[] | Value) => void;
+    value: Item<Info>[] | Item<Info>;
+    onSave?: (values: Item<Info>[] | Item<Info>) => void;
     name: string;
     formValues: any; // todo
 }

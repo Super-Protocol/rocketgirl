@@ -1,13 +1,13 @@
 import React, { memo, FC } from 'react';
 import cn from 'classnames';
-import { Box, Icon, Ellipsis } from '@/uikit';
+import { Box, Icon } from '@/uikit';
 import { ListAdderViewListItemProps } from './types';
 import classes from './ListAdderViewListItem.module.scss';
 
 export const ListAdderViewListItem: FC<ListAdderViewListItemProps> = memo(({ children, onDelete, className }) => {
     return (
         <Box className={cn(classes.wrap, className)} alignItems="center" justifyContent="space-between">
-            <Ellipsis className={classes.text}>{children}</Ellipsis>
+            <span className={classes.text}>{children}</span>
             <Box>
                 <Icon
                     width={10}

@@ -25,10 +25,12 @@ import {
     getValidationSchema,
 } from './helpers';
 
-export const CreateOrderModal: FC<CreateOrderModalProps> = memo(({ initialValues: initialValuesProps }) => {
+type Info = any;
+
+export const CreateOrderModal: FC<CreateOrderModalProps<Info>> = memo(({ initialValues: initialValuesProps }) => {
     const { goBack } = useContext(ModalOkCancelContext);
     const validationSchema = useMemo(() => getValidationSchema(), []);
-    const [initialValues] = useState<FormValues>(initialValuesProps || {});
+    const [initialValues] = useState<FormValues<Info>>(initialValuesProps || {});
     const onCancel = useCallback(() => {
         goBack();
     }, [goBack]);
@@ -39,13 +41,13 @@ export const CreateOrderModal: FC<CreateOrderModalProps> = memo(({ initialValues
     return (
         <Box direction="column">
             <Formik
-                <FormValues>
+                <FormValues<Info>>
                 initialValues={initialValues}
                 enableReinitialize
                 validationSchema={validationSchema}
                 onSubmit={onSubmit}
             >
-                {({ submitForm }) => {
+                {({ submitForm, values }) => {
                     return (
                         <Box direction="column">
                             <Box direction="column">

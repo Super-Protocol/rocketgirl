@@ -8,7 +8,9 @@ import { Box, Button, LazyLoadCheckboxList } from '@/uikit';
 import { ListAdderEditorProps } from './types';
 import classes from './ListAdderEditor.module.scss';
 
-export const ListAdderEditor: FC<ListAdderEditorProps> = memo(({
+type Info = any; // todo
+
+export const ListAdderEditor: FC<ListAdderEditorProps<Info>> = memo(({
     isMulti,
     fetcher,
     onSave: onSaveProps,

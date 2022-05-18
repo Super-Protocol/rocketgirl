@@ -16,6 +16,31 @@ export type Scalars = {
   Float: number;
 };
 
+export type BaseOrder = {
+  __typename?: 'BaseOrder';
+  /** system identifier */
+  _id: Scalars['String'];
+  /** contract address */
+  address: Scalars['String'];
+  authority?: Maybe<Scalars['String']>;
+  consumer: Scalars['String'];
+  offerInfo?: Maybe<OfferInfo>;
+  offerType: TOfferType;
+  orderInfo: OrderInfo;
+  orderResult: OrderResult;
+  origins?: Maybe<Origins>;
+  teeOfferInfo?: Maybe<TeeOfferInfo>;
+};
+
+export type BaseOrderInputType = {
+  consumer: Scalars['String'];
+  offerInfo?: InputMaybe<OfferInfoInput>;
+  offerType: TOfferType;
+  orderInfo: OrderInfoInput;
+  orderResult: OrderResultInput;
+  teeOfferInfo?: InputMaybe<TeeOfferInfoInput>;
+};
+
 export type Config = {
   __typename?: 'Config';
   /** system identifier */
@@ -459,7 +484,8 @@ export type Order = {
   orderInfo: OrderInfo;
   orderResult: OrderResult;
   origins?: Maybe<Origins>;
-  parentOrder?: Maybe<ParentOrderInfo>;
+  parentOrder?: Maybe<ParentOrder>;
+  subOrders?: Maybe<Array<BaseOrder>>;
   teeOfferInfo?: Maybe<TeeOfferInfo>;
 };
 
@@ -559,7 +585,8 @@ export type OrderInputType = {
   offerType: TOfferType;
   orderInfo: OrderInfoInput;
   orderResult: OrderResultInput;
-  parentOrder?: InputMaybe<ParentOrderInfoInput>;
+  parentOrder?: InputMaybe<ParentOrderInputType>;
+  subOrders?: InputMaybe<Array<BaseOrderInputType>>;
   teeOfferInfo?: InputMaybe<TeeOfferInfoInput>;
 };
 
@@ -620,15 +647,31 @@ export type PageDataDto = {
   offset: Scalars['Float'];
 };
 
-export type ParentOrderInfo = {
-  __typename?: 'ParentOrderInfo';
-  offerName: Scalars['String'];
-  orderAddress: Scalars['String'];
+export type ParentOrder = {
+  __typename?: 'ParentOrder';
+  /** system identifier */
+  _id: Scalars['String'];
+  /** contract address */
+  address: Scalars['String'];
+  authority?: Maybe<Scalars['String']>;
+  consumer: Scalars['String'];
+  offerInfo?: Maybe<OfferInfo>;
+  offerType: TOfferType;
+  orderInfo: OrderInfo;
+  orderResult: OrderResult;
+  origins?: Maybe<Origins>;
+  parentOrder?: Maybe<Scalars['String']>;
+  teeOfferInfo?: Maybe<TeeOfferInfo>;
 };
 
-export type ParentOrderInfoInput = {
-  offerName: Scalars['String'];
-  orderAddress: Scalars['String'];
+export type ParentOrderInputType = {
+  consumer: Scalars['String'];
+  offerInfo?: InputMaybe<OfferInfoInput>;
+  offerType: TOfferType;
+  orderInfo: OrderInfoInput;
+  orderResult: OrderResultInput;
+  parentOrder?: InputMaybe<Scalars['String']>;
+  teeOfferInfo?: InputMaybe<TeeOfferInfoInput>;
 };
 
 export type Provider = {
@@ -1179,7 +1222,7 @@ export type OrdersQueryVariables = Exact<{
 }>;
 
 
-export type OrdersQuery = { __typename?: 'Query', result: { __typename?: 'ListOrdersResponse', pageData?: { __typename?: 'PageDataDto', count: number, limit: number, offset: number } | null, page: { __typename?: 'OrderConnection', edges?: Array<{ __typename?: 'OrderEdge', cursor?: string | null, node?: { __typename?: 'Order', _id: string, address: string, authority?: string | null, consumer: string, offerType: TOfferType, parentOrder?: { __typename?: 'ParentOrderInfo', offerName: string, orderAddress: string } | null, offerInfo?: { __typename?: 'OfferInfo', allowedAccounts?: Array<string> | null, allowedArgs?: string | null, argsPublicKey: string, cancelable: boolean, description: string, disabledAfter: number, group: string, hash: string, holdSum: number, inputFormat: string, linkage: string, maxDurationTimeMinutes: number, name: string, offerType: string, outputFormat: string, properties: string, resultUrl: string, restrictions?: { __typename?: 'OfferRestrictions', offers?: Array<string> | null, types?: Array<TOfferType> | null } | null } | null, orderInfo: { __typename?: 'OrderInfo', encryptedArgs: string, encryptedRequirements: string, offer: string, resultPublicKey: string, status: string, args: { __typename?: 'OrderArgs', inputOffers?: Array<string> | null, selectedOffers?: Array<string> | null, slots?: number | null } }, orderResult: { __typename?: 'OrderResult', encryptedError?: string | null, encryptedResult?: string | null, orderPrice?: number | null }, origins?: { __typename?: 'Origins', createdBy: string, createdDate: number, modifiedBy: string, modifiedDate: number } | null, teeOfferInfo?: { __typename?: 'TeeOfferInfo', argsPublicKey: string, description: string, minTimeMinutes: number, name: string, properties: string, slots: number, tcb: string, teeType: string, tlb: string } | null } | null }> | null, pageInfo?: { __typename?: 'OrderPageInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } | null } } };
+export type OrdersQuery = { __typename?: 'Query', result: { __typename?: 'ListOrdersResponse', pageData?: { __typename?: 'PageDataDto', count: number, limit: number, offset: number } | null, page: { __typename?: 'OrderConnection', edges?: Array<{ __typename?: 'OrderEdge', cursor?: string | null, node?: { __typename?: 'Order', _id: string, address: string, authority?: string | null, consumer: string, offerType: TOfferType, parentOrder?: { __typename?: 'ParentOrder', address: string, offerInfo?: { __typename?: 'OfferInfo', name: string } | null } | null, offerInfo?: { __typename?: 'OfferInfo', name: string, offerType: string } | null, orderInfo: { __typename?: 'OrderInfo', offer: string, status: string }, origins?: { __typename?: 'Origins', createdBy: string, createdDate: number, modifiedBy: string, modifiedDate: number } | null, teeOfferInfo?: { __typename?: 'TeeOfferInfo', name: string } | null, subOrders?: Array<{ __typename?: 'BaseOrder', offerType: TOfferType, teeOfferInfo?: { __typename?: 'TeeOfferInfo', name: string } | null, offerInfo?: { __typename?: 'OfferInfo', name: string } | null }> | null } | null }> | null, pageInfo?: { __typename?: 'OrderPageInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } | null } } };
 
 export type OrdersSelectQueryVariables = Exact<{
   pagination: ConnectionArgs;
@@ -1466,49 +1509,19 @@ export const OrdersDocument = gql`
           authority
           consumer
           parentOrder {
-            offerName
-            orderAddress
+            offerInfo {
+              name
+            }
+            address
           }
           offerInfo {
-            allowedAccounts
-            allowedArgs
-            argsPublicKey
-            cancelable
-            description
-            disabledAfter
-            group
-            hash
-            holdSum
-            inputFormat
-            linkage
-            maxDurationTimeMinutes
             name
             offerType
-            outputFormat
-            properties
-            restrictions {
-              offers
-              types
-            }
-            resultUrl
           }
           offerType
           orderInfo {
-            args {
-              inputOffers
-              selectedOffers
-              slots
-            }
-            encryptedArgs
-            encryptedRequirements
             offer
-            resultPublicKey
             status
-          }
-          orderResult {
-            encryptedError
-            encryptedResult
-            orderPrice
           }
           origins {
             createdBy
@@ -1517,15 +1530,16 @@ export const OrdersDocument = gql`
             modifiedDate
           }
           teeOfferInfo {
-            argsPublicKey
-            description
-            minTimeMinutes
             name
-            properties
-            slots
-            tcb
-            teeType
-            tlb
+          }
+          subOrders {
+            teeOfferInfo {
+              name
+            }
+            offerInfo {
+              name
+            }
+            offerType
           }
         }
       }

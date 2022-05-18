@@ -8,23 +8,19 @@ import {
 import {
     ProvidersDocument,
     Provider,
-    ProvidersQuery,
     OffersDocument,
     Offer,
-    OffersQuery,
     TeeOffersDocument,
     TeeOffer,
-    TeeOffersQuery,
     OrdersDocument,
     Order,
-    OrdersQuery,
 } from '@/gql/graphql';
 
 export interface UseTablesQueryFetcherResult {
-    [Tables.Providers]: UseTableQueryFetcherResult<Provider, ProvidersQuery>;
-    [Tables.Offers]: UseTableQueryFetcherResult<Offer, OffersQuery>;
-    [Tables.TEEOffers]: UseTableQueryFetcherResult<TeeOffer, TeeOffersQuery>;
-    [Tables.Orders]: UseTableQueryFetcherResult<Order, OrdersQuery>;
+    [Tables.Providers]: UseTableQueryFetcherResult<Provider>;
+    [Tables.Offers]: UseTableQueryFetcherResult<Offer>;
+    [Tables.TEEOffers]: UseTableQueryFetcherResult<TeeOffer>;
+    [Tables.Orders]: UseTableQueryFetcherResult<Order>;
 }
 
 export type FetcherByTable = UseTablesQueryFetcherResult[Tables.Providers]
@@ -50,25 +46,25 @@ export const useTablesQueryFetcher = <SkipType>(
         if (table !== currentTable) return { type: null, message: undefined };
         return skip?.find(({ table: skipTable }) => skipTable === currentTable) || undefined;
     }, [table, skip]);
-    const providers = useTableQueryFetcher<Provider, ProvidersQuery>({
+    const providers = useTableQueryFetcher<Provider>({
         gql: ProvidersDocument,
         queryOptions: { variables: { pagination: { sortBy: 'origins.modifiedDate' } } },
         subscriptionKey: 'address',
         skip: getSkipQuery(Tables.Providers),
     });
-    const offers = useTableQueryFetcher<Offer, OffersQuery>({
+    const offers = useTableQueryFetcher<Offer>({
         gql: OffersDocument,
         queryOptions: { variables: { pagination: { sortBy: 'origins.modifiedDate' } } },
         subscriptionKey: 'address',
         skip: getSkipQuery(Tables.Offers),
     });
-    const teeOffers = useTableQueryFetcher<TeeOffer, TeeOffersQuery>({
+    const teeOffers = useTableQueryFetcher<TeeOffer>({
         gql: TeeOffersDocument,
         queryOptions: { variables: { pagination: { sortBy: 'origins.modifiedDate' } } },
         subscriptionKey: 'address',
         skip: getSkipQuery(Tables.TEEOffers),
     });
-    const orders = useTableQueryFetcher<Order, OrdersQuery>({
+    const orders = useTableQueryFetcher<Order>({
         gql: OrdersDocument,
         queryOptions: { variables: { pagination: { sortBy: 'origins.modifiedDate' } } },
         subscriptionKey: 'address',

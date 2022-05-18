@@ -1,4 +1,5 @@
 export interface TooltipLinkPopoverProps {
-    description: string;
+    title?: string;
     link?: string;
+    message?: string;
 }
