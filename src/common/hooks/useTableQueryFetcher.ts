@@ -246,7 +246,7 @@ export const useTableQueryFetcher = <
     const [
         getQueryData,
         queryData,
-    ] = useLazyQuery<TData, TVariables>(gql, queryOptions);
+    ] = useLazyQuery<TData, TVariables>(gql, queryOptions as any);
     const list = useMemo(() => getList<TNode>({ data: queryData.data, isReverse }), [queryData.data, isReverse]);
     const pageData = useMemo(() => queryData?.data?.result?.pageData, [queryData]);
     const pageInfo = useMemo(() => queryData?.data?.result?.page?.pageInfo, [queryData]);
@@ -268,7 +268,6 @@ export const useTableQueryFetcher = <
         } else if (pageClick === PageClick.FIRST) {
             setIsReverse(false);
         }
-        deleteFromDiff();
         deleteFromDiffTimeout();
         const variables = getVariables({
             pageClick,
@@ -282,12 +281,11 @@ export const useTableQueryFetcher = <
             await getQueryData({ variables }).catch(() => {});
         }
         setPageIndex(pageIndex || 0);
-    }, [getQueryData, getVariables, pageInfo, isReverse, pageSize, deleteFromDiff, deleteFromDiffTimeout]);
+    }, [getQueryData, getVariables, pageInfo, isReverse, pageSize, deleteFromDiffTimeout]);
 
     const refetch = useCallback(async () => {
         await queryData.refetch().catch(() => {});
-        deleteFromDiffTimeout?.();
-    }, [queryData, deleteFromDiffTimeout]);
+    }, [queryData]);
 
     const onChangePageSize = useCallback(async (newPageSize: number) => {
         await getQueryData({
@@ -304,7 +302,9 @@ export const useTableQueryFetcher = <
 
     useMount(() => {
         if (!skip) {
-            refetch();
+            refetch().then(() => {
+                deleteFromDiffTimeout?.();
+            });
         }
     });
 
