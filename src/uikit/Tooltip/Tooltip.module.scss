@@ -72,7 +72,7 @@
 
 .orange {
   background-color: var(--orange4);
-  color: var(--white);
+  color: var(--white100);
   &:global(.bs-popover-bottom), &:global(.bs-popover-bottom-start) {
     :global(.arrow) {
       &::before, &::after {

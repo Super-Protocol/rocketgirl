@@ -1,6 +1,6 @@
-$color-white: var(--white1);
-$color-black: #242C37;
-$color-orange: var(--orange4);
+$color-white: var(--white100);
+$color-black: var(--black100);
+$color-orange: var(--orange90);
 
 .checkbox {
   position: relative;
@@ -37,8 +37,8 @@ $color-orange: var(--orange4);
         }
 
         &_invalid {
-          border-color: #e30613 !important;
-          background: #e30613 !important;
+          border-color: var(--red100) !important;
+          background: var(--red100) !important;
         }
 
         svg {
@@ -56,7 +56,7 @@ $color-orange: var(--orange4);
 
       &__label {
         &_invalid {
-          color: #e30613;
+          color: var(--red100);
         }
       }
     }
@@ -82,7 +82,7 @@ $color-orange: var(--orange4);
     }
 
     &_invalid {
-      border-color: #e30613;
+      border-color: var(--red100);
     }
 
     svg {

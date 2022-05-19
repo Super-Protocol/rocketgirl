@@ -57,6 +57,7 @@ export const MainTable: FC<MainTableProps> = memo(({
     const diff = useMemo(() => getDiff(fetcher), [fetcher]);
     const activeDiffIndexes = useMemo(() => getDiffIndexes(active), [active]);
     const activeDiffIndexesMemoCompare = useMemoCompare<GetDiffIndexesResult>(activeDiffIndexes, isEqual);
+    // const activeDiffIndexesMemoCompare = new Map([[0, new Set(['0x1a4587c46aA6545483259bd28d3C3CB6A4fA4Cd9'])]]);
     const spinnerProps = useMemo(() => ({ fullscreen: true }), []);
     const skip = useMemo(() => active?.skip, [active]);
     const data = useMemo(() => (!skip && active?.list ? active?.list : []), [active, skip]);

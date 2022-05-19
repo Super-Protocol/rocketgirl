@@ -21,5 +21,5 @@ export const GetTee: FC<GetTeeProps> = memo(({ className }) => {
     }, [instance, address]);
     if (!address) return null;
 
-    return <Button variant="transparent-orange" loading={loading} className={className} onClick={onRefillTee}>Get TEE</Button>;
+    return <Button variant="link" loading={loading} className={className} onClick={onRefillTee}>Get TEE</Button>;
 });

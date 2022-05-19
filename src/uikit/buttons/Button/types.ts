@@ -1,13 +1,6 @@
 import type { ReactNode, DetailedHTMLProps, ButtonHTMLAttributes } from 'react';
 
-export type variants = 'red'
-    | 'white'
-    | 'grey'
-    | 'grey-light'
-    | 'transparent-black'
-    | 'transparent-black-hover'
-    | 'transparent-orange'
-    | 'orange';
+export type variants = 'primary' | 'secondary' | 'tertiary' | 'link' | 'quaternary';
 
 export type sizes = 'sm' | 'lg';
 

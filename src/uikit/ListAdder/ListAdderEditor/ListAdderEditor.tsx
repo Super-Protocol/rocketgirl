@@ -40,8 +40,8 @@ export const ListAdderEditor: FC<ListAdderEditorProps<Info>> = memo(({
                 onError={onError}
             />
             <Box justifyContent="flex-end">
-                <Button variant="grey-light" onClick={onCancel}>Cancel</Button>
-                {isMulti && <Button variant="orange" onClick={onSave} className={classes.btnSave}>Add</Button>}
+                <Button variant="secondary" onClick={onCancel}>Cancel</Button>
+                {isMulti && <Button variant="primary" onClick={onSave} className={classes.btnSave}>Add</Button>}
             </Box>
         </Box>
     );

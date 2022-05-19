@@ -105,13 +105,13 @@ export const CreateOrderModal: FC<CreateOrderModalProps<Info>> = memo(({ initial
                             </Box>
                             <Box justifyContent="flex-end">
                                 <Button
-                                    variant="grey-light"
+                                    variant="secondary"
                                     className={classes.btnCancel}
                                     onClick={onCancel}
                                 >
                                     Cancel
                                 </Button>
-                                <Button variant="orange" onClick={submitForm}>Create</Button>
+                                <Button variant="primary" onClick={submitForm}>Create</Button>
                             </Box>
                         </Box>
                     );
