@@ -24,6 +24,7 @@ export const OffersAdder: <TNode>(p: OffersAdderProps<TNode>) =>
         className,
         convertNode,
         showError,
+        checkTouched,
     }) => {
         const { values } = useFormikContext<FormValues<Info>>();
         const [, { value }, { setValue }] = useField(name);
@@ -77,6 +78,7 @@ export const OffersAdder: <TNode>(p: OffersAdderProps<TNode>) =>
                 className={className}
                 showError={showError}
                 renderItem={renderItem}
+                checkTouched={checkTouched}
             />
         );
     });

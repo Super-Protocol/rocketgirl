@@ -6,22 +6,22 @@
 .prepend {
   height: 100%;
   padding: 0 4px 0 12px;
-  color: var(--grey1);
+  color: var(--grey30);
 }
 
 .inputWrap{
-  border: 1px solid var(--white3);
+  border: 1px solid var(--grey30);
   border-radius: 4px;
-  background: var(--white);
+  background: var(--white100);
   display: flex;
   margin-bottom: 0;
   align-items: center;
   position: relative;
   &_invalid {
-    border-color: var(--red);
+    border-color: var(--red100);
   }
   &_focused {
-    border-color: var(--black1);
+    border-color: var(--black100);
   }
 }
 
@@ -35,10 +35,10 @@
   background-image: none;
   background-color: transparent;
   box-shadow: none;
-  color: var(--black5);
+  color: var(--black100);
   outline: none;
   &::placeholder {
-    color: var(--grey1);
+    color: var(--grey30);
   }
 }
 
@@ -48,10 +48,13 @@
 }
 
 .label {
-    display: flex;
-    margin-bottom: .5rem;
-    font-size: 12px;
-    white-space: nowrap;
+  display: flex;
+  margin-bottom: .5rem;
+  font-size: 12px;
+  white-space: nowrap;
+  &_invalid {
+    color: var(--red100);
+  }
 }
 
 .errorEmpty {
@@ -61,7 +64,7 @@
 .error {
   margin-top: 2px;
   font-size: 80%;
-  color: var(--red);
+  color: var(--red100);
   min-height: 18px;
 }
 

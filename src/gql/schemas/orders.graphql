@@ -79,7 +79,20 @@ query OrdersSelect($pagination: ConnectionArgs!, $filter: OrdersFilter) {
 }
 
 query Order($id: String!) {
-    order(_id: $id) {
-        _id
+    order(address: $id) {
+        address
+        origins {
+            createdBy
+            createdDate
+            modifiedBy
+            modifiedDate
+        }
+        orderInfo {
+            status
+        }
+        teeOfferInfo {
+            name
+            description
+        }
     }
 }

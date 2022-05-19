@@ -15,4 +15,4 @@ export interface CreateOrderModalProps<Info> {
     initialValues?: FormValues<Info>;
 }
 
-export type Info = { description: string; }
+export type Info = { description: string; name: string; }

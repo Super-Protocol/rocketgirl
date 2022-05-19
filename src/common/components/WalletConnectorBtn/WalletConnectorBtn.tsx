@@ -18,5 +18,5 @@ export const WalletConnectorBtn: FC<WalletConnectorBtnProps> = memo(() => {
         await onChangeWallet(WalletType.metaMask);
     }, [onChangeWallet]);
     if (isConnected) return null;
-    return <Button variant="orange" onClick={onClickMetamask} loading={loading}>Connect wallet</Button>;
+    return <Button variant="primary" onClick={onClickMetamask} loading={loading}>Connect wallet</Button>;
 });

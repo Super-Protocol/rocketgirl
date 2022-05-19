@@ -9,7 +9,7 @@ export const Header = (): ReactElement => {
     return (
         <HeaderUIKit>
             <Button
-                variant="grey-light"
+                variant="secondary"
                 onClick={navigateBack}
             >
                 Back

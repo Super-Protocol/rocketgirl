@@ -36,7 +36,7 @@ export const TrippleContainer: FC<TrippleContainerProps> = memo(({
                 <div className={classes.header}>
                     <div>
                         {(!isHideBackFromQuery && !isHideBack) && (
-                            <Button variant="grey-light" data-testid="tripple-back" onClick={navigateBack}>
+                            <Button variant="secondary" data-testid="tripple-back" onClick={navigateBack}>
                                 {buttonText}
                             </Button>
                         )}

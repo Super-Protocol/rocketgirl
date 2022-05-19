@@ -221,7 +221,10 @@ export const InputUi: FC<InputUiProps> = memo(({
     return (
         <div className={cn(classes.wrap, classNameWrap)}>
             {!!label && (
-                <div className={cn(classes.label, classNameLabel)} data-testid="input-label">
+                <div
+                    className={cn(classes.label, classNameLabel, { [classes.label_invalid]: isInvalid })}
+                    data-testid="input-label"
+                >
                     {label}
                     {tooltip && <Tooltip tooltip={tooltip} />}
                 </div>

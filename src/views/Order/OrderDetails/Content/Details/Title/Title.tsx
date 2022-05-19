@@ -8,9 +8,9 @@ export const Title = (): ReactElement => {
         <Box justifyContent="space-between" className={classes.wrap}>
             <div className={classes.title}>Order details</div>
             <Box>
-                <Button variant="transparent-orange">Cancel order</Button>
-                <Button variant="transparent-black-hover" className={classes.replenishbtn}>Replenish Deposit</Button>
-                <Button variant="orange" className={classes.resultbtn}>Get Result</Button>
+                <Button variant="tertiary">Cancel order</Button>
+                <Button variant="quaternary" className={classes.replenishbtn}>Replenish Deposit</Button>
+                <Button variant="primary" className={classes.resultbtn}>Get Result</Button>
             </Box>
         </Box>
     );

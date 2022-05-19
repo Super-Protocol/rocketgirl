@@ -65,7 +65,7 @@ export const FilterForm: FC<FilterFormProps> = memo(() => {
                     resetForm({});
                     submitForm();
                 }}
-                variant="grey-light"
+                variant="secondary"
                 className={classes.btnClear}
             >
                 Clear

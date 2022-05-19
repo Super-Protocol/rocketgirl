@@ -1,6 +1,6 @@
 .wrap {
   display: flex;
-  background-color: var(--white1);
+  background-color: var(--grey20);
   padding: 7px 5px;
   justify-content: flex-end;
   border-radius: 4px;
@@ -11,7 +11,7 @@
   font-size: 14px;
 }
 .toggle {
-  color: var(--orange1);
+  color: var(--orange100);
 }
 
 .toggleActive {}

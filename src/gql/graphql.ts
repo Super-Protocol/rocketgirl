@@ -616,6 +616,8 @@ export type OrdersFilter = {
   address?: InputMaybe<Scalars['String']>;
   /** filter by orderInfo -> args -> inputOffers */
   inputOffers?: InputMaybe<Array<Scalars['String']>>;
+  /** filter by parentOrder->orderAddress */
+  parentOrder?: InputMaybe<Scalars['String']>;
   /** filter by orderInfo -> args -> selectedOffers */
   selectedOffers?: InputMaybe<Array<Scalars['String']>>;
   /** filter by orderInfo -> status */
@@ -833,7 +835,7 @@ export type QueryOffersArgs = {
 
 
 export type QueryOrderArgs = {
-  _id: Scalars['String'];
+  address: Scalars['String'];
 };
 
 
@@ -1237,7 +1239,7 @@ export type OrderQueryVariables = Exact<{
 }>;
 
 
-export type OrderQuery = { __typename?: 'Query', order: { __typename?: 'Order', _id: string } };
+export type OrderQuery = { __typename?: 'Query', order: { __typename?: 'Order', address: string, origins?: { __typename?: 'Origins', createdBy: string, createdDate: number, modifiedBy: string, modifiedDate: number } | null, orderInfo: { __typename?: 'OrderInfo', status: string }, teeOfferInfo?: { __typename?: 'TeeOfferInfo', name: string, description: string } | null } };
 
 export type ProvidersQueryVariables = Exact<{
   pagination: ConnectionArgs;
@@ -1636,8 +1638,21 @@ export type OrdersSelectLazyQueryHookResult = ReturnType<typeof useOrdersSelectL
 export type OrdersSelectQueryResult = Apollo.QueryResult<OrdersSelectQuery, OrdersSelectQueryVariables>;
 export const OrderDocument = gql`
     query Order($id: String!) {
-  order(_id: $id) {
-    _id
+  order(address: $id) {
+    address
+    origins {
+      createdBy
+      createdDate
+      modifiedBy
+      modifiedDate
+    }
+    orderInfo {
+      status
+    }
+    teeOfferInfo {
+      name
+      description
+    }
   }
 }
     `;

@@ -12,4 +12,5 @@ export interface OffersAdderProps<TNode> {
     className?: string;
     convertNode?: ConvertNode<TNode>;
     showError?: boolean;
+    checkTouched?: boolean;
 }

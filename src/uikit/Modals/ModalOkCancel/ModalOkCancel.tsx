@@ -49,14 +49,14 @@ export const ModalOkCancel: FC<ModalOkCancelProps> = memo(({
                                     {!!messages?.cancel && (
                                         <Button
                                             onClick={onCancel}
-                                            variant="transparent-black"
+                                            variant="secondary"
                                             className={cn(classes.btn, classes.btnCancel)}
                                         >
                                             {messages.cancel}
                                         </Button>
                                     )}
                                     {!!messages?.ok && (
-                                        <Button onClick={onContinue} className={classes.btn} variant="red">
+                                        <Button onClick={onContinue} className={classes.btn} variant="primary">
                                             {messages.ok}
                                         </Button>
                                     )}
