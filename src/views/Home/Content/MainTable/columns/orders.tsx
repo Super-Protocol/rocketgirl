@@ -2,8 +2,8 @@ import { ColumnProps } from 'react-table';
 import { Order, TOfferType } from '@/gql/graphql';
 import { CopyToClipboard, TextCounter } from '@/uikit';
 import { UseTableQueryFetcherResultList } from '@/common/hooks/useTableQueryFetcher';
-import { getTableDate } from '@/views/Home/Content/MainTable/helpers';
 import { StatusBar } from '@/common/components/StatusBar';
+import { getTableDate } from '@/common/helpers';
 
 export type OrdersColumns = UseTableQueryFetcherResultList<Order>;
 export interface GetColumnsProps {
@@ -23,6 +23,7 @@ export const getColumns = ({ urlBack }: GetColumnsProps): Array<ColumnProps<Orde
     {
         Header: 'ID',
         id: 'id',
+        width: 'auto',
         Cell: ({ row }) => {
             const { address } = row.original || {};
             if (!address) return '-';
@@ -46,16 +47,19 @@ export const getColumns = ({ urlBack }: GetColumnsProps): Array<ColumnProps<Orde
     {
         Header: 'Solutions',
         id: 'solutions',
+        width: 'auto',
         Cell: ({ row }) => getCellValueOffer(row, TOfferType.Solution),
     },
     {
         Header: 'Data',
         id: 'data',
+        width: 'auto',
         Cell: ({ row }) => getCellValueOffer(row, TOfferType.Data),
     },
     {
         Header: 'Storage',
         id: 'storage',
+        width: 'auto',
         Cell: ({ row }) => getCellValueOffer(row, TOfferType.Storage),
     },
     {
@@ -66,7 +70,7 @@ export const getColumns = ({ urlBack }: GetColumnsProps): Array<ColumnProps<Orde
             const { status } = orderInfo || {};
             return status ? <StatusBar status={status} /> : '-';
         },
-        width: 100,
+        width: 'auto',
         isEllipsis: true,
     },
     {
@@ -76,7 +80,7 @@ export const getColumns = ({ urlBack }: GetColumnsProps): Array<ColumnProps<Orde
             const { origins } = row.original || {};
             const { modifiedDate } = origins || {};
             if (!modifiedDate) return '-';
-            return getTableDate(modifiedDate / 1000);
+            return getTableDate(modifiedDate);
         },
         width: 'auto',
     },

@@ -1,4 +1,3 @@
-import dayjs from 'dayjs';
 import { Tables } from '@/views/Home/types';
 import { FetcherByTable, UseTablesQueryFetcherResult } from '@/views/Home/hooks/useTablesQueryFetcher';
 import { Diff } from '@/common/hooks/useTableDiff';
@@ -9,12 +8,6 @@ import { getColumns as getColumnsOffers, OffersColumns } from './columns/offers'
 import { getColumns as getColumnsOrders, OrdersColumns } from './columns/orders';
 import { TableTheme } from '@/uikit/Table/types';
 import { GetDiffIndexesResult } from './types';
-
-export const getTableDate = (date: number): string => {
-    if (!date) return '-';
-    const dj = dayjs(date * 1000);
-    return dj.isValid() ? dj.format('DD.MM.YYYY HH:mm') : '-';
-};
 
 export type Columns = ProviderColumns
     | TeeOffersColumns

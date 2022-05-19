@@ -4,15 +4,15 @@
 }
 
 .link {
-  color: var(--orange4);
+  color: var(--orange100);
   &:visited, &:active, &:link {
-    color: var(--orange4);
+    color: var(--orange100);
     text-decoration: none;
   }
 }
 
 .tooltip {
-  color: var(--black);
+  color: var(--black100);
   padding: 15px 15px 28px 15px;
   max-width: 332px;
 }

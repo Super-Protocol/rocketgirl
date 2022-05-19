@@ -13,7 +13,7 @@ import {
 } from '@/gql/graphql';
 import { Box, Button, InputFormik } from '@/uikit';
 import { ModalOkCancelContext } from '@/common/context/ModalOkCancelProvider/ModalOkCancelProvider';
-import { CreateOrderModalProps, FormValues } from './types';
+import { CreateOrderModalProps, FormValues, Info } from './types';
 import { OffersAdder } from './OffersAdder';
 import classes from './CreateOrderModal.module.scss';
 import {
@@ -25,29 +25,34 @@ import {
     getValidationSchema,
 } from './helpers';
 
-type Info = any;
-
 export const CreateOrderModal: FC<CreateOrderModalProps<Info>> = memo(({ initialValues: initialValuesProps }) => {
     const { goBack } = useContext(ModalOkCancelContext);
+    const [isValidating, setIsValidating] = useState(false);
     const validationSchema = useMemo(() => getValidationSchema(), []);
     const [initialValues] = useState<FormValues<Info>>(initialValuesProps || {});
     const onCancel = useCallback(() => {
         goBack();
     }, [goBack]);
-    const onSubmit = useCallback(({ values }) => {
-        // eslint-disable-next-line no-console
-        console.log('values', values);
+    const onSubmit = useCallback((submitForm) => async () => {
+        setIsValidating(true);
+        submitForm();
     }, []);
+    const onSubmitForm = useCallback(() => {
+        setIsValidating(true);
+    }, []);
+
     return (
         <Box direction="column">
             <Formik
                 <FormValues<Info>>
+                validateOnChange={isValidating}
+                validateOnBlur={isValidating}
                 initialValues={initialValues}
                 enableReinitialize
                 validationSchema={validationSchema}
-                onSubmit={onSubmit}
+                onSubmit={onSubmitForm}
             >
-                {({ submitForm, values }) => {
+                {({ submitForm }) => {
                     return (
                         <Box direction="column">
                             <Box direction="column">
@@ -61,6 +66,7 @@ export const CreateOrderModal: FC<CreateOrderModalProps<Info>> = memo(({ initial
                                     className={classes.adder}
                                     showError
                                     convertNode={valueOfferConvertNode}
+                                    checkTouched={!isValidating}
                                 />
                                 <OffersAdder
                                     <Offer>
@@ -73,6 +79,7 @@ export const CreateOrderModal: FC<CreateOrderModalProps<Info>> = memo(({ initial
                                     className={classes.adder}
                                     showError
                                     convertNode={valueOfferConvertNode}
+                                    checkTouched={!isValidating}
                                 />
                                 <OffersAdder
                                     <Offer>
@@ -84,6 +91,7 @@ export const CreateOrderModal: FC<CreateOrderModalProps<Info>> = memo(({ initial
                                     className={classes.adder}
                                     showError
                                     convertNode={valueOfferConvertNode}
+                                    checkTouched={!isValidating}
                                 />
                                 <OffersAdder
                                     <TeeOffer>
@@ -94,6 +102,7 @@ export const CreateOrderModal: FC<CreateOrderModalProps<Info>> = memo(({ initial
                                     className={classes.adder}
                                     showError
                                     convertNode={teeOfferConvertNode}
+                                    checkTouched={!isValidating}
                                 />
                                 <InputFormik
                                     name="deposit"
@@ -111,7 +120,7 @@ export const CreateOrderModal: FC<CreateOrderModalProps<Info>> = memo(({ initial
                                 >
                                     Cancel
                                 </Button>
-                                <Button variant="primary" onClick={submitForm}>Create</Button>
+                                <Button variant="primary" onClick={onSubmit(submitForm)}>Create</Button>
                             </Box>
                         </Box>
                     );

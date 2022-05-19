@@ -2,9 +2,9 @@ import React from 'react';
 import { ColumnProps } from 'react-table';
 import { TeeOffer } from '@/gql/graphql';
 import { CopyToClipboard } from '@/uikit';
-import { getTableDate } from '@/views/Home/Content/MainTable/helpers';
 import { UseTableQueryFetcherResultList } from '@/common/hooks/useTableQueryFetcher';
 import { TooltipLink } from '@/common/components/TooltipLink';
+import { getTableDate } from '@/common/helpers';
 
 export type TeeOffersColumns = UseTableQueryFetcherResultList<TeeOffer>;
 
@@ -68,7 +68,7 @@ export const getColumns = (): Array<ColumnProps<TeeOffersColumns>> => [
     {
         Header: 'Modified Date',
         id: 'modifiedDate',
-        Cell: ({ row }) => getTableDate(row.original?.origins?.modifiedDate / 1000),
+        Cell: ({ row }) => getTableDate(row.original?.origins?.modifiedDate),
         width: 'auto',
     },
 ];

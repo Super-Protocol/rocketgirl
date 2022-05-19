@@ -27,6 +27,7 @@ export interface ListAdderViewProps<Info> {
 
 export interface ListAdderViewFormikProps<Info> extends ListAdderViewProps<Info> {
     name: string;
+    checkTouched?: boolean;
 }
 
 export type Info = { description: string; name: string; };

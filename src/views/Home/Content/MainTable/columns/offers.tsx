@@ -2,8 +2,7 @@ import React from 'react';
 import { ColumnProps } from 'react-table';
 import { CopyToClipboard } from '@/uikit';
 import { TooltipLink } from '@/common/components/TooltipLink';
-import { getOfferTypeName } from '@/common/helpers';
-import { getTableDate } from '@/views/Home/Content/MainTable/helpers';
+import { getOfferTypeName, getTableDate } from '@/common/helpers';
 import { UseTableQueryFetcherResultList } from '@/common/hooks/useTableQueryFetcher';
 import { Offer } from '@/gql/graphql';
 
@@ -69,7 +68,7 @@ export const getColumns = (): Array<ColumnProps<OffersColumns>> => [
     {
         Header: 'Modified Date',
         id: 'modifiedDate',
-        Cell: ({ row }) => getTableDate(row.original?.origins?.modifiedDate / 1000),
+        Cell: ({ row }) => getTableDate(row.original?.origins?.modifiedDate),
         width: 'auto',
     },
 ];

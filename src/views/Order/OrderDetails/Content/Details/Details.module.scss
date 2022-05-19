@@ -1,5 +1,9 @@
-.card {
+.mr {
     margin-right: 30px;
+}
+
+.card {
+    max-width: calc(50% - 30px);
 }
 
 .line {

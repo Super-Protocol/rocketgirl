@@ -6,11 +6,11 @@
 .prepend {
   height: 100%;
   padding: 0 4px 0 12px;
-  color: var(--grey1);
+  color: var(--grey30);
 }
 
 .inputWrap{
-  border: 1px solid var(--white3);
+  border: 1px solid var(--grey30);
   border-radius: 4px;
   background: var(--white100);
   display: flex;
@@ -35,10 +35,10 @@
   background-image: none;
   background-color: transparent;
   box-shadow: none;
-  color: var(--black5);
+  color: var(--black100);
   outline: none;
   &::placeholder {
-    color: var(--grey1);
+    color: var(--grey30);
   }
 }
 
@@ -48,10 +48,13 @@
 }
 
 .label {
-    display: flex;
-    margin-bottom: .5rem;
-    font-size: 12px;
-    white-space: nowrap;
+  display: flex;
+  margin-bottom: .5rem;
+  font-size: 12px;
+  white-space: nowrap;
+  &_invalid {
+    color: var(--red100);
+  }
 }
 
 .errorEmpty {
