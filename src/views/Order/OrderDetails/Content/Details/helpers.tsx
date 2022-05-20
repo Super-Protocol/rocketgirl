@@ -3,6 +3,7 @@ import { OrderStatus } from '@super-protocol/sp-sdk-js';
 import { StatusBar } from '@/common/components/StatusBar';
 import { OrderQuery } from '@/gql/graphql';
 import { getTableDate } from '@/common/helpers';
+import { GetOrderInfoResult } from '@/connectors/orders';
 
 export interface TableInfoItem {
     key: string;
@@ -14,11 +15,10 @@ export interface TableInfo {
     list: TableInfoItem[];
 }
 
-export const getOrderInfo = (order?: OrderQuery['order']): TableInfo | null => {
+export const getInfo = (order?: OrderQuery['order'], orderInfoSdk?: GetOrderInfoResult): TableInfo | null => {
     if (!order) return null;
     const {
         address,
-        orderInfo,
         origins,
     } = order || {};
     return {
@@ -41,7 +41,7 @@ export const getOrderInfo = (order?: OrderQuery['order']): TableInfo | null => {
             },
             {
                 key: 'Status',
-                value: <StatusBar status={orderInfo?.status as OrderStatus} />,
+                value: <StatusBar status={orderInfoSdk?.status as OrderStatus} />,
             },
             {
                 key: 'Status information',
@@ -55,7 +55,7 @@ export const getOrderInfo = (order?: OrderQuery['order']): TableInfo | null => {
     };
 };
 
-export const getOrderTee = (order?: OrderQuery['order']): TableInfo | null => {
+export const getTee = (order?: OrderQuery['order']): TableInfo | null => {
     if (!order) return null;
     const {
         teeOfferInfo,
