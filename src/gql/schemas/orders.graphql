@@ -96,10 +96,6 @@ query Order($id: String!) {
             name
             description
         }
-        offerInfo {
-            name
-            description
-        }
     }
 }
 

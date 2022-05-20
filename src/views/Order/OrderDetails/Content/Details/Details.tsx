@@ -6,7 +6,7 @@ import { NoAccountBlock } from '@/common/components/NoAccountBlock';
 import { WalletContext } from '@/common/context/WalletProvider';
 import { DetailsProps } from './types';
 import { Title } from './Title';
-import { getOrderInfo, getOrderOffer } from './helpers';
+import { getOrderInfo, getOrderTee } from './helpers';
 import classes from './Details.module.scss';
 import { SubOrdersTable } from './SubOrdersTable';
 
@@ -17,7 +17,7 @@ export const Details = memo<DetailsProps>(({ id }) => {
     const order = useMemo(() => orderQuery.data?.order, [orderQuery]);
     const orderAddress = useMemo(() => order?.address, [order]);
     const orderInfo = useMemo(() => getOrderInfo(order), [order]);
-    const offerInfo = useMemo(() => getOrderOffer(order), [order]);
+    const tee = useMemo(() => getOrderTee(order), [order]);
     if (loading) return <Spinner fullscreen />;
     if (!isConnected) return <NoAccountBlock message="Connect your wallet to see if you made an order" />;
 
@@ -26,7 +26,7 @@ export const Details = memo<DetailsProps>(({ id }) => {
             <Title />
             <Box>
                 {!!orderInfo && (
-                    <CardUi classNameWrap={cn(classes.card, { [classes.mr]: !!offerInfo })}>
+                    <CardUi classNameWrap={cn(classes.card, { [classes.mr]: !!tee })}>
                         <Box direction="column">
                             {orderInfo.list.map((item, idx) => {
                                 const { key, value } = item;
@@ -40,11 +40,11 @@ export const Details = memo<DetailsProps>(({ id }) => {
                         </Box>
                     </CardUi>
                 )}
-                {!!offerInfo && (
+                {!!tee && (
                     <CardUi>
                         <Box direction="column">
-                            <div className={classes.cardTitle}>{offerInfo.title}</div>
-                            {offerInfo.list.map((item, idx) => {
+                            <div className={classes.cardTitle}>{tee.title}</div>
+                            {tee.list.map((item, idx) => {
                                 const { key, value } = item;
                                 return (
                                     <Box key={idx} className={classes.line}>

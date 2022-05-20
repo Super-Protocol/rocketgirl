@@ -55,18 +55,16 @@ export const getOrderInfo = (order?: OrderQuery['order']): TableInfo | null => {
     };
 };
 
-export const getOrderOffer = (order?: OrderQuery['order']): TableInfo | null => {
+export const getOrderTee = (order?: OrderQuery['order']): TableInfo | null => {
     if (!order) return null;
     const {
         teeOfferInfo,
-        offerInfo,
         consumer,
-        offerType,
     } = order || {};
-    if (!teeOfferInfo && !offerInfo) return null;
-    const { name, description } = offerInfo || teeOfferInfo || {};
+    if (!teeOfferInfo) return null;
+    const { name, description } = teeOfferInfo || {};
     return {
-        title: offerType,
+        title: 'TEE',
         list: [
             {
                 key: 'Id',

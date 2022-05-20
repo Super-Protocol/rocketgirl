@@ -1239,7 +1239,7 @@ export type OrderQueryVariables = Exact<{
 }>;
 
 
-export type OrderQuery = { __typename?: 'Query', order: { __typename?: 'Order', address: string, consumer: string, offerType: TOfferType, origins?: { __typename?: 'Origins', createdBy: string, createdDate: number, modifiedBy: string, modifiedDate: number } | null, orderInfo: { __typename?: 'OrderInfo', status: string }, teeOfferInfo?: { __typename?: 'TeeOfferInfo', name: string, description: string } | null, offerInfo?: { __typename?: 'OfferInfo', name: string, description: string } | null } };
+export type OrderQuery = { __typename?: 'Query', order: { __typename?: 'Order', address: string, consumer: string, offerType: TOfferType, origins?: { __typename?: 'Origins', createdBy: string, createdDate: number, modifiedBy: string, modifiedDate: number } | null, orderInfo: { __typename?: 'OrderInfo', status: string }, teeOfferInfo?: { __typename?: 'TeeOfferInfo', name: string, description: string } | null } };
 
 export type SubOrdersQueryVariables = Exact<{
   pagination: ConnectionArgs;
@@ -1660,10 +1660,6 @@ export const OrderDocument = gql`
       status
     }
     teeOfferInfo {
-      name
-      description
-    }
-    offerInfo {
       name
       description
     }
