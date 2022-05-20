@@ -15,7 +15,7 @@
     border-radius: 4px;
   }
   & > .toast-success {
-    background-color: var(--green);
+    background-color: var(--green100);
     @include img;
   }
 
@@ -25,10 +25,10 @@
   }
 
   & > .toast-warning {
-    background-color: var(--orange);
+    background-color: var(--yellow100);
   }
 
   & > .toast-info {
-    background-color: var(--grey2);
+    background-color: var(--grey100);
   }
 }

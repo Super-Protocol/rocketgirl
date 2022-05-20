@@ -6,6 +6,7 @@ import AppRouter from '@/router/AppRouter';
 import { Spinner } from '@/uikit';
 import { ModalOkCancelProvider } from '@/common/context/ModalOkCancelProvider/ModalOkCancelProvider';
 import { ApolloClientProvider } from '@/apollo/providers/ApolloClientProvider';
+import { WalletContextProvider } from '@/common/context/WalletProvider';
 import Global from './Global';
 
 const queryClient = new QueryClient();
@@ -15,9 +16,11 @@ const App = (): ReactElement => (
         <ApolloClientProvider>
             <QueryClientProvider client={queryClient}>
                 <Global>
-                    <ModalOkCancelProvider>
-                        <AppRouter />
-                    </ModalOkCancelProvider>
+                    <WalletContextProvider>
+                        <ModalOkCancelProvider>
+                            <AppRouter />
+                        </ModalOkCancelProvider>
+                    </WalletContextProvider>
                 </Global>
             </QueryClientProvider>
         </ApolloClientProvider>

@@ -1,7 +1,7 @@
 import Web3 from 'web3';
 
 export interface WalletInfo {
-    address?: string | null;
+    address?: string;
     chainId?: number | null;
     accounts?: string[];
 }
@@ -30,6 +30,7 @@ export interface UseWalletResult {
     balance: Balance;
     instance?: Web3;
     isConnected: boolean;
+    selectedAddress?: string;
 }
 
 export interface WalletContextProps extends UseWalletResult {}

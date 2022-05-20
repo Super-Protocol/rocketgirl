@@ -102,3 +102,12 @@ export const getTableDate = (date?: number): string => {
     const dj = dayjs(date);
     return dj.isValid() ? dj.format('DD.MM.YYYY HH:mm') : '-';
 };
+
+export const isJSONString = (str: string): boolean => {
+    try {
+        JSON.parse(str);
+    } catch (e) {
+        return false;
+    }
+    return true;
+};

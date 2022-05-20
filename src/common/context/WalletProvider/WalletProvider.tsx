@@ -2,15 +2,16 @@ import React, {
     useCallback,
     useMemo,
     useState,
+    memo,
 } from 'react';
 import Web3 from 'web3';
 import { useMount } from 'react-use';
 import { Web3ReactStateUpdate } from '@web3-react/types';
 import { getBalance as getBalanceMetamask, useConnectToMetaMask } from '@/common/hooks/useConnectToMetaMask';
 import { getBalance as getBalanceWalletConnect, useConnectToWalletConnect } from '@/common/hooks/useConnectToWalletConnect';
-import { useErrorModal } from '@/common/hooks/useErrorModal';
 import { useLocalStorage } from '@/common/hooks/useLocalStorage';
 import CONFIG from '@/config';
+import toastr from '@/services/Toastr/toastr';
 import {
     Balance, Wallet, WalletType, UseWalletResult, SelectedWalletType, WalletContextProps,
 } from './types';
@@ -32,7 +33,6 @@ export const getBalance = async (walletType: SelectedWalletType, address?: strin
 export const useWallet = (): UseWalletResult => {
     const [balance, setBalance] = useState(getInitialBalance);
     const [selectedWalletType, setSelectedWalletType] = useLocalStorage<SelectedWalletType>('wallet', null);
-    const { showErrorModal } = useErrorModal();
     const [loading, setLoading] = useState(false);
     const [wallet, setWallet] = useState(getInitialWallet);
     const instance = useMemo(() => {
@@ -53,7 +53,7 @@ export const useWallet = (): UseWalletResult => {
             const { chainId, accounts } = stateUpdate || {};
             if (chainId && CONFIG.REACT_APP_CHAIN_ID !== chainId) {
                 setSelectedWalletType(null);
-                showErrorModal(new Error('ChainId is not supported'));
+                toastr.error(new Error('ChainId is not supported'));
                 setLoading(false);
                 return;
             }
@@ -72,10 +72,10 @@ export const useWallet = (): UseWalletResult => {
             setLoading(false);
         },
         reportError: (error: Error | undefined) => {
-            showErrorModal(error);
+            toastr.error(error?.message || 'error');
             setSelectedWalletType(null);
         },
-    }), [showErrorModal, setSelectedWalletType, updateBalance]);
+    }), [setSelectedWalletType, updateBalance]);
     const { connect: connectMetaMask } = useConnectToMetaMask(actions(WalletType.metaMask));
     const { connect: connectWalletConnect } = useConnectToWalletConnect(actions(WalletType.walletConnect));
     const onChangeWallet = useCallback(async (walletType?: SelectedWalletType) => {
@@ -93,17 +93,18 @@ export const useWallet = (): UseWalletResult => {
                     break;
             }
         } catch (e) {
-            showErrorModal(e);
+            toastr.error(e);
             setSelectedWalletType(null);
         }
         setLoading(false);
-    }, [connectMetaMask, showErrorModal, setSelectedWalletType, connectWalletConnect, loading]);
+    }, [connectMetaMask, setSelectedWalletType, connectWalletConnect, loading]);
     const selectedWallet = useMemo(() => wallet[selectedWalletType as WalletType] || null, [wallet, selectedWalletType]);
     const logout = useCallback(async () => {
         setSelectedWalletType(null);
         setWallet(getInitialWallet());
     }, [setSelectedWalletType]);
-    const isConnected = useMemo(() => !!selectedWallet?.address, [selectedWallet]);
+    const selectedAddress = useMemo(() => selectedWallet?.address, [selectedWallet]);
+    const isConnected = useMemo(() => !!selectedAddress, [selectedAddress]);
     useMount(() => {
         onChangeWallet(selectedWalletType);
     });
@@ -118,6 +119,7 @@ export const useWallet = (): UseWalletResult => {
         balance,
         instance,
         isConnected,
+        selectedAddress,
     };
 };
 
@@ -131,7 +133,15 @@ export const WalletContext = React.createContext<WalletContextProps>({
     balance: getInitialBalance(),
     instance: undefined,
     isConnected: false,
+    selectedAddress: undefined,
 });
 
 export const WalletContextConsumer = WalletContext.Consumer;
-export const WalletContextProvider = WalletContext.Provider;
+export const WalletContextProvider = memo(({ children }) => {
+    const wallet = useWallet();
+    return (
+        <WalletContext.Provider value={wallet}>
+            {children}
+        </WalletContext.Provider>
+    );
+});

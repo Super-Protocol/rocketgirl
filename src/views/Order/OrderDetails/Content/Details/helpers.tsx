@@ -3,64 +3,93 @@ import { OrderStatus } from '@super-protocol/sp-sdk-js';
 import { StatusBar } from '@/common/components/StatusBar';
 import { OrderQuery } from '@/gql/graphql';
 import { getTableDate } from '@/common/helpers';
+import { GetOrderInfoResult } from '@/connectors/orders';
 
-export type OrderInfo = {
+export interface TableInfoItem {
     key: string;
     value: string | number | ReactNode;
-};
+}
 
-export const getOrderInfo = (order?: OrderQuery['order']): OrderInfo[] | null => {
-    if (!order) return [];
-    const { address, orderInfo, origins } = order || {};
-    return [
-        {
-            key: 'Id',
-            value: address,
-        }, {
-            key: 'File',
-            value: '',
-        }, {
-            key: 'Total Deposit',
-            value: '',
-        }, {
-            key: 'Unspent Deposit',
-            value: '',
-        }, {
-            key: 'Status',
-            value: <StatusBar status={orderInfo?.status as OrderStatus} />,
-        }, {
-            key: 'Status information',
-            value: '',
-        }, {
-            key: 'Modified Date',
-            value: getTableDate(origins?.modifiedDate),
-        },
-    ];
-};
+export interface TableInfo {
+    title?: string;
+    list: TableInfoItem[];
+}
 
-export const getOrderTee = (order?: OrderQuery['order']): OrderInfo[] | null => {
+export const getInfo = (order?: OrderQuery['order'], orderInfoSdk?: GetOrderInfoResult): TableInfo | null => {
     if (!order) return null;
-    const { teeOfferInfo } = order || {};
+    const {
+        address,
+        origins,
+    } = order || {};
+    return {
+        list: [
+            {
+                key: 'Id',
+                value: address,
+            },
+            {
+                key: 'File',
+                value: '',
+            },
+            {
+                key: 'Total Deposit',
+                value: '',
+            },
+            {
+                key: 'Unspent Deposit',
+                value: '',
+            },
+            {
+                key: 'Status',
+                value: <StatusBar status={orderInfoSdk?.status as OrderStatus} />,
+            },
+            {
+                key: 'Status information',
+                value: '',
+            },
+            {
+                key: 'Modified Date',
+                value: getTableDate(origins?.modifiedDate),
+            },
+        ],
+    };
+};
+
+export const getTee = (order?: OrderQuery['order']): TableInfo | null => {
+    if (!order) return null;
+    const {
+        teeOfferInfo,
+        consumer,
+    } = order || {};
     if (!teeOfferInfo) return null;
-    return [
-        {
-            key: 'Id',
-            value: '',
-        }, {
-            key: 'Provider',
-            value: '',
-        }, {
-            key: 'Name',
-            value: teeOfferInfo?.name || '-',
-        }, {
-            key: 'Description',
-            value: teeOfferInfo?.description || '-',
-        }, {
-            key: 'Estimated cost',
-            value: '',
-        }, {
-            key: 'Actual cost:',
-            value: '',
-        },
-    ];
+    const { name, description } = teeOfferInfo || {};
+    return {
+        title: 'TEE',
+        list: [
+            {
+                key: 'Id',
+                value: '',
+            },
+            {
+                key: 'Provider',
+                value: consumer || '-',
+            },
+            {
+                key: 'Name',
+                value: name || '-',
+            },
+            {
+                key: 'Description',
+                value: description || '-',
+            },
+            {
+                key: 'Estimated cost',
+                value: '',
+            },
+            {
+                key: 'Actual cost:',
+                value: '',
+            },
+        ],
+    };
 };

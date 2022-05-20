@@ -14,6 +14,9 @@ export const CopyToClipboard: FC<CopyToClipboardProps> = memo(({
     onClick = () => {},
     notification = true,
     isEllipsis = true,
+    isReverse = false,
+    classNameWrap,
+    classNameText,
     title,
     url,
 }) => {
@@ -25,18 +28,34 @@ export const CopyToClipboard: FC<CopyToClipboardProps> = memo(({
         onClick(event);
     }, [onClick, children, notification]);
     const element = useMemo(() => <LinkTo address={children} url={url} />, [children, url]);
+    const renderIcon = useMemo(() => (
+        <Box>
+            <Icon
+                width={14}
+                name="copy"
+                className={classes.icon}
+                onClick={onCopy}
+            />
+        </Box>
+    ), [onCopy]);
+    const renderElement = useMemo(
+        () => (isEllipsis ? <Ellipsis className={classNameText}>{title || element}</Ellipsis> : element),
+        [isEllipsis, title, element, classNameText],
+    );
     if (!children && !title) return null;
     return (
-        <Box alignItems="center">
-            <Box>
-                <Icon
-                    width={14}
-                    name="copy"
-                    className={classes.icon}
-                    onClick={onCopy}
-                />
-            </Box>
-            {isEllipsis ? <Ellipsis>{title || element}</Ellipsis> : element}
+        <Box alignItems="center" className={classNameWrap}>
+            {isReverse ? (
+                <>
+                    {renderElement}
+                    {renderIcon}
+                </>
+            ) : (
+                <>
+                    {renderIcon}
+                    {renderElement}
+                </>
+            )}
         </Box>
     );
 });
