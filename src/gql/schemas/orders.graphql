@@ -81,18 +81,70 @@ query OrdersSelect($pagination: ConnectionArgs!, $filter: OrdersFilter) {
 query Order($id: String!) {
     order(address: $id) {
         address
+        consumer
         origins {
             createdBy
             createdDate
             modifiedBy
             modifiedDate
         }
+        offerType
         orderInfo {
             status
         }
         teeOfferInfo {
             name
             description
+        }
+        offerInfo {
+            name
+            description
+        }
+    }
+}
+
+query SubOrders($pagination: ConnectionArgs!, $filter: OrdersFilter) {
+    result: orders (pagination: $pagination, filter: $filter) {
+        pageData {
+            ...PageDataDtoFragment
+        }
+        page {
+            edges {
+                cursor
+                node {
+                    _id
+                    address
+                    authority
+                    consumer
+                    offerInfo {
+                        name
+                        offerType
+                        cancelable
+                        description
+                    }
+                    offerType
+                    orderInfo {
+                        offer
+                        status
+                    }
+                    origins {
+                        createdBy
+                        createdDate
+                        modifiedBy
+                        modifiedDate
+                    }
+                    teeOfferInfo {
+                        name
+                        description
+                    }
+                }
+            }
+            pageInfo {
+                endCursor
+                hasNextPage
+                hasPreviousPage
+                startCursor
+            }
         }
     }
 }

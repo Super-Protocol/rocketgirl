@@ -1,4 +1,4 @@
-import { ElementType, ReactElement } from 'react';
+import { ElementType, ReactNode } from 'react';
 
 export interface Value { value: any; label: string; }
 
@@ -8,10 +8,12 @@ export interface DropdownProps {
     list: Value[];
     onChange?: (value: any) => void;
     classNameWrap?: string;
+    classNameDropdownMenu?: string;
     DropdownToggleComponent?: ElementType;
     DropdownMenuComponent?: ElementType;
     DropdownItemComponent?: ElementType;
-    renderToggleLabel?: (value: Value) => ReactElement;
-    renderItemLabel?: (value: Value) => ReactElement;
+    renderToggleLabel?: (value: any) => ReactNode | null;
+    renderItemLabel?: (value: any) => ReactNode | null;
     loading?: boolean;
+    header?: string | ReactNode;
 }

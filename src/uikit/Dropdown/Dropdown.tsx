@@ -13,6 +13,7 @@ export const Dropdown: FC<DropdownProps> = memo(({
     list,
     onChange,
     classNameWrap,
+    classNameDropdownMenu,
     DropdownToggleComponent,
     DropdownMenuComponent,
     DropdownItemComponent,
@@ -20,6 +21,7 @@ export const Dropdown: FC<DropdownProps> = memo(({
     renderItemLabel,
     defaultActive,
     loading,
+    header,
 }) => {
     const activeItemInList = useMemo(() => list.find(({ value }) => value === active), [list, active]);
     const activeItem = useMemo(() => activeItemInList || defaultActive || list[0], [activeItemInList, list, defaultActive]);
@@ -35,7 +37,8 @@ export const Dropdown: FC<DropdownProps> = memo(({
             >
                 {typeof renderToggleLabel === 'function' ? renderToggleLabel(activeItem) : activeItem?.label}
             </DropdownBootstrap.Toggle>
-            <DropdownBootstrap.Menu as={DropdownMenuComponent || DropdownMenu}>
+            <DropdownBootstrap.Menu as={DropdownMenuComponent || DropdownMenu} className={classNameDropdownMenu}>
+                {header}
                 {list.map((item) => (
                     <DropdownBootstrap.Item
                         as={DropdownItemComponent || DropdownItem}

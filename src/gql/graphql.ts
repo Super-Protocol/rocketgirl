@@ -1239,7 +1239,15 @@ export type OrderQueryVariables = Exact<{
 }>;
 
 
-export type OrderQuery = { __typename?: 'Query', order: { __typename?: 'Order', address: string, origins?: { __typename?: 'Origins', createdBy: string, createdDate: number, modifiedBy: string, modifiedDate: number } | null, orderInfo: { __typename?: 'OrderInfo', status: string }, teeOfferInfo?: { __typename?: 'TeeOfferInfo', name: string, description: string } | null } };
+export type OrderQuery = { __typename?: 'Query', order: { __typename?: 'Order', address: string, consumer: string, offerType: TOfferType, origins?: { __typename?: 'Origins', createdBy: string, createdDate: number, modifiedBy: string, modifiedDate: number } | null, orderInfo: { __typename?: 'OrderInfo', status: string }, teeOfferInfo?: { __typename?: 'TeeOfferInfo', name: string, description: string } | null, offerInfo?: { __typename?: 'OfferInfo', name: string, description: string } | null } };
+
+export type SubOrdersQueryVariables = Exact<{
+  pagination: ConnectionArgs;
+  filter?: InputMaybe<OrdersFilter>;
+}>;
+
+
+export type SubOrdersQuery = { __typename?: 'Query', result: { __typename?: 'ListOrdersResponse', pageData?: { __typename?: 'PageDataDto', count: number, limit: number, offset: number } | null, page: { __typename?: 'OrderConnection', edges?: Array<{ __typename?: 'OrderEdge', cursor?: string | null, node?: { __typename?: 'Order', _id: string, address: string, authority?: string | null, consumer: string, offerType: TOfferType, offerInfo?: { __typename?: 'OfferInfo', name: string, offerType: string, cancelable: boolean, description: string } | null, orderInfo: { __typename?: 'OrderInfo', offer: string, status: string }, origins?: { __typename?: 'Origins', createdBy: string, createdDate: number, modifiedBy: string, modifiedDate: number } | null, teeOfferInfo?: { __typename?: 'TeeOfferInfo', name: string, description: string } | null } | null }> | null, pageInfo?: { __typename?: 'OrderPageInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } | null } } };
 
 export type ProvidersQueryVariables = Exact<{
   pagination: ConnectionArgs;
@@ -1640,16 +1648,22 @@ export const OrderDocument = gql`
     query Order($id: String!) {
   order(address: $id) {
     address
+    consumer
     origins {
       createdBy
       createdDate
       modifiedBy
       modifiedDate
     }
+    offerType
     orderInfo {
       status
     }
     teeOfferInfo {
+      name
+      description
+    }
+    offerInfo {
       name
       description
     }
@@ -1684,6 +1698,82 @@ export function useOrderLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOp
 export type OrderQueryHookResult = ReturnType<typeof useOrderQuery>;
 export type OrderLazyQueryHookResult = ReturnType<typeof useOrderLazyQuery>;
 export type OrderQueryResult = Apollo.QueryResult<OrderQuery, OrderQueryVariables>;
+export const SubOrdersDocument = gql`
+    query SubOrders($pagination: ConnectionArgs!, $filter: OrdersFilter) {
+  result: orders(pagination: $pagination, filter: $filter) {
+    pageData {
+      ...PageDataDtoFragment
+    }
+    page {
+      edges {
+        cursor
+        node {
+          _id
+          address
+          authority
+          consumer
+          offerInfo {
+            name
+            offerType
+            cancelable
+            description
+          }
+          offerType
+          orderInfo {
+            offer
+            status
+          }
+          origins {
+            createdBy
+            createdDate
+            modifiedBy
+            modifiedDate
+          }
+          teeOfferInfo {
+            name
+            description
+          }
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+      }
+    }
+  }
+}
+    ${PageDataDtoFragmentFragmentDoc}`;
+
+/**
+ * __useSubOrdersQuery__
+ *
+ * To run a query within a React component, call `useSubOrdersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSubOrdersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSubOrdersQuery({
+ *   variables: {
+ *      pagination: // value for 'pagination'
+ *      filter: // value for 'filter'
+ *   },
+ * });
+ */
+export function useSubOrdersQuery(baseOptions: ApolloReactHooks.QueryHookOptions<SubOrdersQuery, SubOrdersQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<SubOrdersQuery, SubOrdersQueryVariables>(SubOrdersDocument, options);
+      }
+export function useSubOrdersLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<SubOrdersQuery, SubOrdersQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<SubOrdersQuery, SubOrdersQueryVariables>(SubOrdersDocument, options);
+        }
+export type SubOrdersQueryHookResult = ReturnType<typeof useSubOrdersQuery>;
+export type SubOrdersLazyQueryHookResult = ReturnType<typeof useSubOrdersLazyQuery>;
+export type SubOrdersQueryResult = Apollo.QueryResult<SubOrdersQuery, SubOrdersQueryVariables>;
 export const ProvidersDocument = gql`
     query Providers($pagination: ConnectionArgs!, $filter: ProviderFilter!) {
   result: providers(pagination: $pagination, filter: $filter) {

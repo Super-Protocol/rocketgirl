@@ -1,0 +1,31 @@
+.wrap {
+  border: 1px solid var(--grey30);
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.label {
+  color: var(--orange100);
+}
+
+.text {
+  background-color: var(--grey20);
+  padding: 6px 14px;
+  border-radius: 4px;
+  margin-right: 11px;
+  width: 139px;
+}
+
+.titleWrap {
+  margin-bottom: 10px;
+}
+
+.btn {
+  padding: 0;
+  margin: 0;
+  font-size: 12px;
+}
+
+.title {
+  font-size: 12px;
+}

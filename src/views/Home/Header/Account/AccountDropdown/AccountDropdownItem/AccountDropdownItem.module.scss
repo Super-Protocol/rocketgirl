@@ -1,0 +1,6 @@
+.wrap {
+  &:hover, &:focus {
+    background-color: transparent;
+    color: var(--black100);
+  }
+}
