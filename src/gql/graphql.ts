@@ -26,6 +26,7 @@ export type BaseOrder = {
   consumer: Scalars['String'];
   offerInfo?: Maybe<OfferInfo>;
   offerType: TOfferType;
+  orderHoldDeposit?: Maybe<Scalars['Float']>;
   orderInfo: OrderInfo;
   orderResult: OrderResult;
   origins?: Maybe<Origins>;
@@ -36,6 +37,7 @@ export type BaseOrderInputType = {
   consumer: Scalars['String'];
   offerInfo?: InputMaybe<OfferInfoInput>;
   offerType: TOfferType;
+  orderHoldDeposit?: InputMaybe<Scalars['Float']>;
   orderInfo: OrderInfoInput;
   orderResult: OrderResultInput;
   teeOfferInfo?: InputMaybe<TeeOfferInfoInput>;
@@ -481,6 +483,7 @@ export type Order = {
   consumer: Scalars['String'];
   offerInfo?: Maybe<OfferInfo>;
   offerType: TOfferType;
+  orderHoldDeposit?: Maybe<Scalars['Float']>;
   orderInfo: OrderInfo;
   orderResult: OrderResult;
   origins?: Maybe<Origins>;
@@ -583,6 +586,7 @@ export type OrderInputType = {
   consumer: Scalars['String'];
   offerInfo?: InputMaybe<OfferInfoInput>;
   offerType: TOfferType;
+  orderHoldDeposit?: InputMaybe<Scalars['Float']>;
   orderInfo: OrderInfoInput;
   orderResult: OrderResultInput;
   parentOrder?: InputMaybe<ParentOrderInputType>;
@@ -659,6 +663,7 @@ export type ParentOrder = {
   consumer: Scalars['String'];
   offerInfo?: Maybe<OfferInfo>;
   offerType: TOfferType;
+  orderHoldDeposit?: Maybe<Scalars['Float']>;
   orderInfo: OrderInfo;
   orderResult: OrderResult;
   origins?: Maybe<Origins>;
@@ -670,6 +675,7 @@ export type ParentOrderInputType = {
   consumer: Scalars['String'];
   offerInfo?: InputMaybe<OfferInfoInput>;
   offerType: TOfferType;
+  orderHoldDeposit?: InputMaybe<Scalars['Float']>;
   orderInfo: OrderInfoInput;
   orderResult: OrderResultInput;
   parentOrder?: InputMaybe<Scalars['String']>;

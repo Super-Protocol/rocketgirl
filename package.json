@@ -58,7 +58,7 @@
   "scripts": {
     "devserver": "react-app-rewired start",
     "start": "npm run start:watch:generate",
-    "build": "react-app-rewired build",
+    "build": "GENERATE_SOURCEMAP=false react-app-rewired build",
     "start:watch:generate": "concurrently \"npm run watch:graphql\" \"npm run devserver\"",
     "watch:graphql": "watch \"npm run generate-graphql-code\" src/gql/schemas src/gql/mockSchemas",
     "download-schema": "node scripts/download-schema.js",
@@ -87,6 +87,9 @@
       "last 1 safari version",
       "ie 11"
     ]
+  },
+  "resolutions": {
+    "react-error-overlay": "6.0.9"
   },
   "babel": {
     "presets": [
@@ -130,6 +133,7 @@
     "eslint-plugin-react": "^7.24.0",
     "identity-obj-proxy": "^3.0.0",
     "react-app-rewired": "^2.1.8",
+    "react-error-overlay": "^6.0.9",
     "webpack": "4.44.2"
   }
 }
