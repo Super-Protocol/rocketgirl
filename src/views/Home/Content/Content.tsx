@@ -12,6 +12,7 @@ import {
     // getFilters,
 } from './helpers';
 import { useTables } from '../hooks/useTables';
+// import { Transactions } from './Transactions';
 
 export const Content: FC<ContentProps> = memo(() => {
     const { selectedWalletType } = useContext(WalletContext);
@@ -41,6 +42,7 @@ export const Content: FC<ContentProps> = memo(() => {
                 tables={tables}
                 fetcher={queryFetcher}
             />
+            {/*<Transactions />*/}
         </ContentUIKit>
     );
 });

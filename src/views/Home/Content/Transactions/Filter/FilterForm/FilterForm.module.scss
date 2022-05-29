@@ -1,0 +1,35 @@
+.inputWrap {
+  width: 352px;
+}
+
+.input {
+  background-color: var(--white100);
+  border-color: red;
+}
+
+.wrap {
+  flex: 1;
+}
+
+.btnClear {
+  width: 170px;
+}
+
+.inputLabel {
+  background-color: var(--white1);
+  border-color: rgba(207, 209, 213, 0.4);
+}
+
+.block {
+  &:not(:last-child) {
+    margin-right: 21px;
+  }
+}
+
+.selectWrap {
+  width: 290px;
+}
+
+.filters {
+  flex-wrap: wrap;
+}

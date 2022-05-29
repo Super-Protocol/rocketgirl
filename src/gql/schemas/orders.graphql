@@ -11,6 +11,8 @@ query Orders($pagination: ConnectionArgs!, $filter: OrdersFilter) {
                     address
                     authority
                     consumer
+                    orderHoldDeposit
+                    depositSpent
                     parentOrder {
                         offerInfo {
                             name
@@ -88,13 +90,20 @@ query Order($id: String!) {
             modifiedBy
             modifiedDate
         }
+        orderHoldDeposit
+        depositSpent
         offerType
         orderInfo {
             status
+            offer
         }
         teeOfferInfo {
             name
             description
+        }
+        orderResult {
+            encryptedError
+            encryptedResult
         }
     }
 }

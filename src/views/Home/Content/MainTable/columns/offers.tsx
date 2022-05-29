@@ -10,6 +10,12 @@ export type OffersColumns = UseTableQueryFetcherResultList<Offer>;
 
 export const getColumns = (): Array<ColumnProps<OffersColumns>> => [
     {
+        Header: 'ID',
+        id: 'id',
+        Cell: ({ row }) => <CopyToClipboard>{row.original?.address || '-'}</CopyToClipboard>,
+        width: 'auto',
+    },
+    {
         Header: 'Provider',
         id: 'provider',
         Cell: ({ row }) => {
@@ -18,12 +24,6 @@ export const getColumns = (): Array<ColumnProps<OffersColumns>> => [
             if (!actionAccount) return '-';
             return <CopyToClipboard title={name}>{actionAccount}</CopyToClipboard>;
         },
-        width: 'auto',
-    },
-    {
-        Header: 'ID',
-        id: 'id',
-        Cell: ({ row }) => <CopyToClipboard>{row.original?.address || '-'}</CopyToClipboard>,
         width: 'auto',
     },
     {

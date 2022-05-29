@@ -1,3 +1,5 @@
+$item-width: 205px;
+
 .mr {
     margin-right: 30px;
 }
@@ -11,7 +13,11 @@
 }
 
 .left {
-    width: 205px;
+    width: $item-width
+}
+
+.right {
+    width: calc(100% - #{$item-width});
 }
 
 .cardTitle {

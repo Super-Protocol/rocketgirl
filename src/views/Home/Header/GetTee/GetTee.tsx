@@ -2,24 +2,32 @@ import React, {
     memo,
     FC,
     useContext,
-    useMemo,
     useCallback,
     useState,
 } from 'react';
+import { useErrorModal } from '@/common/hooks/useErrorModal';
+import { useTransferMutation } from '@/gql/graphql';
 import { Button } from '@/uikit';
 import { WalletContext } from '@/common/context/WalletProvider';
 import { GetTeeProps } from './types';
 
 export const GetTee: FC<GetTeeProps> = memo(({ className }) => {
-    const { selectedWallet, instance } = useContext(WalletContext);
+    const { selectedAddress } = useContext(WalletContext);
+    const { showErrorModal, showSuccessModal } = useErrorModal();
+    const [transfer] = useTransferMutation();
     const [loading, setLoading] = useState(false);
-    const address = useMemo(() => selectedWallet?.address, [selectedWallet]);
     const onRefillTee = useCallback(async () => {
+        if (!selectedAddress) return;
         setLoading(true);
+        try {
+            await transfer({ variables: { transfer: { to: selectedAddress } } });
+            showSuccessModal('Success');
+        } catch (e) {
+            showErrorModal(e);
+        }
         setLoading(false);
-        // todo
-    }, [instance, address]);
-    if (!address) return null;
+    }, [selectedAddress, transfer, showErrorModal, showSuccessModal]);
+    if (!selectedAddress) return null;
 
     return <Button variant="tertiary" loading={loading} className={className} onClick={onRefillTee}>Get TEE</Button>;
 });

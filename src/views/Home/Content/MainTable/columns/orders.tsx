@@ -39,7 +39,9 @@ export const getColumns = ({ urlBack }: GetColumnsProps): Array<ColumnProps<Orde
         id: 'tee',
         Cell: ({ row }) => {
             const { subOrders } = row.original || {};
-            const teeOffers = (subOrders || []).map(({ teeOfferInfo }) => ({ name: teeOfferInfo?.name }));
+            const teeOffers = (subOrders || [])
+                .filter(({ teeOfferInfo }) => !!teeOfferInfo)
+                .map(({ teeOfferInfo }) => ({ name: teeOfferInfo?.name }));
             if (!teeOffers.length) return '-';
             return <TextCounter list={teeOffers} />;
         },
@@ -69,6 +71,28 @@ export const getColumns = ({ urlBack }: GetColumnsProps): Array<ColumnProps<Orde
             const { orderInfo } = row.original || {};
             const { status } = orderInfo || {};
             return status ? <StatusBar status={status} /> : '-';
+        },
+        width: 'auto',
+        isEllipsis: true,
+    },
+    {
+        Header: 'Total Deposit',
+        id: 'totalDeposit',
+        Cell: ({ row }) => {
+            const { orderHoldDeposit } = row.original || {};
+            return typeof orderHoldDeposit === 'number' ? orderHoldDeposit : '-';
+        },
+        width: 'auto',
+        isEllipsis: true,
+    },
+    {
+        Header: 'Unspent Deposit',
+        id: 'unspentDeposit',
+        Cell: ({ row }) => {
+            const { orderHoldDeposit, depositSpent } = row.original || {};
+            return typeof orderHoldDeposit === 'number' && typeof depositSpent === 'number'
+                ? orderHoldDeposit - depositSpent
+                : '-';
         },
         width: 'auto',
         isEllipsis: true,
