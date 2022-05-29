@@ -24,8 +24,10 @@ export type BaseOrder = {
   address: Scalars['String'];
   authority?: Maybe<Scalars['String']>;
   consumer: Scalars['String'];
+  depositSpent?: Maybe<Scalars['String']>;
   offerInfo?: Maybe<OfferInfo>;
   offerType: TOfferType;
+  orderHoldDeposit?: Maybe<Scalars['Float']>;
   orderInfo: OrderInfo;
   orderResult: OrderResult;
   origins?: Maybe<Origins>;
@@ -34,8 +36,10 @@ export type BaseOrder = {
 
 export type BaseOrderInputType = {
   consumer: Scalars['String'];
+  depositSpent?: InputMaybe<Scalars['String']>;
   offerInfo?: InputMaybe<OfferInfoInput>;
   offerType: TOfferType;
+  orderHoldDeposit?: InputMaybe<Scalars['Float']>;
   orderInfo: OrderInfoInput;
   orderResult: OrderResultInput;
   teeOfferInfo?: InputMaybe<TeeOfferInfoInput>;
@@ -479,8 +483,10 @@ export type Order = {
   address: Scalars['String'];
   authority?: Maybe<Scalars['String']>;
   consumer: Scalars['String'];
+  depositSpent?: Maybe<Scalars['String']>;
   offerInfo?: Maybe<OfferInfo>;
   offerType: TOfferType;
+  orderHoldDeposit?: Maybe<Scalars['Float']>;
   orderInfo: OrderInfo;
   orderResult: OrderResult;
   origins?: Maybe<Origins>;
@@ -581,8 +587,10 @@ export type OrderInfoInput = {
 
 export type OrderInputType = {
   consumer: Scalars['String'];
+  depositSpent?: InputMaybe<Scalars['String']>;
   offerInfo?: InputMaybe<OfferInfoInput>;
   offerType: TOfferType;
+  orderHoldDeposit?: InputMaybe<Scalars['Float']>;
   orderInfo: OrderInfoInput;
   orderResult: OrderResultInput;
   parentOrder?: InputMaybe<ParentOrderInputType>;
@@ -657,8 +665,10 @@ export type ParentOrder = {
   address: Scalars['String'];
   authority?: Maybe<Scalars['String']>;
   consumer: Scalars['String'];
+  depositSpent?: Maybe<Scalars['String']>;
   offerInfo?: Maybe<OfferInfo>;
   offerType: TOfferType;
+  orderHoldDeposit?: Maybe<Scalars['Float']>;
   orderInfo: OrderInfo;
   orderResult: OrderResult;
   origins?: Maybe<Origins>;
@@ -668,8 +678,10 @@ export type ParentOrder = {
 
 export type ParentOrderInputType = {
   consumer: Scalars['String'];
+  depositSpent?: InputMaybe<Scalars['String']>;
   offerInfo?: InputMaybe<OfferInfoInput>;
   offerType: TOfferType;
+  orderHoldDeposit?: InputMaybe<Scalars['Float']>;
   orderInfo: OrderInfoInput;
   orderResult: OrderResultInput;
   parentOrder?: InputMaybe<Scalars['String']>;
@@ -759,7 +771,7 @@ export type ProviderPageInfo = {
 
 export type Query = {
   __typename?: 'Query';
-  balanceOf: Scalars['Float'];
+  balanceOf: Scalars['String'];
   config: Config;
   configs: ListConfigResponse;
   erc20: Erc20;
@@ -1194,6 +1206,13 @@ export type EventSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
 export type EventSubscription = { __typename?: 'Subscription', event: { __typename?: 'SubscriptionPayload', data?: Array<string> | null, type: SubscriptionType, subscriptionSource: SubscriptionSource } };
 
+export type TransferMutationVariables = Exact<{
+  transfer: TransferInputType;
+}>;
+
+
+export type TransferMutation = { __typename?: 'Mutation', transfer: string };
+
 export type OffersQueryVariables = Exact<{
   pagination: ConnectionArgs;
   filter?: InputMaybe<OfferFilter>;
@@ -1224,7 +1243,7 @@ export type OrdersQueryVariables = Exact<{
 }>;
 
 
-export type OrdersQuery = { __typename?: 'Query', result: { __typename?: 'ListOrdersResponse', pageData?: { __typename?: 'PageDataDto', count: number, limit: number, offset: number } | null, page: { __typename?: 'OrderConnection', edges?: Array<{ __typename?: 'OrderEdge', cursor?: string | null, node?: { __typename?: 'Order', _id: string, address: string, authority?: string | null, consumer: string, offerType: TOfferType, parentOrder?: { __typename?: 'ParentOrder', address: string, offerInfo?: { __typename?: 'OfferInfo', name: string } | null } | null, offerInfo?: { __typename?: 'OfferInfo', name: string, offerType: string } | null, orderInfo: { __typename?: 'OrderInfo', offer: string, status: string }, origins?: { __typename?: 'Origins', createdBy: string, createdDate: number, modifiedBy: string, modifiedDate: number } | null, teeOfferInfo?: { __typename?: 'TeeOfferInfo', name: string } | null, subOrders?: Array<{ __typename?: 'BaseOrder', offerType: TOfferType, teeOfferInfo?: { __typename?: 'TeeOfferInfo', name: string } | null, offerInfo?: { __typename?: 'OfferInfo', name: string } | null }> | null } | null }> | null, pageInfo?: { __typename?: 'OrderPageInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } | null } } };
+export type OrdersQuery = { __typename?: 'Query', result: { __typename?: 'ListOrdersResponse', pageData?: { __typename?: 'PageDataDto', count: number, limit: number, offset: number } | null, page: { __typename?: 'OrderConnection', edges?: Array<{ __typename?: 'OrderEdge', cursor?: string | null, node?: { __typename?: 'Order', _id: string, address: string, authority?: string | null, consumer: string, orderHoldDeposit?: number | null, depositSpent?: string | null, offerType: TOfferType, parentOrder?: { __typename?: 'ParentOrder', address: string, offerInfo?: { __typename?: 'OfferInfo', name: string } | null } | null, offerInfo?: { __typename?: 'OfferInfo', name: string, offerType: string } | null, orderInfo: { __typename?: 'OrderInfo', offer: string, status: string }, origins?: { __typename?: 'Origins', createdBy: string, createdDate: number, modifiedBy: string, modifiedDate: number } | null, teeOfferInfo?: { __typename?: 'TeeOfferInfo', name: string } | null, subOrders?: Array<{ __typename?: 'BaseOrder', offerType: TOfferType, teeOfferInfo?: { __typename?: 'TeeOfferInfo', name: string } | null, offerInfo?: { __typename?: 'OfferInfo', name: string } | null }> | null } | null }> | null, pageInfo?: { __typename?: 'OrderPageInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } | null } } };
 
 export type OrdersSelectQueryVariables = Exact<{
   pagination: ConnectionArgs;
@@ -1239,7 +1258,7 @@ export type OrderQueryVariables = Exact<{
 }>;
 
 
-export type OrderQuery = { __typename?: 'Query', order: { __typename?: 'Order', address: string, consumer: string, offerType: TOfferType, origins?: { __typename?: 'Origins', createdBy: string, createdDate: number, modifiedBy: string, modifiedDate: number } | null, orderInfo: { __typename?: 'OrderInfo', status: string }, teeOfferInfo?: { __typename?: 'TeeOfferInfo', name: string, description: string } | null } };
+export type OrderQuery = { __typename?: 'Query', order: { __typename?: 'Order', address: string, consumer: string, orderHoldDeposit?: number | null, depositSpent?: string | null, offerType: TOfferType, origins?: { __typename?: 'Origins', createdBy: string, createdDate: number, modifiedBy: string, modifiedDate: number } | null, orderInfo: { __typename?: 'OrderInfo', status: string, offer: string }, teeOfferInfo?: { __typename?: 'TeeOfferInfo', name: string, description: string } | null, orderResult: { __typename?: 'OrderResult', encryptedError?: string | null, encryptedResult?: string | null } } };
 
 export type SubOrdersQueryVariables = Exact<{
   pagination: ConnectionArgs;
@@ -1311,6 +1330,37 @@ export function useEventSubscription(baseOptions?: ApolloReactHooks.Subscription
       }
 export type EventSubscriptionHookResult = ReturnType<typeof useEventSubscription>;
 export type EventSubscriptionResult = Apollo.SubscriptionResult<EventSubscription>;
+export const TransferDocument = gql`
+    mutation Transfer($transfer: TransferInputType!) {
+  transfer(transfer: $transfer)
+}
+    `;
+export type TransferMutationFn = Apollo.MutationFunction<TransferMutation, TransferMutationVariables>;
+
+/**
+ * __useTransferMutation__
+ *
+ * To run a mutation, you first call `useTransferMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useTransferMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [transferMutation, { data, loading, error }] = useTransferMutation({
+ *   variables: {
+ *      transfer: // value for 'transfer'
+ *   },
+ * });
+ */
+export function useTransferMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<TransferMutation, TransferMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useMutation<TransferMutation, TransferMutationVariables>(TransferDocument, options);
+      }
+export type TransferMutationHookResult = ReturnType<typeof useTransferMutation>;
+export type TransferMutationResult = Apollo.MutationResult<TransferMutation>;
+export type TransferMutationOptions = Apollo.BaseMutationOptions<TransferMutation, TransferMutationVariables>;
 export const OffersDocument = gql`
     query Offers($pagination: ConnectionArgs!, $filter: OfferFilter) {
   result: offers(pagination: $pagination, filter: $filter) {
@@ -1518,6 +1568,8 @@ export const OrdersDocument = gql`
           address
           authority
           consumer
+          orderHoldDeposit
+          depositSpent
           parentOrder {
             offerInfo {
               name
@@ -1655,13 +1707,20 @@ export const OrderDocument = gql`
       modifiedBy
       modifiedDate
     }
+    orderHoldDeposit
+    depositSpent
     offerType
     orderInfo {
       status
+      offer
     }
     teeOfferInfo {
       name
       description
+    }
+    orderResult {
+      encryptedError
+      encryptedResult
     }
   }
 }

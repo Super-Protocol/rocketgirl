@@ -54,7 +54,7 @@ export const Details = memo<DetailsProps>(({ id }) => {
                                 return (
                                     <Box key={idx} className={cn({ [classes.line]: idx !== 0 })}>
                                         <span className={classes.left}>{key}</span>
-                                        <span>{value}</span>
+                                        <span className={classes.right}>{value}</span>
                                     </Box>
                                 );
                             })}
