@@ -5,7 +5,6 @@ import React, {
     memo,
 } from 'react';
 import Web3 from 'web3';
-import { getAddress } from 'ethers/lib/utils';
 import { useMount } from 'react-use';
 import { Web3ReactStateUpdate } from '@web3-react/types';
 import { getBalance as getBalanceMetamask, useConnectToMetaMask } from '@/common/hooks/useConnectToMetaMask';
@@ -107,7 +106,7 @@ export const useWallet = (): UseWalletResult => {
         if (!selectedWallet?.accounts?.length) {
             return undefined;
         }
-        return getAddress(selectedWallet.accounts[0]);
+        return Web3.utils.toChecksumAddress(selectedWallet.accounts[0]);
     }, [selectedWallet]);
     const isConnected = useMemo(() => !!selectedAddress, [selectedAddress]);
     useMount(() => {

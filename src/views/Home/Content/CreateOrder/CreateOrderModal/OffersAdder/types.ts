@@ -13,4 +13,5 @@ export interface OffersAdderProps<TNode> {
     convertNode?: ConvertNode<TNode>;
     showError?: boolean;
     checkTouched?: boolean;
+    onDelete?: () => void;
 }

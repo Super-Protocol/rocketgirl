@@ -25,6 +25,7 @@ export const OffersAdder: <TNode>(p: OffersAdderProps<TNode>) =>
         convertNode,
         showError,
         checkTouched,
+        onDelete: onDeleteProps,
     }) => {
         const { values } = useFormikContext<FormValues<Info>>();
         const [, { value }, { setValue }] = useField(name);
@@ -58,7 +59,8 @@ export const OffersAdder: <TNode>(p: OffersAdderProps<TNode>) =>
             } else {
                 setValue(undefined);
             }
-        }, [setValue, value]);
+            onDeleteProps?.();
+        }, [setValue, value, onDeleteProps]);
         const renderItem = useCallback((item) => (
             <TooltipLink
                 title="Description"

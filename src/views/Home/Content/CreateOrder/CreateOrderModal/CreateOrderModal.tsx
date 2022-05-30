@@ -2,7 +2,8 @@ import React, {
     memo,
     FC,
     useState,
-    useCallback, useContext, useMemo,
+    useCallback,
+    useContext, useMemo, useEffect,
 } from 'react';
 import { Formik } from 'formik';
 import {
@@ -11,7 +12,12 @@ import {
     Offer,
     TeeOffer,
 } from '@/gql/graphql';
-import { Box, Button, InputFormik } from '@/uikit';
+import {
+    Box,
+    Button,
+    InputFormik,
+    Spinner,
+} from '@/uikit';
 import { ModalOkCancelContext } from '@/common/context/ModalOkCancelProvider/ModalOkCancelProvider';
 import { CreateOrderModalProps, FormValues, Info } from './types';
 import { OffersAdder } from './OffersAdder';
@@ -23,13 +29,18 @@ import {
     dataFilter,
     storageFilter,
     getValidationSchema,
+    getMinDepositWorkflow,
 } from './helpers';
 
 export const CreateOrderModal: FC<CreateOrderModalProps<Info>> = memo(({ initialValues: initialValuesProps }) => {
     const { goBack } = useContext(ModalOkCancelContext);
     const [isValidating, setIsValidating] = useState(false);
-    const validationSchema = useMemo(() => getValidationSchema(), []);
+    const [loading, setLoading] = useState(false);
     const [initialValues] = useState<FormValues<Info>>(initialValuesProps || {});
+    const [minDeposit, setMinDeposit] = useState<number | undefined>();
+    const validationSchema = useMemo(() => getValidationSchema({
+        minDeposit,
+    }), [minDeposit]);
     const onCancel = useCallback(() => {
         goBack();
     }, [goBack]);
@@ -40,6 +51,24 @@ export const CreateOrderModal: FC<CreateOrderModalProps<Info>> = memo(({ initial
     const onSubmitForm = useCallback(() => {
         setIsValidating(true);
     }, []);
+    const updateMinDeposit = useCallback(async () => {
+        try {
+            setLoading(true);
+            setMinDeposit(
+                await getMinDepositWorkflow(initialValues),
+            );
+        } catch (e) {
+            console.error(e);
+        } finally {
+            setLoading(false);
+        }
+    }, [initialValues]);
+    const onDelete = useCallback(() => {
+        updateMinDeposit();
+    }, [updateMinDeposit]);
+    useEffect(() => {
+        updateMinDeposit();
+    }, [updateMinDeposit]);
 
     return (
         <Box direction="column">
@@ -52,9 +81,12 @@ export const CreateOrderModal: FC<CreateOrderModalProps<Info>> = memo(({ initial
                 validationSchema={validationSchema}
                 onSubmit={onSubmitForm}
             >
-                {({ submitForm }) => {
+                {({ submitForm, values }) => {
                     return (
                         <Box direction="column">
+                            {loading && (
+                                <Spinner fullscreen />
+                            )}
                             <Box direction="column">
                                 <OffersAdder
                                     <Offer>
@@ -67,6 +99,7 @@ export const CreateOrderModal: FC<CreateOrderModalProps<Info>> = memo(({ initial
                                     showError
                                     convertNode={valueOfferConvertNode}
                                     checkTouched={!isValidating}
+                                    onDelete={onDelete}
                                 />
                                 <OffersAdder
                                     <Offer>
@@ -80,6 +113,7 @@ export const CreateOrderModal: FC<CreateOrderModalProps<Info>> = memo(({ initial
                                     showError
                                     convertNode={valueOfferConvertNode}
                                     checkTouched={!isValidating}
+                                    onDelete={onDelete}
                                 />
                                 <OffersAdder
                                     <Offer>
@@ -92,6 +126,7 @@ export const CreateOrderModal: FC<CreateOrderModalProps<Info>> = memo(({ initial
                                     showError
                                     convertNode={valueOfferConvertNode}
                                     checkTouched={!isValidating}
+                                    onDelete={onDelete}
                                 />
                                 <OffersAdder
                                     <TeeOffer>
@@ -103,6 +138,7 @@ export const CreateOrderModal: FC<CreateOrderModalProps<Info>> = memo(({ initial
                                     showError
                                     convertNode={teeOfferConvertNode}
                                     checkTouched={!isValidating}
+                                    onDelete={onDelete}
                                 />
                                 <InputFormik
                                     name="deposit"
