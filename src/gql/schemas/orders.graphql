@@ -121,6 +121,8 @@ query SubOrders($pagination: ConnectionArgs!, $filter: OrdersFilter) {
                     address
                     authority
                     consumer
+                    orderHoldDeposit
+                    depositSpent
                     offerInfo {
                         name
                         offerType

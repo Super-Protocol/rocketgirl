@@ -56,8 +56,8 @@ export const getInfo = (order?: OrderQuery['order'], orderInfoSdk?: GetOrderInfo
             },
             {
                 key: 'Unspent Deposit',
-                value: typeof orderHoldDeposit === 'number' && typeof depositSpent === 'number'
-                    ? orderHoldDeposit - depositSpent
+                value: typeof orderHoldDeposit === 'number'
+                    ? orderHoldDeposit - Number(depositSpent)
                     : '-',
             },
             {
@@ -109,11 +109,11 @@ export const getTee = (order?: OrderQuery['order']): TableInfo | null => {
             },
             {
                 key: 'Estimated cost',
-                value: typeof orderHoldDeposit === 'number' ? orderHoldDeposit : '-',
+                value: orderHoldDeposit || '-',
             },
             {
                 key: 'Actual cost',
-                value: typeof depositSpent === 'number' ? depositSpent : '-',
+                value: depositSpent || '-',
             },
         ],
     };

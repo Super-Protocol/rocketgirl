@@ -90,8 +90,8 @@ export const getColumns = ({ urlBack }: GetColumnsProps): Array<ColumnProps<Orde
         id: 'unspentDeposit',
         Cell: ({ row }) => {
             const { orderHoldDeposit, depositSpent } = row.original || {};
-            return typeof orderHoldDeposit === 'number' && typeof depositSpent === 'number'
-                ? orderHoldDeposit - depositSpent
+            return typeof orderHoldDeposit === 'number'
+                ? orderHoldDeposit - Number(depositSpent)
                 : '-';
         },
         width: 'auto',
