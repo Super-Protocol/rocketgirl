@@ -36,12 +36,13 @@ export interface UseTablesQueryFetcherPropsSkip<SkipType> extends UseTableQueryF
 export interface UseTablesQueryFetcherProps<SkipType> {
     table: Tables;
     skip?: UseTablesQueryFetcherPropsSkip<SkipType>[];
+    consumer?: string;
 }
 
 export const useTablesQueryFetcher = <SkipType>(
     props: UseTablesQueryFetcherProps<SkipType>,
 ): UseTablesQueryFetcherResult => {
-    const { table, skip } = props;
+    const { table, skip, consumer } = props;
     const getSkipQuery = useCallback((currentTable: Tables) => {
         if (table !== currentTable) return { type: null, message: undefined };
         return skip?.find(({ table: skipTable }) => skipTable === currentTable) || undefined;
@@ -66,7 +67,7 @@ export const useTablesQueryFetcher = <SkipType>(
     });
     const orders = useTableQueryFetcher<Order>({
         gql: OrdersDocument,
-        queryOptions: { variables: { pagination: { sortBy: 'origins.modifiedDate' } } },
+        queryOptions: { variables: { pagination: { sortBy: 'origins.modifiedDate' }, filter: { consumer } } },
         subscriptionKey: 'address',
         noDataMessage: getSkipQuery(Tables.Orders)?.message,
         skip: getSkipQuery(Tables.Orders),

@@ -12,14 +12,13 @@ import classes from './AccountDropdown.module.scss';
 export const AccountDropdown: FC<AccountDropdownProps> = memo(() => {
     const {
         loading,
-        selectedWallet,
+        selectedAddress,
     } = useContext(WalletContext);
-    const address = useMemo(() => selectedWallet?.address, [selectedWallet]);
     const list = useMemo(() => (
-        address
-            ? [{ value: address, label: address, title: 'Connected with MetaMask' }]
+        selectedAddress
+            ? [{ value: selectedAddress, label: selectedAddress, title: 'Connected with MetaMask' }]
             : []
-    ), [address]);
+    ), [selectedAddress]);
     const renderItemLabel = useCallback((item) => {
         const { label, title } = item || {};
         return <AccountDropdownItemChildren label={label} title={title} />;
@@ -27,7 +26,7 @@ export const AccountDropdown: FC<AccountDropdownProps> = memo(() => {
 
     return (
         <Dropdown
-            active={address}
+            active={selectedAddress}
             list={list}
             classNameWrap={classes.wrap}
             classNameDropdownMenu={classes.dropdownMenu}

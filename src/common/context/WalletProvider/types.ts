@@ -1,7 +1,6 @@
 import Web3 from 'web3';
 
 export interface WalletInfo {
-    address?: string;
     chainId?: number | null;
     accounts?: string[];
 }
