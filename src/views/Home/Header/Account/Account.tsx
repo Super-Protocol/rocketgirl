@@ -2,7 +2,6 @@ import React, {
     memo,
     FC,
     useContext,
-    useMemo,
 } from 'react';
 import {
     Box,
@@ -16,13 +15,12 @@ import classes from './Account.module.scss';
 export const Account: FC<AccountProps> = memo(() => {
     const {
         balance,
-        selectedWallet,
+        selectedAddress,
     } = useContext(WalletContext);
-    const address = useMemo(() => selectedWallet?.address, [selectedWallet]);
     return (
         <Box>
             {
-                !address
+                !selectedAddress
                     ? <WalletConnectorBtn />
                     : (
                         <Box alignItems="center">

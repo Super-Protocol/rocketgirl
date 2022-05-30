@@ -622,6 +622,8 @@ export type OrderResultInput = {
 export type OrdersFilter = {
   /** filter by contract address */
   address?: InputMaybe<Scalars['String']>;
+  /** filter by orderInfo -> consumer */
+  consumer?: InputMaybe<Scalars['String']>;
   /** filter by orderInfo -> args -> inputOffers */
   inputOffers?: InputMaybe<Array<Scalars['String']>>;
   /** filter by parentOrder->orderAddress */

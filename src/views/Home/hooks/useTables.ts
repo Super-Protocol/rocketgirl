@@ -26,7 +26,7 @@ export interface UseTablesResult {
     onChangeTable: (table: Tables, filter?: OperationVariables | null) => void;
 }
 
-export const useTables = (initialTable: Tables, selectedWalletType?: SelectedWalletType): UseTablesResult => {
+export const useTables = (initialTable: Tables, selectedWalletType?: SelectedWalletType, consumer?: string): UseTablesResult => {
     const history = useHistory();
     const location = useLocation();
     const query = useMemo(() => qs.parse(location.search), [location]);
@@ -39,7 +39,7 @@ export const useTables = (initialTable: Tables, selectedWalletType?: SelectedWal
                 type: UseTablesSkipType.wallet,
             }));
     }, [selectedWalletType]);
-    const queryFetcher = useTablesQueryFetcher<UseTablesSkipType>({ table, skip: skipByWallet });
+    const queryFetcher = useTablesQueryFetcher<UseTablesSkipType>({ table, skip: skipByWallet, consumer });
     useTablesSubscriptions(queryFetcher);
     const onChangeTable = useCallback((newTable: Tables, filter?: OperationVariables | null) => {
         history.push(`?table=${newTable}`);

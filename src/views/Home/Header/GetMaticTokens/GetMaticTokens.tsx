@@ -3,7 +3,6 @@ import React, {
     FC,
     useCallback,
     useContext,
-    useMemo,
     useState,
 } from 'react';
 import { WalletContext } from '@/common/context/WalletProvider';
@@ -13,13 +12,12 @@ import { Button } from '@/uikit';
 import { GetMaticTokensProps } from './types';
 
 export const GetMaticTokens: FC<GetMaticTokensProps> = memo(({ className }) => {
-    const { selectedWallet } = useContext(WalletContext);
+    const { selectedAddress } = useContext(WalletContext);
     const [loading, setLoading] = useState(false);
     const { showErrorModal, showSuccessModal } = useErrorModal();
-    const address = useMemo(() => selectedWallet?.address, [selectedWallet]);
     const refillMatic = useCallback(async (): Promise<void> => {
-        if (!address) throw new Error('Account address is empty');
-        await transferTokens(address).then(async (response) => {
+        if (!selectedAddress) throw new Error('Account address is empty');
+        await transferTokens(selectedAddress).then(async (response) => {
             const result = await response.json();
             if (result?.error) {
                 const { error, duration } = result;
@@ -27,7 +25,7 @@ export const GetMaticTokens: FC<GetMaticTokensProps> = memo(({ className }) => {
                 throw new Error(`${error}${durationText}`);
             }
         });
-    }, [address]);
+    }, [selectedAddress]);
     const refillMaticNotification = useCallback(async () => {
         setLoading(true);
         try {
@@ -38,7 +36,7 @@ export const GetMaticTokens: FC<GetMaticTokensProps> = memo(({ className }) => {
         }
         setLoading(false);
     }, [refillMatic, showErrorModal, showSuccessModal]);
-    if (!address) return null;
+    if (!selectedAddress) return null;
     return (
         <Button
             onClick={refillMaticNotification}
