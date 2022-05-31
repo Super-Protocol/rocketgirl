@@ -9,10 +9,13 @@ import { ConvertNode } from '@/common/hooks/useSelectQueryCursorSPFetcher';
 import { WorkflowPropsValues } from '@/connectors/orders';
 import { Offer, TeeOffer, TOfferType } from '@/gql/graphql';
 import {
-    FormValues, Offer as FormOffer,
+    FormValues,
+    Offer as FormOffer,
     GetValidationSchemaProps,
     GetMinDepositWorkflow,
     Info,
+    Fields,
+    GetInitialFiltersResult,
 } from './types';
 
 export const valueOfferConvertNode: ConvertNode<Offer> = ({ node }) => ({
@@ -31,10 +34,6 @@ export const teeOfferConvertNode: ConvertNode<TeeOffer> = ({ node }) => ({
     data: { description: node?.teeOfferInfo?.description || '', name: node?.teeOfferInfo?.name || '', holdSum: 0 },
 });
 
-export const solutionFilter = { offerType: TOfferType.Solution };
-export const dataFilter = { offerType: TOfferType.Data };
-export const storageFilter = { offerType: TOfferType.Storage };
-
 const getOfferSchema = <Info = { value: string }>(field: string) => Yup.object().test(
     field,
     'required',
@@ -44,17 +43,16 @@ const getOfferSchema = <Info = { value: string }>(field: string) => Yup.object()
 export const getValidationSchema = <Info>(props?: GetValidationSchemaProps): Yup.SchemaOf<FormValues<Info>> => {
     const { minDeposit } = props || {};
     return Yup.object({
-        solution: getOfferSchema<Info>('solution'),
-        data: Yup.array().of(getOfferSchema<Info>('data')),
-        tee: getOfferSchema<Info>('tee'),
-        storage: getOfferSchema<Info>('storage'),
-        deposit: minDeposit
+        [Fields.solution]: getOfferSchema<Info>('solution'),
+        [Fields.data]: Yup.array().of(getOfferSchema<Info>('data')),
+        [Fields.tee]: getOfferSchema<Info>('tee'),
+        [Fields.storage]: getOfferSchema<Info>('storage'),
+        [Fields.deposit]: minDeposit
             ? Yup.number()
                 .required('required')
                 .min(minDeposit, `must be greater than or equal ${minDeposit}`)
             : Yup.number().required('required'),
-        file: Yup.string(), // todo
-        phrase: Yup.string().required('required'),
+        [Fields.file]: Yup.string(), // todo
     });
 };
 
@@ -101,9 +99,8 @@ export const getMinDepositWorkflow = async (formValues: GetMinDepositWorkflow): 
     ]);
 };
 
-export const getWorkflowValues = (formValues: FormValues<Info>): WorkflowPropsValues => {
+export const getWorkflowValues = (formValues: FormValues<Info>, phrase: string): WorkflowPropsValues => {
     const {
-        phrase,
         solution,
         data,
         tee,
@@ -117,5 +114,14 @@ export const getWorkflowValues = (formValues: FormValues<Info>): WorkflowPropsVa
         tee: tee?.value as string,
         storage: storage?.value as string,
         deposit: deposit || 0,
+    };
+};
+
+export const getInitialFilters = (): GetInitialFiltersResult => {
+    return {
+        [Fields.solution]: { offerType: TOfferType.Solution },
+        [Fields.data]: { offerType: TOfferType.Data },
+        [Fields.storage]: { offerType: TOfferType.Storage },
+        [Fields.tee]: {},
     };
 };

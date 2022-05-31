@@ -6,11 +6,14 @@ import React, {
     useContext, useMemo, useEffect,
 } from 'react';
 import { Formik } from 'formik';
+import intersectionby from 'lodash.intersectionby';
 import {
     OffersSelectDocument,
     TeeOffersSelectDocument,
     Offer,
     TeeOffer,
+    useOffersRestrictionsLazyQuery,
+    TOfferType,
 } from '@/gql/graphql';
 import {
     Box,
@@ -22,18 +25,21 @@ import { ModalOkCancelContext } from '@/common/context/ModalOkCancelProvider/Mod
 import { workflow } from '@/connectors/orders';
 import { useErrorModal } from '@/common/hooks/useErrorModal';
 import { WalletContext } from '@/common/context/WalletProvider';
-import { CreateOrderModalProps, FormValues, Info } from './types';
+import {
+    CreateOrderModalProps, Fields,
+    FormValues,
+    Info,
+    UpdateFiltersRestrictionsProps,
+} from './types';
 import { OffersAdder } from './OffersAdder';
 import classes from './CreateOrderModal.module.scss';
 import {
     valueOfferConvertNode,
     teeOfferConvertNode,
-    solutionFilter,
-    dataFilter,
-    storageFilter,
     getValidationSchema,
     getMinDepositWorkflow,
     getWorkflowValues,
+    getInitialFilters,
 } from './helpers';
 
 export const CreateOrderModal: FC<CreateOrderModalProps<Info>> = memo(({ initialValues: initialValuesProps }) => {
@@ -42,8 +48,43 @@ export const CreateOrderModal: FC<CreateOrderModalProps<Info>> = memo(({ initial
     const { goBack } = useContext(ModalOkCancelContext);
     const [isValidating, setIsValidating] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [filters, setFilters] = useState(getInitialFilters);
     const [initialValues, setInitialValues] = useState<FormValues<Info>>(initialValuesProps || {});
     const [minDeposit, setMinDeposit] = useState<number>(0);
+    const [getOffersRestrictionsLazyQuery] = useOffersRestrictionsLazyQuery();
+    const getOffersRestrictions = useCallback(async (list?: string[], offerType?: TOfferType) => {
+        const offersRestrictions = list?.length
+            ? await getOffersRestrictionsLazyQuery({
+                variables: {
+                    pagination: { first: Infinity },
+                    filter: {
+                        addresses: list,
+                        ...(offerType ? { offerType } : {}),
+                    },
+                },
+            })
+            : undefined;
+        if (!offersRestrictions) return undefined;
+        const offers = intersectionby((offersRestrictions?.data?.result?.page?.edges || [])
+            .map(({ node }) => node?.offerInfo?.restrictions?.offers))
+            .flat();
+        if (!offers?.length) return undefined;
+        return offers;
+    }, [getOffersRestrictionsLazyQuery]);
+    const updateFiltersRestrictions = useCallback(async (values: UpdateFiltersRestrictionsProps<Info>) => {
+        const solutionOffers = values.solution?.value ? [values.solution?.value] : [];
+        const dataOffers = values.data?.map((d) => d?.value as string) || [];
+        const restrictionsByTeeFromSolution = await getOffersRestrictions(solutionOffers, TOfferType.TeeOffer);
+        const restrictionsByTeeFromDataAndSolution = await getOffersRestrictions(
+            dataOffers.concat(solutionOffers),
+            TOfferType.Data,
+        );
+        setFilters((f) => ({
+            ...f,
+            [Fields.tee]: { ...f[Fields.tee], addresses: restrictionsByTeeFromSolution },
+            [Fields.data]: { ...f[Fields.data], addresses: restrictionsByTeeFromDataAndSolution },
+        }));
+    }, [getOffersRestrictions]);
     const validationSchema = useMemo(() => getValidationSchema({
         minDeposit,
     }), [minDeposit]);
@@ -61,8 +102,8 @@ export const CreateOrderModal: FC<CreateOrderModalProps<Info>> = memo(({ initial
             return showErrorModal('Metamask account not found');
         }
         try {
-            const { phrase } = formValues || {};
-            const values = getWorkflowValues(formValues);
+            const phrase = 'test phrase'; // todo generate
+            const values = getWorkflowValues(formValues, phrase);
             await workflow({ values, actionAccountAddress: selectedAddress, web3: instance });
             showSuccessModal(`Please remember your seed phrase: ${phrase}`);
         } catch (e) {
@@ -70,37 +111,43 @@ export const CreateOrderModal: FC<CreateOrderModalProps<Info>> = memo(({ initial
         }
         setLoading(false);
     }, [showSuccessModal, showErrorModal, instance, selectedAddress]);
-    const updateMinDeposit = useCallback(async () => {
+    const updateMinDeposit = useCallback(async (values: FormValues<Info>) => {
         try {
             setLoading(true);
             setMinDeposit(
-                await getMinDepositWorkflow({
-                    data: initialValues.data,
-                    solution: initialValues.solution,
-                    tee: initialValues.tee,
-                    storage: initialValues.storage,
-                }),
+                await getMinDepositWorkflow(values),
             );
         } catch (e) {
             console.error(e);
         } finally {
             setLoading(false);
         }
-    }, [initialValues.storage, initialValues.solution, initialValues.tee, initialValues.data]);
-    const onDelete = useCallback(() => {
-        updateMinDeposit();
-    }, [updateMinDeposit]);
+    }, []);
+    const onDelete = useCallback((values) => {
+        setInitialValues(values);
+    }, []);
     useEffect(() => {
-        updateMinDeposit();
-    }, [updateMinDeposit]);
+        updateMinDeposit({
+            [Fields.data]: initialValues.data,
+            [Fields.solution]: initialValues.solution,
+            [Fields.tee]: initialValues.tee,
+            [Fields.storage]: initialValues.storage,
+        });
+    }, [initialValues.data, initialValues.solution, initialValues.tee, initialValues.storage, updateMinDeposit]);
     useEffect(() => {
         setInitialValues((old) => {
             if (minDeposit) {
-                return ({ ...old, deposit: minDeposit });
+                return ({ ...old, [Fields.deposit]: minDeposit });
             }
             return old;
         });
     }, [minDeposit]);
+    useEffect(() => {
+        updateFiltersRestrictions({
+            [Fields.data]: initialValues.data,
+            [Fields.solution]: initialValues.solution,
+        });
+    }, [updateFiltersRestrictions, initialValues.data, initialValues.solution]);
 
     return (
         <Box direction="column">
@@ -124,36 +171,38 @@ export const CreateOrderModal: FC<CreateOrderModalProps<Info>> = memo(({ initial
                                     <Offer>
                                     query={OffersSelectDocument}
                                     label="Solution"
-                                    name="solution"
+                                    name={Fields.solution}
                                     btnLabel="Add solution"
-                                    filter={solutionFilter}
+                                    filter={filters[Fields.solution]}
                                     className={classes.adder}
                                     showError
                                     convertNode={valueOfferConvertNode}
                                     checkTouched={!isValidating}
                                     onDelete={onDelete}
+                                    reset={[Fields.data, Fields.tee]}
                                 />
                                 <OffersAdder
                                     <Offer>
                                     query={OffersSelectDocument}
                                     label="Data"
-                                    name="data"
+                                    name={Fields.data}
                                     btnLabel="Add data"
                                     isMulti
-                                    filter={dataFilter}
+                                    filter={filters[Fields.data]}
                                     className={classes.adder}
                                     showError
                                     convertNode={valueOfferConvertNode}
                                     checkTouched={!isValidating}
                                     onDelete={onDelete}
+                                    reset={[Fields.tee]}
                                 />
                                 <OffersAdder
                                     <Offer>
                                     query={OffersSelectDocument}
                                     label="Storage"
-                                    name="storage"
+                                    name={Fields.storage}
                                     btnLabel="Add storage"
-                                    filter={storageFilter}
+                                    filter={filters[Fields.storage]}
                                     className={classes.adder}
                                     showError
                                     convertNode={valueOfferConvertNode}
@@ -164,6 +213,7 @@ export const CreateOrderModal: FC<CreateOrderModalProps<Info>> = memo(({ initial
                                     <TeeOffer>
                                     query={TeeOffersSelectDocument}
                                     label="TEE"
+                                    filter={filters.tee}
                                     name="tee"
                                     btnLabel="Add TEE"
                                     className={classes.adder}
@@ -173,14 +223,7 @@ export const CreateOrderModal: FC<CreateOrderModalProps<Info>> = memo(({ initial
                                     onDelete={onDelete}
                                 />
                                 <InputFormik
-                                    name="phrase"
-                                    label="Seed phrase"
-                                    classNameWrap={classes.inputWrap}
-                                    showError
-                                    checkTouched={false}
-                                />
-                                <InputFormik
-                                    name="deposit"
+                                    name={Fields.deposit}
                                     label="Deposit"
                                     classNameWrap={classes.inputWrap}
                                     showError

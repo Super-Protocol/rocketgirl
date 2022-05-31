@@ -15,14 +15,14 @@ import { useTables } from '../hooks/useTables';
 // import { Transactions } from './Transactions';
 
 export const Content: FC<ContentProps> = memo(() => {
-    const { selectedWalletType, selectedAddress } = useContext(WalletContext);
+    const { selectedAddress } = useContext(WalletContext);
     const tables = useMemo(
         () => getTables({}),
         [],
     );
     const {
         queryFetcher, table, onChangeTable,
-    } = useTables(tables[0]?.[0]?.value, selectedWalletType, selectedAddress);
+    } = useTables(tables[0]?.[0]?.value, selectedAddress);
     // const onSubmit = useCallback(({ values }) => {
     //     onChangeTable(table, getFilters(values));
     // }, [onChangeTable, table]);

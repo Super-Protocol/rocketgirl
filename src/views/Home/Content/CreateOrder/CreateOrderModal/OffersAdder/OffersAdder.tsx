@@ -26,9 +26,10 @@ export const OffersAdder: <TNode>(p: OffersAdderProps<TNode>) =>
         showError,
         checkTouched,
         onDelete: onDeleteProps,
+        reset,
     }) => {
         const { values } = useFormikContext<FormValues<Info>>();
-        const [, { value }, { setValue }] = useField(name);
+        const [, { value }] = useField(name);
         const { goNext } = useContext(ModalOkCancelContext);
         const { fetcher } = useSelectQueryCursorSPFetcher<any, any>({ // todo
             query,
@@ -44,6 +45,7 @@ export const OffersAdder: <TNode>(p: OffersAdderProps<TNode>) =>
                         value={value}
                         name={name}
                         formValues={values}
+                        reset={reset}
                     />
                 ),
                 messages: {
@@ -51,16 +53,15 @@ export const OffersAdder: <TNode>(p: OffersAdderProps<TNode>) =>
                 },
                 classNameWrap: classes.modalAdder,
             });
-        }, [goNext, fetcher, value, name, values, label]);
+        }, [goNext, fetcher, value, name, values, label, reset]);
         const onDeleteOffer = useCallback(({ isMulti, value: newValue }) => {
+            let updatedValue;
             if (isMulti) {
                 const newValues = (value || [])?.filter((oldValue) => oldValue?.value !== newValue?.value);
-                setValue(newValues?.length ? newValues : undefined);
-            } else {
-                setValue(undefined);
+                updatedValue = newValues?.length ? newValues : undefined;
             }
-            onDeleteProps?.();
-        }, [setValue, value, onDeleteProps]);
+            onDeleteProps?.({ ...values, [name]: updatedValue });
+        }, [value, onDeleteProps, name, values]);
         const renderItem = useCallback((item) => (
             <TooltipLink
                 title="Description"

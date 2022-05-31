@@ -1,6 +1,8 @@
 import { DocumentNode } from 'graphql';
 import { OperationVariables } from '@apollo/client';
 import { ConvertNode } from '@/common/hooks/useSelectQueryCursorSPFetcher';
+import { Info } from '@/uikit/ListAdder/ListAdderView/types';
+import { FormValues } from '../types';
 
 export interface OffersAdderProps<TNode> {
     query: DocumentNode;
@@ -13,5 +15,7 @@ export interface OffersAdderProps<TNode> {
     convertNode?: ConvertNode<TNode>;
     showError?: boolean;
     checkTouched?: boolean;
-    onDelete?: () => void;
+    onDelete?: (values: FormValues<Info>) => void;
+    onSave?: (values: FormValues<Info>) => void;
+    reset?: string[];
 }

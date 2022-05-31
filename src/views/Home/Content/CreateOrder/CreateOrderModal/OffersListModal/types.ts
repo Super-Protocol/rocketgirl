@@ -10,4 +10,5 @@ export interface OffersListModalProps<Info> {
     onSave?: (values: Item<Info>[] | Item<Info>) => void;
     name: string;
     formValues: any; // todo
+    reset?: string[];
 }
