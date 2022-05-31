@@ -6,6 +6,7 @@ import {
 } from '@super-protocol/sp-sdk-js';
 import sum from 'lodash.sum';
 import { ConvertNode } from '@/common/hooks/useSelectQueryCursorSPFetcher';
+import { WorkflowPropsValues } from '@/connectors/orders';
 import { Offer, TeeOffer, TOfferType } from '@/gql/graphql';
 import {
     FormValues, Offer as FormOffer,
@@ -53,6 +54,7 @@ export const getValidationSchema = <Info>(props?: GetValidationSchemaProps): Yup
                 .min(minDeposit, `must be greater than or equal ${minDeposit}`)
             : Yup.number().required('required'),
         file: Yup.string(), // todo
+        phrase: Yup.string().required('required'),
     });
 };
 
@@ -97,4 +99,23 @@ export const getMinDepositWorkflow = async (formValues: GetMinDepositWorkflow): 
         await getCalcOrderDeposit(tee, orderMinDeposit, OfferType.TeeOffer),
         await getCalcOrderDeposit(storage, orderMinDeposit, OfferType.Storage),
     ]);
+};
+
+export const getWorkflowValues = (formValues: FormValues<Info>): WorkflowPropsValues => {
+    const {
+        phrase,
+        solution,
+        data,
+        tee,
+        storage,
+        deposit,
+    } = formValues;
+    return {
+        phrase: phrase || '',
+        solution: [solution?.value as string],
+        data: data?.map((d) => d?.value as string),
+        tee: tee?.value as string,
+        storage: storage?.value as string,
+        deposit: deposit || 0,
+    };
 };

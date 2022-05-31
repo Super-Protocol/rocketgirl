@@ -11,6 +11,7 @@ export interface FormValues<Info> {
     storage?: Offer<Info>;
     file?: any; // todo
     deposit?: number;
+    phrase?: string;
 }
 
 export interface CreateOrderModalProps<Info> {

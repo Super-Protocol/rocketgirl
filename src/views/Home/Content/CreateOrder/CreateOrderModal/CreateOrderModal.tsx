@@ -19,6 +19,9 @@ import {
     Spinner,
 } from '@/uikit';
 import { ModalOkCancelContext } from '@/common/context/ModalOkCancelProvider/ModalOkCancelProvider';
+import { workflow } from '@/connectors/orders';
+import { useErrorModal } from '@/common/hooks/useErrorModal';
+import { WalletContext } from '@/common/context/WalletProvider';
 import { CreateOrderModalProps, FormValues, Info } from './types';
 import { OffersAdder } from './OffersAdder';
 import classes from './CreateOrderModal.module.scss';
@@ -30,14 +33,17 @@ import {
     storageFilter,
     getValidationSchema,
     getMinDepositWorkflow,
+    getWorkflowValues,
 } from './helpers';
 
 export const CreateOrderModal: FC<CreateOrderModalProps<Info>> = memo(({ initialValues: initialValuesProps }) => {
+    const { selectedAddress, instance } = useContext(WalletContext);
+    const { showErrorModal, showSuccessModal } = useErrorModal();
     const { goBack } = useContext(ModalOkCancelContext);
     const [isValidating, setIsValidating] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [initialValues] = useState<FormValues<Info>>(initialValuesProps || {});
-    const [minDeposit, setMinDeposit] = useState<number | undefined>();
+    const [initialValues, setInitialValues] = useState<FormValues<Info>>(initialValuesProps || {});
+    const [minDeposit, setMinDeposit] = useState<number>(0);
     const validationSchema = useMemo(() => getValidationSchema({
         minDeposit,
     }), [minDeposit]);
@@ -48,27 +54,53 @@ export const CreateOrderModal: FC<CreateOrderModalProps<Info>> = memo(({ initial
         setIsValidating(true);
         submitForm();
     }, []);
-    const onSubmitForm = useCallback(() => {
+    const onSubmitForm = useCallback(async (formValues: FormValues<Info>) => {
+        setLoading(true);
         setIsValidating(true);
-    }, []);
+        if (!selectedAddress || !instance) {
+            return showErrorModal('Metamask account not found');
+        }
+        try {
+            const { phrase } = formValues || {};
+            const values = getWorkflowValues(formValues);
+            await workflow({ values, actionAccountAddress: selectedAddress, web3: instance });
+            showSuccessModal(`Please remember your seed phrase: ${phrase}`);
+        } catch (e) {
+            showErrorModal(e);
+        }
+        setLoading(false);
+    }, [showSuccessModal, showErrorModal, instance, selectedAddress]);
     const updateMinDeposit = useCallback(async () => {
         try {
             setLoading(true);
             setMinDeposit(
-                await getMinDepositWorkflow(initialValues),
+                await getMinDepositWorkflow({
+                    data: initialValues.data,
+                    solution: initialValues.solution,
+                    tee: initialValues.tee,
+                    storage: initialValues.storage,
+                }),
             );
         } catch (e) {
             console.error(e);
         } finally {
             setLoading(false);
         }
-    }, [initialValues]);
+    }, [initialValues.storage, initialValues.solution, initialValues.tee, initialValues.data]);
     const onDelete = useCallback(() => {
         updateMinDeposit();
     }, [updateMinDeposit]);
     useEffect(() => {
         updateMinDeposit();
     }, [updateMinDeposit]);
+    useEffect(() => {
+        setInitialValues((old) => {
+            if (minDeposit) {
+                return ({ ...old, deposit: minDeposit });
+            }
+            return old;
+        });
+    }, [minDeposit]);
 
     return (
         <Box direction="column">
@@ -81,7 +113,7 @@ export const CreateOrderModal: FC<CreateOrderModalProps<Info>> = memo(({ initial
                 validationSchema={validationSchema}
                 onSubmit={onSubmitForm}
             >
-                {({ submitForm, values }) => {
+                {({ submitForm }) => {
                     return (
                         <Box direction="column">
                             {loading && (
@@ -139,6 +171,13 @@ export const CreateOrderModal: FC<CreateOrderModalProps<Info>> = memo(({ initial
                                     convertNode={teeOfferConvertNode}
                                     checkTouched={!isValidating}
                                     onDelete={onDelete}
+                                />
+                                <InputFormik
+                                    name="phrase"
+                                    label="Seed phrase"
+                                    classNameWrap={classes.inputWrap}
+                                    showError
+                                    checkTouched={false}
                                 />
                                 <InputFormik
                                     name="deposit"
