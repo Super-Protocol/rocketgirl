@@ -15,6 +15,7 @@ import { Box, Button, InputFormik } from '@/uikit';
 import { ModalOkCancelContext } from '@/common/context/ModalOkCancelProvider/ModalOkCancelProvider';
 import { CreateOrderModalProps, FormValues, Info } from './types';
 import { OffersAdder } from './OffersAdder';
+import { FileUploader } from './FileUploader';
 import classes from './CreateOrderModal.module.scss';
 import {
     valueOfferConvertNode,
@@ -104,6 +105,7 @@ export const CreateOrderModal: FC<CreateOrderModalProps<Info>> = memo(({ initial
                                     convertNode={teeOfferConvertNode}
                                     checkTouched={!isValidating}
                                 />
+                                <FileUploader />
                                 <InputFormik
                                     name="deposit"
                                     label="Deposit"

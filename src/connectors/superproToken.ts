@@ -10,12 +10,12 @@ export interface TransferTokenProps {
     instance?: Web3;
 }
 
-export const getSuperproToken = async (address?: string): Promise<string | null> => {
+export const getSuperproToken = async (address?: string): Promise<string | number | null> => {
     if (!address) return null;
     return SuperproToken.balanceOf(address);
 };
 
-export const getSuperproTokenCatched = async (address?: string): Promise<string | null> => {
+export const getSuperproTokenCatched = async (address?: string): Promise<string | number | null> => {
     try {
         return getSuperproToken(address);
     } catch (e) {

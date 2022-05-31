@@ -3,7 +3,7 @@ import { WalletConnect } from '@web3-react/walletconnect';
 import { Actions } from '@web3-react/types';
 import { getSuperproTokenCatched } from '@/connectors/superproToken';
 
-export interface Balance { matic: string | null, tee: string | null }
+export interface Balance { matic: string | null, tee: string | number | null }
 
 export interface ConnectResult {
     accounts: string[];

@@ -5,7 +5,7 @@ import { MetaMask } from '@web3-react/metamask';
 import CONFIG from '@/config';
 import { getSuperproTokenCatched } from '@/connectors/superproToken';
 
-export interface Balance { matic: string | null, tee: string | null }
+export interface Balance { matic: string | null, tee: string | number | null }
 
 export interface ConnectResult {
     accounts: string[];
