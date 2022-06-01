@@ -203,6 +203,12 @@ export type ListTeeOffersResponse = {
   pageData?: Maybe<PageDataDto>;
 };
 
+export type ListTransactionResponse = {
+  __typename?: 'ListTransactionResponse';
+  page: TransactionConnection;
+  pageData?: Maybe<PageDataDto>;
+};
+
 export type LockInfo = {
   __typename?: 'LockInfo';
   amount: Scalars['Float'];
@@ -790,6 +796,8 @@ export type Query = {
   staking: Staking;
   teeOffer: TeeOffer;
   teeOffers: ListTeeOffersResponse;
+  transaction: Transaction;
+  transactions: ListTransactionResponse;
 };
 
 
@@ -885,6 +893,17 @@ export type QueryTeeOffersArgs = {
   pagination: ConnectionArgs;
 };
 
+
+export type QueryTransactionArgs = {
+  _id: Scalars['String'];
+};
+
+
+export type QueryTransactionsArgs = {
+  filter?: InputMaybe<TransactionFilter>;
+  pagination: ConnectionArgs;
+};
+
 export type StakeInfo = {
   __typename?: 'StakeInfo';
   amount: Scalars['Float'];
@@ -975,6 +994,7 @@ export enum SubscriptionSource {
   Provider = 'PROVIDER',
   Staking = 'STAKING',
   TeeOffer = 'TEE_OFFER',
+  Transaction = 'TRANSACTION',
   Voting = 'VOTING'
 }
 
@@ -1078,6 +1098,64 @@ export type TeeOfferPageInfo = {
   startCursor?: Maybe<Scalars['String']>;
 };
 
+export type Transaction = {
+  __typename?: 'Transaction';
+  baseAddress: Scalars['String'];
+  blockHash?: Maybe<Scalars['String']>;
+  blockNumber?: Maybe<Scalars['Float']>;
+  from: Scalars['String'];
+  gas: Scalars['Float'];
+  gasPrice: Scalars['String'];
+  hash: Scalars['String'];
+  input: Scalars['String'];
+  nonce: Scalars['Float'];
+  r: Scalars['String'];
+  s: Scalars['String'];
+  timestamp: Scalars['Float'];
+  to?: Maybe<Scalars['String']>;
+  transactionIndex: Scalars['Float'];
+  v: Scalars['String'];
+  value: Scalars['String'];
+};
+
+export type TransactionConnection = {
+  __typename?: 'TransactionConnection';
+  edges?: Maybe<Array<TransactionEdge>>;
+  pageInfo?: Maybe<TransactionPageInfo>;
+};
+
+export type TransactionEdge = {
+  __typename?: 'TransactionEdge';
+  cursor?: Maybe<Scalars['String']>;
+  node?: Maybe<Transaction>;
+};
+
+export type TransactionFilter = {
+  /** filter by receiver */
+  receiver?: InputMaybe<Scalars['String']>;
+  /** filter by sender */
+  sender?: InputMaybe<Scalars['String']>;
+};
+
+export type TransactionInputType = {
+  baseAddress: Scalars['String'];
+  blockHash?: InputMaybe<Scalars['String']>;
+  blockNumber?: InputMaybe<Scalars['Float']>;
+  from: Scalars['String'];
+  gas: Scalars['Float'];
+  gasPrice: Scalars['String'];
+  hash: Scalars['String'];
+  input: Scalars['String'];
+  nonce: Scalars['Float'];
+  r: Scalars['String'];
+  s: Scalars['String'];
+  timestamp: Scalars['Float'];
+  to?: InputMaybe<Scalars['String']>;
+  transactionIndex: Scalars['Float'];
+  v: Scalars['String'];
+  value: Scalars['String'];
+};
+
 export type TransactionOptions = {
   __typename?: 'TransactionOptions';
   from: Scalars['String'];
@@ -1091,6 +1169,14 @@ export type TransactionOptionsInputType = {
   gas: Scalars['Float'];
   gasPrice: Scalars['String'];
   web3: Web3InputType;
+};
+
+export type TransactionPageInfo = {
+  __typename?: 'TransactionPageInfo';
+  endCursor?: Maybe<Scalars['String']>;
+  hasNextPage: Scalars['Boolean'];
+  hasPreviousPage: Scalars['Boolean'];
+  startCursor?: Maybe<Scalars['String']>;
 };
 
 export type TransferInputType = {

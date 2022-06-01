@@ -3,16 +3,19 @@ import { getConfigWithEnv } from '@/utils/env';
 
 export type Config = {
     // base app config
-    REACT_APP_API_ENDPOINT?: string;
-    REACT_APP_POLYGON_SCAN: string;
-    REACT_APP_BLOCKCHAIN_URL: string;
-    REACT_APP_CHAIN_ID?: number;
-    REACT_APP_SP_MAIN_CONTRACT_ADDRESS: string;
-    REACT_APP_SP_GAS_PRICE: string;
-    REACT_APP_SP_GAS_LIMIT: number;
+    REACT_APP_API_ENDPOINT?: string; // backend api
+    REACT_APP_POLYGON_SCAN: string; // polygon scan url
+    IS_USE_PROXY?: string; // if need proxy
+    REACT_APP_BLOCKCHAIN_URL: string; // blockchain node url
+    REACT_APP_CHAIN_ID?: number; // supported chain id
+    REACT_APP_SP_MAIN_CONTRACT_ADDRESS: string; // superpro token address
+    REACT_APP_SP_GAS_PRICE: string; // gas price
+    REACT_APP_SP_GAS_LIMIT: number; // gas limit
     REACT_APP_FILE_PATH: string,
-    REACT_APP_FAUCET_MATIC_API: string,
-    REACT_APP_MATIC_ADDRESS: string,
+    REACT_APP_FAUCET_MATIC_API: string, //  faucet matic api
+    REACT_APP_MATIC_ADDRESS: string, // matic balance api
+    REACT_APP_AUTH?: string;
+    REACT_APP_BASIC_AUTH?: string;
 };
 
 const DEFAULT_CONFIG: Config = {
