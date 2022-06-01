@@ -57,6 +57,7 @@ export const InputUi: FC<InputUiProps> = memo(({
     mask,
     alwaysShowMask,
     beforeMaskedStateChange,
+    renderError,
     ...props
 }) => {
     const [inputId] = useState<string>(id || uuid());
@@ -277,7 +278,9 @@ export const InputUi: FC<InputUiProps> = memo(({
                 ) : null}
             </label>
             {showError && (isInvalid && error ? (
-                <span data-testid="input-error" className={cn(classes.error, classNameError)}>{error}</span>
+                renderError
+                    ? renderError(error)
+                    : <span data-testid="input-error" className={cn(classes.error, classNameError)}>{error}</span>
             ) : (
                 <div data-testid="input-error-empty" className={cn(classes.errorEmpty, classNameErrorEmpty)} />
             ))}

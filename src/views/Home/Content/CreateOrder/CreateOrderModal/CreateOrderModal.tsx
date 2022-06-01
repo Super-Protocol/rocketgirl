@@ -18,7 +18,6 @@ import {
 import {
     Box,
     Button,
-    InputFormik,
     Spinner,
 } from '@/uikit';
 import { ModalOkCancelContext } from '@/common/context/ModalOkCancelProvider/ModalOkCancelProvider';
@@ -44,6 +43,7 @@ import {
     getInitialFilters,
 } from './helpers';
 import { SuccessModal } from './SuccessModal';
+import { InputDeposit } from './InputDeposit';
 
 export const CreateOrderModal: FC<CreateOrderModalProps> = memo(({ initialValues: initialValuesProps }) => {
     const { selectedAddress, instance } = useContext(WalletContext);
@@ -234,13 +234,7 @@ export const CreateOrderModal: FC<CreateOrderModalProps> = memo(({ initialValues
                                     checkTouched={!isValidating}
                                     onDelete={onDelete}
                                 />
-                                <InputFormik
-                                    name={Fields.deposit}
-                                    label="Deposit"
-                                    classNameWrap={classes.inputWrap}
-                                    showError
-                                    checkTouched={false}
-                                />
+                                <InputDeposit min={minDeposit} classNameWrap={classes.inputWrap} />
                             </Box>
                             <Box justifyContent="flex-end">
                                 <Button

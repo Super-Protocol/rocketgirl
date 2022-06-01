@@ -51,6 +51,7 @@ export interface InputUiProps {
     mask?: string;
     alwaysShowMask?: boolean;
     beforeMaskedStateChange?: Function;
+    renderError?: (error: any) => ReactNode;
 }
 
 export enum InputUiTypes {
