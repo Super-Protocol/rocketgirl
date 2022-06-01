@@ -17,7 +17,7 @@ export interface Wallet {
 
 export type SelectedWalletType = WalletType | null;
 export type SelectedWallet = WalletInfo | null;
-export interface Balance { matic: string | null, tee: string | number | null }
+export interface Balance { matic: string | null, tee: string | null }
 
 export interface UseWalletResult {
     wallet: Wallet;

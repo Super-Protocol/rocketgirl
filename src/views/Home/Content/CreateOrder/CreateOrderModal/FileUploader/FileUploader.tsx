@@ -1,8 +1,9 @@
 import { ReactElement, useState, useCallback } from 'react';
-import { useDropzone } from 'react-dropzone';
 import { S3 } from 'aws-sdk';
 
-import { Box, Icon, Spinner } from '@/uikit';
+import {
+    Box, Icon, Spinner, FileUploaderUi,
+} from '@/uikit';
 import classes from './FileUploader.module.scss';
 import { S3_BUCKET, S3_CONFIG } from './helpers';
 
@@ -47,46 +48,28 @@ export const FileUploader = (): ReactElement => {
             });
     }, [uploadedFiles]);
 
-    const {
-        getRootProps, getInputProps,
-    } = useDropzone({
-        multiple: false,
-        onDrop: (acceptedFiles) => {
-            for (let i = 0; i < acceptedFiles.length; i++) {
-                uploadFile(acceptedFiles[i]);
-            }
-        },
-    });
-
     return (
-        <Box direction="column">
-            <div className={classes.title}>File</div>
-            <Box direction="column">
-                <div {...getRootProps({ className: classes.dropzone })}>
-                    <input {...getInputProps()} />
-                    {loading.show ? (
-                        <Box className={classes.file} alignItems="center">
-                            {loading.process && (
-                                <div className={classes.spinnerWrapper}>
-                                    <Spinner
-                                        animation="border"
-                                        size="sm"
-                                        variant="custom"
-                                        className={classes.spinner}
-                                    />
-                                </div>
-                            )}
-                            <div className={classes.fileName}>{loading.fileName}</div>
-                        </Box>
-                    ) : (
-                        <Box alignItems="center">
-                            <Icon name="clip2" width={12} height={14} className={classes.icon} />
-                            <p>Add file or drag and drop</p>
-                        </Box>
+        <FileUploaderUi {...{ uploadFile }}>
+            {loading.show ? (
+                <Box className={classes.file} alignItems="center">
+                    {loading.process && (
+                        <div className={classes.spinnerWrapper}>
+                            <Spinner
+                                animation="border"
+                                size="sm"
+                                variant="custom"
+                                className={classes.spinner}
+                            />
+                        </div>
                     )}
-                </div>
-            </Box>
-            <div className={classes.errorEmpty} />
-        </Box>
+                    <div className={classes.fileName}>{loading.fileName}</div>
+                </Box>
+            ) : (
+                <Box alignItems="center">
+                    <Icon name="clip2" width={12} height={14} className={classes.icon} />
+                    <p>Add file or drag and drop</p>
+                </Box>
+            )}
+        </FileUploaderUi>
     );
 };
