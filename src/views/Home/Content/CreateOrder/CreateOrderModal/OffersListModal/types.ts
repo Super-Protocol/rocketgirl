@@ -1,14 +1,18 @@
+import { TOfferType } from '@/gql/graphql';
 import { LazyLoadFetcher } from '@/uikit/types';
-import { Item } from '@/uikit/LazyLoadCheckboxList/types';
+import { ConvertNode } from '@/common/hooks/useSelectQueryCursorSPFetcher';
+import { FormOffer } from '@/views/Home/Content/CreateOrder/CreateOrderModal/types';
 
 export interface OffersListModalPropsFetcherData { description?: string }
 
-export interface OffersListModalProps<Info> {
+export interface OffersListModalProps {
     isMulti?: boolean;
     fetcher?: LazyLoadFetcher<OffersListModalPropsFetcherData> | null;
-    value: Item<Info>[] | Item<Info>;
-    onSave?: (values: Item<Info>[] | Item<Info>) => void;
+    value: FormOffer[] | FormOffer;
     name: string;
     formValues: any; // todo
     reset?: string[];
+    isRequestBaseOffer?: boolean;
+    convertNode?: ConvertNode<any>; // todo
+    offerType?: TOfferType;
 }

@@ -1,3 +1,39 @@
+$mr-top: 14px;
+
 .listItem {
   margin-bottom: 4px;
+  background-color: var(--orange15);
+  border-radius: 8px;
+}
+
+.listItemInner {
+  position: relative;
+  margin-left: 16px;
+}
+
+.listItemInnerFirst {
+  .lineVertical {
+    top: 0;
+    height: calc(100% - #{$mr-top});
+  }
+}
+
+.lineVertical {
+  display: block;
+  width: 1.5px;
+  height: 100%;
+  margin-right: 10px;
+  background-color: var(--orange40);
+  position: absolute;
+  left: 0;
+  top: -$mr-top;
+}
+
+.lineHorizontal {
+  display: block;
+  width: 10px;
+  height: 1.5px;
+  background-color: var(--orange40);
+  position: absolute;
+  bottom: $mr-top;
 }

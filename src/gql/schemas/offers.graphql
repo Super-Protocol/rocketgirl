@@ -76,6 +76,9 @@ query OffersSelect($pagination: ConnectionArgs!, $filter: OfferFilter) {
                     offerInfo {
                         name
                         description
+                        restrictions {
+                            offers
+                        }
                     }
                 }
                 cursor

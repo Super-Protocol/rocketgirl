@@ -27,10 +27,11 @@ import { useErrorModal } from '@/common/hooks/useErrorModal';
 import { WalletContext } from '@/common/context/WalletProvider';
 import { generateMnemonic } from '@/utils/crypto';
 import {
-    CreateOrderModalProps, Fields,
+    CreateOrderModalProps,
+    Fields,
     FormValues,
-    Info,
     UpdateFiltersRestrictionsProps,
+    FormOffer,
 } from './types';
 import { OffersAdder } from './OffersAdder';
 import classes from './CreateOrderModal.module.scss';
@@ -44,14 +45,14 @@ import {
 } from './helpers';
 import { SuccessModal } from './SuccessModal';
 
-export const CreateOrderModal: FC<CreateOrderModalProps<Info>> = memo(({ initialValues: initialValuesProps }) => {
+export const CreateOrderModal: FC<CreateOrderModalProps> = memo(({ initialValues: initialValuesProps }) => {
     const { selectedAddress, instance } = useContext(WalletContext);
     const { showErrorModal, showSuccessModal } = useErrorModal();
     const { goBack } = useContext(ModalOkCancelContext);
     const [isValidating, setIsValidating] = useState(false);
     const [loading, setLoading] = useState(false);
     const [filters, setFilters] = useState(getInitialFilters);
-    const [initialValues, setInitialValues] = useState<FormValues<Info>>(initialValuesProps || {});
+    const [initialValues, setInitialValues] = useState<FormValues>(initialValuesProps || {});
     const [minDeposit, setMinDeposit] = useState<number>(0);
     const [getOffersRestrictionsLazyQuery] = useOffersRestrictionsLazyQuery();
     const getOffersRestrictions = useCallback(async (list?: string[], offerType?: TOfferType) => {
@@ -73,7 +74,7 @@ export const CreateOrderModal: FC<CreateOrderModalProps<Info>> = memo(({ initial
         if (!offers?.length) return undefined;
         return offers;
     }, [getOffersRestrictionsLazyQuery]);
-    const updateFiltersRestrictions = useCallback(async (values: UpdateFiltersRestrictionsProps<Info>) => {
+    const updateFiltersRestrictions = useCallback(async (values: UpdateFiltersRestrictionsProps) => {
         const solutionOffers = values.solution?.value ? [values.solution?.value] : [];
         const dataOffers = values.data?.map((d) => d?.value as string) || [];
         const restrictionsByTeeFromSolution = await getOffersRestrictions(solutionOffers, TOfferType.TeeOffer);
@@ -97,7 +98,7 @@ export const CreateOrderModal: FC<CreateOrderModalProps<Info>> = memo(({ initial
         setIsValidating(true);
         submitForm();
     }, []);
-    const onSubmitForm = useCallback(async (formValues: FormValues<Info>) => {
+    const onSubmitForm = useCallback(async (formValues: FormValues) => {
         setLoading(true);
         setIsValidating(true);
         if (!selectedAddress || !instance) {
@@ -113,11 +114,16 @@ export const CreateOrderModal: FC<CreateOrderModalProps<Info>> = memo(({ initial
         }
         setLoading(false);
     }, [showSuccessModal, showErrorModal, instance, selectedAddress]);
-    const updateMinDeposit = useCallback(async (values: FormValues<Info>) => {
+    const updateMinDeposit = useCallback(async (values: FormValues) => {
         try {
             setLoading(true);
             setMinDeposit(
-                await getMinDepositWorkflow(values),
+                await getMinDepositWorkflow({
+                    ...values,
+                    [Fields.solution]: values[Fields.solution]?.value
+                        ? [values[Fields.solution] as FormOffer].concat(values[Fields.solutionBase] || [])
+                        : [],
+                }),
             );
         } catch (e) {
             console.error(e);
@@ -154,7 +160,7 @@ export const CreateOrderModal: FC<CreateOrderModalProps<Info>> = memo(({ initial
     return (
         <Box direction="column">
             <Formik
-                <FormValues<Info>>
+                <FormValues>
                 validateOnChange={isValidating}
                 validateOnBlur={isValidating}
                 initialValues={initialValues}
@@ -162,7 +168,7 @@ export const CreateOrderModal: FC<CreateOrderModalProps<Info>> = memo(({ initial
                 validationSchema={validationSchema}
                 onSubmit={onSubmitForm}
             >
-                {({ submitForm }) => {
+                {({ submitForm, values }) => {
                     return (
                         <Box direction="column">
                             {loading && (
@@ -174,6 +180,7 @@ export const CreateOrderModal: FC<CreateOrderModalProps<Info>> = memo(({ initial
                                     query={OffersSelectDocument}
                                     label="Solution"
                                     name={Fields.solution}
+                                    offerType={TOfferType.Solution}
                                     btnLabel="Add solution"
                                     filter={filters[Fields.solution]}
                                     className={classes.adder}
@@ -182,9 +189,11 @@ export const CreateOrderModal: FC<CreateOrderModalProps<Info>> = memo(({ initial
                                     checkTouched={!isValidating}
                                     onDelete={onDelete}
                                     reset={[Fields.data, Fields.tee]}
+                                    isRequestBaseOffer
                                 />
                                 <OffersAdder
                                     <Offer>
+                                    disabled={!values[Fields.solution]}
                                     query={OffersSelectDocument}
                                     label="Data"
                                     name={Fields.data}
@@ -200,6 +209,7 @@ export const CreateOrderModal: FC<CreateOrderModalProps<Info>> = memo(({ initial
                                 />
                                 <OffersAdder
                                     <Offer>
+                                    disabled={!values[Fields.solution]}
                                     query={OffersSelectDocument}
                                     label="Storage"
                                     name={Fields.storage}

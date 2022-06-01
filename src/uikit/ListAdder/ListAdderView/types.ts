@@ -23,6 +23,7 @@ export interface ListAdderViewProps<Info> {
     isInvalid?: boolean;
     showError?: boolean;
     renderItem?: (value: Item<Info>) => ReactNode;
+    disabled?: boolean;
 }
 
 export interface ListAdderViewFormikProps<Info> extends ListAdderViewProps<Info> {
@@ -30,4 +31,4 @@ export interface ListAdderViewFormikProps<Info> extends ListAdderViewProps<Info>
     checkTouched?: boolean;
 }
 
-export type Info = { description: string; name: string; };
+export type Info = { description: string; name: string; sub: Item<Info>[] };

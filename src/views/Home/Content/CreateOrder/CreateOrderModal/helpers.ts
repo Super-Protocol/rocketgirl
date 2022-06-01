@@ -8,9 +8,10 @@ import sum from 'lodash.sum';
 import { ConvertNode } from '@/common/hooks/useSelectQueryCursorSPFetcher';
 import { WorkflowPropsValues } from '@/connectors/orders';
 import { Offer, TeeOffer, TOfferType } from '@/gql/graphql';
+import { Item, Value } from '@/uikit/types';
 import {
     FormValues,
-    Offer as FormOffer,
+    FormOffer,
     GetValidationSchemaProps,
     GetMinDepositWorkflow,
     Info,
@@ -18,35 +19,40 @@ import {
     GetInitialFiltersResult,
 } from './types';
 
-export const valueOfferConvertNode: ConvertNode<Offer> = ({ node }) => ({
+export const valueOfferConvertNode: ConvertNode<Offer> = ({ node }): Item<Value, Info> => ({
     value: node?.address,
     label: node?.offerInfo?.name || '',
     data: {
         description: node?.offerInfo?.description || '',
         name: node?.offerInfo?.name || '',
-        holdSum: node?.offerInfo?.holdSum,
+        holdSum: node?.offerInfo?.holdSum || 0,
+        restrictions: node?.offerInfo?.restrictions?.offers,
     },
 });
 
-export const teeOfferConvertNode: ConvertNode<TeeOffer> = ({ node }) => ({
+export const teeOfferConvertNode: ConvertNode<TeeOffer> = ({ node }): Item<Value, Info> => ({
     value: node?.address,
     label: node?.teeOfferInfo?.name || '',
-    data: { description: node?.teeOfferInfo?.description || '', name: node?.teeOfferInfo?.name || '', holdSum: 0 },
+    data: {
+        description: node?.teeOfferInfo?.description || '',
+        name: node?.teeOfferInfo?.name || '',
+        holdSum: 0,
+    },
 });
 
-const getOfferSchema = <Info = { value: string }>(field: string) => Yup.object().test(
+const getOfferSchema = (field: string) => Yup.object().test(
     field,
     'required',
     (item) => item?.value,
-) as Yup.AnySchema<FormOffer<Info>>;
+) as Yup.AnySchema<FormOffer>;
 
-export const getValidationSchema = <Info>(props?: GetValidationSchemaProps): Yup.SchemaOf<FormValues<Info>> => {
+export const getValidationSchema = (props?: GetValidationSchemaProps): Yup.SchemaOf<FormValues> => {
     const { minDeposit } = props || {};
     return Yup.object({
-        [Fields.solution]: getOfferSchema<Info>('solution'),
-        [Fields.data]: Yup.array().of(getOfferSchema<Info>('data')),
-        [Fields.tee]: getOfferSchema<Info>('tee'),
-        [Fields.storage]: getOfferSchema<Info>('storage'),
+        [Fields.solution]: getOfferSchema(Fields.solution),
+        [Fields.data]: Yup.array().of(getOfferSchema(Fields.data)),
+        [Fields.tee]: getOfferSchema(Fields.tee),
+        [Fields.storage]: getOfferSchema(Fields.storage),
         [Fields.deposit]: minDeposit
             ? Yup.number()
                 .required('required')
@@ -57,7 +63,7 @@ export const getValidationSchema = <Info>(props?: GetValidationSchemaProps): Yup
 };
 
 export const getCalcOrderDeposit = async (
-    offer: FormOffer<Info> | undefined,
+    offer: FormOffer | undefined,
     orderMinDeposit: number,
     type: OfferType,
 ): Promise<number> => {
@@ -75,7 +81,7 @@ export const getCalcOrderDeposit = async (
 };
 
 export const getCalcOrderDepositSum = async (
-    offers: FormOffer<Info>[],
+    offers: FormOffer[],
     orderMinDeposit: number,
     type: OfferType,
 ): Promise<number> => {
@@ -87,19 +93,19 @@ export const getMinDepositWorkflow = async (formValues: GetMinDepositWorkflow): 
     const orderMinDeposit = await Superpro.getParam(ParamName.OrderMinimumDeposit);
     const {
         data = [],
-        solution,
+        solution = [],
         tee,
         storage,
     } = formValues || {};
     return sum([
         await getCalcOrderDepositSum(data, orderMinDeposit, OfferType.Data),
-        await getCalcOrderDeposit(solution, orderMinDeposit, OfferType.Solution),
+        await getCalcOrderDepositSum(solution, orderMinDeposit, OfferType.Solution),
         await getCalcOrderDeposit(tee, orderMinDeposit, OfferType.TeeOffer),
         await getCalcOrderDeposit(storage, orderMinDeposit, OfferType.Storage),
     ]);
 };
 
-export const getWorkflowValues = (formValues: FormValues<Info>, mnemonic: string): WorkflowPropsValues => {
+export const getWorkflowValues = (formValues: FormValues, mnemonic: string): WorkflowPropsValues => {
     const {
         solution,
         data,
@@ -109,7 +115,12 @@ export const getWorkflowValues = (formValues: FormValues<Info>, mnemonic: string
     } = formValues;
     return {
         mnemonic: mnemonic || '',
-        solution: [solution?.value as string],
+        solution: [solution?.value as string]
+            .concat(
+                solution?.info?.sub
+                    ?.map((item) => item?.value as string)
+                    .filter((value) => value) || [],
+            ),
         data: data?.map((d) => d?.value as string),
         tee: tee?.value as string,
         storage: storage?.value as string,
