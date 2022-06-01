@@ -25,6 +25,7 @@ import { ModalOkCancelContext } from '@/common/context/ModalOkCancelProvider/Mod
 import { workflow } from '@/connectors/orders';
 import { useErrorModal } from '@/common/hooks/useErrorModal';
 import { WalletContext } from '@/common/context/WalletProvider';
+import { generateMnemonic } from '@/utils/crypto';
 import {
     CreateOrderModalProps, Fields,
     FormValues,
@@ -41,6 +42,7 @@ import {
     getWorkflowValues,
     getInitialFilters,
 } from './helpers';
+import { SuccessModal } from './SuccessModal';
 
 export const CreateOrderModal: FC<CreateOrderModalProps<Info>> = memo(({ initialValues: initialValuesProps }) => {
     const { selectedAddress, instance } = useContext(WalletContext);
@@ -102,10 +104,10 @@ export const CreateOrderModal: FC<CreateOrderModalProps<Info>> = memo(({ initial
             return showErrorModal('Metamask account not found');
         }
         try {
-            const phrase = 'test phrase'; // todo generate
-            const values = getWorkflowValues(formValues, phrase);
+            const mnemonic = generateMnemonic();
+            const values = getWorkflowValues(formValues, mnemonic);
             await workflow({ values, actionAccountAddress: selectedAddress, web3: instance });
-            showSuccessModal(`Please remember your seed phrase: ${phrase}`);
+            showSuccessModal(undefined, <SuccessModal mnemonic={mnemonic} />);
         } catch (e) {
             showErrorModal(e);
         }

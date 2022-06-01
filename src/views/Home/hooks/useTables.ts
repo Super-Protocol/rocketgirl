@@ -9,7 +9,6 @@ import { useHistory } from 'react-router';
 import { OperationVariables } from '@apollo/client';
 import { Tables } from '@/views/Home/types';
 import { PageClick } from '@/uikit/Table/TablePagination/types';
-import { SelectedWalletType } from '@/common/context/WalletProvider';
 import { useTablesSubscriptions } from './useTablesSubscriptions';
 import {
     useTablesQueryFetcher,

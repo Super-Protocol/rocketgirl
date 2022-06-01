@@ -99,7 +99,7 @@ export const getMinDepositWorkflow = async (formValues: GetMinDepositWorkflow): 
     ]);
 };
 
-export const getWorkflowValues = (formValues: FormValues<Info>, phrase: string): WorkflowPropsValues => {
+export const getWorkflowValues = (formValues: FormValues<Info>, mnemonic: string): WorkflowPropsValues => {
     const {
         solution,
         data,
@@ -108,7 +108,7 @@ export const getWorkflowValues = (formValues: FormValues<Info>, phrase: string):
         deposit,
     } = formValues;
     return {
-        phrase: phrase || '',
+        mnemonic: mnemonic || '',
         solution: [solution?.value as string],
         data: data?.map((d) => d?.value as string),
         tee: tee?.value as string,

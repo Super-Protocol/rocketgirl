@@ -4,9 +4,7 @@ import React, {
     useContext,
     useCallback,
 } from 'react';
-import intersectionby from 'lodash.intersectionby';
 import toastr from '@/services/Toastr/toastr';
-import { TOfferType, useOffersRestrictionsLazyQuery } from '@/gql/graphql';
 import { ModalOkCancelContext } from '@/common/context/ModalOkCancelProvider/ModalOkCancelProvider';
 import { ListAdderEditor } from '@/uikit';
 import { OffersListModalProps } from './types';

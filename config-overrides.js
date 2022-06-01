@@ -9,7 +9,21 @@ const path = require('path');
 const HTMLWebpackPlugin = require('html-webpack-plugin');
 const InterpolateHtmlPlugin = require('interpolate-html-plugin');
 
+const webpack = require('webpack');
+
+function overrideNode(config) {
+    config.plugins.push(
+      new webpack.IgnorePlugin({
+          checkResource(resource) {
+              return /.*\/wordlists\/(?!english).*\.json/.test(resource)
+          }
+      }),
+    );
+    return config;
+}
+
 module.exports = override(
+    overrideNode,
     addWebpackResolve({
         alias: { '@': path.resolve(__dirname, 'src') },
     }),
