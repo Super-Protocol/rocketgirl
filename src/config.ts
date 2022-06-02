@@ -3,19 +3,23 @@ import { getConfigWithEnv } from '@/utils/env';
 
 export type Config = {
     // base app config
-    REACT_APP_API_ENDPOINT?: string; // backend api
-    REACT_APP_POLYGON_SCAN: string; // polygon scan url
-    IS_USE_PROXY?: string; // if need proxy
-    REACT_APP_BLOCKCHAIN_URL: string; // blockchain node url
-    REACT_APP_CHAIN_ID?: number; // supported chain id
-    REACT_APP_SP_MAIN_CONTRACT_ADDRESS: string; // superpro token address
-    REACT_APP_SP_GAS_PRICE: string; // gas price
-    REACT_APP_SP_GAS_LIMIT: number; // gas limit
-    REACT_APP_FILE_PATH: string,
-    REACT_APP_FAUCET_MATIC_API: string, //  faucet matic api
-    REACT_APP_MATIC_ADDRESS: string, // matic balance api
-    REACT_APP_AUTH?: string;
-    REACT_APP_BASIC_AUTH?: string;
+    REACT_APP_API_ENDPOINT?: string;
+    REACT_APP_POLYGON_SCAN: string;
+    REACT_APP_BLOCKCHAIN_URL: string;
+    REACT_APP_CHAIN_ID?: number;
+    REACT_APP_SP_MAIN_CONTRACT_ADDRESS: string;
+    REACT_APP_SP_GAS_PRICE: string;
+    REACT_APP_SP_GAS_LIMIT: number;
+    REACT_APP_FILE_PATH: string;
+    REACT_APP_FAUCET_MATIC_API: string;
+    REACT_APP_MATIC_ADDRESS: string;
+    REACT_APP_S3_CONFIG: {
+        credentials: {
+            accessKeyId: string;
+            secretAccessKey: string;
+        };
+        endpoint: string;
+    };
 };
 
 const DEFAULT_CONFIG: Config = {
@@ -30,6 +34,13 @@ const DEFAULT_CONFIG: Config = {
     REACT_APP_SP_GAS_LIMIT: 7000000,
     REACT_APP_FILE_PATH: 'https://link.eu1.storjshare.io/raw/jxfrrjqfuuds2im76fc4zlbc4wya',
     REACT_APP_FAUCET_MATIC_API: 'https://api.faucet.matic.network',
+    REACT_APP_S3_CONFIG: {
+        credentials: {
+            accessKeyId: 'jwkgg66m7l5tehzsxwe4jyjdx7ra',
+            secretAccessKey: 'jyg5zqgiin4ne4gb2qgnnljhtk2urji3xhslgmtchutbdsf5vfpas',
+        },
+        endpoint: 'https://gateway.storjshare.io',
+    },
 };
 
 const CONFIG: Config = getConfigWithEnv<Config>(

@@ -33,6 +33,7 @@ import {
     FormOffer,
 } from './types';
 import { OffersAdder } from './OffersAdder';
+import { FileUploader } from './FileUploader';
 import classes from './CreateOrderModal.module.scss';
 import {
     valueOfferConvertNode,
@@ -234,6 +235,7 @@ export const CreateOrderModal: FC<CreateOrderModalProps> = memo(({ initialValues
                                     checkTouched={!isValidating}
                                     onDelete={onDelete}
                                 />
+                                <FileUploader />
                                 <InputDeposit min={minDeposit} classNameWrap={classes.inputWrap} />
                             </Box>
                             <Box justifyContent="flex-end">
