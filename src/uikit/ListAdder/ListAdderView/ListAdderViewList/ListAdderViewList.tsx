@@ -16,9 +16,8 @@ export const ListAdderViewList: FC<ListAdderViewListProps> = memo(({
             {list.map((item) => {
                 const sub = item?.info?.sub;
                 return (
-                    <Box direction="column" className={classes.listItem}>
+                    <Box direction="column" className={classes.listItem} key={`parent_${item?.value as string}`}>
                         <ListAdderViewListItem
-                            key={item?.value as string}
                             onDelete={() => onDelete?.(item)}
                             className={classes.listItemTop}
                         >
@@ -26,12 +25,13 @@ export const ListAdderViewList: FC<ListAdderViewListProps> = memo(({
                         </ListAdderViewListItem>
                         {!!sub?.length && (
                             sub.map((itemSub, index) => (
-                                <Box className={cn(classes.listItemInner, { [classes.listItemInnerFirst]: !index })}>
+                                <Box
+                                    className={cn(classes.listItemInner, { [classes.listItemInnerFirst]: !index })}
+                                    key={`base_${itemSub?.value as string}`}
+                                >
                                     <div className={classes.lineVertical} />
                                     <div className={classes.lineHorizontal} />
-                                    <ListAdderViewListItem
-                                        key={itemSub?.value as string}
-                                    >
+                                    <ListAdderViewListItem>
                                         {renderItem ? renderItem?.(itemSub) : itemSub?.value}
                                     </ListAdderViewListItem>
                                 </Box>
