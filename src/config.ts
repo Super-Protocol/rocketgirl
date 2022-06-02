@@ -7,6 +7,7 @@ export type Config = {
     REACT_APP_POLYGON_SCAN: string;
     REACT_APP_BLOCKCHAIN_URL: string;
     REACT_APP_CHAIN_ID?: number;
+    REACT_APP_IS_USE_PROXY?: string;
     REACT_APP_SP_MAIN_CONTRACT_ADDRESS: string;
     REACT_APP_SP_GAS_PRICE: string;
     REACT_APP_SP_GAS_LIMIT: number;

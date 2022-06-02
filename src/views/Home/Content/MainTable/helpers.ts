@@ -1,12 +1,12 @@
 import { Tables } from '@/views/Home/types';
 import { FetcherByTable, UseTablesQueryFetcherResult } from '@/views/Home/hooks/useTablesQueryFetcher';
 import { Diff } from '@/common/hooks/useTableDiff';
+import { TableTheme } from '@/uikit/Table/types';
 import { UseTableQueryFetcherResultList } from '@/common/hooks/useTableQueryFetcher';
 import { getColumns as getColumnsProvider, ProviderColumns } from './columns/provider';
 import { getColumns as getColumnsTEEOffers, TeeOffersColumns } from './columns/teeOffers';
 import { getColumns as getColumnsOffers, OffersColumns } from './columns/offers';
 import { getColumns as getColumnsOrders, OrdersColumns } from './columns/orders';
-import { TableTheme } from '@/uikit/Table/types';
 import { GetDiffIndexesResult } from './types';
 
 export type Columns = ProviderColumns

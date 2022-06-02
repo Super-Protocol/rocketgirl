@@ -3,8 +3,8 @@ import React, {
     FC,
 } from 'react';
 import { Box } from '@/uikit';
-import { NoAccountBlockProps } from './types';
 import { WalletConnectorBtn } from '@/common/components/WalletConnectorBtn';
+import { NoAccountBlockProps } from './types';
 import classes from './NoAccountBlock.module.scss';
 
 export const NoAccountBlock: FC<NoAccountBlockProps> = memo(({ message }) => {

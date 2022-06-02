@@ -117,3 +117,5 @@ export const isJSONString = (str: string): boolean => {
     }
     return true;
 };
+
+export const getExternalId = (): string => genRanHex(16);

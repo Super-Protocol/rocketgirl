@@ -1,6 +1,6 @@
 import { Tables } from '@/views/Home/types';
-import { GetTablesProps } from './types';
 import { Filter } from '@/views/Home/Content/FilterPopover/models';
+import { GetTablesProps } from './types';
 
 export const getTables = (props: GetTablesProps): { value: Tables, label: string }[][] => {
     const { hide } = props || {};

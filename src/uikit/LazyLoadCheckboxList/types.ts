@@ -3,8 +3,8 @@ import { LazyLoadFetcher, Value } from '@/uikit/types';
 
 export interface LazyLoadCheckboxListFetcherData { description?: string }
 
-export interface Item<Info> {
-    value?: Value;
+export interface Item<Info, value = Value> {
+    value?: value;
     info?: Info;
 }
 

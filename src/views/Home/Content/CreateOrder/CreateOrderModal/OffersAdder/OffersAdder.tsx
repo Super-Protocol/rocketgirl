@@ -1,8 +1,11 @@
 import React, {
     memo,
     useCallback,
-    useContext, ReactElement, JSXElementConstructor,
+    useContext,
+    ReactElement,
+    JSXElementConstructor,
 } from 'react';
+import cloneDeep from 'lodash.clonedeep';
 import { useField, useFormikContext } from 'formik';
 import { TooltipLink } from '@/common/components/TooltipLink';
 import { ListAdderViewFormik } from '@/uikit';
@@ -10,7 +13,7 @@ import { useSelectQueryCursorSPFetcher } from '@/common/hooks/useSelectQueryCurs
 import { ModalOkCancelContext } from '@/common/context/ModalOkCancelProvider/ModalOkCancelProvider';
 import { OffersAdderProps } from './types';
 import { OffersListModal } from '../OffersListModal';
-import { FormValues, Info } from '../types';
+import { FormValues } from '../types';
 import classes from './OffersAdder.module.scss';
 
 export const OffersAdder: <TNode>(p: OffersAdderProps<TNode>) =>
@@ -25,9 +28,14 @@ export const OffersAdder: <TNode>(p: OffersAdderProps<TNode>) =>
         convertNode,
         showError,
         checkTouched,
+        onDelete: onDeleteProps,
+        reset,
+        disabled,
+        isRequestBaseOffer,
+        offerType,
     }) => {
-        const { values } = useFormikContext<FormValues<Info>>();
-        const [, { value }, { setValue }] = useField(name);
+        const { values } = useFormikContext<FormValues>();
+        const [, { value }] = useField(name);
         const { goNext } = useContext(ModalOkCancelContext);
         const { fetcher } = useSelectQueryCursorSPFetcher<any, any>({ // todo
             query,
@@ -43,6 +51,10 @@ export const OffersAdder: <TNode>(p: OffersAdderProps<TNode>) =>
                         value={value}
                         name={name}
                         formValues={values}
+                        reset={reset}
+                        isRequestBaseOffer={isRequestBaseOffer}
+                        convertNode={convertNode}
+                        offerType={offerType}
                     />
                 ),
                 messages: {
@@ -50,15 +62,19 @@ export const OffersAdder: <TNode>(p: OffersAdderProps<TNode>) =>
                 },
                 classNameWrap: classes.modalAdder,
             });
-        }, [goNext, fetcher, value, name, values, label]);
+        }, [goNext, fetcher, value, name, values, label, reset, isRequestBaseOffer, convertNode, offerType]);
         const onDeleteOffer = useCallback(({ isMulti, value: newValue }) => {
+            let updatedValue;
+            const initialValues = cloneDeep(values);
             if (isMulti) {
                 const newValues = (value || [])?.filter((oldValue) => oldValue?.value !== newValue?.value);
-                setValue(newValues?.length ? newValues : undefined);
-            } else {
-                setValue(undefined);
+                updatedValue = newValues?.length ? newValues : undefined;
             }
-        }, [setValue, value]);
+            if (reset?.length) {
+                reset.forEach((key) => delete initialValues?.[key]);
+            }
+            onDeleteProps?.({ ...initialValues, [name]: updatedValue });
+        }, [value, onDeleteProps, name, values, reset]);
         const renderItem = useCallback((item) => (
             <TooltipLink
                 title="Description"
@@ -69,6 +85,7 @@ export const OffersAdder: <TNode>(p: OffersAdderProps<TNode>) =>
 
         return (
             <ListAdderViewFormik
+                disabled={disabled}
                 name={name}
                 label={label}
                 isMulti={isMulti}

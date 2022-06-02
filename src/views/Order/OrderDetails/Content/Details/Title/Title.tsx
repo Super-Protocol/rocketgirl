@@ -29,8 +29,8 @@ export const Title = memo<TitleProps>(({ order, orderInfo, updateOrderInfo }) =>
         try {
             await cancelOrder({
                 orderAddress: order?.address,
-                accountAddress: selectedAddress,
-                instance,
+                actionAccountAddress: selectedAddress,
+                web3: instance,
             });
             await updateOrderInfo();
             showSuccessModal('Order successfully canceled');

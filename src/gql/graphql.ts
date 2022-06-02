@@ -1315,7 +1315,7 @@ export type OffersSelectQueryVariables = Exact<{
 }>;
 
 
-export type OffersSelectQuery = { __typename?: 'Query', result: { __typename?: 'ListOffersResponse', pageData?: { __typename?: 'PageDataDto', count: number, limit: number, offset: number } | null, page: { __typename?: 'OfferConnection', pageInfo?: { __typename?: 'OfferPageInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } | null, edges?: Array<{ __typename?: 'OfferEdge', cursor?: string | null, node?: { __typename?: 'Offer', address: string, offerInfo: { __typename?: 'OfferInfo', name: string, description: string } } | null }> | null } } };
+export type OffersSelectQuery = { __typename?: 'Query', result: { __typename?: 'ListOffersResponse', pageData?: { __typename?: 'PageDataDto', count: number, limit: number, offset: number } | null, page: { __typename?: 'OfferConnection', pageInfo?: { __typename?: 'OfferPageInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } | null, edges?: Array<{ __typename?: 'OfferEdge', cursor?: string | null, node?: { __typename?: 'Offer', address: string, offerInfo: { __typename?: 'OfferInfo', name: string, description: string, restrictions?: { __typename?: 'OfferRestrictions', offers?: Array<string> | null } | null } } | null }> | null } } };
 
 export type OffersRestrictionsQueryVariables = Exact<{
   pagination: ConnectionArgs;
@@ -1339,7 +1339,7 @@ export type OrdersSelectQueryVariables = Exact<{
 }>;
 
 
-export type OrdersSelectQuery = { __typename?: 'Query', result: { __typename?: 'ListOrdersResponse', pageData?: { __typename?: 'PageDataDto', count: number, limit: number, offset: number } | null, page: { __typename?: 'OrderConnection', edges?: Array<{ __typename?: 'OrderEdge', cursor?: string | null, node?: { __typename?: 'Order', address: string } | null }> | null, pageInfo?: { __typename?: 'OrderPageInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } | null } } };
+export type OrdersSelectQuery = { __typename?: 'Query', result: { __typename?: 'ListOrdersResponse', pageData?: { __typename?: 'PageDataDto', count: number, limit: number, offset: number } | null, page: { __typename?: 'OrderConnection', edges?: Array<{ __typename?: 'OrderEdge', cursor?: string | null, node?: { __typename?: 'Order', address: string, offerInfo?: { __typename?: 'OfferInfo', holdSum: number } | null } | null }> | null, pageInfo?: { __typename?: 'OrderPageInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } | null } } };
 
 export type OrderQueryVariables = Exact<{
   id: Scalars['String'];
@@ -1558,6 +1558,9 @@ export const OffersSelectDocument = gql`
           offerInfo {
             name
             description
+            restrictions {
+              offers
+            }
           }
         }
         cursor
@@ -1743,6 +1746,9 @@ export const OrdersSelectDocument = gql`
         cursor
         node {
           address
+          offerInfo {
+            holdSum
+          }
         }
       }
       pageInfo {

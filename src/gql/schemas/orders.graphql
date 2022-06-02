@@ -68,6 +68,9 @@ query OrdersSelect($pagination: ConnectionArgs!, $filter: OrdersFilter) {
                 cursor
                 node {
                     address
+                    offerInfo {
+                        holdSum
+                    }
                 }
             }
             pageInfo {

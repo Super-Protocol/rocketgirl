@@ -15,9 +15,11 @@ const uploadLink = (): createUploadLink => {
         },
         credentials: 'same-origin',
         fetch: fetchUpload,
-        headers: {
-            authorization: REACT_APP_AUTH,
-        },
+        ...(REACT_APP_AUTH ? {
+            headers: {
+                authorization: REACT_APP_AUTH,
+            },
+        } : {}),
     });
 };
 

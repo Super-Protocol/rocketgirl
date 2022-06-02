@@ -9,7 +9,6 @@ import { useHistory } from 'react-router';
 import { OperationVariables } from '@apollo/client';
 import { Tables } from '@/views/Home/types';
 import { PageClick } from '@/uikit/Table/TablePagination/types';
-import { SelectedWalletType } from '@/common/context/WalletProvider';
 import { useTablesSubscriptions } from './useTablesSubscriptions';
 import {
     useTablesQueryFetcher,
@@ -26,19 +25,19 @@ export interface UseTablesResult {
     onChangeTable: (table: Tables, filter?: OperationVariables | null) => void;
 }
 
-export const useTables = (initialTable: Tables, selectedWalletType?: SelectedWalletType, consumer?: string): UseTablesResult => {
+export const useTables = (initialTable: Tables, consumer?: string): UseTablesResult => {
     const history = useHistory();
     const location = useLocation();
     const query = useMemo(() => qs.parse(location.search), [location]);
     const table = useMemo<Tables>(() => (query?.table as Tables) || initialTable, [query, initialTable]);
     const skipByWallet = useMemo(() => {
-        return (!selectedWalletType ? [Tables.Orders] : [])
+        return (!consumer ? [Tables.Orders] : [])
             .map((table) => ({
                 table,
                 message: 'Connect wallet to see your orders',
                 type: UseTablesSkipType.wallet,
             }));
-    }, [selectedWalletType]);
+    }, [consumer]);
     const queryFetcher = useTablesQueryFetcher<UseTablesSkipType>({ table, skip: skipByWallet, consumer });
     useTablesSubscriptions(queryFetcher);
     const onChangeTable = useCallback((newTable: Tables, filter?: OperationVariables | null) => {
@@ -51,7 +50,7 @@ export const useTables = (initialTable: Tables, selectedWalletType?: SelectedWal
     useEffect(() => {
         onChangeTable(table);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [selectedWalletType]);
+    }, [consumer]);
     return {
         queryFetcher,
         table,
