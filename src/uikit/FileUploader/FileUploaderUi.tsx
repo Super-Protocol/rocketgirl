@@ -1,35 +1,21 @@
 import { memo } from 'react';
 import { useDropzone } from 'react-dropzone';
+import cn from 'classnames';
 
-import { Box } from '@/uikit';
 import { FileUploaderUiProps } from './types';
 import classes from './FileUploaderUi.module.scss';
 
 export const FileUploaderUi = memo<FileUploaderUiProps>(({
     children,
-    uploadFile = () => {},
+    options = {},
+    error,
 }) => {
-    const {
-        getRootProps, getInputProps,
-    } = useDropzone({
-        multiple: false,
-        onDrop: (acceptedFiles) => {
-            for (let i = 0; i < acceptedFiles.length; i++) {
-                uploadFile(acceptedFiles[i]);
-            }
-        },
-    });
+    const { getRootProps, getInputProps } = useDropzone(options);
 
     return (
-        <Box direction="column">
-            <div className={classes.title}>File</div>
-            <Box direction="column">
-                <div {...getRootProps({ className: classes.dropzone })}>
-                    <input {...getInputProps()} />
-                    {children}
-                </div>
-            </Box>
-            <div className={classes.errorEmpty} />
-        </Box>
+        <div {...getRootProps({ className: cn(classes.dropzone, { [classes['dropzone-error']]: error }) })}>
+            <input {...getInputProps()} />
+            {children}
+        </div>
     );
 });

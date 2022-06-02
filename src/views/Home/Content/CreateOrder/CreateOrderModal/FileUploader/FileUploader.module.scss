@@ -1,5 +1,27 @@
+.wrap {
+  margin-bottom: 5px;
+}
+
+.title {
+  font-size: 12px;
+}
+
+.titleLine {
+  margin-bottom: 8px;
+}
+
 .icon {
   margin-right: 11px;
+}
+
+.errorEmpty {
+  height: 20px;
+}
+
+.iconDelete {
+  color: var(--red100);
+  margin-left: 11px;
+  cursor: pointer;
 }
 
 .container {
@@ -9,6 +31,18 @@
 
 .file {
   width: 100%;
+  height: 50px;
+  border: 1px dashed var(--grey40);
+  border-radius: 4px;
+  padding: 8px 16px;
+  &-error {
+    border: 1px dashed var(--red100);
+    background-color: var(--red90);
+  }
+}
+
+.fileName {
+  overflow: hidden;
 }
 
 .spinnerWrapper {
@@ -19,6 +53,25 @@
   color: var(--orange100);
 }
 
-.fileName {
-  font-size: 14px;
+.disabled {
+  opacity: 0.3;
+}
+
+.addfile {
+  text-decoration: underline;
+}
+
+.dragdrop {
+  color: var(--grey50)
+}
+
+.iconInfo {
+  margin-left: 5px;
+  cursor: pointer;
+}
+
+.error {
+  height: 20px;
+  color: var(--red100);
+  font-size: 12px;
 }

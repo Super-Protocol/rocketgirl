@@ -7,7 +7,7 @@
 .popover {
   border: none;
   border-radius: 4px;
-  background: var(--orange4);
+  background: var(--orange25);
   max-width: inherit !important;
   width: auto !important;
   margin-left: 8px;
@@ -22,7 +22,7 @@
     :global(.arrow) {
       bottom: -0.5rem;
       &:after {
-        border-top-color: var(--orange4);
+        border-top-color: var(--orange25);
         border-width: 0.5rem 0.5rem 0;
       }
     }
@@ -36,7 +36,7 @@
       &:before,
       &:after {
         top: 1px;
-        border-bottom-color: var(--orange4);
+        border-bottom-color: var(--orange25);
         border-width: 0 0.5rem 0.5rem 0.5rem;
       }
     }
@@ -51,12 +51,12 @@
 }
 
 .gray {
-  background-color: var(--grey);
+  background-color: var(--grey10);
   color: #242C37!important;
   &:global(.bs-popover-bottom), &:global(.bs-popover-bottom-start) {
     :global(.arrow) {
       &::before, &::after {
-        border-bottom-color: var(--grey) !important;
+        border-bottom-color: var(--grey10) !important;
       }
     }
   }
@@ -64,19 +64,19 @@
   &:global(.bs-popover-top), &:global(.bs-popover-top-start) {
     :global(.arrow) {
       &::before, &::after {
-        border-top-color: var(--grey) !important;
+        border-top-color: var(--grey10) !important;
       }
     }
   }
 }
 
 .orange {
-  background-color: var(--orange4);
+  background-color: var(--orange25);
   color: var(--white100);
   &:global(.bs-popover-bottom), &:global(.bs-popover-bottom-start) {
     :global(.arrow) {
       &::before, &::after {
-        border-bottom-color: var(--orange4) !important;
+        border-bottom-color: var(--orange25) !important;
       }
     }
   }
@@ -84,7 +84,7 @@
   &:global(.bs-popover-top), &:global(.bs-popover-top-start) {
     :global(.arrow) {
       &::before, &::after {
-        border-top-color: var(--orange4) !important;
+        border-top-color: var(--orange25) !important;
       }
     }
   }
@@ -93,6 +93,7 @@
 .white {
   background-color: #fff;
   filter: drop-shadow(0px 8px 12px rgba(0, 0, 0, 0.08));
+  color: var(--black100);
 
   &:global(.bs-popover-bottom), &:global(.bs-popover-bottom-start) {
     :global(.arrow) {

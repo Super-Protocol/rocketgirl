@@ -1,4 +1,4 @@
-FROM node:15-buster AS builder
+FROM node:16-buster AS builder
 
 ARG ENV_FILE="must be base64 content of .env"
 ARG NPM_TOKEN=""
@@ -31,6 +31,5 @@ FROM nginx:alpine
 WORKDIR /usr/share/nginx/html
 RUN rm -rf *
 COPY --from=builder /app/build .
-COPY --from=builder /app/.env .
 
 ENTRYPOINT ["nginx", "-g", "daemon off;"]
