@@ -49,6 +49,6 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          build-args: >
+          build-args: |
             NPM_TOKEN=${{ secrets.NPM_TOKEN_GH }}
-            ENV_FILE=${{ secrets.ENF_FILE_BASE64 }}
+            ENV_FILE=${{ secrets.DEVELOP_ENV_FILE_BASE64 }}
