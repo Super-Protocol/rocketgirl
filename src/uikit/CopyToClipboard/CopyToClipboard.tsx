@@ -2,10 +2,9 @@ import {
     memo, FC, useCallback, useMemo,
 } from 'react';
 import copy from 'copy-to-clipboard';
-
 import { Box, Icon, Ellipsis } from '@/uikit';
-import { LinkTo } from './LinkTo';
 import toastr from '@/services/Toastr/toastr';
+import { LinkTo } from './LinkTo';
 import { CopyToClipboardProps } from './types';
 import classes from './CopyToClipboard.module.scss';
 
