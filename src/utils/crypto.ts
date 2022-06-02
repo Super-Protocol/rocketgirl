@@ -7,6 +7,10 @@ export interface GenerateKeysResult {
     publicKey: string;
     mnemonic: string;
 }
+export interface GenerateRandomKeysResult {
+    privateKey: string;
+    publicKey: string;
+}
 
 export const generateMnemonic = (): string => bip39.generateMnemonic(256);
 
@@ -20,5 +24,14 @@ export const generateKeys = (mnemonic: string): GenerateKeysResult => {
         privateKey: privateKeyBase64,
         publicKey: publicKeyBase64,
         mnemonic,
+    };
+};
+
+export const generateRandomKeys = (): GenerateRandomKeysResult => {
+    const privateKey = eccrypto.generatePrivate();
+    const publicKey = eccrypto.getPublic(privateKey);
+    return {
+        privateKey,
+        publicKey,
     };
 };

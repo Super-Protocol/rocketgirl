@@ -119,3 +119,19 @@ export const isJSONString = (str: string): boolean => {
 };
 
 export const getExternalId = (): string => genRanHex(16);
+
+export const getBase64FromBlob = (blob: Blob): Promise<string | ArrayBuffer | null> => new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = reject;
+    reader.onload = () => {
+        resolve(reader.result);
+    };
+    reader.readAsDataURL(blob);
+});
+
+export const getBase64FromFile = (file: File): Promise<string | ArrayBuffer | null> => new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+});
