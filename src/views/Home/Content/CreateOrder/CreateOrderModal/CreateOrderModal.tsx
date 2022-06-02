@@ -7,6 +7,7 @@ import React, {
 } from 'react';
 import { Formik } from 'formik';
 import intersectionby from 'lodash.intersectionby';
+import { S3 } from 'aws-sdk';
 import {
     OffersSelectDocument,
     TeeOffersSelectDocument,
@@ -42,9 +43,13 @@ import {
     getMinDepositWorkflow,
     getWorkflowValues,
     getInitialFilters,
+    uploadFile,
+    S3_CONFIG,
 } from './helpers';
 import { SuccessModal } from './SuccessModal';
 import { InputDeposit } from './InputDeposit';
+
+const client = new S3(S3_CONFIG);
 
 export const CreateOrderModal: FC<CreateOrderModalProps> = memo(({ initialValues: initialValuesProps }) => {
     const { selectedAddress, instance } = useContext(WalletContext);
@@ -52,6 +57,7 @@ export const CreateOrderModal: FC<CreateOrderModalProps> = memo(({ initialValues
     const { goBack } = useContext(ModalOkCancelContext);
     const [isValidating, setIsValidating] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [uploading, setUploading] = useState(false);
     const [filters, setFilters] = useState(getInitialFilters);
     const [initialValues, setInitialValues] = useState<FormValues>(initialValuesProps || {});
     const [minDeposit, setMinDeposit] = useState<number>(0);
@@ -101,6 +107,13 @@ export const CreateOrderModal: FC<CreateOrderModalProps> = memo(({ initialValues
     }, []);
     const onSubmitForm = useCallback(async (formValues: FormValues) => {
         setLoading(true);
+        setUploading(true);
+        try {
+            await uploadFile(client, formValues.file);
+        } catch (e) {
+            showErrorModal(e);
+        }
+        setUploading(false);
         setIsValidating(true);
         if (!selectedAddress || !instance) {
             return showErrorModal('Metamask account not found');
@@ -235,7 +248,7 @@ export const CreateOrderModal: FC<CreateOrderModalProps> = memo(({ initialValues
                                     checkTouched={!isValidating}
                                     onDelete={onDelete}
                                 />
-                                <FileUploader />
+                                <FileUploader {...{ uploading }} />
                                 <InputDeposit min={minDeposit} classNameWrap={classes.inputWrap} />
                             </Box>
                             <Box justifyContent="flex-end">
