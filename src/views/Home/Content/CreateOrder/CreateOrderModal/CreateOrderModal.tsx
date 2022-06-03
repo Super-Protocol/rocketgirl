@@ -19,6 +19,7 @@ import {
     Box,
     Button,
     Spinner,
+    MnemonicGenerator,
 } from '@/uikit';
 import { ModalOkCancelContext } from '@/common/context/ModalOkCancelProvider/ModalOkCancelProvider';
 import { workflow } from '@/connectors/orders';
@@ -244,6 +245,7 @@ export const CreateOrderModal: FC<CreateOrderModalProps> = memo(({ initialValues
                                     onDelete={onDelete}
                                 />
                                 <FileUploader {...{ uploading, disabled: !!values?.[Fields.data]?.length }} />
+                                <MnemonicGenerator />
                                 <InputDeposit min={minDeposit} classNameWrap={classes.inputWrap} />
                             </Box>
                             <Box justifyContent="flex-end">

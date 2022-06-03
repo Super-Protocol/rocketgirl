@@ -1,0 +1,38 @@
+.wrap {
+  margin-bottom: 5px;
+  font-size: 12px;
+}
+
+.content {
+  background-color: var(--orange15);
+  padding: 12px;
+}
+
+.phrase {
+  float: right;
+  background-color: var(--white);
+  padding: 12px;
+  border-radius: 4px;
+}
+
+.agreement {
+  margin: 8px 0 24px;
+}
+
+.modeswitcher {
+  margin-bottom: 8px;
+}
+
+.mode {
+  margin-left: 20px;
+  color: var(--grey15);
+  font-size: 14px;
+  cursor: pointer;
+  &-active {
+    font-weight: 600;
+    color: var(--orange100);
+  }
+  &-zero {
+    margin-left: 0;
+  }
+}

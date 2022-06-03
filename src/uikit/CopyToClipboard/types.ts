@@ -17,3 +17,8 @@ export interface LinkToProps {
     address: string;
     url?: string;
 }
+
+export interface CopyToClipboardSimpleProps {
+    text: string;
+    notification?: boolean;
+}
