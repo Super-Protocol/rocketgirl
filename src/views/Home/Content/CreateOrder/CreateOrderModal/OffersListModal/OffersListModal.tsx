@@ -53,7 +53,8 @@ export const OffersListModal: FC<OffersListModalProps> = memo(({
                 return undefined;
             }
         }
-        return baseOffers;
+        // get first base offer
+        return baseOffers?.length ? [baseOffers[0]] : undefined;
     }, [isMulti, isRequestBaseOffer, offerType, fetchBaseOffers]);
     const onSave = useCallback(async (item) => {
         const baseOffers = isRequestBaseOffer ? await getBaseOffers(item) : undefined;

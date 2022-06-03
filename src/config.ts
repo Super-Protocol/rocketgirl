@@ -14,13 +14,9 @@ export type Config = {
     REACT_APP_FILE_PATH: string;
     REACT_APP_FAUCET_MATIC_API: string;
     REACT_APP_MATIC_ADDRESS: string;
-    REACT_APP_S3_CONFIG: {
-        credentials: {
-            accessKeyId: string;
-            secretAccessKey: string;
-        };
-        endpoint: string;
-    };
+    REACT_APP_S3_ACCESS_KEY_ID: string;
+    REACT_APP_S3_SECRET_ACCESS_KEY: string;
+    REACT_APP_S3_ENDPOINT: string;
 };
 
 const DEFAULT_CONFIG: Config = {
@@ -35,13 +31,9 @@ const DEFAULT_CONFIG: Config = {
     REACT_APP_SP_GAS_LIMIT: 7000000,
     REACT_APP_FILE_PATH: 'https://link.eu1.storjshare.io/raw/jxfrrjqfuuds2im76fc4zlbc4wya',
     REACT_APP_FAUCET_MATIC_API: 'https://api.faucet.matic.network',
-    REACT_APP_S3_CONFIG: {
-        credentials: {
-            accessKeyId: 'jwkgg66m7l5tehzsxwe4jyjdx7ra',
-            secretAccessKey: 'jyg5zqgiin4ne4gb2qgnnljhtk2urji3xhslgmtchutbdsf5vfpas',
-        },
-        endpoint: 'https://gateway.storjshare.io',
-    },
+    REACT_APP_S3_ACCESS_KEY_ID: '',
+    REACT_APP_S3_SECRET_ACCESS_KEY: '',
+    REACT_APP_S3_ENDPOINT: '',
 };
 
 const CONFIG: Config = getConfigWithEnv<Config>(

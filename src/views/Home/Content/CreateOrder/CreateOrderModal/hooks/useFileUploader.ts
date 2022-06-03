@@ -11,6 +11,8 @@ import { generateRandomKeys } from '@/utils/crypto';
 import { getBase64FromFile } from '@/common/helpers';
 import CONFIG from '@/config';
 
+const { REACT_APP_S3_ACCESS_KEY_ID, REACT_APP_S3_SECRET_ACCESS_KEY, REACT_APP_S3_ENDPOINT } = CONFIG;
+
 export const encryptFile = async (file: File): Promise<Encryption> => {
     const { privateKey } = generateRandomKeys();
     const base64 = await getBase64FromFile(file);
@@ -44,7 +46,11 @@ export interface UseFileUploaderResult {
 
 export const uploadFileByS3 = async (props: UploadFileByS3Props): Promise<UploadFileByS3Result> => {
     const client = new S3({
-        ...CONFIG.REACT_APP_S3_CONFIG,
+        credentials: {
+            accessKeyId: REACT_APP_S3_ACCESS_KEY_ID,
+            secretAccessKey: REACT_APP_S3_SECRET_ACCESS_KEY,
+        },
+        endpoint: REACT_APP_S3_ENDPOINT,
         s3ForcePathStyle: true,
         signatureVersion: 'v4',
         httpOptions: { timeout: 0 },

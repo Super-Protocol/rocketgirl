@@ -29,8 +29,10 @@ export const FileUploader = memo<FileUploaderProps>(({ disabled, uploading }): R
     }, [setValue, disabled]);
 
     const onDeleteClick = useCallback(() => {
-        setValue(undefined);
-    }, [setValue]);
+        if (!disabled) {
+            setValue(undefined);
+        }
+    }, [setValue, disabled]);
 
     return (
         <Box direction="column" className={classes.wrap}>
@@ -50,7 +52,10 @@ export const FileUploader = memo<FileUploaderProps>(({ disabled, uploading }): R
                 </Tooltip>
             </Box>
             {value ? (
-                <Box className={cn(classes.file, { [classes['file-error']]: error })} alignItems="center">
+                <Box
+                    className={cn(classes.file, { [classes['file-error']]: error, [classes.disabled]: disabled })}
+                    alignItems="center"
+                >
                     {uploading && (
                         <div className={classes.spinnerWrapper}>
                             <Spinner
@@ -61,7 +66,7 @@ export const FileUploader = memo<FileUploaderProps>(({ disabled, uploading }): R
                             />
                         </div>
                     )}
-                    <FileName {...{ filename: value?.name }} />
+                    <FileName {...{ filename: value?.name, disabled }} />
                     {!uploading && (
                         <Icon
                             name="close-small"

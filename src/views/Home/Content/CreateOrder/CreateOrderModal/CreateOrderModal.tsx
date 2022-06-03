@@ -109,9 +109,11 @@ export const CreateOrderModal: FC<CreateOrderModalProps> = memo(({ initialValues
             return showErrorModal('Metamask account not found');
         }
         try {
-            const { file } = formValues || {};
-            await uploadFile(file);
-            // todo tii generator
+            const { file, data } = formValues || {};
+            if (!data?.length) {
+                await uploadFile(file);
+                // todo tii generator
+            }
             const mnemonic = generateMnemonic();
             const values = getWorkflowValues(formValues, mnemonic);
             await workflow({ values, actionAccountAddress: selectedAddress, web3: instance });
@@ -233,7 +235,7 @@ export const CreateOrderModal: FC<CreateOrderModalProps> = memo(({ initialValues
                                     query={TeeOffersSelectDocument}
                                     label="TEE"
                                     filter={filters.tee}
-                                    name="tee"
+                                    name={Fields.tee}
                                     btnLabel="Add TEE"
                                     className={classes.adder}
                                     showError
@@ -241,7 +243,7 @@ export const CreateOrderModal: FC<CreateOrderModalProps> = memo(({ initialValues
                                     checkTouched={!isValidating}
                                     onDelete={onDelete}
                                 />
-                                <FileUploader {...{ uploading }} />
+                                <FileUploader {...{ uploading, disabled: !!values?.[Fields.data]?.length }} />
                                 <InputDeposit min={minDeposit} classNameWrap={classes.inputWrap} />
                             </Box>
                             <Box justifyContent="flex-end">

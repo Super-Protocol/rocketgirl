@@ -131,7 +131,6 @@ export const getWorkflowValues = (formValues: FormValues, mnemonic: string): Wor
 export const getInitialFilters = (): GetInitialFiltersResult => {
     return {
         [Fields.solution]: { offerType: TOfferType.Solution, excludeOfferRestrictionType: [TOfferType.Solution] },
-        [Fields.solution]: { offerType: TOfferType.Solution },
         [Fields.data]: { offerType: TOfferType.Data },
         [Fields.storage]: { offerType: TOfferType.Storage },
         [Fields.tee]: {},

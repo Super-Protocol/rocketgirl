@@ -6,4 +6,5 @@ export interface FileUploaderProps {
 
 export interface FileNameProps {
     filename: string;
+    disabled?: boolean;
 }

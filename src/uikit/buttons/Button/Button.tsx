@@ -7,7 +7,7 @@ import { ButtonProps } from './types';
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(({
     children,
-    variant = 'white',
+    variant = 'base',
     size = '',
     className,
     disabled = false,
