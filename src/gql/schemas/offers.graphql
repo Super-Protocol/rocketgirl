@@ -15,6 +15,7 @@ query Offers($pagination: ConnectionArgs!, $filter: OfferFilter) {
                     _id
                     address
                     authority
+                    disabledAfter
                     offerInfo {
                         group
                         offerType
@@ -23,14 +24,13 @@ query Offers($pagination: ConnectionArgs!, $filter: OfferFilter) {
                         argsPublicKey
                         cancelable
                         description
-                        disabledAfter
                         hash
                         holdSum
-                        inputFormat
+                        input
                         linkage
                         maxDurationTimeMinutes
                         name
-                        outputFormat
+                        output
                         properties
                         resultUrl
                         restrictions {

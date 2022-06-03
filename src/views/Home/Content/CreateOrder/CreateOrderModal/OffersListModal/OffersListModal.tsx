@@ -35,7 +35,6 @@ export const OffersListModal: FC<OffersListModalProps> = memo(({
                 },
             })
             : undefined;
-        console.log('offersBase', offersBase);
         if (!offersBase) return undefined;
         return convertNode ? offersBase?.data?.result?.page?.edges?.map(convertNode as any) : undefined;
     }, [getOffersSelectLazyQuery, convertNode]);
@@ -46,8 +45,8 @@ export const OffersListModal: FC<OffersListModalProps> = memo(({
             try {
                 baseOffers = await fetchBaseOffers(
                     isMulti
-                        ? (item as FormOffer[])?.map((el) => el?.value as string)
-                        : [(item as FormOffer)?.value as string], offerType,
+                        ? (item as FormOffer[])?.map((el) => el?.data?.restrictions as string[]).flat()
+                        : (item as FormOffer)?.data?.restrictions as string[], offerType,
                 );
             } catch (e) {
                 toastr.error('Error fetching base offer');
@@ -58,12 +57,11 @@ export const OffersListModal: FC<OffersListModalProps> = memo(({
     }, [isMulti, isRequestBaseOffer, offerType, fetchBaseOffers]);
     const onSave = useCallback(async (item) => {
         const baseOffers = isRequestBaseOffer ? await getBaseOffers(item) : undefined;
-        console.log('baseOffers', baseOffers);
         const initialValues = {
             ...formValues,
             [name]: isMulti
-                ? item.map((el) => ({ ...el, info: { ...el?.info, sub: baseOffers } }))
-                : { ...item, info: { ...item?.info, sub: baseOffers } },
+                ? item.map((el) => ({ ...el, data: { ...el?.data, sub: baseOffers } }))
+                : { ...item, data: { ...item?.data, sub: baseOffers } },
         };
         if (reset?.length) {
             reset.forEach((key) => delete initialValues[key]);

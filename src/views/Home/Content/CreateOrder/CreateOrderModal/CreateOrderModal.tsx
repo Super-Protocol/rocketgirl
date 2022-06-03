@@ -111,9 +111,10 @@ export const CreateOrderModal: FC<CreateOrderModalProps> = memo(({ initialValues
         try {
             const { file } = formValues || {};
             await uploadFile(file);
+            // todo tii generator
             const mnemonic = generateMnemonic();
             const values = getWorkflowValues(formValues, mnemonic);
-            // await workflow({ values, actionAccountAddress: selectedAddress, web3: instance });
+            await workflow({ values, actionAccountAddress: selectedAddress, web3: instance });
             showSuccessModal(undefined, <SuccessModal mnemonic={mnemonic} />);
         } catch (e) {
             toastr.error(e);
