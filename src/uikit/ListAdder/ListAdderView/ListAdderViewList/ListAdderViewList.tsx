@@ -14,7 +14,7 @@ export const ListAdderViewList: FC<ListAdderViewListProps> = memo(({
     return (
         <Box direction="column">
             {list.map((item) => {
-                const sub = item?.info?.sub;
+                const sub = item?.data?.sub;
                 return (
                     <Box direction="column" className={classes.listItem} key={`parent_${item?.value as string}`}>
                         <ListAdderViewListItem

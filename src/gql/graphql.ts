@@ -331,6 +331,7 @@ export type Offer = {
   /** contract address */
   address: Scalars['String'];
   authority?: Maybe<Scalars['String']>;
+  disabledAfter: Scalars['Float'];
   offerInfo: OfferInfo;
   origins?: Maybe<Origins>;
   providerInfo: ProviderInformation;
@@ -354,6 +355,8 @@ export type OfferFilter = {
   address?: InputMaybe<Scalars['String']>;
   /** filter by contract addresses */
   addresses?: InputMaybe<Array<Scalars['String']>>;
+  /** exclude filter by offerInfo -> restrictions -> type */
+  excludeOfferRestrictionType?: InputMaybe<Array<TOfferType>>;
   /** filter by offerInfo → group */
   group?: InputMaybe<Scalars['String']>;
   /** filter by offerInfo → name */
@@ -371,7 +374,6 @@ export type OfferInfo = {
   argsPublicKey: Scalars['String'];
   cancelable: Scalars['Boolean'];
   description: Scalars['String'];
-  disabledAfter: Scalars['Float'];
   /**
    * The supported offers group.
    *
@@ -387,7 +389,7 @@ export type OfferInfo = {
   group: Scalars['String'];
   hash: Scalars['String'];
   holdSum: Scalars['Float'];
-  inputFormat: Scalars['String'];
+  input: Scalars['String'];
   linkage: Scalars['String'];
   maxDurationTimeMinutes: Scalars['Float'];
   name: Scalars['String'];
@@ -400,7 +402,7 @@ export type OfferInfo = {
    *
    */
   offerType: Scalars['String'];
-  outputFormat: Scalars['String'];
+  output: Scalars['String'];
   properties: Scalars['String'];
   restrictions?: Maybe<OfferRestrictions>;
   resultUrl: Scalars['String'];
@@ -412,7 +414,6 @@ export type OfferInfoInput = {
   argsPublicKey: Scalars['String'];
   cancelable: Scalars['Boolean'];
   description: Scalars['String'];
-  disabledAfter: Scalars['Float'];
   /**
    * The supported offers group.
    *
@@ -428,7 +429,7 @@ export type OfferInfoInput = {
   group: Scalars['String'];
   hash: Scalars['String'];
   holdSum: Scalars['Float'];
-  inputFormat: Scalars['String'];
+  input: Scalars['String'];
   linkage: Scalars['String'];
   maxDurationTimeMinutes: Scalars['Float'];
   name: Scalars['String'];
@@ -441,13 +442,14 @@ export type OfferInfoInput = {
    *
    */
   offerType: Scalars['String'];
-  outputFormat: Scalars['String'];
+  output: Scalars['String'];
   properties: Scalars['String'];
   restrictions?: InputMaybe<OfferRestrictionsInput>;
   resultUrl: Scalars['String'];
 };
 
 export type OfferInputType = {
+  disabledAfter: Scalars['Float'];
   offerInfo: OfferInfoInput;
   providerInfo: ProviderInformationInput;
   stats?: InputMaybe<OfferStatsInput>;
@@ -1307,7 +1309,7 @@ export type OffersQueryVariables = Exact<{
 }>;
 
 
-export type OffersQuery = { __typename?: 'Query', result: { __typename?: 'ListOffersResponse', pageData?: { __typename?: 'PageDataDto', count: number, limit: number, offset: number } | null, page: { __typename?: 'OfferConnection', pageInfo?: { __typename?: 'OfferPageInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } | null, edges?: Array<{ __typename?: 'OfferEdge', cursor?: string | null, node?: { __typename?: 'Offer', _id: string, address: string, authority?: string | null, offerInfo: { __typename?: 'OfferInfo', group: string, offerType: string, allowedAccounts?: Array<string> | null, allowedArgs?: string | null, argsPublicKey: string, cancelable: boolean, description: string, disabledAfter: number, hash: string, holdSum: number, inputFormat: string, linkage: string, maxDurationTimeMinutes: number, name: string, outputFormat: string, properties: string, resultUrl: string, restrictions?: { __typename?: 'OfferRestrictions', offers?: Array<string> | null, types?: Array<TOfferType> | null } | null }, origins?: { __typename?: 'Origins', createdBy: string, createdDate: number, modifiedBy: string, modifiedDate: number } | null, providerInfo: { __typename?: 'ProviderInformation', actionAccount: string, description: string, metadata: string, name: string, tokenReceiver: string } } | null }> | null } } };
+export type OffersQuery = { __typename?: 'Query', result: { __typename?: 'ListOffersResponse', pageData?: { __typename?: 'PageDataDto', count: number, limit: number, offset: number } | null, page: { __typename?: 'OfferConnection', pageInfo?: { __typename?: 'OfferPageInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } | null, edges?: Array<{ __typename?: 'OfferEdge', cursor?: string | null, node?: { __typename?: 'Offer', _id: string, address: string, authority?: string | null, disabledAfter: number, offerInfo: { __typename?: 'OfferInfo', group: string, offerType: string, allowedAccounts?: Array<string> | null, allowedArgs?: string | null, argsPublicKey: string, cancelable: boolean, description: string, hash: string, holdSum: number, input: string, linkage: string, maxDurationTimeMinutes: number, name: string, output: string, properties: string, resultUrl: string, restrictions?: { __typename?: 'OfferRestrictions', offers?: Array<string> | null, types?: Array<TOfferType> | null } | null }, origins?: { __typename?: 'Origins', createdBy: string, createdDate: number, modifiedBy: string, modifiedDate: number } | null, providerInfo: { __typename?: 'ProviderInformation', actionAccount: string, description: string, metadata: string, name: string, tokenReceiver: string } } | null }> | null } } };
 
 export type OffersSelectQueryVariables = Exact<{
   pagination: ConnectionArgs;
@@ -1467,6 +1469,7 @@ export const OffersDocument = gql`
           _id
           address
           authority
+          disabledAfter
           offerInfo {
             group
             offerType
@@ -1475,14 +1478,13 @@ export const OffersDocument = gql`
             argsPublicKey
             cancelable
             description
-            disabledAfter
             hash
             holdSum
-            inputFormat
+            input
             linkage
             maxDurationTimeMinutes
             name
-            outputFormat
+            output
             properties
             resultUrl
             restrictions {

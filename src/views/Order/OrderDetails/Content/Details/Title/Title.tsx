@@ -87,6 +87,7 @@ export const Title = memo<TitleProps>(({ order, orderInfo, updateOrderInfo }) =>
                     className={classes.resultbtn}
                     loading={loading}
                     onClick={onGetResult}
+                    disabled
                 >
                     Get Result
                 </Button>

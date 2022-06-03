@@ -7,11 +7,10 @@ import { FileNameProps } from './types';
 export const FileName = memo<FileNameProps>(({ filename }): ReactElement => {
     const filestruct = useMemo(() => {
         return {
-            short: filename.length >= 45 ? `${filename.substring(0, 42)}...` : filename,
-            isLong: filename.length >= 45,
+            short: filename?.length >= 45 ? `${filename.substring(0, 42)}...` : filename,
+            isLong: filename?.length >= 45,
         };
     }, [filename]);
-
     return (
         <div className={classes.fileName}>
             {filestruct.isLong
@@ -23,7 +22,7 @@ export const FileName = memo<FileNameProps>(({ filename }): ReactElement => {
                     >
                         {filestruct.short}
                     </Tooltip>
-                ) : { filename } }
+                ) : filename }
         </div>
     );
 });

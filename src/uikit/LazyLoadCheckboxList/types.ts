@@ -5,7 +5,7 @@ export interface LazyLoadCheckboxListFetcherData { description?: string }
 
 export interface Item<Info, value = Value> {
     value?: value;
-    info?: Info;
+    data?: Info;
 }
 
 export interface LazyLoadCheckboxListProps<Info> {
