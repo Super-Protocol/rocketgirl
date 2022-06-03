@@ -19,7 +19,6 @@ import {
     Box,
     Button,
     Spinner,
-    MnemonicGenerator,
 } from '@/uikit';
 import { ModalOkCancelContext } from '@/common/context/ModalOkCancelProvider/ModalOkCancelProvider';
 import { workflow } from '@/connectors/orders';
@@ -36,6 +35,7 @@ import {
 } from './types';
 import { OffersAdder } from './OffersAdder';
 import { FileUploader } from './FileUploader';
+import { MnemonicGenerator } from './MnemonicGenerator';
 import classes from './CreateOrderModal.module.scss';
 import {
     valueOfferConvertNode,

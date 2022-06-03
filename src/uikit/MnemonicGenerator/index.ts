@@ -1,1 +1,1 @@
-export { MnemonicGenerator } from './MnemonicGenerator';
+export { MnemonicGeneratorUi } from './MnemonicGeneratorUi';
