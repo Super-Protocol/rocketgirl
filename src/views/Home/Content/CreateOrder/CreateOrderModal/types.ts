@@ -26,7 +26,7 @@ export interface FormValues {
     [Fields.data]?: FormOffer[];
     [Fields.tee]?: FormOffer;
     [Fields.storage]?: FormOffer;
-    [Fields.file]?: any; // todo
+    [Fields.file]?: File;
     [Fields.deposit]?: number;
 }
 

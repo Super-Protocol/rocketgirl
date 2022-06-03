@@ -21,9 +21,6 @@ export const FileUploader = memo<FileUploaderProps>(({ disabled, uploading }): R
     const options = useMemo((): DropzoneOptions => {
         return {
             multiple: false,
-            accept: {
-                '.tar': [],
-            },
             disabled,
             onDrop: (acceptedFiles) => {
                 setValue(acceptedFiles[0]);
@@ -64,7 +61,7 @@ export const FileUploader = memo<FileUploaderProps>(({ disabled, uploading }): R
                             />
                         </div>
                     )}
-                    <FileName {...{ filename: value.name }} />
+                    <FileName {...{ filename: value?.name }} />
                     {!uploading && (
                         <Icon
                             name="close-small"

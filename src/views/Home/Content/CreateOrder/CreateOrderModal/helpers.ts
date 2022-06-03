@@ -5,7 +5,6 @@ import {
     OfferType,
 } from '@super-protocol/sp-sdk-js';
 import sum from 'lodash.sum';
-import CONFIG from '@/config';
 import { ConvertNode } from '@/common/hooks/useSelectQueryCursorSPFetcher';
 import { WorkflowPropsValues } from '@/connectors/orders';
 import { Offer, TeeOffer, TOfferType } from '@/gql/graphql';
@@ -59,7 +58,7 @@ export const getValidationSchema = (props?: GetValidationSchemaProps): Yup.Schem
                 .required('required')
                 .min(minDeposit, `must be greater than or equal ${minDeposit}`)
             : Yup.number().required('required'),
-        [Fields.file]: Yup.object({}).required('required'),
+        [Fields.file]: Yup.mixed().required('required'),
     });
 };
 
@@ -131,31 +130,9 @@ export const getWorkflowValues = (formValues: FormValues, mnemonic: string): Wor
 
 export const getInitialFilters = (): GetInitialFiltersResult => {
     return {
-        [Fields.solution]: { offerType: TOfferType.Solution },
+        [Fields.solution]: { offerType: TOfferType.Solution, excludeOfferRestrictionType: [TOfferType.Solution] },
         [Fields.data]: { offerType: TOfferType.Data },
         [Fields.storage]: { offerType: TOfferType.Storage },
         [Fields.tee]: {},
     };
-};
-
-const { REACT_APP_S3_CONFIG } = CONFIG;
-
-const S3_BUCKET = 'inputs';
-
-export const S3_CONFIG = {
-    ...REACT_APP_S3_CONFIG,
-    s3ForcePathStyle: true,
-    signatureVersion: 'v4',
-    httpOptions: { timeout: 0 },
-};
-
-export const uploadFile = async (client, file): Promise<any> => {
-    const params = {
-        ACL: 'public-read',
-        Body: file,
-        Bucket: S3_BUCKET,
-        Key: file.name,
-    };
-
-    return client.upload(params).promise();
 };

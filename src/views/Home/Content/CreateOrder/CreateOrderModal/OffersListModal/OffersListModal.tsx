@@ -35,6 +35,7 @@ export const OffersListModal: FC<OffersListModalProps> = memo(({
                 },
             })
             : undefined;
+        console.log('offersBase', offersBase);
         if (!offersBase) return undefined;
         return convertNode ? offersBase?.data?.result?.page?.edges?.map(convertNode as any) : undefined;
     }, [getOffersSelectLazyQuery, convertNode]);
@@ -57,6 +58,7 @@ export const OffersListModal: FC<OffersListModalProps> = memo(({
     }, [isMulti, isRequestBaseOffer, offerType, fetchBaseOffers]);
     const onSave = useCallback(async (item) => {
         const baseOffers = isRequestBaseOffer ? await getBaseOffers(item) : undefined;
+        console.log('baseOffers', baseOffers);
         const initialValues = {
             ...formValues,
             [name]: isMulti
