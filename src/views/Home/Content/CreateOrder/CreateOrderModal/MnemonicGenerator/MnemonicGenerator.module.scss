@@ -1,9 +1,19 @@
-.wrap {
-  margin-bottom: 5px;
-  font-size: 12px;
-}
-
 .content {
   background-color: var(--orange15);
   padding: 12px;
+}
+
+.checkboxWrap {
+  margin-top: 24px;
+}
+
+.checkboxLabel {
+  font-size: 12px;
+}
+
+.checkboxCheckmark {
+  margin-right: 7px;
+  width: 14px;
+  min-width: 14px;
+  height: 14px;
 }

@@ -1,26 +1,30 @@
 import {
-    memo, ReactElement, useState, useMemo, useCallback,
+    memo, ReactElement, useState, useCallback,
 } from 'react';
 import cn from 'classnames';
 
-import {
-    Box, InputUi, CheckboxUi, CopyToClipboardSimple,
-} from '@/uikit';
-import { generateMnemonic } from '@/utils/crypto';
-import { LabelToolkit } from '@/common/components';
-import { MnemonicGeneratorProps, Modes } from './types';
-import {
-    tooltipText, modeTitle, agreement, chkboxlabel,
-} from './helpers';
+import { Box, CopyToClipboardSimple, InputUi } from '@/uikit';
+import { MnemonicGeneratorUiProps, Modes } from './types';
+import { modeTitle, agreement } from './helpers';
 import classes from './MnemonicGeneratorUi.module.scss';
 
-export const MnemonicGeneratorUi = memo<MnemonicGeneratorProps>(({ init }): ReactElement => {
-    const [mode, setMode] = useState<Modes>(Modes.generate);
-    const [value, setValue] = useState<string>();
-    const phrase = useMemo(() => generateMnemonic(), []);
+export const MnemonicGeneratorUi = memo<MnemonicGeneratorUiProps>(({
+    phrase,
+    error,
+    isInvalid,
+    value,
+    onChange: onChangeProps,
+    mode: modeProps = Modes.generate,
+    setMode: setModeProps = () => {},
+}): ReactElement => {
+    const [mode, setMode] = useState<Modes>(modeProps);
     const changeMode = useCallback((k: Modes) => {
         setMode(k);
-    }, []);
+        setModeProps(k);
+    }, [setModeProps]);
+    const onChange = useCallback((val: string) => {
+        onChangeProps(val);
+    }, [onChangeProps]);
     return (
         <div>
             <Box className={classes.modeswitcher}>
@@ -45,7 +49,19 @@ export const MnemonicGeneratorUi = memo<MnemonicGeneratorProps>(({ init }): Reac
                         <CopyToClipboardSimple text={phrase} />
                     </Box>
                 )
-                : null}
+                : (
+                    <InputUi
+                        {...{
+                            value,
+                            error,
+                            isInvalid,
+                            showError: isInvalid,
+                            onChange,
+                            classNameError: classes.inputError,
+                        }}
+                        as="textarea"
+                    />
+                )}
             <p className={classes.agreement}>{agreement}</p>
         </div>
     );
