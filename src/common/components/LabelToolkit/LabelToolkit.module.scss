@@ -12,6 +12,10 @@
 }
 
 .iconInfo {
+  color: var(--orange40);
   margin-left: 5px;
   cursor: pointer;
+  &:hover {
+    color: var(--orange100);
+  }
 }

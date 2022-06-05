@@ -4,3 +4,5 @@ export const modeTitle = {
     generate: 'Generate',
     own: 'Enter your own',
 };
+
+export const placeholder = 'Enter a passphrase here...';

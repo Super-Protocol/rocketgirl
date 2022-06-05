@@ -5,7 +5,7 @@ import cn from 'classnames';
 
 import { Box, CopyToClipboardSimple, InputUi } from '@/uikit';
 import { MnemonicGeneratorUiProps, Modes } from './types';
-import { modeTitle, agreement } from './helpers';
+import { modeTitle, agreement, placeholder } from './helpers';
 import classes from './MnemonicGeneratorUi.module.scss';
 
 export const MnemonicGeneratorUi = memo<MnemonicGeneratorUiProps>(({
@@ -25,6 +25,7 @@ export const MnemonicGeneratorUi = memo<MnemonicGeneratorUiProps>(({
     const onChange = useCallback((val: string) => {
         onChangeProps(val);
     }, [onChangeProps]);
+
     return (
         <div>
             <Box className={classes.modeswitcher}>
@@ -58,6 +59,7 @@ export const MnemonicGeneratorUi = memo<MnemonicGeneratorUiProps>(({
                             showError: isInvalid,
                             onChange,
                             classNameError: classes.inputError,
+                            placeholder,
                         }}
                         as="textarea"
                     />

@@ -7,6 +7,7 @@ import React, {
 } from 'react';
 import { Formik } from 'formik';
 import intersectionby from 'lodash.intersectionby';
+import { useLocalStorage } from '@/common/hooks/useLocalStorage';
 import {
     OffersSelectDocument,
     TeeOffersSelectDocument,
@@ -51,6 +52,8 @@ import { useFileUploader } from './hooks/useFileUploader';
 
 export const CreateOrderModal: FC<CreateOrderModalProps> = memo(({ initialValues: initialValuesProps }) => {
     const { selectedAddress, instance } = useContext(WalletContext);
+    const [agreement, setAgreement] = useLocalStorage<boolean | undefined>('agreement');
+    const [canShowAgreement, setCanShowAgreement] = useState(true);
     const { showErrorModal, showSuccessModal } = useErrorModal();
     const { goBack } = useContext(ModalOkCancelContext);
     const { uploading, uploadFile } = useFileUploader();
@@ -161,6 +164,11 @@ export const CreateOrderModal: FC<CreateOrderModalProps> = memo(({ initialValues
         });
     }, [minDeposit]);
     useEffect(() => {
+        setInitialValues((old) => ({ ...old, [Fields.agreement]: agreement }));
+        setCanShowAgreement(!agreement);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+    useEffect(() => {
         updateFiltersRestrictions({
             [Fields.data]: initialValues.data,
             [Fields.solution]: initialValues.solution,
@@ -245,7 +253,7 @@ export const CreateOrderModal: FC<CreateOrderModalProps> = memo(({ initialValues
                                     onDelete={onDelete}
                                 />
                                 <FileUploader {...{ uploading, disabled: !!values?.[Fields.data]?.length }} />
-                                <MnemonicGenerator />
+                                <MnemonicGenerator {...{ canShowAgreement, setAgreement }} />
                                 <InputDeposit min={minDeposit} classNameWrap={classes.inputWrap} />
                             </Box>
                             <Box justifyContent="flex-end">
