@@ -37,7 +37,7 @@ export const usePublishTee = (): UsePublishTeeResult => {
                     filepath,
                     credentials: {
                         storageId: 'inputs',
-                        token: CONFIG.REACT_APP_TEE_GENERATOR_TOKEN,
+                        token: CONFIG.REACT_APP_ARGS_BUCKET_READACCESS,
                     },
                 } as Resource,
                 undefined,

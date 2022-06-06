@@ -16,7 +16,7 @@ export type Config = {
     REACT_APP_S3_ACCESS_KEY_ID: string;
     REACT_APP_S3_SECRET_ACCESS_KEY: string;
     REACT_APP_S3_ENDPOINT: string;
-    REACT_APP_TEE_GENERATOR_TOKEN: string;
+    REACT_APP_ARGS_BUCKET_READACCESS: string;
 };
 
 const DEFAULT_CONFIG: Config = {
@@ -33,7 +33,7 @@ const DEFAULT_CONFIG: Config = {
     REACT_APP_S3_ACCESS_KEY_ID: '',
     REACT_APP_S3_SECRET_ACCESS_KEY: '',
     REACT_APP_S3_ENDPOINT: '',
-    REACT_APP_TEE_GENERATOR_TOKEN: '',
+    REACT_APP_ARGS_BUCKET_READACCESS: '',
 };
 
 const CONFIG: Config = getConfigWithEnv<Config>(
