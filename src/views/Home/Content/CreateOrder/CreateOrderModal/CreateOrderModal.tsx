@@ -3,7 +3,9 @@ import React, {
     FC,
     useState,
     useCallback,
-    useContext, useMemo, useEffect,
+    useContext,
+    useMemo,
+    useEffect,
 } from 'react';
 import { Formik } from 'formik';
 import intersectionby from 'lodash.intersectionby';
@@ -173,8 +175,7 @@ export const CreateOrderModal: FC<CreateOrderModalProps> = memo(({ initialValues
                 validationSchema={validationSchema}
                 onSubmit={onSubmitForm}
             >
-                {({ submitForm, values, errors }) => {
-                    console.log('errors', errors, values);
+                {({ submitForm, values }) => {
                     return (
                         <Box direction="column">
                             {loading && (
