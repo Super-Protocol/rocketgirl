@@ -27,20 +27,6 @@ export const usePublishTee = (): UsePublishTeeResult => {
         setGenerating(true);
         try {
             const { offerId, encryption, filepath } = props;
-            console.log('props', offerId,
-                [],
-                undefined,
-                {
-                    type: ResourceType.StorageProvider,
-                    storageType: StorageType.StorJ,
-                    filepath,
-                    credentials: {
-                        storageId: 'inputs',
-                        token: CONFIG.REACT_APP_TEE_GENERATOR_TOKEN,
-                    },
-                } as Resource,
-                undefined,
-                encryption);
             return TIIGenerator.generateByOffer(
                 offerId,
                 [],

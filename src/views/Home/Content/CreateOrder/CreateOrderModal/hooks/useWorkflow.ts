@@ -1,7 +1,6 @@
 import { useCallback } from 'react';
 import Web3 from 'web3';
 import { workflow, WorkflowPropsValues } from '@/connectors/orders';
-import { generateMnemonic } from '@/utils/crypto';
 import { useFileUploader } from './useFileUploader';
 import { usePublishTee } from './usePublishTee';
 import { useEncryptFile } from './useEncryptFile';
@@ -65,12 +64,8 @@ export const useWorkflow = (): UseWorkflowResult => {
             const encryption = await encryptFile(file);
             const { ciphertext } = encryption;
             const uploadResult = await uploadFile({ fileName: file.name, ciphertext });
-            console.log('uploadResult', uploadResult);
             const filepath = getFilePath(uploadResult);
-            console.log('filepath', filepath, encryption);
-            console.log('tee: ', tee?.value);
             teeGeneratorId = await generateByOffer({ offerId: tee?.value, encryption, filepath });
-            console.log('teeGeneratorId', teeGeneratorId);
         }
         await workflow({
             values: getWorkflowValues(formValues, phrase as string, teeGeneratorId),

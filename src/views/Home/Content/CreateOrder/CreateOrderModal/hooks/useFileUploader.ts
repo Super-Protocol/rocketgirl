@@ -63,7 +63,7 @@ export const uploadFileByS3 = async (props: UploadFileByS3Props): Promise<Upload
         })
         .send((err) => {
             if (err) {
-                console.log('upload file error', err);
+                console.error('upload file error: ', err);
                 throw err;
             }
         });

@@ -109,7 +109,7 @@ export const CreateOrderModal: FC<CreateOrderModalProps> = memo(({ initialValues
             await runWorkflow({ formValues, actionAccountAddress: selectedAddress, web3: instance });
             showSuccessModal();
         } catch (e) {
-            console.log('workflow error', e);
+            console.error('workflow error: ', e);
             toastr.error(e);
         }
         setLoading(false);
