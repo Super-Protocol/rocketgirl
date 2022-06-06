@@ -2,29 +2,9 @@ import { S3, AWSError, Response } from 'aws-sdk';
 import { Progress, Request } from 'aws-sdk/lib/request';
 import { PutObjectOutput } from 'aws-sdk/clients/s3';
 import { useCallback, useState } from 'react';
-import {
-    Crypto,
-} from '@super-protocol/sp-sdk-js';
-import { CryptoAlgorithm, Encoding } from '@super-protocol/sp-dto-js/build/enum';
-import { Encryption } from '@super-protocol/sp-dto-js';
-import { generateRandomKeys } from '@/utils/crypto';
-import { getBase64FromFile } from '@/common/helpers';
 import CONFIG from '@/config';
 
 const { REACT_APP_S3_ACCESS_KEY_ID, REACT_APP_S3_SECRET_ACCESS_KEY, REACT_APP_S3_ENDPOINT } = CONFIG;
-
-export const encryptFile = async (file: File): Promise<Encryption> => {
-    const { privateKey } = generateRandomKeys();
-    const base64 = await getBase64FromFile(file);
-    return Crypto.encrypt(
-        base64 as string,
-        {
-            algo: CryptoAlgorithm.AES,
-            encoding: Encoding.base64,
-            key: privateKey,
-        },
-    );
-};
 
 export interface UploadFileByS3PropsOptions {
     onHttpUploadProgress?: (progress: Progress) => void;
@@ -33,15 +13,22 @@ export interface UploadFileByS3PropsOptions {
 }
 
 export interface UploadFileByS3Props {
-    file: File;
+    ciphertext?: string;
+    fileName: string;
     options?: UploadFileByS3PropsOptions;
 }
 
 export type UploadFileByS3Result = Request<S3.Types.PutObjectOutput, AWSError>;
 
+export interface UploadFileProps {
+    ciphertext?: string;
+    fileName: string;
+}
+
 export interface UseFileUploaderResult {
-    uploadFile: (file?: File) => Promise<UploadFileByS3Result>;
+    uploadFile: (props: UploadFileProps) => Promise<UploadFileByS3Result>;
     uploading: boolean;
+    getFilePath: (props: UploadFileByS3Result) => string;
 }
 
 export const uploadFileByS3 = async (props: UploadFileByS3Props): Promise<UploadFileByS3Result> => {
@@ -55,9 +42,8 @@ export const uploadFileByS3 = async (props: UploadFileByS3Props): Promise<Upload
         signatureVersion: 'v4',
         httpOptions: { timeout: 0 },
     });
-    const { file, options } = props || {};
+    const { ciphertext, fileName, options } = props || {};
     const { onHttpUploadProgress, onComplete } = options || {};
-    const { ciphertext } = await encryptFile(file);
     if (!ciphertext) throw new Error('File is empty');
     const buf = Buffer.from(ciphertext, 'base64');
     if (!buf?.length) throw new Error('File is empty');
@@ -66,7 +52,7 @@ export const uploadFileByS3 = async (props: UploadFileByS3Props): Promise<Upload
         Body: buf,
         Bucket: 'inputs',
         ContentEncoding: 'base64',
-        Key: file.name,
+        Key: fileName,
     });
     result
         .on('httpUploadProgress', (evt) => {
@@ -77,7 +63,7 @@ export const uploadFileByS3 = async (props: UploadFileByS3Props): Promise<Upload
         })
         .send((err) => {
             if (err) {
-                console.error('err', err);
+                console.error('upload file error: ', err);
                 throw err;
             }
         });
@@ -86,12 +72,11 @@ export const uploadFileByS3 = async (props: UploadFileByS3Props): Promise<Upload
 
 export const useFileUploader = (): UseFileUploaderResult => {
     const [uploading, setUploading] = useState(false);
-    const uploadFile = useCallback(async (file?: File): Promise<UploadFileByS3Result> => {
+    const uploadFile = useCallback(async (props: UploadFileProps): Promise<UploadFileByS3Result> => {
         setUploading(true);
-        if (!file) throw new Error('File required');
         let result;
         try {
-            result = await uploadFileByS3({ file });
+            result = await uploadFileByS3(props);
         } catch (e) {
             throw new Error('File upload error');
         } finally {
@@ -99,8 +84,15 @@ export const useFileUploader = (): UseFileUploaderResult => {
         }
         return result;
     }, []);
+    const getFilePath = useCallback((result: UploadFileByS3Result) => {
+        const { httpRequest } = result || {};
+        const { path } = httpRequest || {};
+        if (!path) throw new Error('Bad file path');
+        return `${REACT_APP_S3_ENDPOINT}${path}`;
+    }, []);
     return {
         uploadFile,
         uploading,
+        getFilePath,
     };
 };

@@ -17,4 +17,6 @@ export interface MnemonicGeneratorFormikProps {
     name: string;
     debounceInterval?: number;
     onChange?: Function;
+    nameMode: string;
+    generateMnemonic: () => string;
 }

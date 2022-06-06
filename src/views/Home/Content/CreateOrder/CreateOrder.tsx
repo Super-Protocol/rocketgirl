@@ -26,7 +26,7 @@ export const CreateOrder: FC<CreateOrderProps> = memo(() => {
 
     return (
         <Box>
-            {/* <Button variant="primary" onClick={createOrder}>New order</Button> */}
+            {/*<Button variant="primary" onClick={createOrder}>New order</Button>*/}
         </Box>
     );
 });

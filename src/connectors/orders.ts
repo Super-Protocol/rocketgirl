@@ -64,6 +64,7 @@ export interface WorkflowPropsValues {
     storage?: string;
     deposit: number;
     mnemonic: string;
+    args?: string;
 }
 export interface WorkflowProps {
     values: WorkflowPropsValues;
@@ -222,14 +223,16 @@ export const workflow = async (props: WorkflowProps): Promise<void> => {
         solution,
         deposit,
         mnemonic,
+        args,
     } = values || {};
-    if (!mnemonic) throw new Error('Seed phrase required');
+    if (!mnemonic) throw new Error('Passphrase required');
     const canceledOrders: string[] = [];
     const { publicKey } = generateKeys(mnemonic);
     try {
         const teeOrderAddress = await createOrder({
             actionAccountAddress,
             values: {
+                args,
                 resultPublicKeyBase64: publicKey,
                 offer: tee,
                 suspended: true,
