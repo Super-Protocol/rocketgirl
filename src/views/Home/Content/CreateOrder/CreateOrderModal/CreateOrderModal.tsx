@@ -7,6 +7,7 @@ import React, {
 } from 'react';
 import { Formik } from 'formik';
 import intersectionby from 'lodash.intersectionby';
+import { useLocalStorage } from '@/common/hooks/useLocalStorage';
 import {
     OffersSelectDocument,
     TeeOffersSelectDocument,
@@ -33,6 +34,7 @@ import {
 } from './types';
 import { OffersAdder } from './OffersAdder';
 import { FileUploader } from './FileUploader';
+import { MnemonicGenerator } from './MnemonicGenerator';
 import classes from './CreateOrderModal.module.scss';
 import {
     valueOfferConvertNode,
@@ -46,6 +48,8 @@ import { useWorkflow } from './hooks/useWorkflow';
 
 export const CreateOrderModal: FC<CreateOrderModalProps> = memo(({ initialValues: initialValuesProps }) => {
     const { selectedAddress, instance } = useContext(WalletContext);
+    const [agreement, setAgreement] = useLocalStorage<boolean | undefined>('agreement');
+    const [canShowAgreement, setCanShowAgreement] = useState(true);
     const { showErrorModal, showSuccessModal } = useErrorModal();
     const { goBack } = useContext(ModalOkCancelContext);
     const [isValidating, setIsValidating] = useState(false);
@@ -147,6 +151,11 @@ export const CreateOrderModal: FC<CreateOrderModalProps> = memo(({ initialValues
         });
     }, [minDeposit]);
     useEffect(() => {
+        setInitialValues((old) => ({ ...old, [Fields.agreement]: agreement }));
+        setCanShowAgreement(!agreement);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+    useEffect(() => {
         updateFiltersRestrictions({
             [Fields.data]: initialValues.data,
             [Fields.solution]: initialValues.solution,
@@ -231,6 +240,7 @@ export const CreateOrderModal: FC<CreateOrderModalProps> = memo(({ initialValues
                                     onDelete={onDelete}
                                 />
                                 <FileUploader {...{ uploading, disabled: !!values?.[Fields.data]?.length }} />
+                                <MnemonicGenerator {...{ canShowAgreement, setAgreement }} />
                                 <InputDeposit min={minDeposit} classNameWrap={classes.inputWrap} />
                             </Box>
                             <Box justifyContent="flex-end">

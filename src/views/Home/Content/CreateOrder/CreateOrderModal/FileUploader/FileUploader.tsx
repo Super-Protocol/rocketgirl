@@ -7,9 +7,9 @@ import cn from 'classnames';
 import { useField } from 'formik';
 
 import {
-    Box, Icon, Spinner, FileUploaderUi, Tooltip,
+    Box, Icon, Spinner, FileUploaderUi,
 } from '@/uikit';
-import { TooltipTheme } from '@/uikit/Tooltip/types';
+import { LabelToolkit } from '@/common/components';
 import { FileName } from './FileName';
 import classes from './FileUploader.module.scss';
 import { tooltipText } from './helpers';
@@ -35,22 +35,10 @@ export const FileUploader = memo<FileUploaderProps>(({ disabled, uploading }): R
     }, [setValue, disabled]);
 
     return (
-        <Box direction="column" className={classes.wrap}>
-            <Box alignItems="center" className={classes.titleLine}>
-                <div className={classes.title}>File</div>
-                <Tooltip
-                    theme={TooltipTheme.white}
-                    placement="top-start"
-                    tooltip={tooltipText}
-                >
-                    <Icon
-                        name="info_fill2"
-                        width={16}
-                        height={16}
-                        className={classes.iconInfo}
-                    />
-                </Tooltip>
-            </Box>
+        <LabelToolkit
+            tooltipText={tooltipText}
+            title="File"
+        >
             {value ? (
                 <Box
                     className={cn(classes.file, { [classes['file-error']]: error, [classes.disabled]: disabled })}
@@ -92,6 +80,6 @@ export const FileUploader = memo<FileUploaderProps>(({ disabled, uploading }): R
             {error ? (
                 <div className={classes.error}>{error}</div>
             ) : <div className={classes.errorEmpty} />}
-        </Box>
+        </LabelToolkit>
     );
 });

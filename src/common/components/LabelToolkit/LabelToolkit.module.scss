@@ -1,0 +1,21 @@
+.wrap {
+  margin-bottom: 5px;
+  font-size: 12px;
+}
+
+.title {
+  font-size: 12px;
+}
+
+.titleLine {
+  margin-bottom: 8px;
+}
+
+.iconInfo {
+  color: var(--orange40);
+  margin-left: 5px;
+  cursor: pointer;
+  &:hover {
+    color: var(--orange100);
+  }
+}
