@@ -14,7 +14,7 @@ export interface GenerateRandomKeysResult {
 
 export const generateMnemonic = (): string => bip39.generateMnemonic(256);
 
-export const validateMnemonic = (mnenmonic: string): boolean => bip39.validateMnemonic(mnenmonic);
+export const validateMnemonic = (mnemonic: string): boolean => bip39.validateMnemonic(mnemonic);
 
 export const generateKeys = (mnemonic: string): GenerateKeysResult => {
     const entropy = bip39.mnemonicToEntropy(mnemonic);

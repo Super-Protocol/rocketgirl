@@ -21,10 +21,8 @@ import {
     Spinner,
 } from '@/uikit';
 import { ModalOkCancelContext } from '@/common/context/ModalOkCancelProvider/ModalOkCancelProvider';
-import { workflow } from '@/connectors/orders';
 import { useErrorModal } from '@/common/hooks/useErrorModal';
 import { WalletContext } from '@/common/context/WalletProvider';
-import { generateMnemonic } from '@/utils/crypto';
 import toastr from '@/services/Toastr/toastr';
 import {
     CreateOrderModalProps,
@@ -41,20 +39,18 @@ import {
     teeOfferConvertNode,
     getValidationSchema,
     getMinDepositWorkflow,
-    getWorkflowValues,
     getInitialFilters,
 } from './helpers';
-import { SuccessModal } from './SuccessModal';
 import { InputDeposit } from './InputDeposit';
-import { useFileUploader } from './hooks/useFileUploader';
+import { useWorkflow } from './hooks/useWorkflow';
 
 export const CreateOrderModal: FC<CreateOrderModalProps> = memo(({ initialValues: initialValuesProps }) => {
     const { selectedAddress, instance } = useContext(WalletContext);
     const { showErrorModal, showSuccessModal } = useErrorModal();
     const { goBack } = useContext(ModalOkCancelContext);
-    const { uploading, uploadFile } = useFileUploader();
     const [isValidating, setIsValidating] = useState(false);
     const [loading, setLoading] = useState(false);
+    const { uploading, runWorkflow } = useWorkflow();
     const [filters, setFilters] = useState(getInitialFilters);
     const [initialValues, setInitialValues] = useState<FormValues>(initialValuesProps || {});
     const [minDeposit, setMinDeposit] = useState<number>(0);
@@ -105,24 +101,15 @@ export const CreateOrderModal: FC<CreateOrderModalProps> = memo(({ initialValues
     const onSubmitForm = useCallback(async (formValues: FormValues) => {
         setLoading(true);
         setIsValidating(true);
-        if (!selectedAddress || !instance) {
-            return showErrorModal('Metamask account not found');
-        }
         try {
-            const { file, data } = formValues || {};
-            if (!data?.length) {
-                await uploadFile(file);
-                // todo tii generator
-            }
-            const mnemonic = generateMnemonic();
-            const values = getWorkflowValues(formValues, mnemonic);
-            await workflow({ values, actionAccountAddress: selectedAddress, web3: instance });
-            showSuccessModal(undefined, <SuccessModal mnemonic={mnemonic} />);
+            await runWorkflow({ formValues, actionAccountAddress: selectedAddress, web3: instance });
+            showSuccessModal();
         } catch (e) {
+            console.log('workflow error', e);
             toastr.error(e);
         }
         setLoading(false);
-    }, [showSuccessModal, showErrorModal, instance, selectedAddress, uploadFile]);
+    }, [showSuccessModal, showErrorModal, instance, selectedAddress, runWorkflow]);
     const updateMinDeposit = useCallback(async (values: FormValues) => {
         try {
             setLoading(true);

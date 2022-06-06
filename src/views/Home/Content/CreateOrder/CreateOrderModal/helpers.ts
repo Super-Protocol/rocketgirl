@@ -105,29 +105,6 @@ export const getMinDepositWorkflow = async (formValues: GetMinDepositWorkflow): 
     ]);
 };
 
-export const getWorkflowValues = (formValues: FormValues, mnemonic: string): WorkflowPropsValues => {
-    const {
-        solution,
-        data,
-        tee,
-        storage,
-        deposit,
-    } = formValues;
-    return {
-        mnemonic: mnemonic || '',
-        solution: [solution?.value as string]
-            .concat(
-                solution?.data?.sub
-                    ?.map((item) => item?.value as string)
-                    .filter((value) => value) || [],
-            ),
-        data: data?.map((d) => d?.value as string),
-        tee: tee?.value as string,
-        storage: storage?.value as string,
-        deposit: deposit || 0,
-    };
-};
-
 export const getInitialFilters = (): GetInitialFiltersResult => {
     return {
         [Fields.solution]: { offerType: TOfferType.Solution, excludeOfferRestrictionType: [TOfferType.Solution] },
