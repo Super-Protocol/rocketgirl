@@ -51,8 +51,14 @@ export const useWorkflow = (): UseWorkflowResult => {
     const runWorkflow = useCallback(async (props: RunWorkflowProps) => {
         const { formValues, actionAccountAddress, web3 } = props || {};
         if (!actionAccountAddress || !web3) throw new Error('Metamask account not found');
-        const { file, data, tee } = formValues || {};
+        const {
+            file,
+            data,
+            tee,
+            phrase,
+        } = formValues || {};
         let teeGeneratorId;
+        if (!phrase) throw new Error('Seed phrase required');
         if (!data?.length) {
             if (!file) throw new Error('File required');
             if (!tee?.value) throw new Error('TEE required');
@@ -66,12 +72,11 @@ export const useWorkflow = (): UseWorkflowResult => {
             teeGeneratorId = await generateByOffer({ offerId: tee?.value, encryption, filepath });
             console.log('teeGeneratorId', teeGeneratorId);
         }
-        // const mnemonic = generateMnemonic(); // todo replace. get from form
-        // await workflow({
-        //     values: getWorkflowValues(formValues, mnemonic, teeGeneratorId),
-        //     actionAccountAddress,
-        //     web3,
-        // });
+        await workflow({
+            values: getWorkflowValues(formValues, phrase as string, teeGeneratorId),
+            actionAccountAddress,
+            web3,
+        });
     }, [encryptFile, generateByOffer, uploadFile, getFilePath]);
 
     return {

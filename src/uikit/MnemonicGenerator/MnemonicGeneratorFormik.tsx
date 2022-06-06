@@ -3,20 +3,21 @@ import {
 } from 'react';
 import { useField } from 'formik';
 import { useDebouncedCallback } from 'use-debounce';
-
-import { generateMnemonic } from '@/utils/crypto';
-import { MnemonicGeneratorUi } from './MnemonicGeneratorUi';
+import { MnemonicGeneratorUi } from '@/uikit';
 import { MnemonicGeneratorFormikProps, Modes } from './types';
 
 export const MnemonicGeneratorFormik = memo<MnemonicGeneratorFormikProps>(({
     name,
     debounceInterval = 100,
     onChange: onChangeProps = () => {},
+    nameMode,
+    generateMnemonic,
+    ...props
 }): ReactElement => {
-    const [, { error }, { setValue }] = useField(name);
-    const [mode, setMode] = useState<Modes>(Modes.generate);
-    const [localValue, setLocalValue] = useState<string | undefined>(undefined);
-    const phrase = useMemo(() => generateMnemonic(), []);
+    const [, { value, error }, { setValue }] = useField(name);
+    const [, { value: mode }, { setValue: setMode }] = useField(nameMode);
+    const [localValue, setLocalValue] = useState<string | undefined>(value);
+    const phrase = useMemo(() => generateMnemonic(), [generateMnemonic]);
     const isInvalid: boolean = useMemo(() => !!error, [error]);
     const setFormValue = useCallback((val) => {
         setValue(val);
@@ -30,7 +31,7 @@ export const MnemonicGeneratorFormik = memo<MnemonicGeneratorFormikProps>(({
     const onChangeMode = useCallback((k) => {
         setMode(k);
         setValue(k === Modes.generate ? phrase : localValue);
-    }, [localValue, phrase, setValue]);
+    }, [localValue, phrase, setValue, setMode]);
     useEffect(() => {
         if (mode === Modes.generate) {
             setValue(phrase);
@@ -41,6 +42,7 @@ export const MnemonicGeneratorFormik = memo<MnemonicGeneratorFormikProps>(({
     return (
         <MnemonicGeneratorUi
             {...{
+                ...props,
                 phrase,
                 value: localValue,
                 onChange,

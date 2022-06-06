@@ -27,7 +27,7 @@ export const MnemonicGeneratorUi = memo<MnemonicGeneratorUiProps>(({
     }, [onChangeProps]);
 
     return (
-        <div>
+        <Box direction="column">
             <Box className={classes.modeswitcher}>
                 {Object.entries(modeTitle).map(([k, v], idx) => (
                     <div
@@ -47,7 +47,7 @@ export const MnemonicGeneratorUi = memo<MnemonicGeneratorUiProps>(({
                 ? (
                     <Box className={classes.phrase}>
                         {phrase}
-                        <CopyToClipboardSimple text={phrase} />
+                        <CopyToClipboardSimple text={phrase} notification />
                     </Box>
                 )
                 : (
@@ -60,11 +60,12 @@ export const MnemonicGeneratorUi = memo<MnemonicGeneratorUiProps>(({
                             onChange,
                             classNameError: classes.inputError,
                             placeholder,
+                            classNameInput: classes.input,
                         }}
                         as="textarea"
                     />
                 )}
             <p className={classes.agreement}>{agreement}</p>
-        </div>
+        </Box>
     );
 });

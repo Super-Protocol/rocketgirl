@@ -6,7 +6,6 @@ import {
 } from '@super-protocol/sp-sdk-js';
 import sum from 'lodash.sum';
 import { ConvertNode } from '@/common/hooks/useSelectQueryCursorSPFetcher';
-import { WorkflowPropsValues } from '@/connectors/orders';
 import { Offer, TeeOffer, TOfferType } from '@/gql/graphql';
 import { validateMnemonic } from '@/utils/crypto';
 import { Item, Value } from '@/uikit/types';
@@ -49,7 +48,7 @@ const getOfferSchema = (field: string) => Yup.object().test(
 
 const getPhraseSchema = (field: string) => Yup.string().test(
     field,
-    'required',
+    'Invalid phrase entered',
     (str = '') => validateMnemonic(str),
 ) as Yup.BaseSchema;
 
@@ -65,9 +64,10 @@ export const getValidationSchema = (props?: GetValidationSchemaProps): Yup.Schem
                 .required('required')
                 .min(minDeposit, `must be greater than or equal ${minDeposit}`)
             : Yup.number().required('required'),
-        [Fields.file]: Yup.mixed().required('required'),
+        [Fields.file]: Yup.mixed(),
         [Fields.phrase]: getPhraseSchema(Fields.phrase),
         [Fields.agreement]: Yup.boolean().required('required'),
+        [Fields.phraseTabMode]: Yup.string(),
     });
 };
 

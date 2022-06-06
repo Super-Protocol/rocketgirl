@@ -225,7 +225,7 @@ export const workflow = async (props: WorkflowProps): Promise<void> => {
         mnemonic,
         args,
     } = values || {};
-    if (!mnemonic) throw new Error('Seed phrase required');
+    if (!mnemonic) throw new Error('Passphrase required');
     const canceledOrders: string[] = [];
     const { publicKey } = generateKeys(mnemonic);
     try {

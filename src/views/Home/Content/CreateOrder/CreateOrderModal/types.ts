@@ -21,6 +21,7 @@ export enum Fields {
     deposit = 'deposit',
     phrase = 'phrase',
     agreement = 'agreement',
+    phraseTabMode = 'phraseTabMode',
 }
 
 export interface FormValues {
@@ -28,10 +29,11 @@ export interface FormValues {
     [Fields.data]?: FormOffer[];
     [Fields.tee]?: FormOffer;
     [Fields.storage]?: FormOffer;
-    [Fields.file]?: File;
+    [Fields.file]?: File | null;
     [Fields.deposit]?: number;
     [Fields.phrase]?: string;
     [Fields.agreement]?: boolean;
+    [Fields.phraseTabMode]?: string;
 }
 
 export interface CreateOrderModalProps {
