@@ -1,0 +1,1 @@
+export { MnemonicGenerator } from './MnemonicGenerator';

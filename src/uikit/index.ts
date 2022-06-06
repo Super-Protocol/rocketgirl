@@ -12,6 +12,7 @@ export * from './Header';
 export * from './HtmlBox';
 export * from './Ellipsis';
 export * from './FileUploader';
+export * from './MnemonicGenerator';
 export * from './Modals';
 export * from './EyeLink';
 export * from './Overlays';
