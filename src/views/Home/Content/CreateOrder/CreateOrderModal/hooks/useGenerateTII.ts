@@ -21,7 +21,7 @@ export interface UsePublishTeeResult {
     generating: boolean;
 }
 
-export const usePublishTee = (): UsePublishTeeResult => {
+export const useGenerateTII = (): UsePublishTeeResult => {
     const [generating, setGenerating] = useState(false);
     const generateByOffer = useCallback(async (props: GenerateByOfferProps): Promise<string | undefined> => {
         setGenerating(true);
@@ -37,7 +37,7 @@ export const usePublishTee = (): UsePublishTeeResult => {
                     filepath,
                     credentials: {
                         storageId: 'inputs',
-                        token: CONFIG.REACT_APP_TEE_GENERATOR_TOKEN,
+                        token: CONFIG.REACT_APP_ARGS_BUCKET_READACCESS,
                     },
                 } as Resource,
                 undefined,

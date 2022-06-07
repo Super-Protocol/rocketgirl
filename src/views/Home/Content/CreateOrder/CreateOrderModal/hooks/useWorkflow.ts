@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import Web3 from 'web3';
 import { workflow, WorkflowPropsValues } from '@/connectors/orders';
 import { useFileUploader } from './useFileUploader';
-import { usePublishTee } from './usePublishTee';
+import { useGenerateTII } from './useGenerateTII';
 import { useEncryptFile } from './useEncryptFile';
 import { FormValues } from '../types';
 
@@ -19,7 +19,7 @@ export interface UseWorkflowResult {
     encrypting: boolean;
 }
 
-export const getWorkflowValues = (formValues: FormValues, mnemonic: string, teeGeneratorId?: string): WorkflowPropsValues => {
+export const getWorkflowValues = (formValues: FormValues, mnemonic: string, tiiGeneratorId?: string): WorkflowPropsValues => {
     const {
         solution,
         data,
@@ -39,13 +39,13 @@ export const getWorkflowValues = (formValues: FormValues, mnemonic: string, teeG
         tee: tee?.value as string,
         storage: storage?.value as string,
         deposit: deposit || 0,
-        args: teeGeneratorId ? JSON.stringify({ data: [teeGeneratorId] }) : undefined,
+        args: tiiGeneratorId ? JSON.stringify({ data: [tiiGeneratorId] }) : undefined,
     };
 };
 
 export const useWorkflow = (): UseWorkflowResult => {
     const { uploading, uploadFile, getFilePath } = useFileUploader();
-    const { generating, generateByOffer } = usePublishTee();
+    const { generating, generateByOffer } = useGenerateTII();
     const { encrypting, encryptFile } = useEncryptFile();
     const runWorkflow = useCallback(async (props: RunWorkflowProps) => {
         const { formValues, actionAccountAddress, web3 } = props || {};
@@ -56,19 +56,20 @@ export const useWorkflow = (): UseWorkflowResult => {
             tee,
             phrase,
         } = formValues || {};
-        let teeGeneratorId;
+        let tiiGeneratorId;
         if (!phrase) throw new Error('Seed phrase required');
         if (!data?.length) {
             if (!file) throw new Error('File required');
             if (!tee?.value) throw new Error('TEE required');
-            const encryption = await encryptFile(file);
-            const { ciphertext } = encryption;
+            const { encryption, key } = await encryptFile(file);
+            const { ciphertext, ...restEncryption } = encryption;
             const uploadResult = await uploadFile({ fileName: file.name, ciphertext });
             const filepath = getFilePath(uploadResult);
-            teeGeneratorId = await generateByOffer({ offerId: tee?.value, encryption, filepath });
+            const tiiEncryption = { ...restEncryption, key };
+            tiiGeneratorId = await generateByOffer({ offerId: tee?.value, encryption: tiiEncryption, filepath });
         }
         await workflow({
-            values: getWorkflowValues(formValues, phrase as string, teeGeneratorId),
+            values: getWorkflowValues(formValues, phrase as string, tiiGeneratorId),
             actionAccountAddress,
             web3,
         });

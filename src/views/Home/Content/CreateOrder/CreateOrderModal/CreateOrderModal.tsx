@@ -3,7 +3,9 @@ import React, {
     FC,
     useState,
     useCallback,
-    useContext, useMemo, useEffect,
+    useContext,
+    useMemo,
+    useEffect,
 } from 'react';
 import { Formik } from 'formik';
 import intersectionby from 'lodash.intersectionby';
@@ -25,6 +27,7 @@ import { ModalOkCancelContext } from '@/common/context/ModalOkCancelProvider/Mod
 import { useErrorModal } from '@/common/hooks/useErrorModal';
 import { WalletContext } from '@/common/context/WalletProvider';
 import toastr from '@/services/Toastr/toastr';
+import { Modes } from '@/uikit/MnemonicGenerator/types';
 import {
     CreateOrderModalProps,
     Fields,
@@ -56,7 +59,11 @@ export const CreateOrderModal: FC<CreateOrderModalProps> = memo(({ initialValues
     const [loading, setLoading] = useState(false);
     const { uploading, runWorkflow } = useWorkflow();
     const [filters, setFilters] = useState(getInitialFilters);
-    const [initialValues, setInitialValues] = useState<FormValues>({ ...initialValuesProps, [Fields.agreement]: agreement });
+    const [initialValues, setInitialValues] = useState<FormValues>({
+        [Fields.phraseTabMode]: Modes.generate,
+        [Fields.agreement]: agreement,
+        ...initialValuesProps,
+    });
     const [minDeposit, setMinDeposit] = useState<number>(0);
     const [getOffersRestrictionsLazyQuery] = useOffersRestrictionsLazyQuery();
     const getOffersRestrictions = useCallback(async (list?: string[], offerType?: TOfferType) => {
