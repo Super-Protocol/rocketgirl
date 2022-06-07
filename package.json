@@ -63,7 +63,6 @@
     "yup": "^0.32.11"
   },
   "scripts": {
-    "preinstall": "npx npm-force-resolutions",
     "devserver": "react-app-rewired start",
     "start": "npm run start:watch:generate",
     "build": "GENERATE_SOURCEMAP=false react-app-rewired build",
