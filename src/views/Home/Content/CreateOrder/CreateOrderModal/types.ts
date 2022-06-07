@@ -13,7 +13,6 @@ export type FormOffer = Item<Info, string>;
 
 export enum Fields {
     solution = 'solution',
-    solutionBase = 'solutionBase',
     data = 'data',
     tee = 'tee',
     storage = 'storage',

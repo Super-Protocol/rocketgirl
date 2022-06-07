@@ -359,6 +359,8 @@ export type OfferFilter = {
   excludeOfferRestrictionType?: InputMaybe<Array<TOfferType>>;
   /** filter by offerInfo → group */
   group?: InputMaybe<Scalars['String']>;
+  /** include filter by offerInfo -> restrictions -> type */
+  includeOfferRestrictionType?: InputMaybe<Array<TOfferType>>;
   /** filter by offerInfo → name */
   name?: InputMaybe<Scalars['String']>;
   /** filter by offerInfo -> type */
@@ -634,6 +636,8 @@ export type OrdersFilter = {
   consumer?: InputMaybe<Scalars['String']>;
   /** filter by orderInfo -> args -> inputOffers */
   inputOffers?: InputMaybe<Array<Scalars['String']>>;
+  /** filter by offerType */
+  offerType?: InputMaybe<TOfferType>;
   /** filter by parentOrder->orderAddress */
   parentOrder?: InputMaybe<Scalars['String']>;
   /** filter by orderInfo -> args -> selectedOffers */
@@ -1133,6 +1137,8 @@ export type TransactionEdge = {
 };
 
 export type TransactionFilter = {
+  /** filter by hash */
+  hash?: InputMaybe<Scalars['String']>;
   /** filter by receiver */
   receiver?: InputMaybe<Scalars['String']>;
   /** filter by sender */

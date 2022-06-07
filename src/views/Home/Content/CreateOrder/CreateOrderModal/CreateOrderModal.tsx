@@ -128,7 +128,7 @@ export const CreateOrderModal: FC<CreateOrderModalProps> = memo(({ initialValues
                 await getMinDepositWorkflow({
                     ...values,
                     [Fields.solution]: values[Fields.solution]?.value
-                        ? [values[Fields.solution] as FormOffer].concat(values[Fields.solutionBase] || [])
+                        ? [values[Fields.solution] as FormOffer].concat(values[Fields.solution]?.data?.sub || [])
                         : [],
                 }),
             );
