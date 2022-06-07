@@ -1,4 +1,5 @@
 import { TableTheme } from '@/uikit/Table/types';
+import { Tables } from '@/views/Home/types';
 import { Filter } from './Filter/models';
 
 export const spinnerProps = { fullscreen: true };
@@ -14,3 +15,5 @@ export const getFilters = (values?: { [x: string]: Filter }): object | null => {
         };
     }, {});
 };
+
+export const tables = [[{ value: Tables.Transactions, label: 'Transactions' }]];

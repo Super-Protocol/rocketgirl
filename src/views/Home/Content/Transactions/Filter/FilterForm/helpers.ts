@@ -5,10 +5,10 @@ import { FilterMode } from '../models/types';
 
 export const filtersTransactions = [
     new Filter({
-        name: 'address',
+        name: 'hash',
         label: 'search',
         mode: FilterMode.regex,
-        placeholder: 'Search',
+        placeholder: 'Search by Tnx hash',
     }),
 ];
 

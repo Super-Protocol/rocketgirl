@@ -1,12 +1,12 @@
 import { memo, FC, useCallback } from 'react';
 import cn from 'classnames';
 import { Box, Dropdown } from '@/uikit';
-import { ListItem, MainTableListProps } from './types';
-import classes from './MainTableList.module.scss';
+import { ListItem, TableHeaderListProps } from './types';
+import classes from './TableHeaderList.module.scss';
 import { ToggleLabel } from './ToggleLabel';
 import { DiffCount } from './DiffCount';
 
-export const MainTableList: FC<MainTableListProps> = memo(({
+export const TableHeaderList: FC<TableHeaderListProps> = memo(({
     list,
     active,
     classNameWrap,

@@ -1,18 +1,16 @@
 import { Tables } from '@/views/Home/types';
-import { FetcherByTable, UseTablesQueryFetcherResult } from '@/views/Home/hooks/useTablesQueryFetcher';
-import { Diff } from '@/common/hooks/useTableDiff';
 import { TableTheme } from '@/uikit/Table/types';
-import { UseTableQueryFetcherResultList } from '@/common/hooks/useTableQueryFetcher';
 import { getColumns as getColumnsProvider, ProviderColumns } from './columns/provider';
 import { getColumns as getColumnsTEEOffers, TeeOffersColumns } from './columns/teeOffers';
 import { getColumns as getColumnsOffers, OffersColumns } from './columns/offers';
 import { getColumns as getColumnsOrders, OrdersColumns } from './columns/orders';
-import { GetDiffIndexesResult } from './types';
+import { Columns as TransactionsColumns } from '../Transactions/types';
 
 export type Columns = ProviderColumns
     | TeeOffersColumns
     | OffersColumns
-    | OrdersColumns;
+    | OrdersColumns
+    | TransactionsColumns;
 
 export interface GetColumnsProps {
     table: Tables;
@@ -40,29 +38,6 @@ export const getColumns = ({
         default:
             return [];
     }
-};
-
-export const getDiff = (fetcherResult: UseTablesQueryFetcherResult): Map<Tables, Diff> => {
-    if (!fetcherResult) return new Map();
-    return Object.entries(fetcherResult).reduce((acc, [table, value]) => {
-        if (value.diff?.values?.size) {
-            acc.set(table, { ...value.diff, key: value.diff.key });
-        }
-        return acc;
-    }, new Map());
-};
-
-export const getDiffIndexes = (active?: FetcherByTable): GetDiffIndexesResult => {
-    if (!active) return null;
-    const { diff, list } = active;
-    if (!list?.length || !diff?.values?.size) return null;
-    return (list as UseTableQueryFetcherResultList<any>[]).reduce((acc, item, index) => {
-        const isFound = diff.values.has(item[diff.key as string]);
-        if (isFound) {
-            acc.set(index, new Set().add(item[diff.key as string]));
-        }
-        return acc;
-    }, new Map());
 };
 
 export const styles = { theme: TableTheme.orange };
