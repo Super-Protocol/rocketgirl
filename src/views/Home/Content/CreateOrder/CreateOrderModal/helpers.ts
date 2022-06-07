@@ -116,7 +116,7 @@ export const getMinDepositWorkflow = async (formValues: GetMinDepositWorkflow): 
 
 export const getInitialFilters = (): GetInitialFiltersResult => {
     return {
-        [Fields.solution]: { offerType: TOfferType.Solution, excludeOfferRestrictionType: [TOfferType.Solution] },
+        [Fields.solution]: { offerType: TOfferType.Solution, includeOfferRestrictionType: [TOfferType.Solution] },
         [Fields.data]: { offerType: TOfferType.Data },
         [Fields.storage]: { offerType: TOfferType.Storage },
         [Fields.tee]: {},

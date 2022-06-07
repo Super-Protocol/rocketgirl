@@ -16,6 +16,7 @@ import {
     Order,
     TransactionsDocument,
     Transaction,
+    TOfferType,
 } from '@/gql/graphql';
 
 export interface UseTablesQueryFetcherResult {
@@ -71,7 +72,12 @@ export const useTablesQueryFetcher = <SkipType>(
     });
     const orders = useTableQueryFetcher<Order>({
         gql: OrdersDocument,
-        queryOptions: { variables: { pagination: { sortBy: 'origins.modifiedDate' }, filter: { consumer } } },
+        queryOptions: {
+            variables: {
+                pagination: { sortBy: 'origins.modifiedDate' },
+                filter: { consumer, offerType: TOfferType.TeeOffer },
+            },
+        },
         subscriptionKey: 'address',
         noDataMessage: getSkipQuery(Tables.Orders)?.message,
         skip: getSkipQuery(Tables.Orders),
