@@ -27,7 +27,7 @@ const DEFAULT_CONFIG: Config = {
     REACT_APP_POLYGON_SCAN: 'https://mumbai.polygonscan.com/tx',
     REACT_APP_CHAIN_ID: 80001,
     REACT_APP_BLOCKCHAIN_URL: 'wss://wandering-snowy-sun.matic-testnet.quiknode.pro/98e3f8f8fe7ef3c53743ba59fbe6fd6771638d61/',
-    REACT_APP_SP_GAS_PRICE: '30000000000',
+    REACT_APP_SP_GAS_PRICE: '60000000000',
     REACT_APP_SP_GAS_LIMIT: 7000000,
     REACT_APP_FAUCET_MATIC_API: 'https://api.faucet.matic.network',
     REACT_APP_S3_ACCESS_KEY_ID: '',
