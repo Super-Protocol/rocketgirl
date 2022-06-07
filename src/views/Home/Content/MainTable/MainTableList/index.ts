@@ -1,1 +1,0 @@
-export { MainTableList } from './MainTableList';

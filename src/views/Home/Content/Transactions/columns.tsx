@@ -13,23 +13,24 @@ export const getColumns = ({ onClickTxnHash = () => {} }: GetColumnsProps): Arra
         Header: 'Tnx hash',
         id: 'txnHash',
         Cell: ({ row }) => {
-            const { txnHash } = row.original || {};
-            if (!txnHash) return '-';
-            return <EyeLink onClick={() => onClickTxnHash(txnHash)}>{txnHash}</EyeLink>;
+            const { hash } = row.original || {};
+            if (!hash) return '-';
+            return <EyeLink onClick={() => onClickTxnHash(hash)}>{hash}</EyeLink>;
         },
         width: 'auto',
     },
-    {
-        Header: 'Method',
-        id: 'method',
-        Cell: ({ row }) => row.original?.method || '-',
-        isEllipsis: true,
-        width: 'auto',
-    },
+    // todo
+    // {
+    //     Header: 'Method',
+    //     id: 'method',
+    //     Cell: ({ row }) => row.original?.method || '-',
+    //     isEllipsis: true,
+    //     width: 'auto',
+    // },
     {
         Header: 'Block',
         id: 'block',
-        Cell: ({ row }) => row.original?.block || '-',
+        Cell: ({ row }) => row.original?.blockNumber || '-',
         isEllipsis: true,
         width: 'auto',
     },
@@ -37,8 +38,8 @@ export const getColumns = ({ onClickTxnHash = () => {} }: GetColumnsProps): Arra
         Header: 'Age',
         id: 'age',
         Cell: ({ row }) => {
-            const { dateTime } = row.original || {};
-            return getTableDateFromNow(dateTime);
+            const { timestamp } = row.original || {};
+            return getTableDateFromNow(timestamp);
         },
         isEllipsis: true,
         width: 'auto',
@@ -67,7 +68,9 @@ export const getColumns = ({ onClickTxnHash = () => {} }: GetColumnsProps): Arra
         Header: 'Value',
         id: 'value',
         Cell: ({ row }) => {
-            return ''; // todo
+            const { value } = row.original || {};
+            if (!value) return '-';
+            return value;
         },
         isEllipsis: true,
         width: 'auto',
@@ -76,7 +79,8 @@ export const getColumns = ({ onClickTxnHash = () => {} }: GetColumnsProps): Arra
         Header: '[Txn Fee]',
         id: 'tnxFee',
         Cell: ({ row }) => {
-            return ''; // todo
+            const { gas, gasPrice } = row.original || {};
+            return gas && gasPrice ? (Number(gas) * Number(gasPrice)) / 10 ** 18 : '-'; // todo
         },
         isEllipsis: true,
         width: 'auto',

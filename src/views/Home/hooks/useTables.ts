@@ -31,12 +31,18 @@ export const useTables = (initialTable: Tables, consumer?: string): UseTablesRes
     const query = useMemo(() => qs.parse(location.search), [location]);
     const table = useMemo<Tables>(() => (query?.table as Tables) || initialTable, [query, initialTable]);
     const skipByWallet = useMemo(() => {
-        return (!consumer ? [Tables.Orders] : [])
-            .map((table) => ({
-                table,
+        return (!consumer ? [
+            {
+                table: Tables.Orders,
                 message: 'Connect wallet to see your orders',
                 type: UseTablesSkipType.wallet,
-            }));
+            },
+            {
+                table: Tables.Transactions,
+                message: 'Connect wallet to see your transactions',
+                type: UseTablesSkipType.wallet,
+            },
+        ] : []);
     }, [consumer]);
     const queryFetcher = useTablesQueryFetcher<UseTablesSkipType>({ table, skip: skipByWallet, consumer });
     useTablesSubscriptions(queryFetcher);

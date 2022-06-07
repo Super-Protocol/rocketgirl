@@ -1,0 +1,36 @@
+query Transactions($pagination: ConnectionArgs!, $filter: TransactionFilter) {
+    result: transactions (pagination: $pagination, filter: $filter) {
+        pageData {
+            ...PageDataDtoFragment
+        }
+        page {
+            pageInfo {
+                endCursor
+                hasNextPage
+                hasPreviousPage
+                startCursor
+            }
+            edges {
+                node {
+                    baseAddress
+                    blockHash
+                    blockNumber
+                    from
+                    gas
+                    gasPrice
+                    hash
+                    input
+                    nonce
+                    r
+                    s
+                    timestamp
+                    to
+                    transactionIndex
+                    v
+                    value
+                }
+                cursor
+            }
+        }
+    }
+}

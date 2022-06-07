@@ -3,7 +3,7 @@ import { Diff } from '@/common/hooks/useTableDiff';
 
 export interface ListItem { value: Tables, label: string }
 
-export interface MainTableListProps {
+export interface TableHeaderListProps {
     list: ListItem[][];
     active: Tables;
     onChange?: (table: Tables) => void;

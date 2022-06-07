@@ -1382,6 +1382,14 @@ export type TeeOffersSelectQueryVariables = Exact<{
 
 export type TeeOffersSelectQuery = { __typename?: 'Query', result: { __typename?: 'ListTeeOffersResponse', pageData?: { __typename?: 'PageDataDto', count: number, limit: number, offset: number } | null, page: { __typename?: 'TeeOfferConnection', pageInfo?: { __typename?: 'TeeOfferPageInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } | null, edges?: Array<{ __typename?: 'TeeOfferEdge', cursor?: string | null, node?: { __typename?: 'TeeOffer', address: string, teeOfferInfo: { __typename?: 'TeeOfferInfo', name: string, description: string } } | null }> | null } } };
 
+export type TransactionsQueryVariables = Exact<{
+  pagination: ConnectionArgs;
+  filter?: InputMaybe<TransactionFilter>;
+}>;
+
+
+export type TransactionsQuery = { __typename?: 'Query', result: { __typename?: 'ListTransactionResponse', pageData?: { __typename?: 'PageDataDto', count: number, limit: number, offset: number } | null, page: { __typename?: 'TransactionConnection', pageInfo?: { __typename?: 'TransactionPageInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } | null, edges?: Array<{ __typename?: 'TransactionEdge', cursor?: string | null, node?: { __typename?: 'Transaction', baseAddress: string, blockHash?: string | null, blockNumber?: number | null, from: string, gas: number, gasPrice: string, hash: string, input: string, nonce: number, r: string, s: string, timestamp: number, to?: string | null, transactionIndex: number, v: string, value: string } | null }> | null } } };
+
 export const PageDataDtoFragmentFragmentDoc = gql`
     fragment PageDataDtoFragment on PageDataDto {
   count
@@ -2137,3 +2145,70 @@ export function useTeeOffersSelectLazyQuery(baseOptions?: ApolloReactHooks.LazyQ
 export type TeeOffersSelectQueryHookResult = ReturnType<typeof useTeeOffersSelectQuery>;
 export type TeeOffersSelectLazyQueryHookResult = ReturnType<typeof useTeeOffersSelectLazyQuery>;
 export type TeeOffersSelectQueryResult = Apollo.QueryResult<TeeOffersSelectQuery, TeeOffersSelectQueryVariables>;
+export const TransactionsDocument = gql`
+    query Transactions($pagination: ConnectionArgs!, $filter: TransactionFilter) {
+  result: transactions(pagination: $pagination, filter: $filter) {
+    pageData {
+      ...PageDataDtoFragment
+    }
+    page {
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+      }
+      edges {
+        node {
+          baseAddress
+          blockHash
+          blockNumber
+          from
+          gas
+          gasPrice
+          hash
+          input
+          nonce
+          r
+          s
+          timestamp
+          to
+          transactionIndex
+          v
+          value
+        }
+        cursor
+      }
+    }
+  }
+}
+    ${PageDataDtoFragmentFragmentDoc}`;
+
+/**
+ * __useTransactionsQuery__
+ *
+ * To run a query within a React component, call `useTransactionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useTransactionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useTransactionsQuery({
+ *   variables: {
+ *      pagination: // value for 'pagination'
+ *      filter: // value for 'filter'
+ *   },
+ * });
+ */
+export function useTransactionsQuery(baseOptions: ApolloReactHooks.QueryHookOptions<TransactionsQuery, TransactionsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<TransactionsQuery, TransactionsQueryVariables>(TransactionsDocument, options);
+      }
+export function useTransactionsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<TransactionsQuery, TransactionsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<TransactionsQuery, TransactionsQueryVariables>(TransactionsDocument, options);
+        }
+export type TransactionsQueryHookResult = ReturnType<typeof useTransactionsQuery>;
+export type TransactionsLazyQueryHookResult = ReturnType<typeof useTransactionsLazyQuery>;
+export type TransactionsQueryResult = Apollo.QueryResult<TransactionsQuery, TransactionsQueryVariables>;
