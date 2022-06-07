@@ -8,6 +8,7 @@ export interface CopyToClipboardProps {
     title?: string;
     defaultValue?: string | null;
     url?: string;
+    blank?: boolean;
     isReverse?: boolean;
     classNameWrap?: string;
     classNameText?: string;
@@ -16,6 +17,7 @@ export interface CopyToClipboardProps {
 export interface LinkToProps {
     address: string;
     url?: string;
+    blank?: boolean;
 }
 
 export interface CopyToClipboardSimpleProps {

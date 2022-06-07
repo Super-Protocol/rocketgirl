@@ -8,7 +8,7 @@ import Web3 from 'web3';
 import { useMount } from 'react-use';
 import { Web3ReactStateUpdate } from '@web3-react/types';
 import { getBalance as getBalanceMetamask, useConnectToMetaMask } from '@/common/hooks/useConnectToMetaMask';
-import { getBalance as getBalanceWalletConnect, useConnectToWalletConnect } from '@/common/hooks/useConnectToWalletConnect';
+// import { getBalance as getBalanceWalletConnect, useConnectToWalletConnect } from '@/common/hooks/useConnectToWalletConnect';
 import { useLocalStorage } from '@/common/hooks/useLocalStorage';
 import CONFIG from '@/config';
 import toastr from '@/services/Toastr/toastr';
@@ -23,8 +23,8 @@ export const getBalance = async (walletType: SelectedWalletType, address?: strin
     switch (walletType) {
         case WalletType.metaMask:
             return getBalanceMetamask(address);
-        case WalletType.walletConnect:
-            return getBalanceWalletConnect(address);
+        // case WalletType.walletConnect:
+        //     return getBalanceWalletConnect(address);
         default:
             return getInitialBalance();
     }
@@ -76,7 +76,7 @@ export const useWallet = (): UseWalletResult => {
         },
     }), [setSelectedWalletType, updateBalance]);
     const { connect: connectMetaMask } = useConnectToMetaMask(actions(WalletType.metaMask));
-    const { connect: connectWalletConnect } = useConnectToWalletConnect(actions(WalletType.walletConnect));
+    // const { connect: connectWalletConnect } = useConnectToWalletConnect(actions(WalletType.walletConnect));
     const onChangeWallet = useCallback(async (walletType?: SelectedWalletType) => {
         if (loading || !walletType) return;
         setLoading(true);
@@ -85,9 +85,9 @@ export const useWallet = (): UseWalletResult => {
                 case WalletType.metaMask:
                     await connectMetaMask();
                     break;
-                case WalletType.walletConnect:
-                    await connectWalletConnect();
-                    break;
+                // case WalletType.walletConnect:
+                //     await connectWalletConnect();
+                //     break;
                 default:
                     break;
             }
@@ -96,7 +96,7 @@ export const useWallet = (): UseWalletResult => {
             setSelectedWalletType(null);
         }
         setLoading(false);
-    }, [connectMetaMask, setSelectedWalletType, connectWalletConnect, loading]);
+    }, [connectMetaMask, setSelectedWalletType, loading]);
     const selectedWallet = useMemo(() => wallet[selectedWalletType as WalletType] || null, [wallet, selectedWalletType]);
     const logout = useCallback(async () => {
         setSelectedWalletType(null);

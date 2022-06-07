@@ -6,7 +6,6 @@ import React, {
 } from 'react';
 import isEqual from 'lodash.isequal';
 import { PageClick } from '@/uikit/Table/TablePagination/types';
-import CONFIG from '@/config';
 import { Table, Box } from '@/uikit';
 import { getDiffIndexes } from '@/views/Home/Content/helpers';
 import useMemoCompare from '@/common/hooks/useMemoCompare';
@@ -29,14 +28,10 @@ import { TableHeaderList } from '../TableHeaderList';
 
 export const Transactions: FC<TransactionsProps> = memo(({ classNameWrap, fetcher, diff }) => {
     const { selectedAddress } = useContext(WalletContext);
-    const onClickTxnHash = useCallback((id?: string) => {
-        if (!id) return;
-        window.open(`${CONFIG.REACT_APP_POLYGON_SCAN}/${id}`, '_blank');
-    }, []);
     const transactionFetcher = useMemo(() => fetcher[Tables.Transactions], [fetcher]);
     const activeDiffIndexes = useMemo(() => getDiffIndexes(transactionFetcher), [transactionFetcher]);
     const activeDiffIndexesMemoCompare = useMemoCompare<GetDiffIndexesResult>(activeDiffIndexes, isEqual);
-    const columns = useMemo(() => getColumns({ onClickTxnHash }), [onClickTxnHash]);
+    const columns = useMemo(() => getColumns(), []);
     const data = useMemo(() => (transactionFetcher?.list ? transactionFetcher?.list : []), [transactionFetcher]);
     const pageCount = useMemo(() => transactionFetcher?.pageCount || 0, [transactionFetcher]);
     const onSubmit = useCallback((filter: Filter) => {

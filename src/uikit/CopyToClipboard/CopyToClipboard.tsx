@@ -18,6 +18,7 @@ export const CopyToClipboard: FC<CopyToClipboardProps> = memo(({
     classNameText,
     title,
     url,
+    blank = false,
 }) => {
     const onCopy = useCallback((event) => {
         copy(children);
@@ -26,7 +27,7 @@ export const CopyToClipboard: FC<CopyToClipboardProps> = memo(({
         }
         onClick(event);
     }, [onClick, children, notification]);
-    const element = useMemo(() => <LinkTo address={children} url={url} />, [children, url]);
+    const element = useMemo(() => <LinkTo address={children} url={url} blank={blank} />, [children, url, blank]);
     const renderIcon = useMemo(() => (
         <Box>
             <Icon

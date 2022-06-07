@@ -1,21 +1,24 @@
 import React from 'react';
 import { ColumnProps } from 'react-table';
-import { CopyToClipboard, EyeLink } from '@/uikit';
+import CONFIG from '@/config';
+import { CopyToClipboard } from '@/uikit';
 import { getTableDateFromNow } from '@/common/helpers';
 import { Columns } from './types';
 
-export interface GetColumnsProps {
-    onClickTxnHash: (hash?: string) => void;
-}
+export interface GetColumnsProps {}
 
-export const getColumns = ({ onClickTxnHash = () => {} }: GetColumnsProps): Array<ColumnProps<Columns>> => [
+export const getColumns = (): Array<ColumnProps<Columns>> => [
     {
         Header: 'Tnx hash',
         id: 'txnHash',
         Cell: ({ row }) => {
             const { hash } = row.original || {};
             if (!hash) return '-';
-            return <EyeLink onClick={() => onClickTxnHash(hash)}>{hash}</EyeLink>;
+            return (
+                <CopyToClipboard url={`${CONFIG.REACT_APP_POLYGON_SCAN}/tx/${hash}`} blank>
+                    {hash}
+                </CopyToClipboard>
+            );
         },
         width: 'auto',
     },
@@ -30,7 +33,15 @@ export const getColumns = ({ onClickTxnHash = () => {} }: GetColumnsProps): Arra
     {
         Header: 'Block',
         id: 'block',
-        Cell: ({ row }) => row.original?.blockNumber || '-',
+        Cell: ({ row }) => {
+            const { blockNumber } = row.original || {};
+            if (!blockNumber) return '-';
+            return (
+                <CopyToClipboard url={`${CONFIG.REACT_APP_POLYGON_SCAN}/block/${blockNumber}`} blank>
+                    {blockNumber}
+                </CopyToClipboard>
+            );
+        },
         isEllipsis: true,
         width: 'auto',
     },
@@ -50,7 +61,7 @@ export const getColumns = ({ onClickTxnHash = () => {} }: GetColumnsProps): Arra
         Cell: ({ row }) => {
             const { from } = row.original || {};
             if (!from) return '-';
-            return <CopyToClipboard>{from}</CopyToClipboard>;
+            return <CopyToClipboard url={`${CONFIG.REACT_APP_POLYGON_SCAN}/address/${from}`} blank>{from}</CopyToClipboard>;
         },
         width: 'auto',
     },
@@ -60,7 +71,7 @@ export const getColumns = ({ onClickTxnHash = () => {} }: GetColumnsProps): Arra
         Cell: ({ row }) => {
             const { to } = row.original || {};
             if (!to) return '-';
-            return <CopyToClipboard>{to}</CopyToClipboard>;
+            return <CopyToClipboard url={`${CONFIG.REACT_APP_POLYGON_SCAN}/address/${to}`} blank>{to}</CopyToClipboard>;
         },
         width: 'auto',
     },
