@@ -97,7 +97,7 @@ export const getTee = (order?: OrderQuery['order']): TableInfo | null => {
             },
             {
                 key: 'Provider',
-                value: consumer || '-',
+                value: consumer || '-', // todo change to provider
             },
             {
                 key: 'Name',

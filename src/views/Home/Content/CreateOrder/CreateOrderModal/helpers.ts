@@ -81,9 +81,9 @@ export const getCalcOrderDeposit = async (
         case OfferType.Storage:
         case OfferType.Solution:
         case OfferType.Data:
-            return Math.max(orderMinDeposit, offer?.data?.holdSum || 0);
+            return offer?.data?.holdSum || 0;
         case OfferType.TeeOffer:
-            return Math.max(orderMinDeposit, 0);
+            return orderMinDeposit;
         default:
             return 0;
     }
@@ -106,12 +106,15 @@ export const getMinDepositWorkflow = async (formValues: GetMinDepositWorkflow): 
         tee,
         storage,
     } = formValues || {};
-    return sum([
-        await getCalcOrderDepositSum(data, orderMinDeposit, OfferType.Data),
-        await getCalcOrderDepositSum(solution, orderMinDeposit, OfferType.Solution),
-        await getCalcOrderDeposit(tee, orderMinDeposit, OfferType.TeeOffer),
-        await getCalcOrderDeposit(storage, orderMinDeposit, OfferType.Storage),
-    ]);
+    return Math.max(
+        sum([
+            await getCalcOrderDepositSum(data, orderMinDeposit, OfferType.Data),
+            await getCalcOrderDepositSum(solution, orderMinDeposit, OfferType.Solution),
+            await getCalcOrderDeposit(tee, orderMinDeposit, OfferType.TeeOffer),
+            await getCalcOrderDeposit(storage, orderMinDeposit, OfferType.Storage),
+        ]),
+        orderMinDeposit,
+    );
 };
 
 export const getInitialFilters = (): GetInitialFiltersResult => {
