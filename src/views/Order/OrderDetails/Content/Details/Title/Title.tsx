@@ -21,8 +21,18 @@ export const Title = memo<TitleProps>(({ order, orderInfo, updateOrderInfo }) =>
     const { showErrorModal, showSuccessModal } = useErrorModal();
     const [loading, setLoading] = useState(false);
     const status = useMemo(() => orderInfo?.status, [orderInfo]);
-    const isShowCancelBtn = useMemo(() => status && ![OrderStatus.Canceled, OrderStatus.Done].includes(status), [status]);
-    const isShowReplenishBtn = useMemo(() => status && ![OrderStatus.Canceled, OrderStatus.Done].includes(status), [status]);
+    const isShowCancelBtn = useMemo(() => status && ![
+        OrderStatus.Canceled,
+        OrderStatus.Done,
+        OrderStatus.Canceling,
+        OrderStatus.Error,
+    ].includes(status), [status]);
+    const isShowReplenishBtn = useMemo(() => status && ![
+        OrderStatus.Canceled,
+        OrderStatus.Done,
+        OrderStatus.Canceling,
+        OrderStatus.Error,
+    ].includes(status), [status]);
 
     const onCancelOrder = useCallback(async () => {
         setLoading(true);
