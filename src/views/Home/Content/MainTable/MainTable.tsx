@@ -17,6 +17,7 @@ import { FetcherByTable } from '@/views/Home/hooks/useTablesQueryFetcher';
 import { CreateOrder } from '@/views/Home/Content/CreateOrder/CreateOrder';
 import { GetDiffIndexesResult } from '@/views/Home/Content/types';
 import { getDiffIndexes } from '@/views/Home/Content/helpers';
+import { Tables } from '@/views/Home/types';
 import { MainTableProps } from './types';
 import { TableHeaderList } from '../TableHeaderList';
 import classes from './MainTable.module.scss';
@@ -79,9 +80,11 @@ export const MainTable: FC<MainTableProps> = memo(({
                     {/*    <FilterForm />*/}
                     {/*</FilterPanel>*/}
                 </Box>
-                <Box>
-                    <CreateOrder />
-                </Box>
+                {table === Tables.Orders && (
+                    <Box>
+                        <CreateOrder />
+                    </Box>
+                )}
             </Box>
             {!skip ? (
                 <Table

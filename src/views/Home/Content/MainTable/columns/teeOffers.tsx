@@ -10,6 +10,12 @@ export type TeeOffersColumns = UseTableQueryFetcherResultList<TeeOffer>;
 
 export const getColumns = (): Array<ColumnProps<TeeOffersColumns>> => [
     {
+        Header: 'ID',
+        id: 'id',
+        Cell: ({ row }) => (row.original?.address || '-'),
+        width: 'auto',
+    },
+    {
         Header: 'Provider',
         id: 'provider',
         Cell: ({ row }) => {
@@ -18,12 +24,6 @@ export const getColumns = (): Array<ColumnProps<TeeOffersColumns>> => [
             if (!providerAddress) return '-';
             return <CopyToClipboard title={name}>{providerAddress}</CopyToClipboard>;
         },
-        width: 'auto',
-    },
-    {
-        Header: 'ID',
-        id: 'id',
-        Cell: ({ row }) => (row.original?.address ? <CopyToClipboard>{row.original?.address}</CopyToClipboard> : '-'),
         width: 'auto',
     },
     {

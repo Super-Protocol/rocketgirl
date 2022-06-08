@@ -12,7 +12,7 @@ export const getColumns = (): Array<ColumnProps<OffersColumns>> => [
     {
         Header: 'ID',
         id: 'id',
-        Cell: ({ row }) => <CopyToClipboard>{row.original?.address || '-'}</CopyToClipboard>,
+        Cell: ({ row }) => row.original?.address || '-',
         width: 'auto',
     },
     {

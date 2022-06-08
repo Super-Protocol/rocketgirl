@@ -66,7 +66,7 @@ export const getValidationSchema = (props?: GetValidationSchemaProps): Yup.Schem
             : Yup.number().required('required'),
         [Fields.file]: Yup.mixed(),
         [Fields.phrase]: getPhraseSchema(Fields.phrase),
-        [Fields.agreement]: Yup.boolean().required('required'),
+        [Fields.agreement]: Yup.boolean().oneOf([true], 'required'),
         [Fields.phraseTabMode]: Yup.string(),
     });
 };
