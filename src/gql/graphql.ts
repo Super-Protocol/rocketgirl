@@ -636,9 +636,11 @@ export type OrdersFilter = {
   consumer?: InputMaybe<Scalars['String']>;
   /** filter by orderInfo -> args -> inputOffers */
   inputOffers?: InputMaybe<Array<Scalars['String']>>;
+  /** filter by orderInfo -> offer */
+  offer?: InputMaybe<Scalars['String']>;
   /** filter by offerType */
   offerType?: InputMaybe<TOfferType>;
-  /** filter by parentOrder->orderAddress */
+  /** filter by parentOrder -> orderAddress */
   parentOrder?: InputMaybe<Scalars['String']>;
   /** filter by orderInfo -> args -> selectedOffers */
   selectedOffers?: InputMaybe<Array<Scalars['String']>>;

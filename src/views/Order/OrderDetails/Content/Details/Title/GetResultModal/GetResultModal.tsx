@@ -4,14 +4,10 @@ import {
 import { Formik } from 'formik';
 
 import { useErrorModal } from '@/common/hooks/useErrorModal';
-import { Box, Button } from '@/uikit';
+import { Box, Button, InputFormik } from '@/uikit';
 import { ModalOkCancelContext } from '@/common/context/ModalOkCancelProvider/ModalOkCancelProvider';
-import { useLocalStorage } from '@/common/hooks/useLocalStorage';
-import {
-    MnemonicGeneratorComponent,
-} from '@/views/Home/Content/CreateOrder/CreateOrderModal/MnemonicGenerator/MnemonicGeneratorComponent';
 import { GetResultModalProps, FormValues, Fields } from './types';
-import { getValidationSchema, getInitialValues } from './helpers';
+import { getValidationSchema, initialValues, placeholder } from './helpers';
 import { encodingAndDowndoadFile } from './connection';
 import classes from './GetResultModal.module.scss';
 
@@ -22,10 +18,7 @@ export const GetResultModal = memo<GetResultModalProps>(({
     const { showErrorModal, showSuccessModal } = useErrorModal();
     const [loading, setLoading] = useState(false);
     const [isValidating, setIsValidating] = useState(false);
-    const [agreement, setAgreement] = useLocalStorage<boolean | undefined>('agreement');
-    const [canShowAgreement] = useState(!agreement);
     const validationSchema = useMemo(() => getValidationSchema(), []);
-    const [initialValues] = useState(getInitialValues(agreement));
     const onSubmit = useCallback(async (values: FormValues) => {
         setLoading(true);
         try {
@@ -58,40 +51,37 @@ export const GetResultModal = memo<GetResultModalProps>(({
             enableReinitialize
             validationSchema={validationSchema}
         >
-            {({ submitForm }) => {
-                return (
-                    <Box direction="column">
-                        <Box direction="column" className={classes.wrapComponent}>
-                            <MnemonicGeneratorComponent {...{
-                                canShowAgreement,
-                                setAgreement,
-                                notification: true,
-                                nameMode: Fields.phraseTabMode,
-                                name: Fields.phrase,
-                                nameAgreement: Fields.agreement,
-                            }}
-                            />
-                        </Box>
-                        <Box justifyContent="flex-end">
-                            <Button
-                                loading={loading}
-                                onClick={onCancel}
-                                variant="secondary"
-                                className={classes.btnCancel}
-                            >
-                                Cancel
-                            </Button>
-                            <Button
-                                onClick={onDownload(submitForm)}
-                                variant="primary"
-                                loading={loading}
-                            >
-                                Get Result
-                            </Button>
-                        </Box>
+            {({ submitForm }) => (
+                <Box direction="column">
+                    <Box direction="column" className={classes.wrapComponent}>
+                        <InputFormik {...{
+                            name: Fields.phrase,
+                            classNameError: classes.inputError,
+                            placeholder,
+                            classNameInput: classes.input,
+                            as: 'textarea',
+                        }}
+                        />
                     </Box>
-                );
-            }}
+                    <Box justifyContent="flex-end">
+                        <Button
+                            loading={loading}
+                            onClick={onCancel}
+                            variant="secondary"
+                            className={classes.btnCancel}
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            onClick={onDownload(submitForm)}
+                            variant="primary"
+                            loading={loading}
+                        >
+                            Get Result
+                        </Button>
+                    </Box>
+                </Box>
+            )}
         </Formik>
     );
 });
