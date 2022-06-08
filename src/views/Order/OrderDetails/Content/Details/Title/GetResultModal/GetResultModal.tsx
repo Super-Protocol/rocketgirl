@@ -68,6 +68,7 @@ export const GetResultModal = memo<GetResultModalProps>(({
                                 notification: true,
                                 nameMode: Fields.phraseTabMode,
                                 name: Fields.phrase,
+                                nameAgreement: Fields.agreement,
                             }}
                             />
                         </Box>

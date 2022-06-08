@@ -7,7 +7,7 @@ import { chkboxlabel } from './helpers';
 import { MnemonicGeneratorComponentProps } from './types';
 
 export const MnemonicGeneratorComponent = memo<MnemonicGeneratorComponentProps>(({
-    canShowAgreement, setAgreement, nameMode, name,
+    canShowAgreement, setAgreement, nameMode, name, nameAgreement,
 }): ReactElement => {
     const onChangeAgreement = useCallback((val: boolean) => {
         setAgreement(val);
@@ -21,7 +21,7 @@ export const MnemonicGeneratorComponent = memo<MnemonicGeneratorComponentProps>(
             />
             {canShowAgreement && (
                 <CheckboxFormik
-                    name="agreement"
+                    name={nameAgreement}
                     label={chkboxlabel}
                     onChange={(val) => onChangeAgreement(val)}
                     classNameWrap={classes.checkboxWrap}
