@@ -4,7 +4,6 @@ import {
     Order,
 } from '@super-protocol/sp-sdk-js';
 import {
-    CryptoAlgorithm,
     Encryption,
     StorageProviderResource,
 } from '@super-protocol/sp-dto-js';
@@ -13,32 +12,19 @@ import {
     getBase64FromBlob,
 } from '@/common/helpers';
 import CONFIG from '@/config';
-import { generateKeys } from '@/utils/crypto';
+import { generateECIESKeys } from '@/utils/crypto';
 
 const {
-    REACT_APP_CONSUMER_RSA_PRIVATE_KEY,
-    REACT_APP_CONSUMER_ECC_PRIVATE_KEY,
+    REACT_APP_S3_DOWNLOAD_ACCESS_KEY_ID,
+    REACT_APP_S3_DOWNLOAD_ACCESS_SECRET_KEY,
     REACT_APP_S3_ENDPOINT,
 } = CONFIG;
 
-export const getConsumerPrivateKeyByAlgorithm = (keyAlgorithm?: CryptoAlgorithm): string => {
-    switch (keyAlgorithm) {
-        case CryptoAlgorithm.RSAHybrid:
-            return REACT_APP_CONSUMER_RSA_PRIVATE_KEY;
-        case CryptoAlgorithm.ECIES:
-            return REACT_APP_CONSUMER_ECC_PRIVATE_KEY;
-        default:
-            return '';
-    }
-};
-
-export const getFileUrlFromS3Storage = async (fileName: string, bucket: string, phrase: string): Promise<string> => {
-    const { publicKey = '', privateKey = '' } = generateKeys(phrase);
-
+export const getFileUrlFromS3Storage = async (fileName: string, bucket: string): Promise<string> => {
     const config = {
         credentials: {
-            accessKeyId: privateKey,
-            secretAccessKey: publicKey,
+            accessKeyId: REACT_APP_S3_DOWNLOAD_ACCESS_KEY_ID,
+            secretAccessKey: REACT_APP_S3_DOWNLOAD_ACCESS_SECRET_KEY,
         },
         endpoint: REACT_APP_S3_ENDPOINT,
         s3ForcePathStyle: true,
@@ -55,6 +41,7 @@ export const getFileUrlFromS3Storage = async (fileName: string, bucket: string, 
 };
 
 export const encodingAndDowndoadFile = async (orderAddress: string, phrase: string): Promise<string> => {
+    const { privateKey } = generateECIESKeys(phrase);
     const order = new Order(orderAddress);
     const { encryptedResult, encryptedError } = await order.getOrderResult();
     const encrypted = encryptedResult || encryptedError;
@@ -65,17 +52,17 @@ export const encodingAndDowndoadFile = async (orderAddress: string, phrase: stri
     const encryptedObj: { resource: Encryption, encryption: Encryption } = JSON.parse(encrypted);
     if (encryptedObj.resource && encryptedObj.encryption) {
         const encryptedResource: Encryption = encryptedObj.resource;
-        encryptedResource.key = getBase64FromHex(getConsumerPrivateKeyByAlgorithm(encryptedResource?.algo));
+        encryptedResource.key = getBase64FromHex(privateKey);
         const decryptedResource = await Crypto.decrypt(encryptedResource);
 
         const encryptedEncryption: Encryption = encryptedObj.encryption;
-        encryptedEncryption.key = getBase64FromHex(getConsumerPrivateKeyByAlgorithm(encryptedEncryption?.algo));
+        encryptedEncryption.key = getBase64FromHex(privateKey);
         const decryptedEncryption = await Crypto.decrypt(encryptedEncryption);
 
         decrypted = `{ "resource": ${decryptedResource}, "encryption": ${decryptedEncryption} }`;
     } else {
         const encryptedObj: Encryption = JSON.parse(encrypted);
-        encryptedObj.key = getBase64FromHex(getConsumerPrivateKeyByAlgorithm(encryptedObj?.algo));
+        encryptedObj.key = getBase64FromHex(privateKey);
         decrypted = await Crypto.decrypt(encryptedObj);
     }
 
@@ -86,7 +73,7 @@ export const encodingAndDowndoadFile = async (orderAddress: string, phrase: stri
     if (!filepath) {
         return JSON.stringify(decryptedObj, null, 2);
     }
-    const url = await getFileUrlFromS3Storage(filepath, decryptedObj.resource.credentials.storageId, phrase);
+    const url = await getFileUrlFromS3Storage(filepath, decryptedObj.resource.credentials.storageId);
     if (!url) {
         throw new Error('Wrong url');
     }

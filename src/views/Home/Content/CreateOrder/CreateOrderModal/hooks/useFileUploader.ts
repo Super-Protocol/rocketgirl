@@ -4,7 +4,7 @@ import { PutObjectOutput } from 'aws-sdk/clients/s3';
 import { useCallback, useState } from 'react';
 import CONFIG from '@/config';
 
-const { REACT_APP_S3_ACCESS_KEY_ID, REACT_APP_S3_SECRET_ACCESS_KEY, REACT_APP_S3_ENDPOINT } = CONFIG;
+const { REACT_APP_S3_UPLOAD_ACCESS_KEY_ID, REACT_APP_S3_UPLOAD_ACCESS_SECRET_KEY, REACT_APP_S3_ENDPOINT } = CONFIG;
 
 export interface UploadFileByS3PropsOptions {
     onHttpUploadProgress?: (progress: Progress) => void;
@@ -34,8 +34,8 @@ export interface UseFileUploaderResult {
 export const uploadFileByS3 = async (props: UploadFileByS3Props): Promise<UploadFileByS3Result> => {
     const client = new S3({
         credentials: {
-            accessKeyId: REACT_APP_S3_ACCESS_KEY_ID,
-            secretAccessKey: REACT_APP_S3_SECRET_ACCESS_KEY,
+            accessKeyId: REACT_APP_S3_UPLOAD_ACCESS_KEY_ID,
+            secretAccessKey: REACT_APP_S3_UPLOAD_ACCESS_SECRET_KEY,
         },
         endpoint: REACT_APP_S3_ENDPOINT,
         s3ForcePathStyle: true,
