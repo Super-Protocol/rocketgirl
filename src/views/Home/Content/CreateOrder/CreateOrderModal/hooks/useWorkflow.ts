@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 import Web3 from 'web3';
+import { Modes } from '@/uikit/MnemonicGenerator/types';
 import { workflow, WorkflowPropsValues } from '@/connectors/orders';
 import { useFileUploader } from './useFileUploader';
 import { useGenerateTII } from './useGenerateTII';
@@ -54,8 +55,11 @@ export const useWorkflow = (): UseWorkflowResult => {
             file,
             data,
             tee,
-            phrase,
+            phraseGenerated,
+            phraseInput,
+            phraseTabMode,
         } = formValues || {};
+        const phrase = phraseTabMode === Modes.generate ? phraseGenerated : phraseInput;
         let tiiGeneratorId;
         if (!phrase) throw new Error('Seed phrase required');
         if (!data?.length) {

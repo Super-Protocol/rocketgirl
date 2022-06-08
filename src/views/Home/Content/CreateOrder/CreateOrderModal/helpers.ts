@@ -9,6 +9,7 @@ import { ConvertNode } from '@/common/hooks/useSelectQueryCursorSPFetcher';
 import { Offer, TeeOffer, TOfferType } from '@/gql/graphql';
 import { validateMnemonic } from '@/utils/crypto';
 import { Item, Value } from '@/uikit/types';
+import { Modes } from '@/uikit/MnemonicGenerator/types';
 import {
     FormValues,
     FormOffer,
@@ -46,11 +47,29 @@ const getOfferSchema = (field: string) => Yup.object().test(
     (item) => item?.value,
 ) as Yup.AnySchema<FormOffer>;
 
-export const getPhraseSchema = (field: string): Yup.BaseSchema => Yup.string().test(
-    field,
-    'Invalid phrase entered',
-    (str = '') => validateMnemonic(str),
+export const getPhraseGeneratedSchema = (): Yup.BaseSchema => Yup.string().test(
+    Fields.phraseGenerated,
+    'Invalid phrase',
+    // eslint-disable-next-line func-names
+    function (value) {
+        return this.parent[Fields.phraseTabMode] === Modes.generate ? validateMnemonic(value as string) : true;
+    },
 ) as Yup.BaseSchema;
+
+export const getPhraseInputSchema = (): Yup.BaseSchema => Yup.string().test(
+    Fields.phraseInput,
+    'Invalid phrase entered',
+    // eslint-disable-next-line func-names
+    function (value) {
+        return this.parent[Fields.phraseTabMode] === Modes.own ? validateMnemonic(value as string) : true;
+    },
+) as Yup.BaseSchema;
+
+export const getDepositSchema = (minDeposit?: number): Yup.BaseSchema => (minDeposit
+    ? Yup.number()
+        .required('required')
+        .min(minDeposit, `must be greater than or equal ${minDeposit}`)
+    : Yup.number().required('required'));
 
 export const getValidationSchema = (props?: GetValidationSchemaProps): Yup.SchemaOf<FormValues> => {
     const { minDeposit } = props || {};
@@ -59,13 +78,10 @@ export const getValidationSchema = (props?: GetValidationSchemaProps): Yup.Schem
         [Fields.data]: Yup.array().of(getOfferSchema(Fields.data)),
         [Fields.tee]: getOfferSchema(Fields.tee),
         [Fields.storage]: getOfferSchema(Fields.storage),
-        [Fields.deposit]: minDeposit
-            ? Yup.number()
-                .required('required')
-                .min(minDeposit, `must be greater than or equal ${minDeposit}`)
-            : Yup.number().required('required'),
+        [Fields.deposit]: getDepositSchema(minDeposit),
         [Fields.file]: Yup.mixed(),
-        [Fields.phrase]: getPhraseSchema(Fields.phrase),
+        [Fields.phraseGenerated]: getPhraseGeneratedSchema(),
+        [Fields.phraseInput]: getPhraseInputSchema(),
         [Fields.agreement]: Yup.boolean().oneOf([true], 'required'),
         [Fields.phraseTabMode]: Yup.string(),
     });

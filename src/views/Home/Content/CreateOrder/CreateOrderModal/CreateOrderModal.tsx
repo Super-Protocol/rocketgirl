@@ -27,6 +27,7 @@ import { useErrorModal } from '@/common/hooks/useErrorModal';
 import { WalletContext } from '@/common/context/WalletProvider';
 import toastr from '@/services/Toastr/toastr';
 import { Modes } from '@/uikit/MnemonicGenerator/types';
+import { generateMnemonic } from '@/utils/crypto';
 import {
     CreateOrderModalProps,
     Fields,
@@ -58,6 +59,8 @@ export const CreateOrderModal: FC<CreateOrderModalProps> = memo(({ initialValues
     const [filters, setFilters] = useState(getInitialFilters);
     const [initialValues, setInitialValues] = useState<FormValues>({
         [Fields.phraseTabMode]: Modes.generate,
+        [Fields.agreement]: false,
+        [Fields.phraseGenerated]: generateMnemonic(),
         ...initialValuesProps,
     });
     const [minDeposit, setMinDeposit] = useState<number>(0);
@@ -237,12 +240,13 @@ export const CreateOrderModal: FC<CreateOrderModalProps> = memo(({ initialValues
                                     checkTouched={!isValidating}
                                     onDelete={onDelete}
                                 />
-                                <FileUploader {...{ uploading, disabled: !!values?.[Fields.data]?.length }} />
+                                <FileUploader {...{ uploading, disabled: !!values?.[Fields.data]?.length, name: Fields.file }} />
                                 <MnemonicGenerator {...{
                                     notification: true,
                                     nameMode: Fields.phraseTabMode,
                                     nameAgreement: Fields.agreement,
-                                    name: Fields.phrase,
+                                    namePhraseGenerated: Fields.phraseGenerated,
+                                    namePhraseInput: Fields.phraseInput,
                                     classNameWrap: classes.mnemonicWrap,
                                 }}
                                 />

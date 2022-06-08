@@ -1,5 +1,5 @@
 import {
-    useState, useMemo, memo, useCallback, ReactElement, useEffect,
+    useState, useMemo, memo, useCallback, ReactElement,
 } from 'react';
 import { useField } from 'formik';
 import { useDebouncedCallback } from 'use-debounce';
@@ -7,48 +7,36 @@ import { MnemonicGeneratorUi } from '@/uikit';
 import { MnemonicGeneratorFormikProps, Modes } from './types';
 
 export const MnemonicGeneratorFormik = memo<MnemonicGeneratorFormikProps>(({
-    name,
+    namePhraseInput,
+    namePhraseGenerated,
     debounceInterval = 100,
-    onChange: onChangeProps = () => {},
-    nameMode,
-    generateMnemonic,
+    nameMode = Modes.generate,
     ...props
 }): ReactElement => {
-    const [, { value, error }, { setValue }] = useField(name);
-    const [, { value: mode }, { setValue: setMode }] = useField(nameMode);
-    const [localValue, setLocalValue] = useState<string | undefined>(value);
-    const phrase = useMemo(() => generateMnemonic(), [generateMnemonic]);
+    const [, { value: valueInput, error: errorInput }, { setValue: setValueInput }] = useField(namePhraseInput);
+    const [, { value: valueGenerated, error: errorGenerated }] = useField(namePhraseGenerated);
+    const [, { value: valueMode }, { setValue: setValueMode }] = useField(nameMode);
+    const [localInputValue, setLocalInputValue] = useState<string | undefined>(valueInput);
+    const error = useMemo(() => (errorInput || errorGenerated), [errorGenerated, errorInput]);
     const isInvalid: boolean = useMemo(() => !!error, [error]);
-    const setFormValue = useCallback((val) => {
-        setValue(val);
-        onChangeProps(val);
-    }, [onChangeProps, setValue]);
-    const debouncedCallback = useDebouncedCallback(setFormValue, debounceInterval, { leading: true });
-    const onChange = useCallback((val: string) => {
-        setLocalValue(val);
+    const debouncedCallback = useDebouncedCallback(setValueInput, debounceInterval, { leading: true });
+    const onChange = useCallback((val: string | undefined) => {
+        setLocalInputValue(val);
         debouncedCallback(val);
     }, [debouncedCallback]);
-    const onChangeMode = useCallback((k) => {
-        setMode(k);
-        setValue(k === Modes.generate ? phrase : localValue);
-    }, [localValue, phrase, setValue, setMode]);
-    useEffect(() => {
-        if (mode === Modes.generate) {
-            setValue(phrase);
-        }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [phrase]);
-
+    const onChangeMode = useCallback((newMode: Modes) => {
+        setValueMode(newMode);
+    }, [setValueMode]);
     return (
         <MnemonicGeneratorUi
             {...{
                 ...props,
-                phrase,
-                value: localValue,
+                phrase: valueGenerated,
+                value: localInputValue,
                 onChange,
                 error,
                 isInvalid,
-                mode,
+                mode: valueMode,
                 setMode: onChangeMode,
             }}
         />

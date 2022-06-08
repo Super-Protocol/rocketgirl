@@ -18,9 +18,10 @@ export enum Fields {
     storage = 'storage',
     file = 'file',
     deposit = 'deposit',
-    phrase = 'phrase',
-    agreement = 'agreement',
+    phraseGenerated = 'phraseGenerated',
+    phraseInput = 'phraseInput',
     phraseTabMode = 'phraseTabMode',
+    agreement = 'agreement',
 }
 
 export interface FormValues {
@@ -30,7 +31,8 @@ export interface FormValues {
     [Fields.storage]?: FormOffer;
     [Fields.file]?: File | null;
     [Fields.deposit]?: number;
-    [Fields.phrase]?: string;
+    [Fields.phraseInput]?: string;
+    [Fields.phraseGenerated]?: string;
     [Fields.agreement]?: boolean;
     [Fields.phraseTabMode]?: string;
 }

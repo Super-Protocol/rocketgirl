@@ -1,5 +1,6 @@
 export interface MnemonicGeneratorComponentProps {
-    name: string;
+    namePhraseInput: string;
+    namePhraseGenerated: string;
     nameMode: string;
     nameAgreement: string;
 }
