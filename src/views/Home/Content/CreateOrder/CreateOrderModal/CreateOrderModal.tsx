@@ -9,7 +9,6 @@ import React, {
 } from 'react';
 import { Formik } from 'formik';
 import intersectionby from 'lodash.intersectionby';
-import { useLocalStorage } from '@/common/hooks/useLocalStorage';
 import {
     OffersSelectDocument,
     TeeOffersSelectDocument,
@@ -51,8 +50,6 @@ import { useWorkflow } from './hooks/useWorkflow';
 
 export const CreateOrderModal: FC<CreateOrderModalProps> = memo(({ initialValues: initialValuesProps }) => {
     const { selectedAddress, instance } = useContext(WalletContext);
-    const [agreement, setAgreement] = useLocalStorage<boolean | undefined>('agreement');
-    const [canShowAgreement] = useState(!agreement);
     const { showSuccessModal } = useErrorModal();
     const { goBack } = useContext(ModalOkCancelContext);
     const [isValidating, setIsValidating] = useState(false);
@@ -61,7 +58,6 @@ export const CreateOrderModal: FC<CreateOrderModalProps> = memo(({ initialValues
     const [filters, setFilters] = useState(getInitialFilters);
     const [initialValues, setInitialValues] = useState<FormValues>({
         [Fields.phraseTabMode]: Modes.generate,
-        [Fields.agreement]: agreement,
         ...initialValuesProps,
     });
     const [minDeposit, setMinDeposit] = useState<number>(0);
@@ -243,8 +239,6 @@ export const CreateOrderModal: FC<CreateOrderModalProps> = memo(({ initialValues
                                 />
                                 <FileUploader {...{ uploading, disabled: !!values?.[Fields.data]?.length }} />
                                 <MnemonicGenerator {...{
-                                    canShowAgreement,
-                                    setAgreement,
                                     notification: true,
                                     nameMode: Fields.phraseTabMode,
                                     nameAgreement: Fields.agreement,

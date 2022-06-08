@@ -1,6 +1,4 @@
 export interface MnemonicGeneratorComponentProps {
-    canShowAgreement: boolean;
-    setAgreement: Function;
     name: string;
     nameMode: string;
     nameAgreement: string;
