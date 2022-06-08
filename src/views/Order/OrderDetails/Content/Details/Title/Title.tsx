@@ -14,6 +14,7 @@ import { ModalOkCancelContext } from '@/common/context/ModalOkCancelProvider/Mod
 import classes from './Title.module.scss';
 import { TitleProps } from './types';
 import { ReplenishOrderModal } from './ReplenishOrderModal';
+import { GetResultModal } from './GetResultModal';
 
 export const Title = memo<TitleProps>(({ order, orderInfo, updateOrderInfo }) => {
     const { showModal } = useContext(ModalOkCancelContext);
@@ -54,10 +55,10 @@ export const Title = memo<TitleProps>(({ order, orderInfo, updateOrderInfo }) =>
     }, [showModal, order, onSuccessReplenish]);
 
     const onGetResult = useCallback(async () => {
-        setLoading(true);
-        // todo
-        setLoading(false);
-    }, []);
+        showModal({
+            children: <GetResultModal orderAddress={order?.address} />,
+        });
+    }, [showModal, order]);
 
     return (
         <Box justifyContent="space-between" className={classes.wrap}>
@@ -87,7 +88,6 @@ export const Title = memo<TitleProps>(({ order, orderInfo, updateOrderInfo }) =>
                     className={classes.resultbtn}
                     loading={loading}
                     onClick={onGetResult}
-                    disabled
                 >
                     Get Result
                 </Button>

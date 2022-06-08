@@ -46,7 +46,7 @@ const getOfferSchema = (field: string) => Yup.object().test(
     (item) => item?.value,
 ) as Yup.AnySchema<FormOffer>;
 
-const getPhraseSchema = (field: string) => Yup.string().test(
+export const getPhraseSchema = (field: string): Yup.BaseSchema => Yup.string().test(
     field,
     'Invalid phrase entered',
     (str = '') => validateMnemonic(str),
