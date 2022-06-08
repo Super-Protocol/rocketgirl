@@ -3,5 +3,6 @@ export interface MnemonicGeneratorProps {
     setAgreement: Function;
     name: string;
     nameMode: string;
+    nameAgreement: string;
     classNameWrap?: string;
 }

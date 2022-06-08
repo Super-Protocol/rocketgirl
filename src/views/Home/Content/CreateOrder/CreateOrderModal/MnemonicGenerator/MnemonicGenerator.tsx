@@ -8,7 +8,7 @@ import classes from './MnemonicGenerator.module.scss';
 import { MnemonicGeneratorProps } from './types';
 
 export const MnemonicGenerator = memo<MnemonicGeneratorProps>(({
-    canShowAgreement, setAgreement, nameMode, name, classNameWrap,
+    canShowAgreement, setAgreement, nameMode, name, classNameWrap, nameAgreement,
 }): ReactElement => {
     const onChangeAgreement = useCallback((val: boolean) => {
         setAgreement(val);
@@ -27,7 +27,7 @@ export const MnemonicGenerator = memo<MnemonicGeneratorProps>(({
                 />
                 {canShowAgreement && (
                     <CheckboxFormik
-                        name="agreement"
+                        name={nameAgreement}
                         label={chkboxlabel}
                         onChange={(val) => onChangeAgreement(val)}
                         classNameWrap={classes.checkboxWrap}

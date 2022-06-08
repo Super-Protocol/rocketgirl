@@ -18,7 +18,7 @@ import classes from './Details.module.scss';
 import { SubOrdersTable } from './SubOrdersTable';
 
 export const Details = memo<DetailsProps>(({ id }) => {
-    const { isConnected } = useContext(WalletContext);
+    const { isConnected, selectedAddress } = useContext(WalletContext);
     const [orderInfo, setOrderInfo] = useState<GetOrderInfoResult>();
     const [loadingOrderInfo, setLoadingOrderInfo] = useState(false);
     const [getOrder, orderResult] = useOrderLazyQuery({ variables: { id } });
@@ -33,6 +33,7 @@ export const Details = memo<DetailsProps>(({ id }) => {
     const orderAddress = useMemo(() => order?.address, [order]);
     const info = useMemo(() => getInfo(order, orderInfo), [order, orderInfo]);
     const tee = useMemo(() => getTee(order), [order]);
+    const isMyOrder = useMemo(() => order?.consumer === selectedAddress, [order, selectedAddress]);
 
     useEffect(() => {
         getOrder();
@@ -40,6 +41,7 @@ export const Details = memo<DetailsProps>(({ id }) => {
     }, [getOrder, updateOrderInfo]);
 
     if (loading) return <Spinner fullscreen />;
+    if (!isMyOrder) return null;
     if (!isConnected) return <NoAccountBlock message="Connect your wallet to see if you made an order" />;
 
     return (

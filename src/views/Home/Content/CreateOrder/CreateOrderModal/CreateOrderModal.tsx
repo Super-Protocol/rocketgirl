@@ -247,6 +247,7 @@ export const CreateOrderModal: FC<CreateOrderModalProps> = memo(({ initialValues
                                     setAgreement,
                                     notification: true,
                                     nameMode: Fields.phraseTabMode,
+                                    nameAgreement: Fields.agreement,
                                     name: Fields.phrase,
                                     classNameWrap: classes.mnemonicWrap,
                                 }}

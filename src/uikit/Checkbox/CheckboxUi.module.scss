@@ -82,7 +82,7 @@ $color-orange: var(--orange90);
     }
 
     &_invalid {
-      border-color: var(--red100);
+      border-color: var(--red100) !important;
     }
 
     svg {
