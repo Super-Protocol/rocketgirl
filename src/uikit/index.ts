@@ -4,6 +4,7 @@ export * from './Card';
 export * from './Checkbox';
 export * from './Content';
 export * from './CopyToClipboard';
+export * from './CustomScrollbar';
 export * from './DetailWidget';
 export * from './Dropdown';
 export * from './Icon';
