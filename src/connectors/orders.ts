@@ -18,7 +18,7 @@ import {
     Encryption,
     CryptoAlgorithm,
 } from '@super-protocol/sp-dto-js';
-import { getExternalId } from '@/common/helpers';
+import { getBase64FromHex, getExternalId } from '@/common/helpers';
 import { generateECIESKeys } from '@/utils/crypto';
 
 export interface CancelOrderProps { orderAddress?: string; web3?: Web3; actionAccountAddress?: string; }
@@ -233,7 +233,7 @@ export const workflow = async (props: WorkflowProps): Promise<void> => {
             actionAccountAddress,
             values: {
                 args,
-                resultPublicKeyBase64: publicKey,
+                resultPublicKeyBase64: getBase64FromHex(publicKey),
                 offer: tee,
                 suspended: true,
                 keyAlgorithm: CryptoAlgorithm.ECIES,
