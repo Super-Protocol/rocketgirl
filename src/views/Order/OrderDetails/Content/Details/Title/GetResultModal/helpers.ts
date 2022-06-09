@@ -60,16 +60,15 @@ export const getFileUrlFromS3Storage = async (fileName: string, bucket: string):
     return url || '';
 };
 
-export const encodingAndDowndoadFile = async (orderAddress: string, phrase: string): Promise<string> => {
+export const encodingAndDownloadFile = async (orderAddress: string, phrase: string): Promise<string> => {
     const { privateKey } = generateECIESKeys(phrase);
     const order = new Order(orderAddress);
-    const { encryptedResult, encryptedError } = await order.getOrderResult();
-    const encrypted = encryptedResult || encryptedError;
-    if (!encrypted) throw new Error('Order encrypted result is empty');
+    const { encryptedResult } = await order.getOrderResult();
+    if (!encryptedResult) throw new Error('Order encrypted result is empty');
 
     let decrypted = '';
 
-    const encryptedObj: { resource: Encryption, encryption: Encryption } = JSON.parse(encrypted);
+    const encryptedObj: { resource: Encryption, encryption: Encryption } = JSON.parse(encryptedResult);
     if (encryptedObj.resource && encryptedObj.encryption) {
         const encryptedResource: Encryption = encryptedObj.resource;
         encryptedResource.key = getBase64FromHex(privateKey);
@@ -81,7 +80,7 @@ export const encodingAndDowndoadFile = async (orderAddress: string, phrase: stri
 
         decrypted = `{ "resource": ${decryptedResource}, "encryption": ${decryptedEncryption} }`;
     } else {
-        const encryptedObj: Encryption = JSON.parse(encrypted);
+        const encryptedObj: Encryption = JSON.parse(encryptedResult);
         encryptedObj.key = getBase64FromHex(privateKey);
         decrypted = await Crypto.decrypt(encryptedObj);
     }

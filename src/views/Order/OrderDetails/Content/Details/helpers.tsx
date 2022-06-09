@@ -18,7 +18,7 @@ export interface TableInfo {
 
 export const getStatusInformation = (orderResult: OrderQuery['order']['orderResult']): ReactNode => {
     if (!orderResult) return '-';
-    const text = orderResult?.encryptedResult || orderResult?.encryptedError;
+    const text = orderResult?.encryptedResult;
     if (!text) return '-';
     return (
         <CopyToClipboard isEllipsis>

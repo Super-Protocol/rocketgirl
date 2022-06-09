@@ -7,8 +7,12 @@ import { useErrorModal } from '@/common/hooks/useErrorModal';
 import { Box, Button, InputFormik } from '@/uikit';
 import { ModalOkCancelContext } from '@/common/context/ModalOkCancelProvider/ModalOkCancelProvider';
 import { GetResultModalProps, FormValues, Fields } from './types';
-import { getValidationSchema, initialValues, placeholder } from './helpers';
-import { encodingAndDowndoadFile } from './connection';
+import {
+    getValidationSchema,
+    initialValues,
+    placeholder,
+    encodingAndDownloadFile,
+} from './helpers';
 import classes from './GetResultModal.module.scss';
 
 export const GetResultModal = memo<GetResultModalProps>(({
@@ -23,7 +27,7 @@ export const GetResultModal = memo<GetResultModalProps>(({
         setLoading(true);
         try {
             const { phrase = '' } = values || {};
-            const result = await encodingAndDowndoadFile(orderAddress, phrase);
+            const result = await encodingAndDownloadFile(orderAddress, phrase);
             setLoading(false);
             onClose();
             showSuccessModal(result);
