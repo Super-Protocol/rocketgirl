@@ -9,7 +9,6 @@ import {
     StorageProviderResource,
 } from '@super-protocol/sp-dto-js';
 import {
-    getBase64FromHex,
     getBase64FromBlob,
 } from '@/common/helpers';
 import CONFIG from '@/config';
@@ -60,8 +59,11 @@ export const getFileUrlFromS3Storage = async (fileName: string, bucket: string):
     return url || '';
 };
 
-export const encodingAndDownloadFile = async (orderAddress: string, phrase: string): Promise<string> => {
-    const { privateKey } = generateECIESKeys(phrase);
+export const encodingAndDownloadFile = async (
+    orderAddress: string,
+    phrase: string,
+): Promise<{ isFile: boolean, content: string }> => {
+    const { privateKeyBase64 } = generateECIESKeys(phrase);
     const order = new Order(orderAddress);
     const { encryptedResult } = await order.getOrderResult();
     if (!encryptedResult) throw new Error('Order encrypted result is empty');
@@ -71,17 +73,17 @@ export const encodingAndDownloadFile = async (orderAddress: string, phrase: stri
     const encryptedObj: { resource: Encryption, encryption: Encryption } = JSON.parse(encryptedResult);
     if (encryptedObj.resource && encryptedObj.encryption) {
         const encryptedResource: Encryption = encryptedObj.resource;
-        encryptedResource.key = getBase64FromHex(privateKey);
+        encryptedResource.key = privateKeyBase64;
         const decryptedResource = await Crypto.decrypt(encryptedResource);
 
         const encryptedEncryption: Encryption = encryptedObj.encryption;
-        encryptedEncryption.key = getBase64FromHex(privateKey);
+        encryptedEncryption.key = privateKeyBase64;
         const decryptedEncryption = await Crypto.decrypt(encryptedEncryption);
 
         decrypted = `{ "resource": ${decryptedResource}, "encryption": ${decryptedEncryption} }`;
     } else {
         const encryptedObj: Encryption = JSON.parse(encryptedResult);
-        encryptedObj.key = getBase64FromHex(privateKey);
+        encryptedObj.key = privateKeyBase64;
         decrypted = await Crypto.decrypt(encryptedObj);
     }
 
@@ -90,7 +92,10 @@ export const encodingAndDownloadFile = async (orderAddress: string, phrase: stri
     const { resource, encryption } = decryptedObj || {};
     const { filepath } = resource || {};
     if (!filepath) {
-        return JSON.stringify(decryptedObj, null, 2);
+        return {
+            isFile: false,
+            content: JSON.stringify(decryptedObj, null, 2),
+        };
     }
     const url = await getFileUrlFromS3Storage(filepath, decryptedObj.resource.credentials.storageId);
     if (!url) {
@@ -118,5 +123,8 @@ export const encodingAndDownloadFile = async (orderAddress: string, phrase: stri
         pom.click();
     }
 
-    return base64Content;
+    return {
+        isFile: true,
+        content: base64Content,
+    };
 };

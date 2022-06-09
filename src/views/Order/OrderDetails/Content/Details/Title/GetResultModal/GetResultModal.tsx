@@ -27,10 +27,10 @@ export const GetResultModal = memo<GetResultModalProps>(({
         setLoading(true);
         try {
             const { phrase = '' } = values || {};
-            const result = await encodingAndDownloadFile(orderAddress, phrase);
+            const { isFile, content } = await encodingAndDownloadFile(orderAddress, phrase);
             setLoading(false);
             onClose();
-            showSuccessModal(result);
+            showSuccessModal(isFile ? 'File downloaded successfully' : content);
         } catch (e) {
             setLoading(false);
             showErrorModal(e);
@@ -64,6 +64,7 @@ export const GetResultModal = memo<GetResultModalProps>(({
                             placeholder,
                             classNameInput: classes.input,
                             as: 'textarea',
+                            disabled: loading,
                         }}
                         />
                     </Box>

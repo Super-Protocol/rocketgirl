@@ -18,7 +18,7 @@ import {
     Encryption,
     CryptoAlgorithm,
 } from '@super-protocol/sp-dto-js';
-import { getBase64FromHex, getExternalId } from '@/common/helpers';
+import { getExternalId } from '@/common/helpers';
 import { generateECIESKeys } from '@/utils/crypto';
 
 export interface CancelOrderProps { orderAddress?: string; web3?: Web3; actionAccountAddress?: string; }
@@ -227,13 +227,13 @@ export const workflow = async (props: WorkflowProps): Promise<void> => {
     } = values || {};
     if (!mnemonic) throw new Error('Passphrase required');
     const canceledOrders: string[] = [];
-    const { publicKey } = generateECIESKeys(mnemonic);
+    const { publicKeyBase64 } = generateECIESKeys(mnemonic);
     try {
         const teeOrderAddress = await createOrder({
             actionAccountAddress,
             values: {
                 args,
-                resultPublicKeyBase64: getBase64FromHex(publicKey),
+                resultPublicKeyBase64: publicKeyBase64,
                 offer: tee,
                 suspended: true,
                 keyAlgorithm: CryptoAlgorithm.ECIES,
