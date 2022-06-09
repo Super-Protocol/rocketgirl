@@ -19,7 +19,7 @@ import {
     CryptoAlgorithm,
 } from '@super-protocol/sp-dto-js';
 import { getExternalId } from '@/common/helpers';
-import { generateKeys } from '@/utils/crypto';
+import { generateECIESKeys } from '@/utils/crypto';
 
 export interface CancelOrderProps { orderAddress?: string; web3?: Web3; actionAccountAddress?: string; }
 export interface ReplenishOrderProps {
@@ -227,7 +227,7 @@ export const workflow = async (props: WorkflowProps): Promise<void> => {
     } = values || {};
     if (!mnemonic) throw new Error('Passphrase required');
     const canceledOrders: string[] = [];
-    const { publicKey } = generateKeys(mnemonic);
+    const { publicKey } = generateECIESKeys(mnemonic);
     try {
         const teeOrderAddress = await createOrder({
             actionAccountAddress,

@@ -2,7 +2,7 @@ import eccrypto from 'eccrypto';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const bip39 = require('bip39');
 
-export interface GenerateKeysResult {
+export interface GenerateECIESKeysResult {
     privateKey: string;
     publicKey: string;
     mnemonic: string;
@@ -16,7 +16,7 @@ export const generateMnemonic = (): string => bip39.generateMnemonic(256);
 
 export const validateMnemonic = (mnemonic: string): boolean => bip39.validateMnemonic(mnemonic);
 
-export const generateKeys = (mnemonic: string): GenerateKeysResult => {
+export const generateECIESKeys = (mnemonic: string): GenerateECIESKeysResult => {
     const entropy = bip39.mnemonicToEntropy(mnemonic);
     const privateKey = Buffer.from(entropy, 'hex');
     const publicKey = eccrypto.getPublic(privateKey);

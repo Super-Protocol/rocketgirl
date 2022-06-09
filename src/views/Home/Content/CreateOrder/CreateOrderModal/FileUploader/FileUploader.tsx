@@ -15,8 +15,8 @@ import classes from './FileUploader.module.scss';
 import { tooltipText } from './helpers';
 import { FileUploaderProps } from './types';
 
-export const FileUploader = memo<FileUploaderProps>(({ disabled, uploading }): ReactElement => {
-    const [, { value, error }, { setValue }] = useField('file');
+export const FileUploader = memo<FileUploaderProps>(({ disabled, uploading, name }): ReactElement => {
+    const [, { value, error }, { setValue }] = useField(name);
 
     const options = useMemo((): DropzoneOptions => {
         return {
