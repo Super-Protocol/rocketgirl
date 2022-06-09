@@ -23,10 +23,10 @@ export const GetResultModal = memo<GetResultModalProps>(({
         setLoading(true);
         try {
             const { phrase = '' } = values || {};
-            await encodingAndDowndoadFile(orderAddress, phrase);
+            const result = await encodingAndDowndoadFile(orderAddress, phrase);
             setLoading(false);
             onClose();
-            showSuccessModal('Download successfully complete');
+            showSuccessModal(result);
         } catch (e) {
             setLoading(false);
             showErrorModal(e);

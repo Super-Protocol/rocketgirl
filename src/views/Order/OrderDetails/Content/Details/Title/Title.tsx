@@ -22,18 +22,20 @@ export const Title = memo<TitleProps>(({ order, orderInfo, updateOrderInfo }) =>
     const { showErrorModal, showSuccessModal } = useErrorModal();
     const [loading, setLoading] = useState(false);
     const status = useMemo(() => orderInfo?.status, [orderInfo]);
-    const isShowCancelBtn = useMemo(() => status && ![
+    const isShowCancelBtn = useMemo(() => !!status && ![
         OrderStatus.Canceled,
         OrderStatus.Done,
         OrderStatus.Canceling,
         OrderStatus.Error,
     ].includes(status), [status]);
-    const isShowReplenishBtn = useMemo(() => status && ![
+    const isShowReplenishBtn = useMemo(() => !!status && ![
         OrderStatus.Canceled,
         OrderStatus.Done,
         OrderStatus.Canceling,
         OrderStatus.Error,
     ].includes(status), [status]);
+    const result = useMemo(() => order?.orderResult?.encryptedResult || order?.orderResult?.encryptedError, [order]);
+    const isShowResultBtn = useMemo(() => !!status && [OrderStatus.Done].includes(status) && !!result, [status, result]);
 
     const onCancelOrder = useCallback(async () => {
         setLoading(true);
@@ -74,7 +76,7 @@ export const Title = memo<TitleProps>(({ order, orderInfo, updateOrderInfo }) =>
         <Box justifyContent="space-between" className={classes.wrap}>
             <div className={classes.title}>Order details</div>
             <Box>
-                {!!isShowCancelBtn && (
+                {isShowCancelBtn && (
                     <Button
                         variant="tertiary"
                         loading={loading}
@@ -83,7 +85,7 @@ export const Title = memo<TitleProps>(({ order, orderInfo, updateOrderInfo }) =>
                         Cancel order
                     </Button>
                 )}
-                {!!isShowReplenishBtn && (
+                {isShowReplenishBtn && (
                     <Button
                         variant="quaternary"
                         className={classes.replenishbtn}
@@ -93,14 +95,16 @@ export const Title = memo<TitleProps>(({ order, orderInfo, updateOrderInfo }) =>
                         Replenish Deposit
                     </Button>
                 )}
-                <Button
-                    variant="primary"
-                    className={classes.resultbtn}
-                    loading={loading}
-                    onClick={onGetResult}
-                >
-                    Get Result
-                </Button>
+                {isShowResultBtn && (
+                    <Button
+                        variant="primary"
+                        className={classes.resultbtn}
+                        loading={loading}
+                        onClick={onGetResult}
+                    >
+                        Get Result
+                    </Button>
+                )}
             </Box>
         </Box>
     );
