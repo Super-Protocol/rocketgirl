@@ -99,6 +99,7 @@ query Order($id: String!) {
         orderInfo {
             status
             offer
+            encryptedArgs
         }
         teeOfferInfo {
             name

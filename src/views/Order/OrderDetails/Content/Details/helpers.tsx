@@ -2,7 +2,6 @@ import { ReactNode } from 'react';
 import { OrderStatus } from '@super-protocol/sp-sdk-js';
 import { StatusBar } from '@/common/components/StatusBar';
 import { OrderQuery } from '@/gql/graphql';
-import { CopyToClipboard } from '@/uikit';
 import { getTableDate } from '@/common/helpers';
 import { GetOrderInfoResult } from '@/connectors/orders';
 
@@ -16,17 +15,6 @@ export interface TableInfo {
     list: TableInfoItem[];
 }
 
-export const getStatusInformation = (orderResult: OrderQuery['order']['orderResult']): ReactNode => {
-    if (!orderResult) return '-';
-    const text = orderResult?.encryptedResult;
-    if (!text) return '-';
-    return (
-        <CopyToClipboard isEllipsis>
-            {text}
-        </CopyToClipboard>
-    );
-};
-
 export const getInfo = (order?: OrderQuery['order'], orderInfoSdk?: GetOrderInfoResult): TableInfo | null => {
     if (!order) return null;
     const {
@@ -35,11 +23,12 @@ export const getInfo = (order?: OrderQuery['order'], orderInfoSdk?: GetOrderInfo
         orderHoldDeposit,
         orderResult,
         depositSpent,
+        orderInfo,
     } = order || {};
     const {
         status,
     } = orderInfoSdk || {};
-    const statusInformation = getStatusInformation(orderResult);
+    const { encryptedArgs } = orderInfo || {};
     return {
         list: [
             {
@@ -48,7 +37,7 @@ export const getInfo = (order?: OrderQuery['order'], orderInfoSdk?: GetOrderInfo
             },
             {
                 key: 'File',
-                value: '',
+                value: encryptedArgs ? 'Encrypted file' : '-',
             },
             {
                 key: 'Total Deposit',
@@ -66,7 +55,7 @@ export const getInfo = (order?: OrderQuery['order'], orderInfoSdk?: GetOrderInfo
             },
             {
                 key: 'Status information',
-                value: statusInformation,
+                value: orderResult?.encryptedResult ? 'Result is ready' : '-',
             },
             {
                 key: 'Modified Date',
