@@ -13,7 +13,6 @@ export type Config = {
     REACT_APP_SP_GAS_PRICE: string;
     REACT_APP_SP_GAS_LIMIT: number;
     REACT_APP_FAUCET_MATIC_API: string;
-    REACT_APP_MATIC_ADDRESS: string;
     REACT_APP_S3_UPLOAD_ACCESS_KEY_ID: string;
     REACT_APP_S3_UPLOAD_ACCESS_SECRET_KEY: string;
     REACT_APP_S3_DOWNLOAD_ACCESS_KEY_ID: string;
@@ -27,7 +26,6 @@ const DEFAULT_CONFIG: Config = {
     REACT_APP_API_ENDPOINT: '',
     REACT_APP_AUTH: '',
     REACT_APP_SP_MAIN_CONTRACT_ADDRESS: '0xC13ad9b5B6deCa9C5cD1e058D4836109D5C01B1a',
-    REACT_APP_MATIC_ADDRESS: '0x0b43a08e13cf0a22e7286c73de73e8a076aa82a6',
     REACT_APP_POLYGON_SCAN: 'https://mumbai.polygonscan.com',
     REACT_APP_CHAIN_ID: 80001,
     REACT_APP_BLOCKCHAIN_URL: 'wss://wandering-snowy-sun.matic-testnet.quiknode.pro/98e3f8f8fe7ef3c53743ba59fbe6fd6771638d61/',
