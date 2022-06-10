@@ -1,9 +1,13 @@
-import { FC, memo } from 'react';
+import {
+    FC, memo, useCallback, useEffect, useState,
+} from 'react';
 import { Modal } from 'react-bootstrap';
 import cn from 'classnames';
+import overlayscrollbars from 'overlayscrollbars';
+
+import { overlayScrollbarOptions } from '@/uikit/CustomScrollbar';
 import { Button } from '@/uikit';
 import classes from './ModalOkCancel.module.scss';
-
 import { ModalOkCancelProps } from './types';
 
 export const ModalOkCancel: FC<ModalOkCancelProps> = memo(({
@@ -18,15 +22,33 @@ export const ModalOkCancel: FC<ModalOkCancelProps> = memo(({
     children,
     components,
 }) => {
+    const [isFormShow, setIsFormShow] = useState(false);
+    const onShow = useCallback(async () => {
+        setIsFormShow(true);
+    }, []);
+
+    useEffect(() => {
+        if (isFormShow) {
+            overlayscrollbars(document.getElementById('modal')?.parentNode, overlayScrollbarOptions);
+        }
+    }, [isFormShow]);
+
+    const onCloseForm = useCallback(() => {
+        setIsFormShow(false);
+        onClose();
+    }, [onClose]);
+
     return (
         <Modal
             show={show}
-            onHide={onClose}
+            onHide={onCloseForm}
+            id="modal"
             size="lg"
             dialogClassName={cn(classes.root, classNameWrap)}
             centered
             backdropClassName={classes.backdrop}
             contentClassName={classes.content}
+            onShow={onShow}
         >
             <Modal.Body className={classes.body}>
                 {components?.main || (

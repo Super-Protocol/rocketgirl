@@ -9,7 +9,7 @@ import './CustomBodyScrollbar.scss';
 
 export const CustomBodyScrollbar = ({ children }) => {
     useEffect(() => {
-        overlayscrollbars(document.querySelectorAll('body'), overlayScrollbarOptions);
+        overlayscrollbars(document.querySelector('body'), overlayScrollbarOptions);
     }, []);
 
     return children;
