@@ -5,6 +5,7 @@ import { Formik } from 'formik';
 
 import { useErrorModal } from '@/common/hooks/useErrorModal';
 import { Box, Button, InputFormik } from '@/uikit';
+import { LabelToolkit } from '@/common/components';
 import { ModalOkCancelContext } from '@/common/context/ModalOkCancelProvider/ModalOkCancelProvider';
 import { GetResultModalProps, FormValues, Fields } from './types';
 import {
@@ -58,15 +59,20 @@ export const GetResultModal = memo<GetResultModalProps>(({
             {({ submitForm }) => (
                 <Box direction="column">
                     <Box direction="column" className={classes.wrapComponent}>
-                        <InputFormik {...{
-                            name: Fields.phrase,
-                            classNameError: classes.inputError,
-                            placeholder,
-                            classNameInput: classes.input,
-                            as: 'textarea',
-                            disabled: loading,
-                        }}
-                        />
+                        <LabelToolkit
+                            tooltipText="The encryption passphrase is used to encrypt and access the result data."
+                            title="Encryption passphrase"
+                        >
+                            <InputFormik {...{
+                                name: Fields.phrase,
+                                classNameError: classes.inputError,
+                                placeholder,
+                                classNameInput: classes.input,
+                                as: 'textarea',
+                                disabled: loading,
+                            }}
+                            />
+                        </LabelToolkit>
                     </Box>
                     <Box justifyContent="flex-end">
                         <Button
@@ -82,7 +88,7 @@ export const GetResultModal = memo<GetResultModalProps>(({
                             variant="primary"
                             loading={loading}
                         >
-                            Get Result
+                            Send
                         </Button>
                     </Box>
                 </Box>

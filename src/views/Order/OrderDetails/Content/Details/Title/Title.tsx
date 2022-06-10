@@ -69,6 +69,9 @@ export const Title = memo<TitleProps>(({ order, orderInfo, updateOrderInfo }) =>
     const onGetResult = useCallback(async () => {
         showModal({
             children: <GetResultModal orderAddress={order?.address} />,
+            messages: {
+                header: 'Get result',
+            },
         });
     }, [showModal, order]);
 
