@@ -23,7 +23,7 @@ export type Config = {
 
 const DEFAULT_CONFIG: Config = {
     // base app config
-    REACT_APP_API_ENDPOINT: 'https://bff.dev.superprotocol.com',
+    REACT_APP_API_ENDPOINT: 'https://bff.dev.superprotocol.com/graphql',
     REACT_APP_AUTH: '',
     REACT_APP_SP_MAIN_CONTRACT_ADDRESS: '0xC13ad9b5B6deCa9C5cD1e058D4836109D5C01B1a',
     REACT_APP_POLYGON_SCAN: 'https://mumbai.polygonscan.com',

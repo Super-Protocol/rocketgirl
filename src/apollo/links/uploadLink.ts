@@ -11,7 +11,7 @@ const uploadLink = (): createUploadLink => {
             const queries = getQSFromObj({
                 op: req.operationName,
             });
-            return `${!REACT_APP_IS_USE_PROXY ? REACT_APP_API_ENDPOINT || '' : ''}/graphql${queries.length ? `?${queries}` : ''}`;
+            return `${!REACT_APP_IS_USE_PROXY ? REACT_APP_API_ENDPOINT || '' : '/graphql'}${queries.length ? `?${queries}` : ''}`;
         },
         credentials: 'same-origin',
         fetch: fetchUpload,
