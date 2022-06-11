@@ -27,7 +27,7 @@ export const ModalOkCancel: FC<ModalOkCancelProps> = memo(({
     const { instance } = useContext(ScrollbarContext);
     const [isFormShow, setIsFormShow] = useState(false);
     const [id] = useState(uuid());
-    const onShow = useCallback(async () => {
+    const onShow = useCallback(() => {
         setIsFormShow(true);
     }, []);
 
