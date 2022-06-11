@@ -4,6 +4,7 @@ import {
 import { Modal } from 'react-bootstrap';
 import cn from 'classnames';
 import overlayscrollbars from 'overlayscrollbars';
+import { v1 as uuid } from 'uuid';
 
 import { ScrollbarContext } from '@/common/context';
 import { overlayScrollbarOptions } from '@/uikit/CustomScrollbar';
@@ -25,18 +26,19 @@ export const ModalOkCancel: FC<ModalOkCancelProps> = memo(({
 }) => {
     const { instance } = useContext(ScrollbarContext);
     const [isFormShow, setIsFormShow] = useState(false);
+    const [id] = useState(uuid());
     const onShow = useCallback(async () => {
         setIsFormShow(true);
     }, []);
 
     useEffect(() => {
         if (isFormShow) {
-            overlayscrollbars(document.getElementById('modal')?.parentNode, overlayScrollbarOptions);
+            overlayscrollbars(document.getElementById(id)?.parentNode, overlayScrollbarOptions);
             if (instance) {
                 instance.sleep();
             }
         }
-    }, [isFormShow, instance]);
+    }, [isFormShow, instance, id]);
 
     const onExited = useCallback(() => {
         if (instance) {
@@ -50,7 +52,7 @@ export const ModalOkCancel: FC<ModalOkCancelProps> = memo(({
             show={show}
             onHide={onClose}
             onExited={onExited}
-            id="modal"
+            id={id}
             size="lg"
             dialogClassName={cn(classes.root, classNameWrap)}
             centered
