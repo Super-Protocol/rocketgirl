@@ -4,8 +4,7 @@ import React, {
     useCallback,
     useContext,
 } from 'react';
-import { WalletContext } from '@/common/context/WalletProvider';
-import { ModalOkCancelContext } from '@/common/context/ModalOkCancelProvider/ModalOkCancelProvider';
+import { ModalOkCancelContext, WalletContext } from '@/common/context';
 import { Button, Box } from '@/uikit';
 import { CreateOrderProps } from './types';
 import { CreateOrderModal } from './CreateOrderModal';
@@ -19,6 +18,7 @@ export const CreateOrder: FC<CreateOrderProps> = memo(() => {
             messages: {
                 header: 'New Order',
             },
+            showMuarScrollbar: true,
         });
     }, [showModal]);
 

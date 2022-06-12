@@ -23,6 +23,7 @@ export const ModalOkCancel: FC<ModalOkCancelProps> = memo(({
     messages,
     children,
     components,
+    showMuarScrollbar = false,
 }) => {
     const { instance } = useContext(ScrollbarContext);
     const [isFormShow, setIsFormShow] = useState(false);
@@ -32,20 +33,20 @@ export const ModalOkCancel: FC<ModalOkCancelProps> = memo(({
     }, []);
 
     useEffect(() => {
-        if (isFormShow) {
+        if (isFormShow && showMuarScrollbar) {
             overlayscrollbars(document.getElementById(id)?.parentNode, overlayScrollbarOptions);
             if (instance) {
                 instance.sleep();
             }
         }
-    }, [isFormShow, instance, id]);
+    }, [isFormShow, instance, showMuarScrollbar, id]);
 
     const onExited = useCallback(() => {
-        if (instance) {
+        if (instance && showMuarScrollbar) {
             instance.update();
         }
         setIsFormShow(false);
-    }, [instance]);
+    }, [instance, showMuarScrollbar]);
 
     return (
         <Modal
