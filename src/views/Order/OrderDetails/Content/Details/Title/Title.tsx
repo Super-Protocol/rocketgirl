@@ -35,7 +35,10 @@ export const Title = memo<TitleProps>(({ order, orderInfo, updateOrderInfo }) =>
         OrderStatus.Error,
     ].includes(status), [status]);
     const result = useMemo(() => order?.orderResult?.encryptedResult, [order]);
-    const isShowResultBtn = useMemo(() => !!status && [OrderStatus.Done].includes(status) && !!result, [status, result]);
+    const isShowResultBtn = useMemo(
+        () => !!status && [OrderStatus.Done, OrderStatus.Error].includes(status) && !!result,
+        [status, result],
+    );
 
     const onCancelOrder = useCallback(async () => {
         setLoading(true);
