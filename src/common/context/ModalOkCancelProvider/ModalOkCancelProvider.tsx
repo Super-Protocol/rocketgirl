@@ -16,6 +16,7 @@ export const ModalOkCancelContext = createContext<ModalOkCancelContextProps>({
 
 export const ModalOkCancelProvider = memo(({ children }: ModalOkCancelProviderProps): ModalOkCancelProviderResult => {
     const [active, setActive] = useState<string | null>(null);
+    const [showMuarScrollbar, setShowMuarScrollbar] = useState(false);
     const [history, setHistory] = useState<{ id: string, props: ModalOkCancelProps }[]>([]);
     const activeModal = useMemo(() => (active ? history.find(({ id }) => id === active) : null), [active, history]);
     const goBack = useCallback(async ({ count, props } = {}) => {
@@ -60,6 +61,7 @@ export const ModalOkCancelProvider = memo(({ children }: ModalOkCancelProviderPr
         const newId = uuid();
         setHistory(modalProps ? [{ id: newId, props: modalProps }] : []);
         setActive(newId);
+        setShowMuarScrollbar(modalProps?.showMuarScrollbar || false);
     }, []);
 
     const value = useMemo(() => ({
@@ -88,7 +90,8 @@ export const ModalOkCancelProvider = memo(({ children }: ModalOkCancelProviderPr
         onContinue,
         show: !!activeModal,
         history,
-    }), [activeModal, onClose, onCancel, onContinue, history]);
+        showMuarScrollbar,
+    }), [activeModal, onClose, onCancel, onContinue, history, showMuarScrollbar]);
 
     return (
         <ModalOkCancelContext.Provider value={value}>

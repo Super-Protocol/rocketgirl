@@ -1,5 +1,5 @@
 import {
-    FC, memo, useCallback, useEffect, useState, useContext,
+    FC, memo, useCallback, useEffect, useState, useContext, useRef,
 } from 'react';
 import { Modal } from 'react-bootstrap';
 import cn from 'classnames';
@@ -12,8 +12,10 @@ import { Button } from '@/uikit';
 import classes from './ModalOkCancel.module.scss';
 import { ModalOkCancelProps } from './types';
 
+export const sleep = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
+
 export const ModalOkCancel: FC<ModalOkCancelProps> = memo(({
-    show,
+    show: showProps,
     onClose = () => {},
     onCancel = () => {},
     onContinue = () => {},
@@ -27,19 +29,25 @@ export const ModalOkCancel: FC<ModalOkCancelProps> = memo(({
 }) => {
     const { instance } = useContext(ScrollbarContext);
     const [isFormShow, setIsFormShow] = useState(false);
+    const [show, setShow] = useState(showProps);
     const [id] = useState(uuid());
     const onShow = useCallback(() => {
         setIsFormShow(true);
     }, []);
+    const refModal = useRef(null);
 
     useEffect(() => {
         if (isFormShow && showMuarScrollbar) {
-            overlayscrollbars(document.getElementById(id)?.parentNode, overlayScrollbarOptions);
+            const overlayInstance = overlayscrollbars(document.getElementById(id)?.parentNode, overlayScrollbarOptions);
             if (instance) {
                 instance.sleep();
             }
+            setTimeout(() => {
+                const osContentElm = overlayInstance.getElements().content;
+                osContentElm.prepend((refModal.current as any)?._modal?.backdrop);
+            }, 1);
         }
-    }, [isFormShow, instance, showMuarScrollbar, id]);
+    }, [isFormShow, instance, showMuarScrollbar, id, refModal]);
 
     const onExited = useCallback(() => {
         if (instance && showMuarScrollbar) {
@@ -47,6 +55,15 @@ export const ModalOkCancel: FC<ModalOkCancelProps> = memo(({
         }
         setIsFormShow(false);
     }, [instance, showMuarScrollbar]);
+
+    useEffect(() => {
+        if (show && !showProps && showMuarScrollbar) {
+            const dialog = (refModal.current as any)?._modal?.dialog;
+            const backdrop = (refModal.current as any)?._modal?.backdrop;
+            dialog.parentNode.append(dialog, backdrop);
+        }
+        setShow(showProps);
+    }, [showProps, show, refModal, showMuarScrollbar]);
 
     return (
         <Modal
@@ -57,9 +74,10 @@ export const ModalOkCancel: FC<ModalOkCancelProps> = memo(({
             size="lg"
             dialogClassName={cn(classes.root, classNameWrap)}
             centered
-            backdropClassName={classes.backdrop}
+            backdropClassName={cn(classes.backdrop, { [classes['backdrop-zindex']]: showMuarScrollbar })}
             contentClassName={classes.content}
             onShow={onShow}
+            ref={refModal}
         >
             <Modal.Body className={classes.body}>
                 {components?.main || (
