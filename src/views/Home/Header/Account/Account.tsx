@@ -2,6 +2,7 @@ import React, {
     memo,
     FC,
     useContext,
+    useMemo,
 } from 'react';
 import {
     Box,
@@ -17,6 +18,8 @@ export const Account: FC<AccountProps> = memo(() => {
         balance,
         selectedAddress,
     } = useContext(WalletContext);
+    const matic = useMemo(() => (balance.matic ? Number.parseFloat(balance.matic).toFixed(1) : '-'), [balance.matic]);
+    const tee = useMemo(() => (balance.tee ? Number.parseFloat(balance.tee).toFixed(1) : '-'), [balance.tee]);
     return (
         <Box>
             {
@@ -25,7 +28,7 @@ export const Account: FC<AccountProps> = memo(() => {
                     : (
                         <Box alignItems="center">
                             <Box className={classes.balance}>
-                                {balance.matic || '-'} MATIC / {balance.tee || '-'} TEE
+                                {matic} MATIC / {tee} TEE
                             </Box>
                             <AccountDropdown />
                         </Box>
