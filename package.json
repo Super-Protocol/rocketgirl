@@ -34,6 +34,7 @@
     "lodash.sum": "^4.0.2",
     "lodash.uniqby": "^4.7.0",
     "node-sass": "^6.0.1",
+    "overlayscrollbars": "^1.13.2",
     "query-string": "^7.0.1",
     "react": "^17.0.2",
     "react-app-polyfill": "^2.0.0",

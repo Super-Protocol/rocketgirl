@@ -1,9 +1,15 @@
-import { FC, memo } from 'react';
+import {
+    FC, memo, useCallback, useEffect, useState, useContext,
+} from 'react';
 import { Modal } from 'react-bootstrap';
 import cn from 'classnames';
+import overlayscrollbars from 'overlayscrollbars';
+import { v1 as uuid } from 'uuid';
+
+import { ScrollbarContext } from '@/common/context';
+import { overlayScrollbarOptions } from '@/uikit/CustomScrollbar';
 import { Button } from '@/uikit';
 import classes from './ModalOkCancel.module.scss';
-
 import { ModalOkCancelProps } from './types';
 
 export const ModalOkCancel: FC<ModalOkCancelProps> = memo(({
@@ -17,16 +23,43 @@ export const ModalOkCancel: FC<ModalOkCancelProps> = memo(({
     messages,
     children,
     components,
+    showMuarScrollbar = false,
 }) => {
+    const { instance } = useContext(ScrollbarContext);
+    const [isFormShow, setIsFormShow] = useState(false);
+    const [id] = useState(uuid());
+    const onShow = useCallback(() => {
+        setIsFormShow(true);
+    }, []);
+
+    useEffect(() => {
+        if (isFormShow && showMuarScrollbar) {
+            overlayscrollbars(document.getElementById(id)?.parentNode, overlayScrollbarOptions);
+            if (instance) {
+                instance.sleep();
+            }
+        }
+    }, [isFormShow, instance, showMuarScrollbar, id]);
+
+    const onExited = useCallback(() => {
+        if (instance && showMuarScrollbar) {
+            instance.update();
+        }
+        setIsFormShow(false);
+    }, [instance, showMuarScrollbar]);
+
     return (
         <Modal
             show={show}
             onHide={onClose}
+            onExited={onExited}
+            id={id}
             size="lg"
             dialogClassName={cn(classes.root, classNameWrap)}
             centered
             backdropClassName={classes.backdrop}
             contentClassName={classes.content}
+            onShow={onShow}
         >
             <Modal.Body className={classes.body}>
                 {components?.main || (
