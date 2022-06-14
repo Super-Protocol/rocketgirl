@@ -18,7 +18,6 @@ export const CreateOrder: FC<CreateOrderProps> = memo(() => {
             messages: {
                 header: 'New Order',
             },
-            showMuarScrollbar: true,
         });
     }, [showModal]);
 
