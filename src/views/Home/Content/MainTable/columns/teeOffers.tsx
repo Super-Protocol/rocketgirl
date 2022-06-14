@@ -29,17 +29,18 @@ export const getColumns = (): Array<ColumnProps<TeeOffersColumns>> => [
     {
         Header: 'Name',
         id: 'name',
-        Cell: ({ row }) => row.original?.teeOfferInfo?.name || '-',
+        Cell: ({ row }) => {
+            const { name } = row.original?.teeOfferInfo || {};
+            return name ? <TooltipLink text={name} title="Name" checkOverflow /> : '-';
+        },
         width: 'auto',
-        isEllipsis: true,
     },
-    // todo add link support
     {
         Header: 'Description',
         id: 'description',
         Cell: ({ row }) => {
             const { description } = row.original?.teeOfferInfo || {};
-            return description ? <TooltipLink text={description} /> : '-';
+            return description ? <TooltipLink text={description} title="Description" checkOverflow /> : '-';
         },
         width: 'auto',
         isEllipsis: true,

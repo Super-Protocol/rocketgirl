@@ -78,8 +78,7 @@ export const OffersAdder: <TNode>(p: OffersAdderProps<TNode>) =>
         const renderItem = useCallback((item) => (
             <TooltipLink
                 title="Description"
-                message={item?.data?.description}
-                text={item?.data?.name}
+                text={item?.data?.description}
             />
         ), []);
 
