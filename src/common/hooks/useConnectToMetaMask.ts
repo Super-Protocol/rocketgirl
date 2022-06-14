@@ -19,6 +19,7 @@ export interface UseConnectToMetaMaskResult {
 }
 
 export const getMaticBalance = async (address?: string): Promise<string | null> => {
+    if (!address) return null;
     try {
         const response = await (window as any).ethereum.request({
             method: 'eth_getBalance', params: [address, 'latest'],

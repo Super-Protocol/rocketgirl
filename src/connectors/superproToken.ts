@@ -16,6 +16,7 @@ export const getSuperproToken = async (address?: string): Promise<string | null>
 };
 
 export const getSuperproTokenCatched = async (address?: string): Promise<string | null> => {
+    if (!address) return null;
     try {
         return getSuperproToken(address);
     } catch (e) {
