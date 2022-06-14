@@ -51,10 +51,13 @@ export const useTables = (initialTable: Tables, consumer?: string): UseTablesRes
         if (!skipByWallet.some(({ table }) => table === newTable)) {
             queryFetcher[newTable]?.onChangePage({ filter, pageClick: PageClick.FIRST });
         }
-        // reset query data
     }, [queryFetcher, skipByWallet, history]);
     useEffect(() => {
-        onChangeTable(table);
+        Object.entries(queryFetcher).forEach(([, fetcher]) => {
+            if (!fetcher.skip) {
+                fetcher.onChangePage({ pageClick: PageClick.FIRST });
+            }
+        });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [consumer]);
     return {
