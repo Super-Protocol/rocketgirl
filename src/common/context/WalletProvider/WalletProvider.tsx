@@ -44,7 +44,9 @@ export const useWallet = (): UseWalletResult => {
         }
     }, [selectedWalletType]);
     const updateBalance = useCallback(async (walletType: SelectedWalletType, address?: string) => {
-        setBalance(await getBalance(walletType, address));
+        if (address) {
+            setBalance(await getBalance(walletType, address));
+        }
     }, []);
     const actions = useCallback((walletType: WalletType) => ({
         startActivation: () => () => { setSelectedWalletType(walletType); },
