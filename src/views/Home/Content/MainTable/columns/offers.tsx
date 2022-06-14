@@ -29,9 +29,11 @@ export const getColumns = (): Array<ColumnProps<OffersColumns>> => [
     {
         Header: 'Name',
         id: 'name',
-        Cell: ({ row }) => row.original?.offerInfo?.name || '-',
+        Cell: ({ row }) => {
+            const { name } = row.original?.offerInfo || {};
+            return name ? <TooltipLink text={name} title="Name" checkOverflow /> : '-';
+        },
         width: 'auto',
-        isEllipsis: true,
     },
     // todo add link support
     {
@@ -39,10 +41,9 @@ export const getColumns = (): Array<ColumnProps<OffersColumns>> => [
         id: 'description',
         Cell: ({ row }) => {
             const { description } = row.original?.offerInfo || {};
-            return description ? <TooltipLink text={description} /> : '-';
+            return description ? <TooltipLink text={description} title="Description" checkOverflow /> : '-';
         },
         width: 'auto',
-        isEllipsis: true,
     },
     {
         Header: 'Type',
