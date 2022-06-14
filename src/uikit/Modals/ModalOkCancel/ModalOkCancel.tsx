@@ -12,8 +12,6 @@ import { Button } from '@/uikit';
 import classes from './ModalOkCancel.module.scss';
 import { ModalOkCancelProps } from './types';
 
-export const sleep = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
-
 export const ModalOkCancel: FC<ModalOkCancelProps> = memo(({
     show: showProps,
     onClose = () => {},
