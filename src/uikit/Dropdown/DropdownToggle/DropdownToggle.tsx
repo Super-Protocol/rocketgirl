@@ -4,7 +4,12 @@ import { Ellipsis } from '@/uikit';
 import classes from './DropdownToggle.module.scss';
 import { DropdownToggleProps } from './types';
 
-export const DropdownToggle = forwardRef<HTMLButtonElement, DropdownToggleProps>(({ children, className, onClick }, ref) => (
+export const DropdownToggle = forwardRef<HTMLButtonElement, DropdownToggleProps>(({
+    children,
+    className,
+    onClick,
+    isEllipsis,
+}, ref) => (
     <button
         className={cn(classes.btn, className)}
         ref={ref}
@@ -13,6 +18,6 @@ export const DropdownToggle = forwardRef<HTMLButtonElement, DropdownToggleProps>
             onClick?.(e);
         }}
     >
-        <Ellipsis>{children}</Ellipsis>
+        {isEllipsis ? <Ellipsis>{children}</Ellipsis> : children}
     </button>
 ));

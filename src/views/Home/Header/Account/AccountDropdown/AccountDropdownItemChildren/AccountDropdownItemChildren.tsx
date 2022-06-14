@@ -8,6 +8,7 @@ export const AccountDropdownItemChildren: FC<AccountDropdownItemChildrenProps> =
     label,
     title,
     eventName,
+    value,
 }) => {
     return (
         <Box className={classes.wrap} direction="column">
@@ -21,8 +22,9 @@ export const AccountDropdownItemChildren: FC<AccountDropdownItemChildrenProps> =
                 isReverse
                 classNameWrap={classes.label}
                 classNameText={classes.text}
+                title={label}
             >
-                {label}
+                {value}
             </CopyToClipboard>
         </Box>
     );

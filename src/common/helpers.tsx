@@ -135,3 +135,9 @@ export const getBase64FromFile = (file: File): Promise<string | ArrayBuffer | nu
     reader.onload = () => resolve(reader.result);
     reader.onerror = (error) => reject(error);
 });
+
+export const sliceWithDot = (str?: string, lenFrom = 6): string => {
+    if (!str) return '';
+    if (str.length < lenFrom) return str;
+    return `${str.slice(0, lenFrom)}...${str.slice(str.length - lenFrom)}`;
+};
