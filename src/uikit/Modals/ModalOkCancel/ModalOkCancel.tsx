@@ -46,7 +46,7 @@ export const ModalOkCancel: FC<ModalOkCancelProps> = memo(({
             size="lg"
             dialogClassName={cn(classes.root, classNameWrap)}
             centered
-            backdropClassName={cn(classes.backdrop)}
+            backdropClassName={classes.backdrop}
             contentClassName={classes.content}
         >
             <Modal.Body className={classes.body}>
