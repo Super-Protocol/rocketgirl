@@ -1,13 +1,10 @@
 import {
-    FC, memo, useCallback, useEffect, useState, useContext, useRef,
+    FC, memo, useState, useContext, useEffect,
 } from 'react';
 import { Modal } from 'react-bootstrap';
 import cn from 'classnames';
-import overlayscrollbars from 'overlayscrollbars';
-import { v1 as uuid } from 'uuid';
 
 import { ScrollbarContext } from '@/common/context';
-import { overlayScrollbarOptions } from '@/uikit/CustomScrollbar';
 import { Button } from '@/uikit';
 import classes from './ModalOkCancel.module.scss';
 import { ModalOkCancelProps } from './types';
@@ -26,56 +23,31 @@ export const ModalOkCancel: FC<ModalOkCancelProps> = memo(({
     showMuarScrollbar = false,
 }) => {
     const { instance } = useContext(ScrollbarContext);
-    const [isFormShow, setIsFormShow] = useState(false);
     const [show, setShow] = useState(showProps);
-    const [id] = useState(uuid());
-    const onShow = useCallback(() => {
-        setIsFormShow(true);
-    }, []);
-    const refModal = useRef(null);
-
-    useEffect(() => {
-        if (isFormShow && showMuarScrollbar) {
-            const overlayInstance = overlayscrollbars(document.getElementById(id)?.parentNode, overlayScrollbarOptions);
-            if (instance) {
-                instance.sleep();
-            }
-            setTimeout(() => {
-                const osContentElm = overlayInstance.getElements().content;
-                osContentElm.prepend((refModal.current as any)?._modal?.backdrop);
-            }, 1);
-        }
-    }, [isFormShow, instance, showMuarScrollbar, id, refModal]);
-
-    const onExited = useCallback(() => {
-        if (instance && showMuarScrollbar) {
-            instance.update();
-        }
-        setIsFormShow(false);
-    }, [instance, showMuarScrollbar]);
 
     useEffect(() => {
         if (show && !showProps && showMuarScrollbar) {
-            const dialog = (refModal.current as any)?._modal?.dialog;
-            const backdrop = (refModal.current as any)?._modal?.backdrop;
-            dialog.parentNode.append(dialog, backdrop);
+            if (instance) {
+                instance.update();
+            }
+        }
+        if (!show && showProps && showMuarScrollbar) {
+            if (instance) {
+                instance.sleep();
+            }
         }
         setShow(showProps);
-    }, [showProps, show, refModal, showMuarScrollbar]);
+    }, [showProps, show, instance, showMuarScrollbar]);
 
     return (
         <Modal
             show={show}
             onHide={onClose}
-            onExited={onExited}
-            id={id}
             size="lg"
             dialogClassName={cn(classes.root, classNameWrap)}
             centered
-            backdropClassName={cn(classes.backdrop, { [classes['backdrop-zindex']]: showMuarScrollbar })}
+            backdropClassName={cn(classes.backdrop)}
             contentClassName={classes.content}
-            onShow={onShow}
-            ref={refModal}
         >
             <Modal.Body className={classes.body}>
                 {components?.main || (
