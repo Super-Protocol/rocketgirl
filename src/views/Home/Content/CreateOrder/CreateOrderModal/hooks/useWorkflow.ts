@@ -62,8 +62,7 @@ export const useWorkflow = (): UseWorkflowResult => {
         const phrase = phraseTabMode === Modes.generate ? phraseGenerated : phraseInput;
         let tiiGeneratorId;
         if (!phrase) throw new Error('Seed phrase required');
-        if (!data?.length) {
-            if (!file) throw new Error('File required');
+        if (!data?.length && file) {
             if (!tee?.value) throw new Error('TEE required');
             const { encryption, key } = await encryptFile(file);
             const { ciphertext, ...restEncryption } = encryption;

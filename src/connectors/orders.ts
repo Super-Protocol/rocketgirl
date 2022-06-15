@@ -11,6 +11,7 @@ import {
     Order,
     SuperproToken,
     OrderInfo,
+    TeeOfferInfo,
 } from '@super-protocol/sp-sdk-js';
 import Web3 from 'web3';
 import {
@@ -29,20 +30,30 @@ export interface ReplenishOrderProps {
     accountAddress?: string;
 }
 export type GetOrderInfoResult = OrderInfo;
-export interface CreateOrderPropsValues {
+export interface GetOrderParamsProps {
     offer: string;
     args?: string;
     slots?: number;
-    parentTeeOrder?: string;
     inputOffers?: string[];
     selectedOffers?: string[];
-    calcOrderDeposit?: number;
-    suspended?: boolean;
     keyAlgorithm?: CryptoAlgorithm;
     resultPublicKeyBase64?: string;
 }
+export interface CreateOrderPropsValues extends GetOrderParamsProps {
+    parentTeeOrder?: string;
+    calcOrderDeposit?: number;
+    suspended?: boolean;
+}
 export interface CreateOrderProps {
     values: CreateOrderPropsValues;
+    actionAccountAddress: string;
+    web3: Web3;
+}
+export interface CreateSubOrderProps {
+    values: {
+        list: GetOrderParamsProps[];
+        order: string;
+    };
     actionAccountAddress: string;
     web3: Web3;
 }
@@ -124,33 +135,24 @@ export const createOrderSubscription = async (
     });
 };
 
-export const createOrder = async (props: CreateOrderProps): Promise<string> => {
-    const { values, actionAccountAddress, web3 } = props;
+export const getOrderParams = async (props: GetOrderParamsProps): Promise<OrderInfo> => {
     const {
         offer,
-        suspended = false,
         args = '',
         keyAlgorithm,
         slots = 0,
-        parentTeeOrder,
         inputOffers = [],
         selectedOffers = [],
-        calcOrderDeposit = 0,
         resultPublicKeyBase64,
-    } = values || {};
-    if (!actionAccountAddress) throw new Error('Address is empty');
-    const orderMinDeposit = await Superpro.getParam(ParamName.OrderMinimumDeposit) || 0;
-
+    } = props || {};
     const offerInstance = new TeeOffer(offer);
     const offerType = await offerInstance.getOfferType();
     const offerInfo = offerType === OfferType.TeeOffer
         ? await new TeeOffer(offer).getInfo()
         : await new Offer(offer).getInfo();
-    const offerHoldSum = offerType === OfferType.TeeOffer ? 0 : (offerInfo as OfferInfo)?.holdSum;
-
     const parsedArgsPublicKey: Encryption = JSON.parse(offerInfo?.argsPublicKey);
 
-    const params = {
+    return {
         offer,
         resultPublicKey: keyAlgorithm && resultPublicKeyBase64 ? JSON.stringify({
             algo: keyAlgorithm,
@@ -168,6 +170,37 @@ export const createOrder = async (props: CreateOrderProps): Promise<string> => {
             selectedOffers,
         },
     };
+};
+
+export const getOfferInfo = async (offer?: string): Promise<{ offerType: OfferType; info: OfferInfo | TeeOfferInfo } | undefined> => {
+    if (!offer) return undefined;
+    const offerInstance = new TeeOffer(offer);
+    const offerType = await offerInstance.getOfferType();
+    return {
+        offerType,
+        info: offerType === OfferType.TeeOffer
+            ? await new TeeOffer(offer).getInfo()
+            : await new Offer(offer).getInfo(),
+    };
+};
+
+export const getOfferHoldSum = async (offer?: string): Promise<number> => {
+    const { info, offerType } = await getOfferInfo(offer) || {};
+    return offerType === OfferType.TeeOffer ? 0 : (info as OfferInfo)?.holdSum;
+};
+
+export const createOrder = async (props: CreateOrderProps): Promise<string> => {
+    const { values, actionAccountAddress, web3 } = props;
+    const {
+        offer,
+        suspended = false,
+        parentTeeOrder,
+        calcOrderDeposit = 0,
+    } = values || {};
+    if (!actionAccountAddress) throw new Error('Account address is not defined');
+    const orderMinDeposit = await Superpro.getParam(ParamName.OrderMinimumDeposit) || 0;
+    const offerHoldSum = await getOfferHoldSum(offer);
+    const params = await getOrderParams(values);
     const orderGuid = getExternalId();
     let orderAddress = '';
     const requiredDeposit = Math.max(offerHoldSum, orderMinDeposit);
@@ -203,9 +236,29 @@ export const createOrder = async (props: CreateOrderProps): Promise<string> => {
         );
     }
     if (!orderAddress) {
-        throw new Error('Order address is empty');
+        throw new Error('Order address is not defined');
     }
     return orderAddress;
+};
+
+export const createSubOrders = async (props: CreateSubOrderProps): Promise<string> => {
+    const { values, actionAccountAddress, web3 } = props;
+    const { list, order } = values || {};
+    if (!actionAccountAddress) throw new Error('Account address is not defined');
+    const externalId = getExternalId();
+    const ordersParams = await Promise.all(list.map(async (props) => {
+        const { offer } = props || {};
+        const offerHoldSum = await getOfferHoldSum(offer);
+        const orderParams = await getOrderParams(props);
+        return {
+            ...orderParams,
+            externalId,
+            holdSum: offerHoldSum,
+            blocking: false,
+        };
+    }));
+    await new Order(order).createSubOrders(ordersParams, { from: actionAccountAddress, web3 });
+    return ''; // todo
 };
 
 export const startOrder = async (props: StartOrderProps): Promise<void> => {
@@ -244,44 +297,20 @@ export const workflow = async (props: WorkflowProps): Promise<void> => {
             web3,
         });
         canceledOrders.push(teeOrderAddress);
-        if (solution?.length) {
-            for (let i = 0; i < solution.length; i++) {
-                const offer = solution[i];
-                const solutionOrderAddress = await createOrder({
-                    actionAccountAddress,
-                    values: {
-                        parentTeeOrder: teeOrderAddress,
-                        keyAlgorithm: CryptoAlgorithm.ECIES,
-                        offer,
-                        inputOffers: [],
-                        selectedOffers: (storage ? [storage] : [])
-                            .concat(tee || []),
-                    },
-                    web3,
-                });
-                canceledOrders.push(solutionOrderAddress);
-            }
-        }
-        if (data?.length) {
-            for (let i = 0; i < data.length; i++) {
-                const offer = data[i];
-                const dataOrder = await createOrder({
-                    actionAccountAddress,
-                    values: {
-                        offer,
-                        parentTeeOrder: teeOrderAddress,
-                        keyAlgorithm: CryptoAlgorithm.ECIES,
-                        inputOffers: [],
-                        selectedOffers: (storage ? [storage] : [])
-                            .concat(tee || []),
-                    },
-                    web3,
-                });
-                canceledOrders.push(dataOrder);
-            }
-        }
+        const subOrdersInfo = (solution || []).concat(data || []).map((offer) => ({
+            parentTeeOrder: teeOrderAddress,
+            keyAlgorithm: CryptoAlgorithm.ECIES,
+            offer,
+            inputOffers: [],
+            selectedOffers: (storage ? [storage] : [])
+                .concat(tee || []),
+        }));
+        console.log('subOrdersInfo', subOrdersInfo);
+        await createSubOrders({ values: { list: subOrdersInfo, order: teeOrderAddress }, web3, actionAccountAddress });
+        console.log('after sub orders');
         await startOrder({ orderAddress: teeOrderAddress, actionAccountAddress, web3 });
     } catch (e) {
+        console.log('e', e);
         for (let i = 0; i < canceledOrders.length; i++) {
             const orderAddress = canceledOrders[i];
             await cancelOrder({ actionAccountAddress, orderAddress, web3 });
