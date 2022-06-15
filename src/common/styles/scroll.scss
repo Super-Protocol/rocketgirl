@@ -1,0 +1,23 @@
+::-webkit-scrollbar {
+  width: 18px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--orange100);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--orange100);
+  border-radius: 18px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--orange100);
+  border-radius: 18px;
+  border: 6px solid transparent;
+  background-clip: content-box;
+}
