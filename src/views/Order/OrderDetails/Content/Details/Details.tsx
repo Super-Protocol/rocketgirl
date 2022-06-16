@@ -33,7 +33,7 @@ export const Details = memo<DetailsProps>(({ id }) => {
     const orderAddress = useMemo(() => order?.address, [order]);
     const info = useMemo(() => getInfo(order, orderInfo), [order, orderInfo]);
     const tee = useMemo(() => getTee(order), [order]);
-    const isMyOrder = useMemo(() => order?.consumer === selectedAddress, [order, selectedAddress]);
+    // const isMyOrder = useMemo(() => order?.consumer === selectedAddress, [order, selectedAddress]);
 
     useEffect(() => {
         getOrder();
@@ -41,7 +41,7 @@ export const Details = memo<DetailsProps>(({ id }) => {
     }, [getOrder, updateOrderInfo]);
 
     if (loading) return <Spinner fullscreen />;
-    if (!isMyOrder) return null;
+    // if (!isMyOrder) return null; // todo hide before production
     if (!isConnected) return <NoAccountBlock message="Connect your wallet to see if you made an order" />;
 
     return (
