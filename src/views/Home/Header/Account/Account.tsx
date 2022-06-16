@@ -4,6 +4,7 @@ import React, {
     useContext,
     useMemo,
 } from 'react';
+import Web3 from 'web3';
 import {
     Box,
 } from '@/uikit';
@@ -18,8 +19,8 @@ export const Account: FC<AccountProps> = memo(() => {
         balance,
         selectedAddress,
     } = useContext(WalletContext);
-    const matic = useMemo(() => (balance.matic ? Number.parseFloat(balance.matic).toFixed(1) : '-'), [balance.matic]);
-    const tee = useMemo(() => (balance.tee ? Number.parseFloat(balance.tee).toFixed(1) : '-'), [balance.tee]);
+    const matic = useMemo(() => (balance.matic ? Number.parseFloat(balance.matic).toFixed(3) : '-'), [balance.matic]);
+    const tee = useMemo(() => (balance.tee ? Web3.utils.fromWei(balance.tee) : '-'), [balance.tee]);
     return (
         <Box>
             {

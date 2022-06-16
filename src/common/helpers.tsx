@@ -78,19 +78,6 @@ export const getBase64FromHex = (hex: string): string => {
     return Buffer.from(hex, 'hex').toString('base64');
 };
 
-export const getFormattedSatoshi = (num: number, count: number): string => {
-    if (!num) return '';
-    if (num > Number.MAX_SAFE_INTEGER) throw new Error('Value is bigger then MAX_SAFE_INTEGER');
-    const str = `${num}`;
-    if (!count) return str;
-    const newCount = count - str.length;
-    if (newCount > 0) {
-        const zeroStr = [...Array(newCount - 1).fill('0')].join('');
-        return `0.${zeroStr}${str}`;
-    }
-    return `${num / (10 ** count)}`;
-};
-
 export const genRanHex = (size: number): string => [...Array(size)]
     .map(() => Math.floor(Math.random() * 16).toString(16))
     .join('');
