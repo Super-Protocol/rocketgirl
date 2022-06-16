@@ -155,6 +155,11 @@ export type Erc20rFilter = {
   owner?: InputMaybe<Scalars['String']>;
 };
 
+export type EventFilter = {
+  /** filter events by consumer */
+  consumer?: InputMaybe<Scalars['String']>;
+};
+
 export type ListConfigResponse = {
   __typename?: 'ListConfigResponse';
   page: ConfigConnection;
@@ -982,12 +987,18 @@ export type StatsInput = {
 
 export type Subscription = {
   __typename?: 'Subscription';
-  /** event - create or update an entity */
+  /** event - create or update an entity. My be filtered by consumer */
   event: SubscriptionPayload;
+};
+
+
+export type SubscriptionEventArgs = {
+  filter?: InputMaybe<EventFilter>;
 };
 
 export type SubscriptionPayload = {
   __typename?: 'SubscriptionPayload';
+  consumer?: Maybe<Scalars['String']>;
   data?: Maybe<Array<Scalars['String']>>;
   subscriptionSource: SubscriptionSource;
   type: SubscriptionType;
