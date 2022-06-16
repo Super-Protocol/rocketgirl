@@ -12,6 +12,7 @@ import {
     SuperproToken,
     OrderInfo,
     TeeOfferInfo,
+    ExtendedOrderInfo,
 } from '@super-protocol/sp-sdk-js';
 import Web3 from 'web3';
 import {
@@ -56,6 +57,7 @@ export interface CreateSubOrderProps {
     };
     actionAccountAddress: string;
     web3: Web3;
+    fetchOrderId?: boolean;
 }
 export interface GetCalcOrderDepositWorkflow {
     solution?: string[];
@@ -82,6 +84,7 @@ export interface WorkflowProps {
     actionAccountAddress: string;
     web3: Web3;
 }
+export type GetOfferInfoResult = { offerType: OfferType; info: OfferInfo | TeeOfferInfo } | undefined;
 
 export const cancelOrder = async ({ orderAddress, web3, actionAccountAddress }: CancelOrderProps): Promise<void> => {
     if (!orderAddress) throw new Error('Order address required');
@@ -135,6 +138,38 @@ export const createOrderSubscription = async (
     });
 };
 
+export const createOrdersSubscription = async (
+    creator: () => Promise<any>,
+    consumer: string,
+    externalsIds: string[],
+): Promise<Map<string, string>> => {
+    return new Promise((res, rej) => {
+        const cache = new Map<string, null | string>(externalsIds.map((id) => [id, null]));
+        const subscription = OrdersFactory.onOrderCreated(async () => {
+            try {
+                const list = await Promise.all(
+                    [...cache]
+                        .filter(([, orderId]) => typeof orderId === 'number')
+                        .map(([externalId]) => OrdersFactory.getOrder(consumer, externalId)),
+                );
+                list.forEach(({ externalId, orderId }) => {
+                    if (typeof (orderId as number | null) === 'number') {
+                        cache.set(externalId, `${orderId}`);
+                    }
+                });
+                if ([...cache].every(([, orderId]) => typeof orderId === 'string')) {
+                    res(cache as Map<string, string>);
+                }
+            } catch (e) {
+                rej(e);
+            } finally {
+                subscription();
+            }
+        });
+        creator();
+    });
+};
+
 export const getOrderParams = async (props: GetOrderParamsProps): Promise<OrderInfo> => {
     const {
         offer,
@@ -172,7 +207,7 @@ export const getOrderParams = async (props: GetOrderParamsProps): Promise<OrderI
     };
 };
 
-export const getOfferInfo = async (offer?: string): Promise<{ offerType: OfferType; info: OfferInfo | TeeOfferInfo } | undefined> => {
+export const getOfferInfo = async (offer?: string): Promise<GetOfferInfoResult> => {
     if (!offer) return undefined;
     const offerInstance = new TeeOffer(offer);
     const offerType = await offerInstance.getOfferType();
@@ -241,12 +276,9 @@ export const createOrder = async (props: CreateOrderProps): Promise<string> => {
     return orderAddress;
 };
 
-export const createSubOrders = async (props: CreateSubOrderProps): Promise<string> => {
-    const { values, actionAccountAddress, web3 } = props;
-    const { list, order } = values || {};
-    if (!actionAccountAddress) throw new Error('Account address is not defined');
+export const getSubOrdersParams = (list: GetOrderParamsProps[]): Promise<ExtendedOrderInfo[]> => {
     const externalId = getExternalId();
-    const ordersParams = await Promise.all(list.map(async (props) => {
+    return Promise.all(list.map(async (props) => {
         const { offer } = props || {};
         const offerHoldSum = await getOfferHoldSum(offer);
         const orderParams = await getOrderParams(props);
@@ -257,8 +289,27 @@ export const createSubOrders = async (props: CreateSubOrderProps): Promise<strin
             blocking: false,
         };
     }));
-    await new Order(order).createSubOrders(ordersParams, { from: actionAccountAddress, web3 });
-    return ''; // todo
+};
+
+export const createSubOrders = async (props: CreateSubOrderProps): Promise<Map<string, string> | void> => {
+    const {
+        values,
+        actionAccountAddress,
+        web3,
+        fetchOrderId,
+    } = props;
+    const { list, order } = values || {};
+    if (!actionAccountAddress) throw new Error('Account address is not defined');
+    const subOrdersParams = await getSubOrdersParams(list);
+    const fetcher = async () => new Order(order).createSubOrders(subOrdersParams, { from: actionAccountAddress, web3 });
+    if (fetchOrderId) {
+        return createOrdersSubscription(
+            fetcher,
+            actionAccountAddress,
+            subOrdersParams.map(({ externalId }) => externalId),
+        );
+    }
+    await fetcher();
 };
 
 export const startOrder = async (props: StartOrderProps): Promise<void> => {
@@ -305,12 +356,9 @@ export const workflow = async (props: WorkflowProps): Promise<void> => {
             selectedOffers: (storage ? [storage] : [])
                 .concat(tee || []),
         }));
-        console.log('subOrdersInfo', subOrdersInfo);
         await createSubOrders({ values: { list: subOrdersInfo, order: teeOrderAddress }, web3, actionAccountAddress });
-        console.log('after sub orders');
         await startOrder({ orderAddress: teeOrderAddress, actionAccountAddress, web3 });
     } catch (e) {
-        console.log('e', e);
         for (let i = 0; i < canceledOrders.length; i++) {
             const orderAddress = canceledOrders[i];
             await cancelOrder({ actionAccountAddress, orderAddress, web3 });
