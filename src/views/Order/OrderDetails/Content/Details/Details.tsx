@@ -18,7 +18,10 @@ import classes from './Details.module.scss';
 import { SubOrdersTable } from './SubOrdersTable';
 
 export const Details = memo<DetailsProps>(({ id }) => {
-    const { isConnected, selectedAddress } = useContext(WalletContext);
+    const {
+        isConnected,
+        // selectedAddress,
+    } = useContext(WalletContext);
     const [orderInfo, setOrderInfo] = useState<GetOrderInfoResult>();
     const [loadingOrderInfo, setLoadingOrderInfo] = useState(false);
     const [getOrder, orderResult] = useOrderLazyQuery({ variables: { id } });
