@@ -65,12 +65,13 @@ export const encodingAndDownloadFile = async (
 ): Promise<{ isFile: boolean, content: string }> => {
     const { privateKeyBase64 } = generateECIESKeys(phrase);
     const order = new Order(orderAddress);
-    const { encryptedResult } = await order.getOrderResult();
-    if (!encryptedResult) throw new Error('Order encrypted result is empty');
+    const { encryptedResult, encryptedError } = await order.getOrderResult();
+    if (!encryptedResult || !encryptedError) throw new Error('Order encrypted result is empty');
+    const encryptedStr = encryptedResult || encryptedError;
 
     let decrypted = '';
 
-    const encryptedObj: { resource: Encryption, encryption: Encryption } = JSON.parse(encryptedResult);
+    const encryptedObj: { resource: Encryption, encryption: Encryption } = JSON.parse(encryptedStr);
     if (encryptedObj.resource && encryptedObj.encryption) {
         const encryptedResource: Encryption = encryptedObj.resource;
         encryptedResource.key = privateKeyBase64;
@@ -82,7 +83,7 @@ export const encodingAndDownloadFile = async (
 
         decrypted = `{ "resource": ${decryptedResource}, "encryption": ${decryptedEncryption} }`;
     } else {
-        const encryptedObj: Encryption = JSON.parse(encryptedResult);
+        const encryptedObj: Encryption = JSON.parse(encryptedStr);
         encryptedObj.key = privateKeyBase64;
         decrypted = await Crypto.decrypt(encryptedObj);
     }

@@ -156,8 +156,22 @@ export type Erc20rFilter = {
 };
 
 export type EventFilter = {
+  /** filter events by custom params */
+  events?: InputMaybe<Array<EventSource>>;
+};
+
+export type EventFilterField = {
   /** filter events by consumer */
   consumer?: InputMaybe<Scalars['String']>;
+};
+
+export type EventSource = {
+  /** filter */
+  filter?: InputMaybe<EventFilterField>;
+  /** if true(by default), you get the values of the given source */
+  include?: InputMaybe<Scalars['Boolean']>;
+  /** filter events by source */
+  source?: InputMaybe<SubscriptionSource>;
 };
 
 export type ListConfigResponse = {
@@ -1367,7 +1381,7 @@ export type OrderQueryVariables = Exact<{
 }>;
 
 
-export type OrderQuery = { __typename?: 'Query', order: { __typename?: 'Order', address: string, consumer: string, orderHoldDeposit?: number | null, depositSpent?: string | null, offerType: TOfferType, origins?: { __typename?: 'Origins', createdBy: string, createdDate: number, modifiedBy: string, modifiedDate: number } | null, orderInfo: { __typename?: 'OrderInfo', status: string, offer: string, encryptedArgs: string }, teeOfferInfo?: { __typename?: 'TeeOfferInfo', name: string, description: string } | null, orderResult: { __typename?: 'OrderResult', encryptedResult?: string | null } } };
+export type OrderQuery = { __typename?: 'Query', order: { __typename?: 'Order', address: string, consumer: string, orderHoldDeposit?: number | null, depositSpent?: string | null, offerType: TOfferType, origins?: { __typename?: 'Origins', createdBy: string, createdDate: number, modifiedBy: string, modifiedDate: number } | null, orderInfo: { __typename?: 'OrderInfo', status: string, offer: string, encryptedArgs: string }, teeOfferInfo?: { __typename?: 'TeeOfferInfo', name: string, description: string } | null, orderResult: { __typename?: 'OrderResult', encryptedResult?: string | null, encryptedError?: string | null } } };
 
 export type SubOrdersQueryVariables = Exact<{
   pagination: ConnectionArgs;
@@ -1845,6 +1859,7 @@ export const OrderDocument = gql`
     }
     orderResult {
       encryptedResult
+      encryptedError
     }
   }
 }

@@ -55,7 +55,7 @@ export const getInfo = (order?: OrderQuery['order'], orderInfoSdk?: GetOrderInfo
             },
             {
                 key: 'Status information',
-                value: orderResult?.encryptedResult ? 'Result is ready' : '-',
+                value: orderResult?.encryptedResult || orderResult?.encryptedError ? 'Result is ready' : '-',
             },
             {
                 key: 'Modified Date',
