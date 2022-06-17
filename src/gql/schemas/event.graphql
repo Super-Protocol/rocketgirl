@@ -1,5 +1,5 @@
 subscription Event($filter: EventFilter) {
-    event {
+    event(filter: $filter) {
         data
         type
         subscriptionSource

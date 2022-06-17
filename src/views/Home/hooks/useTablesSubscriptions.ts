@@ -27,26 +27,21 @@ export const useTablesSubscriptions = (fetcher: UseTablesQueryFetcherResult, con
                     events: [
                         {
                             source: SubscriptionSource.Provider,
-                            include: true,
                         },
                         {
                             source: SubscriptionSource.TeeOffer,
-                            include: true,
                         },
                         {
                             source: SubscriptionSource.Offer,
-                            include: true,
                         },
                         ...(consumer
                             ? [
                                 {
                                     source: SubscriptionSource.Order,
-                                    include: true,
                                     filter: { consumer },
                                 },
                                 {
                                     source: SubscriptionSource.Transaction,
-                                    include: true,
                                     filter: { consumer },
                                 },
                             ]

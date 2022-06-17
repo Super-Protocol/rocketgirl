@@ -66,7 +66,7 @@ export const encodingAndDownloadFile = async (
     const { privateKeyBase64 } = generateECIESKeys(phrase);
     const order = new Order(orderAddress);
     const { encryptedResult, encryptedError } = await order.getOrderResult();
-    if (!encryptedResult || !encryptedError) throw new Error('Order encrypted result is empty');
+    if (!encryptedResult && !encryptedError) throw new Error('Order encrypted result is empty');
     const encryptedStr = encryptedResult || encryptedError;
 
     let decrypted = '';

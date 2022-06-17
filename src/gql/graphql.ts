@@ -168,9 +168,7 @@ export type EventFilterField = {
 export type EventSource = {
   /** filter */
   filter?: InputMaybe<EventFilterField>;
-  /** if true(by default), you get the values of the given source */
-  include?: InputMaybe<Scalars['Boolean']>;
-  /** filter events by source */
+  /** subscribe on this events by source */
   source?: InputMaybe<SubscriptionSource>;
 };
 
@@ -520,6 +518,7 @@ export type Order = {
   orderResult: OrderResult;
   origins?: Maybe<Origins>;
   parentOrder?: Maybe<ParentOrder>;
+  providerInfo: ProviderInformation;
   subOrders?: Maybe<Array<BaseOrder>>;
   teeOfferInfo?: Maybe<TeeOfferInfo>;
 };
@@ -623,6 +622,7 @@ export type OrderInputType = {
   orderInfo: OrderInfoInput;
   orderResult: OrderResultInput;
   parentOrder?: InputMaybe<ParentOrderInputType>;
+  providerInfo: ProviderInformationInput;
   subOrders?: InputMaybe<Array<BaseOrderInputType>>;
   teeOfferInfo?: InputMaybe<TeeOfferInfoInput>;
 };
@@ -1434,7 +1434,7 @@ export const PageDataDtoFragmentFragmentDoc = gql`
     `;
 export const EventDocument = gql`
     subscription Event($filter: EventFilter) {
-  event {
+  event(filter: $filter) {
     data
     type
     subscriptionSource
