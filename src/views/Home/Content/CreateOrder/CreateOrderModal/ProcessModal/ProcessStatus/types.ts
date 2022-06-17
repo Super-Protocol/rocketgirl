@@ -1,7 +1,8 @@
 export enum Status {
     QUEUE = 'QUEUE',
-    IN_PROGRESS = 'IN_PROGRESS',
-    CREATED = 'CREATED',
+    PROGRESS = 'PROGRESS',
+    DONE = 'DONE',
+    ERROR = 'ERROR',
 }
 
 export interface ProcessStatusProps {

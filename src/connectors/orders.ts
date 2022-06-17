@@ -80,22 +80,25 @@ export interface WorkflowPropsValues {
     args?: string;
 }
 export enum Process {
+    FILE = 'FILE',
     TEE = 'TEE',
     SOLUTION = 'SOLUTION',
     DATA = 'DATA',
-    STORAGE = 'STORAGE'
+    STORAGE = 'STORAGE',
+    ORDER_START = 'ORDER_START'
 }
 
 export enum Status {
     QUEUE = 'QUEUE',
-    IN_PROGRESS = 'IN_PROGRESS',
-    CREATED = 'CREATED',
+    PROGRESS = 'PROGRESS',
+    DONE = 'DONE',
+    ERROR = 'ERROR',
 }
 export interface WorkflowProps {
     values: WorkflowPropsValues;
     actionAccountAddress: string;
     web3: Web3;
-    changeState: (process: Process, status: Status) => void;
+    changeState: (process: Process, status: Status, error?: Error) => void;
 }
 export type GetOfferInfoResult = { offerType: OfferType; info: OfferInfo | TeeOfferInfo } | undefined;
 
@@ -351,7 +354,7 @@ export const workflow = async (props: WorkflowProps): Promise<void> => {
     const canceledOrders: string[] = [];
     const { publicKeyBase64 } = generateECIESKeys(mnemonic);
     try {
-        changeState(Process.TEE, Status.IN_PROGRESS);
+        changeState(Process.TEE, Status.PROGRESS);
         const teeOrderAddress = await createOrder({
             actionAccountAddress,
             values: {
@@ -365,8 +368,11 @@ export const workflow = async (props: WorkflowProps): Promise<void> => {
                 selectedOffers: storage ? [storage] : [],
             },
             web3,
+        }).catch((e) => {
+            changeState(Process.TEE, Status.ERROR, e as Error);
+            throw e;
         });
-        changeState(Process.TEE, Status.CREATED);
+        changeState(Process.TEE, Status.DONE);
         canceledOrders.push(teeOrderAddress);
         const subOrdersInfo = (solution || []).concat(data || []).map((offer) => ({
             parentTeeOrder: teeOrderAddress,
@@ -376,14 +382,25 @@ export const workflow = async (props: WorkflowProps): Promise<void> => {
             selectedOffers: (storage ? [storage] : [])
                 .concat(tee || []),
         }));
-        changeState(Process.DATA, Status.IN_PROGRESS);
-        changeState(Process.SOLUTION, Status.IN_PROGRESS);
-        changeState(Process.STORAGE, Status.IN_PROGRESS);
-        await createSubOrders({ values: { list: subOrdersInfo, order: teeOrderAddress }, web3, actionAccountAddress });
-        changeState(Process.DATA, Status.CREATED);
-        changeState(Process.SOLUTION, Status.CREATED);
-        changeState(Process.STORAGE, Status.CREATED);
-        await startOrder({ orderAddress: teeOrderAddress, actionAccountAddress, web3 });
+        changeState(Process.DATA, Status.PROGRESS);
+        changeState(Process.SOLUTION, Status.PROGRESS);
+        changeState(Process.STORAGE, Status.PROGRESS);
+        await createSubOrders({ values: { list: subOrdersInfo, order: teeOrderAddress }, web3, actionAccountAddress })
+            .catch((e) => {
+                changeState(Process.DATA, Status.ERROR, e as Error);
+                changeState(Process.SOLUTION, Status.ERROR, e as Error);
+                changeState(Process.STORAGE, Status.ERROR, e as Error);
+                throw e;
+            });
+        changeState(Process.DATA, Status.DONE);
+        changeState(Process.SOLUTION, Status.DONE);
+        changeState(Process.STORAGE, Status.DONE);
+        changeState(Process.ORDER_START, Status.PROGRESS);
+        await startOrder({ orderAddress: teeOrderAddress, actionAccountAddress, web3 }).catch((e) => {
+            changeState(Process.ORDER_START, Status.ERROR, e as Error);
+            throw e;
+        });
+        changeState(Process.ORDER_START, Status.DONE);
     } catch (e) {
         for (let i = 0; i < canceledOrders.length; i++) {
             const orderAddress = canceledOrders[i];

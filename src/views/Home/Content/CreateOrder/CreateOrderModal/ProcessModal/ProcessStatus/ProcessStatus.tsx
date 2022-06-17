@@ -7,14 +7,14 @@ import classes from './ProcessStatus.module.scss';
 export const ProcessStatus: FC<ProcessStatusProps> = memo(({ status, className }) => {
     const renderStatus = useMemo(() => {
         switch (status) {
-            case Status.IN_PROGRESS:
+            case Status.PROGRESS:
                 return (
                     <>
                         <Spinner animation="border" className={classes.spinner} />
                         <span className={classes.progressText}>In progress</span>
                     </>
                 );
-            case Status.CREATED:
+            case Status.DONE:
                 return (
                     <>
                         <Icon
@@ -22,7 +22,7 @@ export const ProcessStatus: FC<ProcessStatusProps> = memo(({ status, className }
                             name="done"
                             className={classes.createdIcon}
                         />
-                        <span className={classes.createdText}>Order created</span>
+                        <span className={classes.createdText}>Done</span>
                     </>
                 );
             case Status.QUEUE:
@@ -34,6 +34,17 @@ export const ProcessStatus: FC<ProcessStatusProps> = memo(({ status, className }
                             className={classes.queueIcon}
                         />
                         <span className={classes.queueText}>In queue</span>
+                    </>
+                );
+            case Status.ERROR:
+                return (
+                    <>
+                        <Icon
+                            width={14}
+                            name="close-small"
+                            className={classes.errorIcon}
+                        />
+                        <span className={classes.errorText}>Error</span>
                     </>
                 );
             default:

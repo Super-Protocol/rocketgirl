@@ -60,12 +60,15 @@ export const getProcessList = (values: FormValues): Process[] => {
         storage,
         solution,
         data,
+        file,
     } = values || {};
     return ([] as Process[])
         .concat((tee ? Process.TEE : []))
         .concat(solution ? Process.SOLUTION : [])
         .concat(storage ? Process.STORAGE : [])
-        .concat(data?.length ? Process.DATA : []);
+        .concat(data?.length ? Process.DATA : [])
+        .concat(file ? Process.FILE : [])
+        .concat(Process.ORDER_START);
 };
 
 export const useWorkflow = (): UseWorkflowResult => {
@@ -96,16 +99,23 @@ export const useWorkflow = (): UseWorkflowResult => {
         const phrase = phraseTabMode === Modes.generate ? phraseGenerated : phraseInput;
         let tiiGeneratorId;
         if (!phrase) throw new Error('Seed phrase required');
+        initProcess(getProcessList(formValues));
         if (!data?.length && file) {
             if (!tee?.value) throw new Error('TEE required');
-            const { encryption, key } = await encryptFile(file);
-            const { ciphertext, ...restEncryption } = encryption;
-            const uploadResult = await uploadFile({ fileName: file.name, ciphertext });
-            const filepath = getFilePath(uploadResult);
-            const tiiEncryption = { ...restEncryption, key };
-            tiiGeneratorId = await generateByOffer({ offerId: tee?.value, encryption: tiiEncryption, filepath });
+            try {
+                changeState(Process.FILE, Status.PROGRESS);
+                const { encryption, key } = await encryptFile(file);
+                const { ciphertext, ...restEncryption } = encryption;
+                const uploadResult = await uploadFile({ fileName: file.name, ciphertext });
+                const filepath = getFilePath(uploadResult);
+                const tiiEncryption = { ...restEncryption, key };
+                tiiGeneratorId = await generateByOffer({ offerId: tee?.value, encryption: tiiEncryption, filepath });
+                changeState(Process.FILE, Status.DONE);
+            } catch (e) {
+                changeState(Process.FILE, Status.ERROR, e as Error);
+                throw e;
+            }
         }
-        initProcess(getProcessList(formValues));
         await workflow({
             values: getWorkflowValues(formValues, phrase as string, tiiGeneratorId),
             actionAccountAddress,
