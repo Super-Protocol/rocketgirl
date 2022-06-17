@@ -156,8 +156,22 @@ export type Erc20rFilter = {
 };
 
 export type EventFilter = {
+  /** filter events by custom params */
+  events?: InputMaybe<Array<EventSource>>;
+};
+
+export type EventFilterField = {
   /** filter events by consumer */
   consumer?: InputMaybe<Scalars['String']>;
+};
+
+export type EventSource = {
+  /** filter */
+  filter?: InputMaybe<EventFilterField>;
+  /** if true(by default), you get the values of the given source */
+  include?: InputMaybe<Scalars['Boolean']>;
+  /** filter events by source */
+  source?: InputMaybe<SubscriptionSource>;
 };
 
 export type ListConfigResponse = {

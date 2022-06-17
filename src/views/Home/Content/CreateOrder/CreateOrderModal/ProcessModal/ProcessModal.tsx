@@ -11,8 +11,8 @@ import { Info } from '@/uikit/ListAdder/ListAdderView/types';
 import { Process, Status } from '@/connectors/orders';
 import { ProcessModalProps } from './types';
 import classes from './ProcessModal.module.scss';
-import { ProcessStatus } from './ProcessStatus';
 import { useWorkflow } from '../hooks/useWorkflow';
+import { ProcessItem } from './ProcessItem';
 
 export const ProcessModal: FC<ProcessModalProps> = memo(({ formValues }) => {
     const { selectedAddress, instance } = useContext(WalletContext);
@@ -28,19 +28,6 @@ export const ProcessModal: FC<ProcessModalProps> = memo(({ formValues }) => {
         storage,
         data,
     } = useMemo(() => formValues, [formValues]);
-    const renderItem = useCallback((status: Status) => (item) => {
-        const { data } = item || {};
-        return (
-            <Box justifyContent="space-between" className={classes.item}>
-                <TooltipLink
-                    title="Description"
-                    text={data?.description}
-                    classNameTooltip={classes.itemTooltip}
-                />
-                <ProcessStatus status={status} className={classes.processStatus} />
-            </Box>
-        );
-    }, []);
     const init = useCallback(async () => {
         try {
             await runWorkflow({
@@ -64,41 +51,16 @@ export const ProcessModal: FC<ProcessModalProps> = memo(({ formValues }) => {
                 <button onClick={() => changeStateProcess(Process.TEE, Status.IN_PROGRESS)}>tee in progress</button>
                 <button onClick={() => changeStateProcess(Process.TEE, Status.CREATED)}>tee created</button>
                 {!!tee && (
-                    <ListAdderView
-                        classNameListItem={classes.listItem}
-                        className={classes.mrb}
-                        label="TEE"
-                        values={tee as any}
-                        renderItem={renderItem(stateProcess[Process.TEE])}
-                    />
+                    <ProcessItem name={(tee as any)?.name} className={classes.mrb} status={stateProcess[Process.TEE]} />
                 )}
                 {!!solution && (
-                    <ListAdderView
-                        classNameListItem={classes.listItem}
-                        className={classes.mrb}
-                        label="Solution"
-                        values={solution as any}
-                        renderItem={renderItem(stateProcess[Process.SOLUTION])}
-                    />
+                    <ProcessItem name={(solution as any)?.name} className={classes.mrb} status={stateProcess[Process.SOLUTION]} />
                 )}
                 {!!storage && (
-                    <ListAdderView
-                        classNameListItem={classes.listItem}
-                        className={classes.mrb}
-                        label="Storage"
-                        values={storage as any}
-                        renderItem={renderItem(stateProcess[Process.STORAGE])}
-                    />
+                    <ProcessItem name={(storage as any)?.name} className={classes.mrb} status={stateProcess[Process.STORAGE]} />
                 )}
                 {!!data && (
-                    <ListAdderView
-                        classNameListItem={classes.listItem}
-                        className={classes.mrb}
-                        label="Data"
-                        isMulti
-                        values={data as any}
-                        renderItem={renderItem(stateProcess[Process.DATA])}
-                    />
+                    <ProcessItem name={(data as any)?.name} className={classes.mrb} status={stateProcess[Process.DATA]} />
                 )}
             </Box>
         </Box>

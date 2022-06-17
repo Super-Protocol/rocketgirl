@@ -1,0 +1,15 @@
+$process-status-width: 110px;
+$process-status-mr-left: 10px;
+
+.item {
+  background-color: var(--grey20);
+}
+
+.processStatus {
+  width: $process-status-width;
+  margin-left: $process-status-mr-left;
+}
+
+.itemTooltip {
+  width: calc(100% - #{$process-status-width} - #{$process-status-mr-left});
+}
