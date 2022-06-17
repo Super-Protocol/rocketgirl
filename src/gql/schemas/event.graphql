@@ -1,4 +1,4 @@
-subscription Event {
+subscription Event($filter: EventFilter) {
     event {
         data
         type

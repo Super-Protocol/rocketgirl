@@ -1324,7 +1324,9 @@ export type Web3InputType = {
 
 export type PageDataDtoFragmentFragment = { __typename?: 'PageDataDto', count: number, limit: number, offset: number };
 
-export type EventSubscriptionVariables = Exact<{ [key: string]: never; }>;
+export type EventSubscriptionVariables = Exact<{
+  filter?: InputMaybe<EventFilter>;
+}>;
 
 
 export type EventSubscription = { __typename?: 'Subscription', event: { __typename?: 'SubscriptionPayload', data?: Array<string> | null, type: SubscriptionType, subscriptionSource: SubscriptionSource } };
@@ -1431,7 +1433,7 @@ export const PageDataDtoFragmentFragmentDoc = gql`
 }
     `;
 export const EventDocument = gql`
-    subscription Event {
+    subscription Event($filter: EventFilter) {
   event {
     data
     type
@@ -1452,6 +1454,7 @@ export const EventDocument = gql`
  * @example
  * const { data, loading, error } = useEventSubscription({
  *   variables: {
+ *      filter: // value for 'filter'
  *   },
  * });
  */
