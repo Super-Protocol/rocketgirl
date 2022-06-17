@@ -24,6 +24,7 @@ export const ListAdderView: FC<ListAdderViewProps<Info>> = memo(({
     isInvalid,
     renderItem,
     disabled,
+    classNameListItem,
 }) => {
     const onAdd = useCallback(() => {
         onAddProps?.({ isMulti, values });
@@ -38,8 +39,13 @@ export const ListAdderView: FC<ListAdderViewProps<Info>> = memo(({
     return (
         <Box direction="column" className={cn(className, { [classes.invalid]: isInvalid })}>
             <Box className={classes.label}>{label}</Box>
-            <ListAdderViewList list={list} onDelete={onDelete} renderItem={renderItem} />
-            {(isMulti || !values) && (
+            <ListAdderViewList
+                list={list}
+                onDelete={onDeleteProps ? onDelete : undefined}
+                renderItem={renderItem}
+                classNameListItem={classNameListItem}
+            />
+            {(isMulti || !values) && onAddProps && (
                 <Button className={classes.btn} onClick={onAdd} disabled={disabled}>
                     <Icon
                         width={18}

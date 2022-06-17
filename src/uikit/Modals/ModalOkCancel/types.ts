@@ -22,6 +22,7 @@ export interface ModalOkCancelProps {
     children?: ReactNode;
     classNameTitle?: string;
     classNameHeader?: string;
+    classNameBody?: string;
     components?: ModalComponents;
     classNameWrap?: string;
     showMuarScrollbar?: boolean;

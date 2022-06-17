@@ -17,6 +17,7 @@ export const ModalOkCancel: FC<ModalOkCancelProps> = memo(({
     classNameTitle,
     classNameHeader,
     classNameWrap,
+    classNameBody,
     messages,
     children,
     components,
@@ -49,7 +50,7 @@ export const ModalOkCancel: FC<ModalOkCancelProps> = memo(({
             backdropClassName={classes.backdrop}
             contentClassName={classes.content}
         >
-            <Modal.Body className={classes.body}>
+            <Modal.Body className={cn(classes.body, classNameBody)}>
                 {components?.main || (
                     <>
                         {components?.header || (

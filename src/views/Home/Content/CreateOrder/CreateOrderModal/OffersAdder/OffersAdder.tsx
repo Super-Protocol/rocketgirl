@@ -84,6 +84,7 @@ export const OffersAdder: <TNode>(p: OffersAdderProps<TNode>) =>
 
         return (
             <ListAdderViewFormik
+                classNameListItem={classes.listItem}
                 disabled={disabled}
                 name={name}
                 label={label}

@@ -9,6 +9,7 @@ export const ListAdderViewList: FC<ListAdderViewListProps> = memo(({
     list,
     onDelete,
     renderItem,
+    classNameListItem,
 }) => {
     if (!list?.length) return null;
     return (
@@ -16,9 +17,13 @@ export const ListAdderViewList: FC<ListAdderViewListProps> = memo(({
             {list.map((item) => {
                 const sub = item?.data?.sub;
                 return (
-                    <Box direction="column" className={classes.listItem} key={`parent_${item?.value as string}`}>
+                    <Box
+                        direction="column"
+                        className={cn(classes.listItem, classNameListItem)}
+                        key={`parent_${item?.value as string}`}
+                    >
                         <ListAdderViewListItem
-                            onDelete={() => onDelete?.(item)}
+                            onDelete={onDelete ? () => onDelete(item) : undefined}
                             className={classes.listItemTop}
                         >
                             {renderItem ? renderItem?.(item) : item?.value}

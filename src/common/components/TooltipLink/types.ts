@@ -3,4 +3,6 @@ export interface TooltipLinkProps {
     link?: string;
     text: string;
     checkOverflow?: boolean;
+    isFullWidth?: boolean;
+    classNameTooltip?: string;
 }

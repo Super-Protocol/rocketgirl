@@ -1,0 +1,40 @@
+.wrap {}
+
+.createdIcon {
+  color: var(--green100);
+  margin-right: 7px;
+}
+
+.createdText {
+  color: var(--green100);
+}
+
+.queueIcon {
+  color: var(--yellow100);
+  margin-right: 7px;
+}
+
+.errorIcon {
+  color: var(--red100);
+  margin-right: 7px;
+}
+
+.errorText {
+  color: var(--red100);
+}
+
+.queueText {
+  color: var(--grey15);
+}
+
+.progressText {
+  color: var(--grey15);
+}
+
+.spinner {
+  width: 12px;
+  height: 12px;
+  border-width: 2px;
+  margin-right: 7px;
+  color: var(--orange90);
+}

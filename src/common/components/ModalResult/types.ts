@@ -4,4 +4,5 @@ export interface ModalResultProps {
     children: ReactElement | string;
     classNameMessage?: string;
     transactionHash?: string;
+    type?: 'success' | 'error';
 }

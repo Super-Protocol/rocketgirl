@@ -79,10 +79,26 @@ export interface WorkflowPropsValues {
     mnemonic: string;
     args?: string;
 }
+export enum Process {
+    FILE = 'FILE',
+    TEE = 'TEE',
+    SOLUTION = 'SOLUTION',
+    DATA = 'DATA',
+    STORAGE = 'STORAGE',
+    ORDER_START = 'ORDER_START'
+}
+
+export enum Status {
+    QUEUE = 'QUEUE',
+    PROGRESS = 'PROGRESS',
+    DONE = 'DONE',
+    ERROR = 'ERROR',
+}
 export interface WorkflowProps {
     values: WorkflowPropsValues;
     actionAccountAddress: string;
     web3: Web3;
+    changeState: (process: Process, status: Status, error?: Error) => void;
 }
 export type GetOfferInfoResult = { offerType: OfferType; info: OfferInfo | TeeOfferInfo } | undefined;
 
@@ -286,7 +302,7 @@ export const getSubOrdersParams = (list: GetOrderParamsProps[]): Promise<Extende
             ...orderParams,
             externalId,
             holdSum: offerHoldSum,
-            blocking: false,
+            blocking: true,
         };
     }));
 };
@@ -319,7 +335,12 @@ export const startOrder = async (props: StartOrderProps): Promise<void> => {
 };
 
 export const workflow = async (props: WorkflowProps): Promise<void> => {
-    const { values, actionAccountAddress, web3 } = props;
+    const {
+        values,
+        actionAccountAddress,
+        web3,
+        changeState,
+    } = props;
     const {
         tee,
         storage,
@@ -333,6 +354,7 @@ export const workflow = async (props: WorkflowProps): Promise<void> => {
     const canceledOrders: string[] = [];
     const { publicKeyBase64 } = generateECIESKeys(mnemonic);
     try {
+        changeState(Process.TEE, Status.PROGRESS);
         const teeOrderAddress = await createOrder({
             actionAccountAddress,
             values: {
@@ -346,7 +368,11 @@ export const workflow = async (props: WorkflowProps): Promise<void> => {
                 selectedOffers: storage ? [storage] : [],
             },
             web3,
+        }).catch((e) => {
+            changeState(Process.TEE, Status.ERROR, e as Error);
+            throw e;
         });
+        changeState(Process.TEE, Status.DONE);
         canceledOrders.push(teeOrderAddress);
         const subOrdersInfo = (solution || []).concat(data || []).map((offer) => ({
             parentTeeOrder: teeOrderAddress,
@@ -356,8 +382,25 @@ export const workflow = async (props: WorkflowProps): Promise<void> => {
             selectedOffers: (storage ? [storage] : [])
                 .concat(tee || []),
         }));
-        await createSubOrders({ values: { list: subOrdersInfo, order: teeOrderAddress }, web3, actionAccountAddress });
-        await startOrder({ orderAddress: teeOrderAddress, actionAccountAddress, web3 });
+        changeState(Process.DATA, Status.PROGRESS);
+        changeState(Process.SOLUTION, Status.PROGRESS);
+        changeState(Process.STORAGE, Status.PROGRESS);
+        await createSubOrders({ values: { list: subOrdersInfo, order: teeOrderAddress }, web3, actionAccountAddress })
+            .catch((e) => {
+                changeState(Process.DATA, Status.ERROR, e as Error);
+                changeState(Process.SOLUTION, Status.ERROR, e as Error);
+                changeState(Process.STORAGE, Status.ERROR, e as Error);
+                throw e;
+            });
+        changeState(Process.DATA, Status.DONE);
+        changeState(Process.SOLUTION, Status.DONE);
+        changeState(Process.STORAGE, Status.DONE);
+        changeState(Process.ORDER_START, Status.PROGRESS);
+        await startOrder({ orderAddress: teeOrderAddress, actionAccountAddress, web3 }).catch((e) => {
+            changeState(Process.ORDER_START, Status.ERROR, e as Error);
+            throw e;
+        });
+        changeState(Process.ORDER_START, Status.DONE);
     } catch (e) {
         for (let i = 0; i < canceledOrders.length; i++) {
             const orderAddress = canceledOrders[i];

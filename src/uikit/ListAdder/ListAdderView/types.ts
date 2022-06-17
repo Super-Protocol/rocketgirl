@@ -24,6 +24,7 @@ export interface ListAdderViewProps<Info> {
     showError?: boolean;
     renderItem?: (value: Item<Info>) => ReactNode;
     disabled?: boolean;
+    classNameListItem?: string;
 }
 
 export interface ListAdderViewFormikProps<Info> extends ListAdderViewProps<Info> {
