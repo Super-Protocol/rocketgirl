@@ -19,9 +19,37 @@ export const getFetcherBySubSource = (subscriptionSource?: SubscriptionSource): 
     }
 };
 
-export const useTablesSubscriptions = (fetcher: UseTablesQueryFetcherResult): void => {
+export const useTablesSubscriptions = (fetcher: UseTablesQueryFetcherResult, consumer?: string): void => {
     useEventSubscription(
         {
+            variables: {
+                filter: {
+                    events: [
+                        {
+                            source: SubscriptionSource.Provider,
+                        },
+                        {
+                            source: SubscriptionSource.TeeOffer,
+                        },
+                        {
+                            source: SubscriptionSource.Offer,
+                        },
+                        ...(consumer
+                            ? [
+                                {
+                                    source: SubscriptionSource.Order,
+                                    filter: { consumer },
+                                },
+                                {
+                                    source: SubscriptionSource.Transaction,
+                                    filter: { consumer },
+                                },
+                            ]
+                            : []
+                        ),
+                    ],
+                },
+            },
             onSubscriptionData: async ({ subscriptionData }) => {
                 const { event } = subscriptionData?.data || {};
                 const { subscriptionSource, data, type } = event || {};

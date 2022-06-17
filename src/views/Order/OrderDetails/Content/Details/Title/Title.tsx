@@ -34,7 +34,11 @@ export const Title = memo<TitleProps>(({ order, orderInfo, updateOrderInfo }) =>
         OrderStatus.Canceling,
         OrderStatus.Error,
     ].includes(status), [status]);
-    const result = useMemo(() => order?.orderResult?.encryptedResult, [order]);
+    const result = useMemo(() => {
+        const { orderResult } = order || {};
+        const { encryptedResult, encryptedError } = orderResult || {};
+        return encryptedResult || encryptedError;
+    }, [order]);
     const isShowResultBtn = useMemo(
         () => !!status && [OrderStatus.Done, OrderStatus.Error].includes(status) && !!result,
         [status, result],

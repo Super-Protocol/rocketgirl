@@ -45,7 +45,7 @@ export const useTables = (initialTable: Tables, consumer?: string): UseTablesRes
         ] : []);
     }, [consumer]);
     const queryFetcher = useTablesQueryFetcher<UseTablesSkipType>({ table, skip: skipByWallet, consumer });
-    useTablesSubscriptions(queryFetcher);
+    useTablesSubscriptions(queryFetcher, consumer);
     const onChangeTable = useCallback((newTable: Tables, filter?: OperationVariables | null) => {
         history.push(`?table=${newTable}`);
         if (!skipByWallet.some(({ table }) => table === newTable)) {

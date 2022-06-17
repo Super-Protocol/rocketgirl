@@ -1324,7 +1324,9 @@ export type Web3InputType = {
 
 export type PageDataDtoFragmentFragment = { __typename?: 'PageDataDto', count: number, limit: number, offset: number };
 
-export type EventSubscriptionVariables = Exact<{ [key: string]: never; }>;
+export type EventSubscriptionVariables = Exact<{
+  filter?: InputMaybe<EventFilter>;
+}>;
 
 
 export type EventSubscription = { __typename?: 'Subscription', event: { __typename?: 'SubscriptionPayload', data?: Array<string> | null, type: SubscriptionType, subscriptionSource: SubscriptionSource } };
@@ -1381,7 +1383,7 @@ export type OrderQueryVariables = Exact<{
 }>;
 
 
-export type OrderQuery = { __typename?: 'Query', order: { __typename?: 'Order', address: string, consumer: string, orderHoldDeposit?: number | null, depositSpent?: string | null, offerType: TOfferType, origins?: { __typename?: 'Origins', createdBy: string, createdDate: number, modifiedBy: string, modifiedDate: number } | null, orderInfo: { __typename?: 'OrderInfo', status: string, offer: string, encryptedArgs: string }, teeOfferInfo?: { __typename?: 'TeeOfferInfo', name: string, description: string } | null, orderResult: { __typename?: 'OrderResult', encryptedResult?: string | null } } };
+export type OrderQuery = { __typename?: 'Query', order: { __typename?: 'Order', address: string, consumer: string, orderHoldDeposit?: number | null, depositSpent?: string | null, offerType: TOfferType, origins?: { __typename?: 'Origins', createdBy: string, createdDate: number, modifiedBy: string, modifiedDate: number } | null, orderInfo: { __typename?: 'OrderInfo', status: string, offer: string, encryptedArgs: string }, teeOfferInfo?: { __typename?: 'TeeOfferInfo', name: string, description: string } | null, orderResult: { __typename?: 'OrderResult', encryptedResult?: string | null, encryptedError?: string | null } } };
 
 export type SubOrdersQueryVariables = Exact<{
   pagination: ConnectionArgs;
@@ -1431,8 +1433,8 @@ export const PageDataDtoFragmentFragmentDoc = gql`
 }
     `;
 export const EventDocument = gql`
-    subscription Event {
-  event {
+    subscription Event($filter: EventFilter) {
+  event(filter: $filter) {
     data
     type
     subscriptionSource
@@ -1452,6 +1454,7 @@ export const EventDocument = gql`
  * @example
  * const { data, loading, error } = useEventSubscription({
  *   variables: {
+ *      filter: // value for 'filter'
  *   },
  * });
  */
@@ -1859,6 +1862,7 @@ export const OrderDocument = gql`
     }
     orderResult {
       encryptedResult
+      encryptedError
     }
   }
 }
