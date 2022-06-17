@@ -79,10 +79,23 @@ export interface WorkflowPropsValues {
     mnemonic: string;
     args?: string;
 }
+export enum Process {
+    TEE = 'TEE',
+    SOLUTION = 'SOLUTION',
+    DATA = 'DATA',
+    STORAGE = 'STORAGE'
+}
+
+export enum Status {
+    QUEUE = 'QUEUE',
+    IN_PROGRESS = 'IN_PROGRESS',
+    CREATED = 'CREATED',
+}
 export interface WorkflowProps {
     values: WorkflowPropsValues;
     actionAccountAddress: string;
     web3: Web3;
+    changeState: (process: Process, status: Status) => void;
 }
 export type GetOfferInfoResult = { offerType: OfferType; info: OfferInfo | TeeOfferInfo } | undefined;
 
@@ -319,7 +332,12 @@ export const startOrder = async (props: StartOrderProps): Promise<void> => {
 };
 
 export const workflow = async (props: WorkflowProps): Promise<void> => {
-    const { values, actionAccountAddress, web3 } = props;
+    const {
+        values,
+        actionAccountAddress,
+        web3,
+        changeState,
+    } = props;
     const {
         tee,
         storage,
@@ -333,6 +351,7 @@ export const workflow = async (props: WorkflowProps): Promise<void> => {
     const canceledOrders: string[] = [];
     const { publicKeyBase64 } = generateECIESKeys(mnemonic);
     try {
+        changeState(Process.TEE, Status.IN_PROGRESS);
         const teeOrderAddress = await createOrder({
             actionAccountAddress,
             values: {
@@ -347,6 +366,7 @@ export const workflow = async (props: WorkflowProps): Promise<void> => {
             },
             web3,
         });
+        changeState(Process.TEE, Status.CREATED);
         canceledOrders.push(teeOrderAddress);
         const subOrdersInfo = (solution || []).concat(data || []).map((offer) => ({
             parentTeeOrder: teeOrderAddress,
@@ -356,7 +376,13 @@ export const workflow = async (props: WorkflowProps): Promise<void> => {
             selectedOffers: (storage ? [storage] : [])
                 .concat(tee || []),
         }));
+        changeState(Process.DATA, Status.IN_PROGRESS);
+        changeState(Process.SOLUTION, Status.IN_PROGRESS);
+        changeState(Process.STORAGE, Status.IN_PROGRESS);
         await createSubOrders({ values: { list: subOrdersInfo, order: teeOrderAddress }, web3, actionAccountAddress });
+        changeState(Process.DATA, Status.CREATED);
+        changeState(Process.SOLUTION, Status.CREATED);
+        changeState(Process.STORAGE, Status.CREATED);
         await startOrder({ orderAddress: teeOrderAddress, actionAccountAddress, web3 });
     } catch (e) {
         for (let i = 0; i < canceledOrders.length; i++) {

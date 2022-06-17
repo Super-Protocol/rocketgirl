@@ -18,6 +18,8 @@ export const TooltipLink: FC<TooltipLinkProps> = memo(({
     title,
     link,
     checkOverflow = false,
+    isFullWidth = true,
+    classNameTooltip,
 }) => {
     const [isOverflow, setIsOverflow] = useState(false);
     const ref = useRef<any>(null);
@@ -34,7 +36,7 @@ export const TooltipLink: FC<TooltipLinkProps> = memo(({
                 placement="top"
                 theme={TooltipTheme.white}
                 classNamePopoverChildren={classes.popoverChildren}
-                className={classes.tooltip}
+                className={cn(classes.tooltip, { [classes.tooltipFull]: isFullWidth }, classNameTooltip)}
             >
                 <Ellipsis ref={ref}>{textBlock}</Ellipsis>
             </Tooltip>

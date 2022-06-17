@@ -1,0 +1,29 @@
+$process-status-width: 110px;
+$process-status-mr-left: 10px;
+
+.mrb {
+  margin-bottom: 20px;
+}
+
+.item {
+  width: 100%;
+}
+
+.wrap {}
+
+.body {
+  padding: 24px;
+}
+
+.listItem {
+  background-color: var(--grey20);
+}
+
+.processStatus {
+  width: $process-status-width;
+  margin-left: $process-status-mr-left;
+}
+
+.itemTooltip {
+  width: calc(100% - #{$process-status-width} - #{$process-status-mr-left});
+}

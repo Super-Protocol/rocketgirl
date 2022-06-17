@@ -1,16 +1,23 @@
 import { useCallback } from 'react';
 import Web3 from 'web3';
 import { Modes } from '@/uikit/MnemonicGenerator/types';
-import { workflow, WorkflowPropsValues } from '@/connectors/orders';
+import {
+    workflow,
+    WorkflowPropsValues,
+    Process,
+    Status,
+} from '@/connectors/orders';
 import { useFileUploader } from './useFileUploader';
 import { useGenerateTII } from './useGenerateTII';
 import { useEncryptFile } from './useEncryptFile';
 import { FormValues } from '../types';
+import { State, useWorkflowProcess } from './useWorkflowProcess';
 
 export interface RunWorkflowProps {
     formValues: FormValues;
     actionAccountAddress?: string;
     web3?: Web3;
+    changeState: (process: Process, status: Status) => void;
 }
 
 export interface UseWorkflowResult {
@@ -18,6 +25,9 @@ export interface UseWorkflowResult {
     uploading: boolean;
     generating: boolean;
     encrypting: boolean;
+    progress: number;
+    changeStateProcess: (process: Process, status: Status) => void;
+    stateProcess: State;
 }
 
 export const getWorkflowValues = (formValues: FormValues, mnemonic: string, tiiGeneratorId?: string): WorkflowPropsValues => {
@@ -44,12 +54,36 @@ export const getWorkflowValues = (formValues: FormValues, mnemonic: string, tiiG
     };
 };
 
+export const getProcessList = (values: FormValues): Process[] => {
+    const {
+        tee,
+        storage,
+        solution,
+        data,
+    } = values || {};
+    return ([] as Process[])
+        .concat((tee ? Process.TEE : []))
+        .concat(solution ? Process.SOLUTION : [])
+        .concat(storage ? Process.STORAGE : [])
+        .concat(data?.length ? Process.DATA : []);
+};
+
 export const useWorkflow = (): UseWorkflowResult => {
     const { uploading, uploadFile, getFilePath } = useFileUploader();
     const { generating, generateByOffer } = useGenerateTII();
     const { encrypting, encryptFile } = useEncryptFile();
+    const {
+        progress,
+        changeState,
+        state,
+        init: initProcess,
+    } = useWorkflowProcess();
     const runWorkflow = useCallback(async (props: RunWorkflowProps) => {
-        const { formValues, actionAccountAddress, web3 } = props || {};
+        const {
+            formValues,
+            actionAccountAddress,
+            web3,
+        } = props || {};
         if (!actionAccountAddress || !web3) throw new Error('Metamask account not found');
         const {
             file,
@@ -71,17 +105,22 @@ export const useWorkflow = (): UseWorkflowResult => {
             const tiiEncryption = { ...restEncryption, key };
             tiiGeneratorId = await generateByOffer({ offerId: tee?.value, encryption: tiiEncryption, filepath });
         }
+        initProcess(getProcessList(formValues));
         await workflow({
             values: getWorkflowValues(formValues, phrase as string, tiiGeneratorId),
             actionAccountAddress,
             web3,
+            changeState,
         });
-    }, [encryptFile, generateByOffer, uploadFile, getFilePath]);
+    }, [encryptFile, generateByOffer, uploadFile, getFilePath, changeState, initProcess]);
 
     return {
         runWorkflow,
         uploading,
         generating,
         encrypting,
+        progress,
+        changeStateProcess: changeState,
+        stateProcess: state,
     };
 };
