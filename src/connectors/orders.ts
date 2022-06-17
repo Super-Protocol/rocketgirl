@@ -302,7 +302,7 @@ export const getSubOrdersParams = (list: GetOrderParamsProps[]): Promise<Extende
             ...orderParams,
             externalId,
             holdSum: offerHoldSum,
-            blocking: false,
+            blocking: true,
         };
     }));
 };

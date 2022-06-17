@@ -2,10 +2,10 @@ import React, {
     memo, FC, useCallback, useMemo, useContext,
 } from 'react';
 import { useMount } from 'react-use';
-import toastr from '@/services/Toastr/toastr';
 import { Box, ProgressBar } from '@/uikit';
 import { WalletContext } from '@/common/context';
 import { Process } from '@/connectors/orders';
+import { useErrorModal } from '@/common/hooks/useErrorModal';
 import { ProcessModalProps } from './types';
 import classes from './ProcessModal.module.scss';
 import { useWorkflow } from '../hooks/useWorkflow';
@@ -13,6 +13,7 @@ import { ProcessItem } from './ProcessItem';
 
 export const ProcessModal: FC<ProcessModalProps> = memo(({ formValues }) => {
     const { selectedAddress, instance } = useContext(WalletContext);
+    const { showErrorModal, showSuccessModal } = useErrorModal();
     const {
         runWorkflow,
         progress,
@@ -34,10 +35,11 @@ export const ProcessModal: FC<ProcessModalProps> = memo(({ formValues }) => {
                 web3: instance,
                 changeState: changeStateProcess,
             });
+            showSuccessModal('Your order has been successfully created');
         } catch (e) {
-            toastr.error(e);
+            showErrorModal(e);
         }
-    }, [formValues, selectedAddress, instance, runWorkflow, changeStateProcess]);
+    }, [formValues, selectedAddress, instance, runWorkflow, changeStateProcess, showSuccessModal, showErrorModal]);
     useMount(() => {
         init();
     });
