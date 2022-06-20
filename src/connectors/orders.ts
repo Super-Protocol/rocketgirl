@@ -142,15 +142,16 @@ export const createOrderSubscription = async (
         const subscription = OrdersFactory.onOrderCreated(async () => {
             try {
                 const { orderId } = await OrdersFactory.getOrder(consumer, externalId);
-                if (orderId) res(`${orderId}`);
-                rej(new Error('Order id not found'));
+                if (orderId && orderId !== -1) {
+                    subscription?.();
+                    res(`${orderId}`);
+                }
             } catch (e) {
+                subscription?.();
                 rej(e);
-            } finally {
-                subscription();
             }
         });
-        creator();
+        creator().catch(() => subscription?.());
     });
 };
 
@@ -169,20 +170,20 @@ export const createOrdersSubscription = async (
                         .map(([externalId]) => OrdersFactory.getOrder(consumer, externalId)),
                 );
                 list.forEach(({ externalId, orderId }) => {
-                    if (typeof (orderId as number | null) === 'number') {
+                    if (typeof (orderId as number | null) === 'number' && orderId !== -1) {
                         cache.set(externalId, `${orderId}`);
                     }
                 });
                 if ([...cache].every(([, orderId]) => typeof orderId === 'string')) {
+                    subscription?.();
                     res(cache as Map<string, string>);
                 }
             } catch (e) {
+                subscription?.();
                 rej(e);
-            } finally {
-                subscription();
             }
         });
-        creator();
+        creator().catch(() => subscription?.());
     });
 };
 
