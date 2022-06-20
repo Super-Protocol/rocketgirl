@@ -151,7 +151,10 @@ export const createOrderSubscription = async (
                 rej(e);
             }
         });
-        creator().catch(() => subscription?.());
+        creator().catch((e) => {
+            subscription?.();
+            rej(e);
+        });
     });
 };
 
@@ -183,7 +186,10 @@ export const createOrdersSubscription = async (
                 rej(e);
             }
         });
-        creator().catch(() => subscription?.());
+        creator().catch((e) => {
+            subscription?.();
+            rej(e);
+        });
     });
 };
 
