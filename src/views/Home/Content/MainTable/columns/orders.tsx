@@ -38,12 +38,9 @@ export const getColumns = ({ urlBack }: GetColumnsProps): Array<ColumnProps<Orde
         Header: 'TEE',
         id: 'tee',
         Cell: ({ row }) => {
-            const { subOrders } = row.original || {};
-            const teeOffers = (subOrders || [])
-                .filter(({ teeOfferInfo }) => !!teeOfferInfo)
-                .map(({ teeOfferInfo }) => ({ name: teeOfferInfo?.name }));
-            if (!teeOffers.length) return '-';
-            return <TextCounter list={teeOffers} />;
+            const { teeOfferInfo } = row.original || {};
+            if (!teeOfferInfo) return '-';
+            return <TextCounter list={[teeOfferInfo]} />;
         },
     },
     {
