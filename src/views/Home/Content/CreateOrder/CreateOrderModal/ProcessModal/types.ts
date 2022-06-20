@@ -2,4 +2,5 @@ import { FormValues } from '@/views/Home/Content/CreateOrder/CreateOrderModal/ty
 
 export interface ProcessModalProps {
     formValues: FormValues;
+    createProcessModal: (formValues: FormValues) => void;
 }

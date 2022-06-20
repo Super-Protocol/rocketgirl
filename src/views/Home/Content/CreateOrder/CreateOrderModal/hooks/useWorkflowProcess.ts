@@ -5,13 +5,21 @@ export interface State {
     [process: string]: {
         status: Status,
         error?: Error,
+        result?: string;
     };
+}
+
+export interface ChangeStateProps {
+    process: Process;
+    status: Status;
+    error?: Error;
+    result?: string;
 }
 
 export interface UseWorkflowProcessResult {
     state: State;
     progress: number;
-    changeState: (process: Process, status: Status, error?: Error) => void;
+    changeState: (props: ChangeStateProps) => void;
     init: (processList: Process[]) => void;
 }
 
@@ -21,8 +29,9 @@ export const getInitialState = (processList: Process[]): State => {
 
 export const useWorkflowProcess = (): UseWorkflowProcessResult => {
     const [state, setState] = useState<State>({});
-    const changeState = useCallback((process: Process, status: Status, error?: Error) => {
-        setState((s) => ({ ...s, [process]: { status, error } }));
+    const changeState = useCallback((props: ChangeStateProps) => {
+        const { process, ...rest } = props || {};
+        setState((s) => ({ ...s, [process]: { ...rest } }));
     }, []);
     const progress = useMemo(() => {
         const entries = Object.entries(state);

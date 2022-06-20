@@ -46,7 +46,7 @@ export const ModalResult: FC<ModalResultProps> = memo(({
         }
     }, [type]);
     return (
-        <Box className={classes.wrap} direction="column" alignItems="center">
+        <Box className={classes.wrap} direction="column" alignItems="center" justifyContent="center">
             {renderType}
             {!!link && <a href={link} target="_blank" rel="noopener noreferrer">transaction link</a>}
             {

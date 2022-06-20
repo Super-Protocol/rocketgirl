@@ -57,7 +57,6 @@ export interface CreateSubOrderProps {
     };
     actionAccountAddress: string;
     web3: Web3;
-    fetchOrderId?: boolean;
 }
 export interface GetCalcOrderDepositWorkflow {
     solution?: string[];
@@ -82,9 +81,7 @@ export interface WorkflowPropsValues {
 export enum Process {
     FILE = 'FILE',
     TEE = 'TEE',
-    SOLUTION = 'SOLUTION',
-    DATA = 'DATA',
-    STORAGE = 'STORAGE',
+    SUB_ORDERS = 'SUB_ORDERS',
     ORDER_START = 'ORDER_START'
 }
 
@@ -94,13 +91,33 @@ export enum Status {
     DONE = 'DONE',
     ERROR = 'ERROR',
 }
+
+export interface State {
+    [process: string]: {
+        status: Status,
+        error?: Error,
+    };
+}
+
+export interface ChangeStateProps {
+    process: Process;
+    status: Status;
+    error?: Error;
+    result?: any;
+}
+
 export interface WorkflowProps {
     values: WorkflowPropsValues;
     actionAccountAddress: string;
     web3: Web3;
-    changeState: (process: Process, status: Status, error?: Error) => void;
+    changeState: (props: ChangeStateProps) => void;
+    state: State;
 }
 export type GetOfferInfoResult = { offerType: OfferType; info: OfferInfo | TeeOfferInfo } | undefined;
+export interface CreateSubOrderResult {
+    error?: Error;
+    result?: Map<string, string | null>;
+}
 
 export const cancelOrder = async ({ orderAddress, web3, actionAccountAddress }: CancelOrderProps): Promise<void> => {
     if (!orderAddress) throw new Error('Order address required');
@@ -158,38 +175,81 @@ export const createOrderSubscription = async (
     });
 };
 
-export const createOrdersSubscription = async (
+// export const createSubOrdersSubscription = async (
+//     creator: () => Promise<any>,
+//     consumer: string,
+//     externalsIds: string[],
+// ): Promise<{ error?: Error, result?: Map<string, string | null> }> => {
+//     console.log('externalsIds', externalsIds);
+//     let count = 0;
+//     return new Promise((res, rej) => {
+//         const cache = new Map<string, null | string>(externalsIds.map((id) => [id, null]));
+//         const subscription = OrdersFactory.onSubOrderCreated(async () => {
+//             count += 1;
+//             try {
+//                 console.log('cache', cache, [...cache], count);
+//                 const list = await Promise.all(
+//                     [...cache]
+//                         .filter(([, orderId]) => typeof orderId !== 'string')
+//                         .map(async ([externalId]) => {
+//                             const data = await OrdersFactory.getOrder(consumer, externalId);
+//                             console.log('data', data);
+//                             return { orderId: data.orderId, externalId };
+//                         }),
+//                 );
+//                 console.log('list', list);
+//                 list.forEach(({ externalId, orderId }) => {
+//                     if (orderId && orderId !== -1) {
+//                         cache.set(externalId, `${orderId}`);
+//                     }
+//                 });
+//                 console.log('cache2', cache);
+//                 if ([...cache].every(([, orderId]) => orderId)) {
+//                     subscription?.();
+//                     console.log('resolve', cache);
+//                     res({ result: cache });
+//                 }
+//             } catch (e) {
+//                 subscription?.();
+//                 res({ error: e as Error, result: cache });
+//             }
+//         });
+//         creator().catch((e) => {
+//             subscription?.();
+//             rej(e);
+//         });
+//     });
+// };
+
+const getOrder = (consumer, externalId, cache, cb) => {
+    setTimeout(async () => {
+        try {
+            const { orderId } = await OrdersFactory.getOrder(consumer, externalId);
+            console.log('orderId', orderId);
+            if (orderId && orderId !== -1) {
+                cache.set(externalId, `${orderId}`);
+                if ([...cache].every(([, orderId]) => orderId)) {
+                    cb({ result: cache });
+                }
+            } else {
+                getOrder(consumer, externalId, cache, cb);
+            }
+        } catch (e) {
+            cb({ error: e, result: cache });
+        }
+    }, 1000);
+};
+
+export const createSubOrdersSubscription = async (
     creator: () => Promise<any>,
     consumer: string,
     externalsIds: string[],
-): Promise<Map<string, string>> => {
-    return new Promise((res, rej) => {
+): Promise<{ error?: Error, result?: Map<string, string | null> }> => {
+    await creator();
+    console.log('nice');
+    return new Promise((res) => {
         const cache = new Map<string, null | string>(externalsIds.map((id) => [id, null]));
-        const subscription = OrdersFactory.onOrderCreated(async () => {
-            try {
-                const list = await Promise.all(
-                    [...cache]
-                        .filter(([, orderId]) => typeof orderId === 'number')
-                        .map(([externalId]) => OrdersFactory.getOrder(consumer, externalId)),
-                );
-                list.forEach(({ externalId, orderId }) => {
-                    if (typeof (orderId as number | null) === 'number' && orderId !== -1) {
-                        cache.set(externalId, `${orderId}`);
-                    }
-                });
-                if ([...cache].every(([, orderId]) => typeof orderId === 'string')) {
-                    subscription?.();
-                    res(cache as Map<string, string>);
-                }
-            } catch (e) {
-                subscription?.();
-                rej(e);
-            }
-        });
-        creator().catch((e) => {
-            subscription?.();
-            rej(e);
-        });
+        Promise.all(externalsIds.map((externalId) => getOrder(consumer, externalId, cache, res)));
     });
 };
 
@@ -300,39 +360,37 @@ export const createOrder = async (props: CreateOrderProps): Promise<string> => {
 };
 
 export const getSubOrdersParams = (list: GetOrderParamsProps[]): Promise<ExtendedOrderInfo[]> => {
-    const externalId = getExternalId();
     return Promise.all(list.map(async (props) => {
         const { offer } = props || {};
         const offerHoldSum = await getOfferHoldSum(offer);
         const orderParams = await getOrderParams(props);
         return {
             ...orderParams,
-            externalId,
+            externalId: getExternalId(),
             holdSum: offerHoldSum,
             blocking: true,
         };
     }));
 };
 
-export const createSubOrders = async (props: CreateSubOrderProps): Promise<Map<string, string> | void> => {
+export const createSubOrders = async (props: CreateSubOrderProps): Promise<CreateSubOrderResult> => {
     const {
         values,
         actionAccountAddress,
         web3,
-        fetchOrderId,
     } = props;
     const { list, order } = values || {};
     if (!actionAccountAddress) throw new Error('Account address is not defined');
     const subOrdersParams = await getSubOrdersParams(list);
-    const fetcher = async () => new Order(order).createSubOrders(subOrdersParams, { from: actionAccountAddress, web3 });
-    if (fetchOrderId) {
-        return createOrdersSubscription(
-            fetcher,
-            actionAccountAddress,
-            subOrdersParams.map(({ externalId }) => externalId),
-        );
-    }
-    await fetcher();
+    console.log('subOrdersParams', subOrdersParams, list);
+    await new Order(order).createSubOrders(subOrdersParams, { from: actionAccountAddress, web3 });
+    console.log('after');
+    return {} as any;
+    // return createSubOrdersSubscription(
+    //     fetcher,
+    //     actionAccountAddress,
+    //     subOrdersParams.map(({ externalId }) => externalId),
+    // );
 };
 
 export const startOrder = async (props: StartOrderProps): Promise<void> => {
@@ -347,6 +405,7 @@ export const workflow = async (props: WorkflowProps): Promise<void> => {
         actionAccountAddress,
         web3,
         changeState,
+        state,
     } = props;
     const {
         tee,
@@ -358,61 +417,65 @@ export const workflow = async (props: WorkflowProps): Promise<void> => {
         args,
     } = values || {};
     if (!mnemonic) throw new Error('Passphrase required');
-    const canceledOrders: string[] = [];
     const { publicKeyBase64 } = generateECIESKeys(mnemonic);
-    try {
-        changeState(Process.TEE, Status.PROGRESS);
-        const teeOrderAddress = await createOrder({
-            actionAccountAddress,
-            values: {
-                args,
-                resultPublicKeyBase64: publicKeyBase64,
-                offer: tee,
-                suspended: true,
-                keyAlgorithm: CryptoAlgorithm.ECIES,
-                calcOrderDeposit: deposit,
-                inputOffers: (data || []).concat(solution || []),
-                selectedOffers: storage ? [storage] : [],
-            },
-            web3,
-        }).catch((e) => {
-            changeState(Process.TEE, Status.ERROR, e as Error);
-            throw e;
-        });
-        changeState(Process.TEE, Status.DONE);
-        canceledOrders.push(teeOrderAddress);
-        const subOrdersInfo = (solution || []).concat(data || []).map((offer) => ({
-            parentTeeOrder: teeOrderAddress,
-            keyAlgorithm: CryptoAlgorithm.ECIES,
-            offer,
-            inputOffers: [],
-            selectedOffers: (storage ? [storage] : [])
-                .concat(tee || []),
-        }));
-        changeState(Process.DATA, Status.PROGRESS);
-        changeState(Process.SOLUTION, Status.PROGRESS);
-        changeState(Process.STORAGE, Status.PROGRESS);
-        await createSubOrders({ values: { list: subOrdersInfo, order: teeOrderAddress }, web3, actionAccountAddress })
-            .catch((e) => {
-                changeState(Process.DATA, Status.ERROR, e as Error);
-                changeState(Process.SOLUTION, Status.ERROR, e as Error);
-                changeState(Process.STORAGE, Status.ERROR, e as Error);
-                throw e;
-            });
-        changeState(Process.DATA, Status.DONE);
-        changeState(Process.SOLUTION, Status.DONE);
-        changeState(Process.STORAGE, Status.DONE);
-        changeState(Process.ORDER_START, Status.PROGRESS);
-        await startOrder({ orderAddress: teeOrderAddress, actionAccountAddress, web3 }).catch((e) => {
-            changeState(Process.ORDER_START, Status.ERROR, e as Error);
-            throw e;
-        });
-        changeState(Process.ORDER_START, Status.DONE);
-    } catch (e) {
-        for (let i = 0; i < canceledOrders.length; i++) {
-            const orderAddress = canceledOrders[i];
-            await cancelOrder({ actionAccountAddress, orderAddress, web3 });
-        }
-        throw e;
-    }
+    changeState({ process: Process.TEE, status: Status.PROGRESS });
+    // const teeOrderAddress = await createOrder({
+    //     actionAccountAddress,
+    //     values: {
+    //         args,
+    //         resultPublicKeyBase64: publicKeyBase64,
+    //         offer: tee,
+    //         suspended: true,
+    //         keyAlgorithm: CryptoAlgorithm.ECIES,
+    //         calcOrderDeposit: deposit,
+    //         inputOffers: (data || []).concat(solution || []),
+    //         selectedOffers: storage ? [storage] : [],
+    //     },
+    //     web3,
+    // }).catch((e) => {
+    //     changeState({ process: Process.TEE, status: Status.ERROR, error: e as Error });
+    //     throw e;
+    // });
+    // changeState({ process: Process.TEE, status: Status.DONE, result: teeOrderAddress });
+    const teeOrderAddress = '522';
+    const subOrdersInfo = (solution || []).concat(data || []).map((offer) => ({
+        parentTeeOrder: teeOrderAddress,
+        keyAlgorithm: CryptoAlgorithm.ECIES,
+        offer,
+        inputOffers: [],
+        selectedOffers: (storage ? [storage] : [])
+            .concat(tee || []),
+    }));
+    changeState({ process: Process.SUB_ORDERS, status: Status.PROGRESS });
+    const { error: errorSubOrders, result } = await createSubOrders({
+        values: { list: subOrdersInfo, order: teeOrderAddress },
+        web3,
+        actionAccountAddress,
+    });
+    changeState({
+        process: Process.SUB_ORDERS,
+        status: Status.ERROR,
+        result,
+        error: errorSubOrders,
+    });
+    console.log('errorSubOrders', errorSubOrders, result);
+    if (errorSubOrders) throw errorSubOrders;
+    changeState({ process: Process.ORDER_START, status: Status.PROGRESS });
+    // await startOrder({ orderAddress: teeOrderAddress, actionAccountAddress, web3 }).catch((e) => {
+    //     changeState({ process: Process.ORDER_START, status: Status.ERROR, error: e as Error });
+    //     throw e;
+    // });
+    changeState({ process: Process.ORDER_START, status: Status.DONE });
 };
+
+// export const cancelOrders = (canceledOrders: string[]) => {
+//     try {
+//
+//     } catch (e) {
+//         for (let i = 0; i < canceledOrders.length; i++) {
+//             const orderAddress = canceledOrders[i];
+//             await cancelOrder({ actionAccountAddress, orderAddress, web3 });
+//         }
+//         throw e;
+//     }
+// };

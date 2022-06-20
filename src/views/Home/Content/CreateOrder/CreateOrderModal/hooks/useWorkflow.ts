@@ -11,13 +11,12 @@ import { useFileUploader } from './useFileUploader';
 import { useGenerateTII } from './useGenerateTII';
 import { useEncryptFile } from './useEncryptFile';
 import { FormValues } from '../types';
-import { State, useWorkflowProcess } from './useWorkflowProcess';
+import { ChangeStateProps, State, useWorkflowProcess } from './useWorkflowProcess';
 
 export interface RunWorkflowProps {
     formValues: FormValues;
     actionAccountAddress?: string;
     web3?: Web3;
-    changeState: (process: Process, status: Status) => void;
 }
 
 export interface UseWorkflowResult {
@@ -26,7 +25,7 @@ export interface UseWorkflowResult {
     generating: boolean;
     encrypting: boolean;
     progress: number;
-    changeStateProcess: (process: Process, status: Status) => void;
+    changeStateProcess: (props: ChangeStateProps) => void;
     stateProcess: State;
 }
 
@@ -64,9 +63,7 @@ export const getProcessList = (values: FormValues): Process[] => {
     } = values || {};
     return ([] as Process[])
         .concat((tee ? Process.TEE : []))
-        .concat(solution ? Process.SOLUTION : [])
-        .concat(storage ? Process.STORAGE : [])
-        .concat(data?.length ? Process.DATA : [])
+        .concat((solution || storage || data?.length) ? Process.SUB_ORDERS : [])
         .concat(file ? Process.FILE : [])
         .concat(Process.ORDER_START);
 };
@@ -103,16 +100,16 @@ export const useWorkflow = (): UseWorkflowResult => {
         if (!data?.length && file) {
             if (!tee?.value) throw new Error('TEE required');
             try {
-                changeState(Process.FILE, Status.PROGRESS);
+                changeState({ process: Process.FILE, status: Status.PROGRESS });
                 const { encryption, key } = await encryptFile(file);
                 const { ciphertext, ...restEncryption } = encryption;
                 const uploadResult = await uploadFile({ fileName: file.name, ciphertext });
                 const filepath = getFilePath(uploadResult);
                 const tiiEncryption = { ...restEncryption, key };
                 tiiGeneratorId = await generateByOffer({ offerId: tee?.value, encryption: tiiEncryption, filepath });
-                changeState(Process.FILE, Status.DONE);
+                changeState({ process: Process.FILE, status: Status.DONE });
             } catch (e) {
-                changeState(Process.FILE, Status.ERROR, e as Error);
+                changeState({ process: Process.FILE, status: Status.ERROR, error: e as Error });
                 throw e;
             }
         }
@@ -121,8 +118,9 @@ export const useWorkflow = (): UseWorkflowResult => {
             actionAccountAddress,
             web3,
             changeState,
+            state,
         });
-    }, [encryptFile, generateByOffer, uploadFile, getFilePath, changeState, initProcess]);
+    }, [encryptFile, generateByOffer, uploadFile, getFilePath, changeState, initProcess, state]);
 
     return {
         runWorkflow,

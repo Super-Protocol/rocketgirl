@@ -71,19 +71,19 @@ export const getDepositSchema = (minDeposit?: number): Yup.BaseSchema => (minDep
         .min(minDeposit, `must be greater than or equal ${minDeposit}`)
     : Yup.number().required('required'));
 
-export const getValidationSchema = (props?: GetValidationSchemaProps): Yup.SchemaOf<FormValues> => {
+export const getValidationSchema = (props?: GetValidationSchemaProps): any => { // Yup.SchemaOf<FormValues>
     const { minDeposit } = props || {};
     return Yup.object({
-        [Fields.solution]: getOfferSchema(Fields.solution),
-        [Fields.data]: Yup.array().of(getOfferSchema(Fields.data)),
-        [Fields.tee]: getOfferSchema(Fields.tee),
-        [Fields.storage]: getOfferSchema(Fields.storage),
-        [Fields.deposit]: getDepositSchema(minDeposit),
-        [Fields.file]: Yup.mixed(),
-        [Fields.phraseGenerated]: getPhraseGeneratedSchema(),
-        [Fields.phraseInput]: getPhraseInputSchema(),
-        [Fields.agreement]: Yup.boolean().oneOf([true], 'required'),
-        [Fields.phraseTabMode]: Yup.string(),
+        // [Fields.solution]: getOfferSchema(Fields.solution),
+        // [Fields.data]: Yup.array().of(getOfferSchema(Fields.data)),
+        // [Fields.tee]: getOfferSchema(Fields.tee),
+        // [Fields.storage]: getOfferSchema(Fields.storage),
+        // [Fields.deposit]: getDepositSchema(minDeposit),
+        // [Fields.file]: Yup.mixed(),
+        // [Fields.phraseGenerated]: getPhraseGeneratedSchema(),
+        // [Fields.phraseInput]: getPhraseInputSchema(),
+        // [Fields.agreement]: Yup.boolean().oneOf([true], 'required'),
+        // [Fields.phraseTabMode]: Yup.string(),
     });
 };
 

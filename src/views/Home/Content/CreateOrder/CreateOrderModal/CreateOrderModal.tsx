@@ -45,6 +45,7 @@ import {
 } from './helpers';
 import { InputDeposit } from './InputDeposit';
 import { ProcessModal } from './ProcessModal';
+import { State } from './hooks/useWorkflowProcess';
 
 export const CreateOrderModal: FC<CreateOrderModalProps> = memo(({ initialValues: initialValuesProps }) => {
     const { goBack, showModal } = useContext(ModalOkCancelContext);
@@ -108,7 +109,7 @@ export const CreateOrderModal: FC<CreateOrderModalProps> = memo(({ initialValues
                 header: 'Process',
             },
             components: {
-                main: <ProcessModal formValues={formValues} />,
+                main: <ProcessModal formValues={formValues} createProcessModal={createProcessModal} />,
             },
             classNameBody: classes.processBody,
         });

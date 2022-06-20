@@ -2,7 +2,7 @@ import React, {
     memo, FC, useCallback, useMemo, useContext,
 } from 'react';
 import { useMount } from 'react-use';
-import { Box, ProgressBar } from '@/uikit';
+import { Box, Button, ProgressBar } from '@/uikit';
 import { WalletContext } from '@/common/context';
 import { Process } from '@/connectors/orders';
 import { useErrorModal } from '@/common/hooks/useErrorModal';
@@ -11,14 +11,13 @@ import classes from './ProcessModal.module.scss';
 import { useWorkflow } from '../hooks/useWorkflow';
 import { ProcessItem } from './ProcessItem';
 
-export const ProcessModal: FC<ProcessModalProps> = memo(({ formValues }) => {
+export const ProcessModal: FC<ProcessModalProps> = memo(({ formValues, createProcessModal }) => {
     const { selectedAddress, instance } = useContext(WalletContext);
     const { showErrorModal, showSuccessModal } = useErrorModal();
     const {
         runWorkflow,
         progress,
         stateProcess,
-        changeStateProcess,
     } = useWorkflow();
     const {
         tee,
@@ -27,19 +26,48 @@ export const ProcessModal: FC<ProcessModalProps> = memo(({ formValues }) => {
         data,
         file,
     } = useMemo(() => formValues, [formValues]);
+    const executeWorkflow = useCallback(async () => {
+        await runWorkflow({
+            formValues,
+            actionAccountAddress: selectedAddress,
+            web3: instance,
+        });
+    }, [instance, formValues, selectedAddress, runWorkflow]);
+    const cancelOrders = useCallback(() => {
+        console.log('cancelOrders');
+    }, []);
     const init = useCallback(async () => {
         try {
-            await runWorkflow({
-                formValues,
-                actionAccountAddress: selectedAddress,
-                web3: instance,
-                changeState: changeStateProcess,
-            });
+            await executeWorkflow();
             showSuccessModal('Your order has been successfully created');
         } catch (e) {
-            showErrorModal(e);
+            showErrorModal(
+                e,
+                {
+                    components: {
+                        footer: (
+                            <Box justifyContent="center" className={classes.btns}>
+                                <Button
+                                    className={classes.btnTryAgain}
+                                    onClick={cancelOrders}
+                                    variant="secondary"
+                                >
+                                    Cancel order
+                                </Button>
+                                <Button
+                                    className={classes.btnTryAgain}
+                                    variant="primary"
+                                    onClick={() => createProcessModal(formValues)}
+                                >
+                                    Try again
+                                </Button>
+                            </Box>
+                        ),
+                    },
+                },
+            );
         }
-    }, [formValues, selectedAddress, instance, runWorkflow, changeStateProcess, showSuccessModal, showErrorModal]);
+    }, [showSuccessModal, showErrorModal, executeWorkflow, createProcessModal, formValues, cancelOrders]);
     useMount(() => {
         init();
     });
@@ -69,24 +97,24 @@ export const ProcessModal: FC<ProcessModalProps> = memo(({ formValues }) => {
                     <ProcessItem
                         name="Solution order"
                         className={classes.mrb}
-                        status={stateProcess[Process.SOLUTION]?.status}
-                        error={stateProcess[Process.SOLUTION]?.error}
+                        status={stateProcess[Process.SUB_ORDERS]?.status}
+                        error={stateProcess[Process.SUB_ORDERS]?.error}
                     />
                 )}
                 {!!storage && (
                     <ProcessItem
                         name="Storage order"
                         className={classes.mrb}
-                        status={stateProcess[Process.STORAGE]?.status}
-                        error={stateProcess[Process.STORAGE]?.error}
+                        status={stateProcess[Process.SUB_ORDERS]?.status}
+                        error={stateProcess[Process.SUB_ORDERS]?.error}
                     />
                 )}
                 {!!data && (
                     <ProcessItem
                         name="Data order"
                         className={classes.mrb}
-                        status={stateProcess[Process.DATA]?.status}
-                        error={stateProcess[Process.DATA]?.error}
+                        status={stateProcess[Process.SUB_ORDERS]?.status}
+                        error={stateProcess[Process.SUB_ORDERS]?.error}
                     />
                 )}
                 <ProcessItem

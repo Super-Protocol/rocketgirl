@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import dayjs from 'dayjs';
 import { Buffer } from 'buffer';
-import BlockchainConnector, {
+import {
     OfferType,
     OfferGroup,
     TcbStatus,
@@ -10,8 +10,6 @@ import BlockchainConnector, {
 import { TOfferType } from '@/gql/graphql';
 import { Item } from '@/uikit/Select/types';
 import CONFIG from '@/config';
-
-export const getAddressByKey = (key: string): string => BlockchainConnector.initActionAccount(key);
 
 export function getEnumName(value: string, en: { [key: string]: string | number }): string {
     if (!value) return '';
