@@ -1,4 +1,6 @@
-import { useCallback, useMemo, useState } from 'react';
+import {
+    useCallback, useMemo, useRef, useState,
+} from 'react';
 import { Process, Status } from '@/connectors/orders';
 
 export interface State {
@@ -29,6 +31,7 @@ export const getInitialState = (processList: Process[]): State => {
 
 export const useWorkflowProcess = (): UseWorkflowProcessResult => {
     const [state, setState] = useState<State>({});
+    const refState = useRef();
     const changeState = useCallback((props: ChangeStateProps) => {
         const { process, ...rest } = props || {};
         setState((s) => ({ ...s, [process]: { ...rest } }));

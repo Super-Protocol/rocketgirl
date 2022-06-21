@@ -126,3 +126,5 @@ export const sliceWithDot = (str?: string, lenFrom = 6): string => {
     if (str.length < lenFrom) return str;
     return `${str.slice(0, lenFrom)}...${str.slice(str.length - lenFrom)}`;
 };
+
+export const sleep = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));

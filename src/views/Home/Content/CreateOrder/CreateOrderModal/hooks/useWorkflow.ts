@@ -17,6 +17,7 @@ export interface RunWorkflowProps {
     formValues: FormValues;
     actionAccountAddress?: string;
     web3?: Web3;
+    state?: State;
 }
 
 export interface UseWorkflowResult {
@@ -83,6 +84,7 @@ export const useWorkflow = (): UseWorkflowResult => {
             formValues,
             actionAccountAddress,
             web3,
+            state,
         } = props || {};
         if (!actionAccountAddress || !web3) throw new Error('Metamask account not found');
         const {
@@ -120,7 +122,7 @@ export const useWorkflow = (): UseWorkflowResult => {
             changeState,
             state,
         });
-    }, [encryptFile, generateByOffer, uploadFile, getFilePath, changeState, initProcess, state]);
+    }, [encryptFile, generateByOffer, uploadFile, getFilePath, changeState, initProcess]);
 
     return {
         runWorkflow,

@@ -1,18 +1,20 @@
 import React, {
-    memo, FC, useCallback, useMemo, useContext,
+    memo, FC, useCallback, useMemo, useContext, useEffect, useRef, useState,
 } from 'react';
 import { useMount } from 'react-use';
 import { Box, Button, ProgressBar } from '@/uikit';
 import { WalletContext } from '@/common/context';
-import { Process } from '@/connectors/orders';
+import { Process, Status } from '@/connectors/orders';
 import { useErrorModal } from '@/common/hooks/useErrorModal';
 import { ProcessModalProps } from './types';
 import classes from './ProcessModal.module.scss';
 import { useWorkflow } from '../hooks/useWorkflow';
 import { ProcessItem } from './ProcessItem';
+import { State } from '../hooks/useWorkflowProcess';
 
-export const ProcessModal: FC<ProcessModalProps> = memo(({ formValues, createProcessModal }) => {
+export const ProcessModal: FC<ProcessModalProps> = memo(({ formValues, createProcessModal, initialState }) => {
     const { selectedAddress, instance } = useContext(WalletContext);
+    const refStateProcess = useRef<State>();
     const { showErrorModal, showSuccessModal } = useErrorModal();
     const {
         runWorkflow,
@@ -26,19 +28,17 @@ export const ProcessModal: FC<ProcessModalProps> = memo(({ formValues, createPro
         data,
         file,
     } = useMemo(() => formValues, [formValues]);
-    const executeWorkflow = useCallback(async () => {
+    const executeWorkflow = useCallback(async (state?: State) => {
         await runWorkflow({
             formValues,
             actionAccountAddress: selectedAddress,
             web3: instance,
+            state,
         });
     }, [instance, formValues, selectedAddress, runWorkflow]);
-    const cancelOrders = useCallback(() => {
-        console.log('cancelOrders');
-    }, []);
-    const init = useCallback(async () => {
+    const init = useCallback(async (state?: State) => {
         try {
-            await executeWorkflow();
+            await executeWorkflow(state);
             showSuccessModal('Your order has been successfully created');
         } catch (e) {
             showErrorModal(
@@ -47,17 +47,18 @@ export const ProcessModal: FC<ProcessModalProps> = memo(({ formValues, createPro
                     components: {
                         footer: (
                             <Box justifyContent="center" className={classes.btns}>
+                                {Object.values(refStateProcess.current || {})?.some(({ result }) => result) && (
+                                    <Button
+                                        className={classes.btnCancel}
+                                        // onClick={() => cancelOrders(refStateProcess.current)}
+                                        variant="secondary"
+                                    >
+                                        Cancel order
+                                    </Button>
+                                )}
                                 <Button
-                                    className={classes.btnTryAgain}
-                                    onClick={cancelOrders}
-                                    variant="secondary"
-                                >
-                                    Cancel order
-                                </Button>
-                                <Button
-                                    className={classes.btnTryAgain}
                                     variant="primary"
-                                    onClick={() => createProcessModal(formValues)}
+                                    onClick={() => createProcessModal(formValues, refStateProcess.current)}
                                 >
                                     Try again
                                 </Button>
@@ -67,10 +68,15 @@ export const ProcessModal: FC<ProcessModalProps> = memo(({ formValues, createPro
                 },
             );
         }
-    }, [showSuccessModal, showErrorModal, executeWorkflow, createProcessModal, formValues, cancelOrders]);
+    }, [showSuccessModal, showErrorModal, executeWorkflow, createProcessModal, formValues]);
     useMount(() => {
-        init();
+        init(initialState);
     });
+
+    useEffect(() => {
+        refStateProcess.current = { ...stateProcess };
+    }, [stateProcess]);
+
     return (
         <Box direction="column" className={classes.wrap}>
             <ProgressBar progress={progress} />
