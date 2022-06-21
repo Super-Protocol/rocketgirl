@@ -15,7 +15,6 @@ import { CancellingModal } from '../CancellingModal';
 
 export const ProcessModal: FC<ProcessModalProps> = memo(({ formValues, createProcessModal, initialState }) => {
     const { selectedAddress, instance } = useContext(WalletContext);
-    const refStateProcess = useRef<State>();
     const { showErrorModal, showSuccessModal } = useErrorModal();
     const { showModal } = useContext(ModalOkCancelContext);
     const createCancellingModal = useCallback((state?: State) => {
@@ -80,13 +79,15 @@ export const ProcessModal: FC<ProcessModalProps> = memo(({ formValues, createPro
             // );
         }
     }, [showSuccessModal, showErrorModal, executeWorkflow, createProcessModal, formValues, createCancellingModal]);
+    const getErrorFromMapList = useCallback((process: Process) => {
+        return stateProcess[process]?.error?.size
+            ? [...stateProcess[process].error as Map<string | null, Error>]?.[0]?.[1]
+            : undefined;
+    }, [stateProcess]);
     useMount(() => {
         init(initialState);
     });
-
-    useEffect(() => {
-        refStateProcess.current = { ...stateProcess };
-    }, [stateProcess]);
+    console.log('stateProcess', stateProcess);
 
     return (
         <Box direction="column" className={classes.wrap}>
@@ -99,7 +100,7 @@ export const ProcessModal: FC<ProcessModalProps> = memo(({ formValues, createPro
                         name="File uploading"
                         className={classes.mrb}
                         status={stateProcess[Process.FILE]?.status}
-                        // error={stateProcess[Process.FILE]?.error}
+                        error={getErrorFromMapList(Process.FILE)}
                     />
                 )}
                 {!!tee && (
@@ -107,7 +108,7 @@ export const ProcessModal: FC<ProcessModalProps> = memo(({ formValues, createPro
                         name="Tee order"
                         className={classes.mrb}
                         status={stateProcess[Process.TEE]?.status}
-                        // error={stateProcess[Process.TEE]?.error}
+                        error={getErrorFromMapList(Process.TEE)}
                     />
                 )}
                 {!!solution && (
@@ -115,7 +116,7 @@ export const ProcessModal: FC<ProcessModalProps> = memo(({ formValues, createPro
                         name="Solution order"
                         className={classes.mrb}
                         status={stateProcess[Process.SOLUTION]?.status}
-                       //  error={stateProcess[Process.SOLUTION]?.error}
+                        error={getErrorFromMapList(Process.SOLUTION)}
                     />
                 )}
                 {!!storage && (
@@ -123,7 +124,7 @@ export const ProcessModal: FC<ProcessModalProps> = memo(({ formValues, createPro
                         name="Storage order"
                         className={classes.mrb}
                         status={stateProcess[Process.STORAGE]?.status}
-                        // error={stateProcess[Process.STORAGE]?.error}
+                        error={getErrorFromMapList(Process.STORAGE)}
                     />
                 )}
                 {!!data && (
@@ -131,20 +132,20 @@ export const ProcessModal: FC<ProcessModalProps> = memo(({ formValues, createPro
                         name="Data order"
                         className={classes.mrb}
                         status={stateProcess[Process.DATA]?.status}
-                        // error={stateProcess[Process.DATA]?.error}
+                        error={getErrorFromMapList(Process.DATA)}
                     />
                 )}
                 <ProcessItem
                     name="Tee order start"
                     className={classes.mrb}
                     status={stateProcess[Process.ORDER_START]?.status}
-                    // error={stateProcess[Process.ORDER_START]?.error}
+                    error={getErrorFromMapList(Process.ORDER_START)}
                 />
                 <Box justifyContent="center" className={classes.btns}>
-                    {Object.values(refStateProcess.current || {})?.some(({ result }) => result) && (
+                    {Object.values(stateProcess || {})?.some(({ result }) => result) && (
                         <Button
                             className={classes.btnCancel}
-                            onClick={() => createCancellingModal(refStateProcess.current)}
+                            onClick={() => createCancellingModal(stateProcess)}
                             variant="secondary"
                         >
                             Cancel order
@@ -152,7 +153,7 @@ export const ProcessModal: FC<ProcessModalProps> = memo(({ formValues, createPro
                     )}
                     <Button
                         variant="primary"
-                        onClick={() => executeWorkflow(refStateProcess.current)}
+                        onClick={() => executeWorkflow(stateProcess)}
                     >
                         Try again
                     </Button>

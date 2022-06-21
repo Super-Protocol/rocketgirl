@@ -40,6 +40,7 @@ export const CancellingModal: FC<CancellingModalProps> = memo(({ state }) => {
     useMount(() => {
         runCancelOrders(cancellingState);
     });
+    console.log('cancellingState', cancellingState);
     return (
         <Box direction="column" className={classes.wrap}>
             <Box className={classes.body} direction="column">

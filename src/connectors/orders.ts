@@ -145,7 +145,6 @@ export interface CreateSubOrderResult {
 }
 export interface ChangeStateSubOrdersProps {
     consumer: string;
-    web3: Web3;
     changeState: (props: ChangeStateProps) => void;
     data: WorkflowPropsValues['data'];
     solution: WorkflowPropsValues['solution'];
@@ -256,7 +255,7 @@ export const createSubOrdersSubscription = async (
                     return acc;
                 }, new Map());
                 if (error.size) {
-                    res({ error });
+                    res({ error, result: cache });
                 }
             })
             .catch((e) => {
@@ -266,63 +265,6 @@ export const createSubOrdersSubscription = async (
             });
     });
 };
-
-//
-// const getOrder = (props) => {
-//     const {
-//         consumer,
-//         externalId,
-//         cache,
-//         offerId,
-//         cb,
-//     } = props;
-//     setTimeout(async () => {
-//         try {
-//             const { orderId } = await OrdersFactory.getOrder(consumer, externalId);
-//             console.log('orderId', orderId);
-//             if (orderId && orderId !== -1) {
-//                 cache.set(getSubOrdersKey({ consumer, offerId }), `${orderId}`);
-//                 if ([...cache].every(([, orderId]) => orderId)) {
-//                     cb({ result: cache });
-//                 }
-//             } else {
-//                 getOrder({
-//                     consumer,
-//                     externalId,
-//                     cache,
-//                     offerId,
-//                     cb,
-//                 });
-//             }
-//         } catch (e) {
-//             cb({ error: e, result: cache });
-//         }
-//     }, 1000);
-// };
-//
-// export const createSubOrdersSubscription = async (
-//     creator: () => Promise<any>,
-//     consumer: string,
-//     data: { externalId: string, offerId: string }[],
-// ): Promise<{ error?: Error, result?: Map<string, string | null> }> => {
-//     const cache = new Map<string, null | string>(
-//         data.map(({ offerId }) => [getSubOrdersKey({ consumer, offerId }), null]),
-//     );
-//     try {
-//         await creator();
-//     } catch (e) {
-//         return { error: e as Error, result: cache };
-//     }
-//     return new Promise((res) => {
-//         Promise.all(data.map(({ externalId, offerId }) => getOrder({
-//             consumer,
-//             externalId,
-//             cache,
-//             offerId,
-//             cb: res,
-//         })));
-//     });
-// };
 
 export const getOrderParams = async (props: GetOrderParamsProps): Promise<OrderInfo> => {
     const {
@@ -489,22 +431,28 @@ export const changeStateSubOrder = ({
     offers,
     consumer,
     previousResultSubOrders,
+    process,
 }) => {
     const keys = offers?.map(({ value, externalId }) => getSubOrdersKey({ consumer, offerId: value, externalId }), []) || [];
-    const errorKeys = errorSubOrders ? keys.map((key) => errorSubOrders.get(key)).filter((d) => d) : [];
-    const successKeys = successSubOrders ? keys.map((key) => successSubOrders.get(key)).filter((d) => d) : [];
-    console.log('errorSubOrders, ', errorSubOrders, successSubOrders, errorKeys, successKeys);
-    console.log('send', {
-        process: Process.SOLUTION,
-        status: errorKeys?.length ? Status.ERROR : Status.DONE,
-        result: successKeys && previousResultSubOrders ? new Map([...previousResultSubOrders, ...successKeys]) : previousResultSubOrders,
-        error: errorSubOrders,
-    });
+    const errorKeys = errorSubOrders ? keys.filter((key) => errorSubOrders.get(key)) : [];
+    const successKeys = successSubOrders ? keys.filter((key) => successSubOrders.get(key)) : [];
+    const previousSuccessKeys = previousResultSubOrders
+        ? keys.filter((key) => previousResultSubOrders.get(key))
+        : [];
+    const allSuccessKeys = (successKeys || []).concat(previousSuccessKeys || []);
+    const error = errorKeys?.length && errorSubOrders
+        ? new Map([...errorSubOrders].filter(([key]) => errorKeys.includes(key)))
+        : undefined;
+    const result = allSuccessKeys?.length
+        ? new Map(
+            [...(successSubOrders || []), ...(previousResultSubOrders || [])].filter(([key]) => allSuccessKeys.includes(key)),
+        )
+        : undefined;
     changeState({
-        process: Process.SOLUTION,
-        status: errorKeys?.length ? Status.ERROR : Status.DONE,
-        result: successKeys && previousResultSubOrders ? new Map([...previousResultSubOrders, ...successKeys]) : previousResultSubOrders,
-        error: errorSubOrders,
+        process,
+        status: error?.size ? Status.ERROR : Status.DONE,
+        result,
+        error,
     });
 };
 
@@ -525,6 +473,7 @@ export const changeStateSubOrders = ({
         offers: solution || [],
         consumer,
         previousResultSubOrders: previousResultSubOrders?.get(Process.SOLUTION),
+        process: Process.SOLUTION,
     });
     changeStateSubOrder({
         successSubOrders,
@@ -533,6 +482,7 @@ export const changeStateSubOrders = ({
         offers: storage ? [storage] : [],
         consumer,
         previousResultSubOrders: previousResultSubOrders?.get(Process.STORAGE),
+        process: Process.STORAGE,
     });
     changeStateSubOrder({
         successSubOrders,
@@ -541,6 +491,7 @@ export const changeStateSubOrders = ({
         offers: data || [],
         consumer,
         previousResultSubOrders: previousResultSubOrders?.get(Process.DATA),
+        process: Process.DATA,
     });
 };
 
@@ -600,9 +551,15 @@ export const workflow = async (props: WorkflowProps): Promise<void> => {
             state?.[Process.DATA]?.status,
         ].some((status) => status !== Status.DONE)
     ) {
-        changeState({ process: Process.SOLUTION, status: Status.PROGRESS });
-        changeState({ process: Process.STORAGE, status: Status.PROGRESS });
-        changeState({ process: Process.DATA, status: Status.PROGRESS });
+        if (state?.[Process.SOLUTION]?.status !== Status.DONE) {
+            changeState({ process: Process.SOLUTION, status: Status.PROGRESS });
+        }
+        if (state?.[Process.DATA]?.status !== Status.DONE) {
+            changeState({ process: Process.DATA, status: Status.PROGRESS });
+        }
+        if (state?.[Process.STORAGE]?.status !== Status.DONE) {
+            changeState({ process: Process.STORAGE, status: Status.PROGRESS });
+        }
         const previousResultSubOrders = new Map();
         if (state?.[Process.SOLUTION]?.result) previousResultSubOrders.set(Process.SOLUTION, state[Process.SOLUTION].result);
         if (state?.[Process.STORAGE]?.result) previousResultSubOrders.set(Process.STORAGE, state[Process.STORAGE].result);
@@ -610,8 +567,7 @@ export const workflow = async (props: WorkflowProps): Promise<void> => {
         const subOrdersInfo = (solution || [])
             .concat(data || [])
             .filter(({ value, externalId }) => {
-                return !Object
-                    .entries(previousResultSubOrders)
+                return ![...previousResultSubOrders]
                     .some(([, map]) => {
                         return map?.get?.(getSubOrdersKey({ consumer: actionAccountAddress, offerId: value, externalId }));
                     });
@@ -625,7 +581,6 @@ export const workflow = async (props: WorkflowProps): Promise<void> => {
                     .concat(tee?.value ? tee.value : []),
                 externalId,
             }));
-        console.log('subOrdersInfo', subOrdersInfo);
         const { error: errorSubOrders, result: successSubOrders } = await createSubOrders({
             values: { list: subOrdersInfo, order: teeOrderAddress },
             web3,
