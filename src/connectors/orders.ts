@@ -50,6 +50,9 @@ export interface CreateOrderProps {
     values: CreateOrderPropsValues;
     actionAccountAddress: string;
     web3: Web3;
+    isNeedApprove?: boolean;
+    onApproveSuccess?: () => void
+    onApproveError?: (e: Error) => void
 }
 export interface CreateSubOrderProps {
     values: {
@@ -90,6 +93,7 @@ export interface GetSubOrdersKeyProps {
 }
 export enum Process {
     FILE = 'FILE',
+    TEE_APPROVE = 'TEE_APPROVE',
     TEE = 'TEE',
     SOLUTION = 'SOLUTION',
     STORAGE = 'STORAGE',
@@ -217,6 +221,7 @@ export const createOrderSubscription = async (
     });
 };
 
+// uniq key for order
 export const getSubOrdersKey = ({
     consumer,
     offerId,
@@ -230,6 +235,7 @@ export const createSubOrdersSubscription = async (
 ): Promise<{ error?: Map<string | null, Error>, result?: Map<string | null, string> }> => {
     return new Promise((res) => {
         const listKeys = list.map(({ offerId, externalId }) => getSubOrdersKey({ consumer, offerId, externalId }));
+        // caching fetched order ids
         const cache = new Map<string | null, string>(
             listKeys.map((key) => [key, '']),
         );
@@ -250,7 +256,9 @@ export const createSubOrdersSubscription = async (
                     `${orderIdCreated}`,
                 );
             }
+            // if all order ids in the cache
             if ([...cache].every(([, orderId]) => orderId)) {
+                subscription?.();
                 res({ result: cache });
             }
         });
@@ -263,13 +271,13 @@ export const createSubOrdersSubscription = async (
                     return acc;
                 }, new Map());
                 if (error.size) {
+                    subscription?.();
                     res({ error, result: cache });
                 }
             })
             .catch((e) => {
                 subscription?.();
-                const error = new Map().set(null, e);
-                res({ error, result: cache });
+                res({ error: new Map().set(null, e), result: cache });
             });
     });
 };
@@ -329,7 +337,14 @@ export const getOfferHoldSum = async (offer?: string): Promise<number> => {
 };
 
 export const createOrder = async (props: CreateOrderProps): Promise<string> => {
-    const { values, actionAccountAddress, web3 } = props;
+    const {
+        values,
+        actionAccountAddress,
+        web3,
+        isNeedApprove = true,
+        onApproveSuccess,
+        onApproveError,
+    } = props;
     const {
         offer,
         suspended = false,
@@ -357,11 +372,19 @@ export const createOrder = async (props: CreateOrderProps): Promise<string> => {
             externalId,
         );
     } else {
-        await SuperproToken.approve(
-            OrdersFactory.address,
-            deposit,
-            { from: actionAccountAddress, web3 },
-        );
+        if (isNeedApprove) {
+            try {
+                await SuperproToken.approve(
+                    OrdersFactory.address,
+                    deposit,
+                    { from: actionAccountAddress, web3 },
+                );
+                onApproveSuccess?.();
+            } catch (e) {
+                onApproveError?.(e as Error);
+                throw e;
+            }
+        }
         orderAddress = await createOrderSubscription(
             async () => OrdersFactory.createOrder(
                 params,
@@ -403,6 +426,7 @@ export const createSubOrders = async (props: CreateSubOrderProps): Promise<Creat
     const { list, order } = values || {};
     if (!actionAccountAddress) throw new Error('Account address is not defined');
     const subOrdersParams = await getSubOrdersParams(list);
+    // allSettled - wait all transactions
     const fetcher = async () => Promise.allSettled(
         subOrdersParams.map(({
             externalId,
@@ -441,9 +465,13 @@ export const changeStateSubOrder = ({
     previousResultSubOrders,
     process,
 }: ChangeStateSubOrderProps): void => {
+    // all uniq keys
     const keys = offers?.map(({ value, externalId }) => getSubOrdersKey({ consumer, offerId: value, externalId }), []) || [];
+    // only error keys
     const errorKeys = errorSubOrders ? keys.filter((key) => errorSubOrders.get(key)) : [];
+    // new success keys
     const successKeys = successSubOrders ? keys.filter((key) => successSubOrders.get(key)) : [];
+    // already submitted keys
     const previousSuccessKeys = previousResultSubOrders
         ? keys.filter((key) => previousResultSubOrders.get(key))
         : [];
@@ -547,6 +575,13 @@ export const workflow = async (props: WorkflowProps): Promise<void> => {
                 externalId: tee?.externalId,
             },
             web3,
+            isNeedApprove: state?.[Process.TEE_APPROVE]?.status !== Status.DONE,
+            onApproveSuccess: () => changeState({ process: Process.TEE_APPROVE, status: Status.DONE }),
+            onApproveError: (e) => changeState({
+                process: Process.TEE_APPROVE,
+                status: Status.ERROR,
+                error: new Map().set(null, e),
+            }),
         }).catch((e) => {
             changeState({ process: Process.TEE, status: Status.ERROR, error: new Map().set(null, e as Error) });
             throw e;
@@ -578,6 +613,7 @@ export const workflow = async (props: WorkflowProps): Promise<void> => {
             .filter(({ value, externalId }) => {
                 return ![...previousResultSubOrders]
                     .some(([, map]) => {
+                        // filter already submitted
                         return map?.get?.(getSubOrdersKey({ consumer: actionAccountAddress, offerId: value, externalId }));
                     });
             })
@@ -605,7 +641,7 @@ export const workflow = async (props: WorkflowProps): Promise<void> => {
             consumer: actionAccountAddress,
             previousResultSubOrders,
         });
-        if (errorSubOrders?.size) throw new Error('Some orders not created');
+        if (errorSubOrders?.size) throw new Error('Workflow sub orders error');
     }
     changeState({ process: Process.ORDER_START, status: Status.PROGRESS });
     await startOrder({ orderAddress: teeOrderAddress, actionAccountAddress, web3 }).catch((e) => {

@@ -24,7 +24,7 @@ export const ProcessItem: FC<ProcessItemProps> = memo(({
                         name="info_fill"
                         className={classes.iconError}
                     />
-                    <span>{error?.message}</span>
+                    <Box className={classes.message}>{error?.message}</Box>
                 </Box>
             )}
         </Box>

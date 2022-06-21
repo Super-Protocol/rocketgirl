@@ -67,7 +67,7 @@ export const getProcessList = (values: FormValues): Process[] => {
         file,
     } = values || {};
     return ([] as Process[])
-        .concat((tee ? Process.TEE : []))
+        .concat((tee ? [Process.TEE_APPROVE, Process.TEE] : []))
         .concat((solution ? Process.SOLUTION : []))
         .concat((storage ? Process.STORAGE : []))
         .concat((data?.length ? Process.DATA : []))
