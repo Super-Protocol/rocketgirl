@@ -23,6 +23,7 @@ export interface UseWorkflowProcessResult {
     progress: number;
     changeState: (props: ChangeStateProps) => void;
     init: (processList: Process[]) => void;
+    rerunNotDone: () => void;
 }
 
 export const getInitialState = (processList: Process[]): State => {
@@ -34,6 +35,17 @@ export const useWorkflowProcess = (initState?: State): UseWorkflowProcessResult 
     const changeState = useCallback((props: ChangeStateProps) => {
         const { process, ...rest } = props || {};
         setState((s) => ({ ...s, [process]: { ...rest } }));
+    }, []);
+    const rerunNotDone = useCallback(() => {
+        setState((s) => {
+            return Object.entries(s).reduce((acc, [process, values]) => ({
+                ...acc,
+                [process]: {
+                    ...values,
+                    status: values?.status !== Status.DONE ? Status.QUEUE : values?.status,
+                },
+            }), {});
+        });
     }, []);
     const progress = useMemo(() => {
         const entries = Object.entries(state);
@@ -48,5 +60,6 @@ export const useWorkflowProcess = (initState?: State): UseWorkflowProcessResult 
         state,
         changeState,
         init,
+        rerunNotDone,
     };
 };

@@ -84,6 +84,7 @@ export const useWorkflow = (initState?: State): UseWorkflowResult => {
         changeState,
         state: stateProcess,
         init: initProcess,
+        rerunNotDone,
     } = useWorkflowProcess(initState);
     const runWorkflow = useCallback(async (props: RunWorkflowProps) => {
         const {
@@ -106,8 +107,10 @@ export const useWorkflow = (initState?: State): UseWorkflowResult => {
         if (!phrase) throw new Error('Seed phrase required');
         if (!Object.keys(stateProcess).length) {
             initProcess(getProcessList(formValues));
+        } else {
+            rerunNotDone();
         }
-        if (!data?.length && file) {
+        if (!data?.length && file && stateProcess[Process.FILE]?.status !== Status.DONE) {
             if (!tee?.value) throw new Error('TEE required');
             try {
                 changeState({ process: Process.FILE, status: Status.PROGRESS });
@@ -130,7 +133,7 @@ export const useWorkflow = (initState?: State): UseWorkflowResult => {
             changeState,
             state,
         });
-    }, [encryptFile, generateByOffer, uploadFile, getFilePath, changeState, initProcess, stateProcess]);
+    }, [encryptFile, generateByOffer, uploadFile, getFilePath, changeState, initProcess, stateProcess, rerunNotDone]);
 
     return {
         runWorkflow,
