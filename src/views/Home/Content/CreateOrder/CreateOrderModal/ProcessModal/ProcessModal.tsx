@@ -49,7 +49,7 @@ export const ProcessModal: FC<ProcessModalProps> = memo(({ formValues, initialSt
             });
             showSuccessModal('Your order has been successfully created');
         } catch (e) {
-            console.error(e);
+            console.warn(e);
         } finally {
             setLoading(false);
         }

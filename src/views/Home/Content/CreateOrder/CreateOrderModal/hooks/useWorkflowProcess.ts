@@ -42,6 +42,7 @@ export const useWorkflowProcess = (initState?: State): UseWorkflowProcessResult 
                 ...acc,
                 [process]: {
                     ...values,
+                    error: undefined,
                     status: values?.status !== Status.DONE ? Status.QUEUE : values?.status,
                 },
             }), {});
