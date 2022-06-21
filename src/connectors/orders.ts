@@ -20,7 +20,6 @@ import {
     Encryption,
     CryptoAlgorithm,
 } from '@super-protocol/sp-dto-js';
-import { getExternalId, sleep } from '@/common/helpers';
 import { generateECIESKeys } from '@/utils/crypto';
 
 export interface CancelOrderProps { orderAddress?: string; web3?: Web3; actionAccountAddress?: string; }
@@ -142,6 +141,15 @@ export type GetOfferInfoResult = { offerType: OfferType; info: OfferInfo | TeeOf
 export interface CreateSubOrderResult {
     error?: Map<string | null, Error>;
     result?: Map<string | null, string>;
+}
+export interface ChangeStateSubOrderProps {
+    consumer: string;
+    changeState: (props: ChangeStateProps) => void;
+    offers: WorkflowPropsValuesOffer[];
+    errorSubOrders?: Map<string | null, Error>;
+    successSubOrders?: Map<string | null, string>;
+    previousResultSubOrders?: Map<string | null, string>;
+    process: Process;
 }
 export interface ChangeStateSubOrdersProps {
     consumer: string;
@@ -432,7 +440,7 @@ export const changeStateSubOrder = ({
     consumer,
     previousResultSubOrders,
     process,
-}) => {
+}: ChangeStateSubOrderProps): void => {
     const keys = offers?.map(({ value, externalId }) => getSubOrdersKey({ consumer, offerId: value, externalId }), []) || [];
     const errorKeys = errorSubOrders ? keys.filter((key) => errorSubOrders.get(key)) : [];
     const successKeys = successSubOrders ? keys.filter((key) => successSubOrders.get(key)) : [];
@@ -441,11 +449,12 @@ export const changeStateSubOrder = ({
         : [];
     const allSuccessKeys = (successKeys || []).concat(previousSuccessKeys || []);
     const error = errorKeys?.length && errorSubOrders
-        ? new Map([...errorSubOrders].filter(([key]) => errorKeys.includes(key)))
+        ? new Map([...errorSubOrders].filter(([key]) => errorKeys.includes(key as string)))
         : undefined;
     const result = allSuccessKeys?.length
         ? new Map(
-            [...(successSubOrders || []), ...(previousResultSubOrders || [])].filter(([key]) => allSuccessKeys.includes(key)),
+            [...(successSubOrders || []), ...(previousResultSubOrders || [])]
+                .filter(([key]) => allSuccessKeys.includes(key as string)),
         )
         : undefined;
     changeState({
@@ -465,7 +474,7 @@ export const changeStateSubOrders = ({
     storage,
     data,
     previousResultSubOrders,
-}: ChangeStateSubOrdersProps) => {
+}: ChangeStateSubOrdersProps): void => {
     changeStateSubOrder({
         successSubOrders,
         errorSubOrders,
