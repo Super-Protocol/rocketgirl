@@ -7,6 +7,7 @@ export type Info = {
     holdSum: number;
     restrictions?: string[] | null;
     sub?: FormOffer[];
+    externalId: string;
 }
 
 export type FormOffer = Item<Info, string>;

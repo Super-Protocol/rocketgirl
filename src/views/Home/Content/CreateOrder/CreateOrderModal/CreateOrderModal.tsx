@@ -105,9 +105,6 @@ export const CreateOrderModal: FC<CreateOrderModalProps> = memo(({ initialValues
     }, []);
     const createProcessModal = useCallback((formValues: FormValues, state?: State) => {
         showModal({
-            messages: {
-                header: 'Process',
-            },
             components: {
                 main: <ProcessModal formValues={formValues} createProcessModal={createProcessModal} initialState={state} />,
             },

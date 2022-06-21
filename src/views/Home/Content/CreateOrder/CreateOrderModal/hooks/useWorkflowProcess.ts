@@ -1,21 +1,21 @@
 import {
-    useCallback, useMemo, useRef, useState,
+    useCallback, useMemo, useState,
 } from 'react';
 import { Process, Status } from '@/connectors/orders';
 
 export interface State {
     [process: string]: {
         status: Status,
-        error?: Error,
-        result?: string;
+        error?: Map<string | null, Error>,
+        result?: Map<string | null, string>;
     };
 }
 
 export interface ChangeStateProps {
     process: Process;
     status: Status;
-    error?: Error;
-    result?: string;
+    error?: Map<string | null, Error>,
+    result?: Map<string | null, string>;
 }
 
 export interface UseWorkflowProcessResult {
@@ -29,9 +29,8 @@ export const getInitialState = (processList: Process[]): State => {
     return processList.reduce((acc, process) => ({ ...acc, [process]: { status: Status.QUEUE } }), {});
 };
 
-export const useWorkflowProcess = (): UseWorkflowProcessResult => {
-    const [state, setState] = useState<State>({});
-    const refState = useRef();
+export const useWorkflowProcess = (initState?: State): UseWorkflowProcessResult => {
+    const [state, setState] = useState<State>(initState || {});
     const changeState = useCallback((props: ChangeStateProps) => {
         const { process, ...rest } = props || {};
         setState((s) => ({ ...s, [process]: { ...rest } }));

@@ -40,15 +40,19 @@ export const getWorkflowValues = (formValues: FormValues, mnemonic: string, tiiG
     } = formValues;
     return {
         mnemonic: mnemonic || '',
-        solution: [solution?.value as string]
+        solution: (
+            solution?.value
+                ? [{ value: solution?.value as string, externalId: solution?.data?.externalId as string }]
+                : []
+        )
             .concat(
                 solution?.data?.sub
-                    ?.map((item) => item?.value as string)
-                    .filter((value) => value) || [],
+                    ?.map((item) => ({ value: item?.value as string, externalId: item?.data?.externalId as string }))
+                    .filter(({ value }) => value) || [],
             ),
-        data: data?.map((d) => d?.value as string),
-        tee: tee?.value as string,
-        storage: storage?.value as string,
+        data: data?.map((d) => ({ value: d?.value as string, externalId: d?.data?.externalId as string })),
+        tee: { value: tee?.value as string, externalId: tee?.data?.externalId as string },
+        storage: storage?.value ? { value: storage.value as string, externalId: storage?.data?.externalId as string } : undefined,
         deposit: deposit || 0,
         args: tiiGeneratorId ? JSON.stringify({ data: [tiiGeneratorId] }) : undefined,
     };
@@ -64,21 +68,23 @@ export const getProcessList = (values: FormValues): Process[] => {
     } = values || {};
     return ([] as Process[])
         .concat((tee ? Process.TEE : []))
-        .concat((solution || storage || data?.length) ? Process.SUB_ORDERS : [])
+        .concat((solution ? Process.SOLUTION : []))
+        .concat((storage ? Process.STORAGE : []))
+        .concat((data?.length ? Process.DATA : []))
         .concat(file ? Process.FILE : [])
         .concat(Process.ORDER_START);
 };
 
-export const useWorkflow = (): UseWorkflowResult => {
+export const useWorkflow = (initState?: State): UseWorkflowResult => {
     const { uploading, uploadFile, getFilePath } = useFileUploader();
     const { generating, generateByOffer } = useGenerateTII();
     const { encrypting, encryptFile } = useEncryptFile();
     const {
         progress,
         changeState,
-        state,
+        state: stateProcess,
         init: initProcess,
-    } = useWorkflowProcess();
+    } = useWorkflowProcess(initState);
     const runWorkflow = useCallback(async (props: RunWorkflowProps) => {
         const {
             formValues,
@@ -98,7 +104,9 @@ export const useWorkflow = (): UseWorkflowResult => {
         const phrase = phraseTabMode === Modes.generate ? phraseGenerated : phraseInput;
         let tiiGeneratorId;
         if (!phrase) throw new Error('Seed phrase required');
-        initProcess(getProcessList(formValues));
+        if (!Object.keys(stateProcess).length) {
+            initProcess(getProcessList(formValues));
+        }
         if (!data?.length && file) {
             if (!tee?.value) throw new Error('TEE required');
             try {
@@ -111,7 +119,7 @@ export const useWorkflow = (): UseWorkflowResult => {
                 tiiGeneratorId = await generateByOffer({ offerId: tee?.value, encryption: tiiEncryption, filepath });
                 changeState({ process: Process.FILE, status: Status.DONE });
             } catch (e) {
-                changeState({ process: Process.FILE, status: Status.ERROR, error: e as Error });
+                changeState({ process: Process.FILE, status: Status.ERROR, error: new Map().set(null, e as Error) });
                 throw e;
             }
         }
@@ -122,7 +130,7 @@ export const useWorkflow = (): UseWorkflowResult => {
             changeState,
             state,
         });
-    }, [encryptFile, generateByOffer, uploadFile, getFilePath, changeState, initProcess]);
+    }, [encryptFile, generateByOffer, uploadFile, getFilePath, changeState, initProcess, stateProcess]);
 
     return {
         runWorkflow,
@@ -131,6 +139,6 @@ export const useWorkflow = (): UseWorkflowResult => {
         encrypting,
         progress,
         changeStateProcess: changeState,
-        stateProcess: state,
+        stateProcess,
     };
 };
