@@ -3,7 +3,7 @@ import React, {
 } from 'react';
 import { useMount } from 'react-use';
 import { Box, Button, ProgressBar } from '@/uikit';
-import { ModalOkCancelContext, WalletContext } from '@/common/context';
+import { WalletContext } from '@/common/context';
 import { Process } from '@/connectors/orders';
 import { useErrorModal } from '@/common/hooks/useErrorModal';
 import { ProcessModalProps } from './types';
@@ -11,20 +11,20 @@ import classes from './ProcessModal.module.scss';
 import { useWorkflow } from '../hooks/useWorkflow';
 import { ProcessItem } from '../ProcessItem';
 import { State } from '../hooks/useWorkflowProcess';
-import { CancellingModal } from '../CancellingModal';
+// import { CancellingModal } from '../CancellingModal';
 
 export const ProcessModal: FC<ProcessModalProps> = memo(({ formValues, initialState }) => {
     const { selectedAddress, instance } = useContext(WalletContext);
     const { showSuccessModal } = useErrorModal();
-    const { showModal } = useContext(ModalOkCancelContext);
-    const createCancellingModal = useCallback((state?: State) => {
-        showModal({
-            components: {
-                main: <CancellingModal state={state} />,
-            },
-            classNameBody: classes.cancellingBody,
-        });
-    }, [showModal]);
+    // const { showModal } = useContext(ModalOkCancelContext);
+    // const createCancellingModal = useCallback((state?: State) => {
+    //     showModal({
+    //         components: {
+    //             main: <CancellingModal state={state} />,
+    //         },
+    //         classNameBody: classes.cancellingBody,
+    //     });
+    // }, [showModal]);
     const [loading, setLoading] = useState(true);
     const {
         runWorkflow,
@@ -115,16 +115,16 @@ export const ProcessModal: FC<ProcessModalProps> = memo(({ formValues, initialSt
                     status={stateProcess[Process.ORDER_START]?.status}
                     error={getErrorFromMapList(Process.ORDER_START)}
                 />
-                <Box justifyContent="center" className={classes.btns}>
-                    {!loading && Object.values(stateProcess || {})?.some(({ result }) => result) && (
-                        <Button
-                            className={classes.btnCancel}
-                            onClick={() => createCancellingModal(stateProcess)}
-                            variant="secondary"
-                        >
-                            Cancel order
-                        </Button>
-                    )}
+                <Box justifyContent="flex-end" className={classes.btns}>
+                    {/*{!loading && Object.values(stateProcess || {})?.some(({ result }) => result) && (*/}
+                    {/*    <Button*/}
+                    {/*        className={classes.btnCancel}*/}
+                    {/*        onClick={() => createCancellingModal(stateProcess)}*/}
+                    {/*        variant="secondary"*/}
+                    {/*    >*/}
+                    {/*        Cancel order*/}
+                    {/*    </Button>*/}
+                    {/*)}*/}
                     {!loading && (
                         <Button
                             variant="primary"
