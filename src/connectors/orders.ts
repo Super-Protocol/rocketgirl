@@ -136,7 +136,7 @@ export interface CancelOrdersProps {
     web3: Web3;
 }
 export interface CancelOrdersResultSuccess { value: string; }
-export interface CancelOrdersResultError { value: string; error: any; }
+export interface CancelOrdersResultError { value: string; error?: any; }
 export interface CancelOrdersResult {
     success: CancelOrdersResultSuccess[];
     error: CancelOrdersResultError[];
