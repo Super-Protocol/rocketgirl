@@ -6,6 +6,7 @@ import React, {
     useState,
 } from 'react';
 import cn from 'classnames';
+import toastr from '@/services/Toastr/toastr';
 import { Box, CardUi, Spinner } from '@/uikit';
 import { useOrderLazyQuery } from '@/gql/graphql';
 import { NoAccountBlock } from '@/common/components/NoAccountBlock';
@@ -27,10 +28,15 @@ export const Details = memo<DetailsProps>(({ id }) => {
     const [getOrder, orderResult] = useOrderLazyQuery({ variables: { id } });
     const updateOrderInfo = useCallback(async () => {
         setLoadingOrderInfo(true);
-        const result = await getOrderInfo(id).catch(() => undefined);
-        setOrderInfo(result);
+        try {
+            await getOrder();
+            const result = await getOrderInfo(id).catch(() => undefined);
+            setOrderInfo(result);
+        } catch (e) {
+            toastr.error(e);
+        }
         setLoadingOrderInfo(false);
-    }, [id]);
+    }, [id, getOrder]);
     const loading = useMemo(() => orderResult?.loading || loadingOrderInfo, [orderResult, loadingOrderInfo]);
     const order = useMemo(() => orderResult.data?.order, [orderResult]);
     const orderAddress = useMemo(() => order?.address, [order]);
@@ -39,9 +45,8 @@ export const Details = memo<DetailsProps>(({ id }) => {
     // const isMyOrder = useMemo(() => order?.consumer === selectedAddress, [order, selectedAddress]);
 
     useEffect(() => {
-        getOrder();
         updateOrderInfo();
-    }, [getOrder, updateOrderInfo]);
+    }, [updateOrderInfo]);
 
     if (loading) return <Spinner fullscreen />;
     // if (!isMyOrder) return null; // todo hide before production

@@ -188,7 +188,7 @@ export const replenishOrder = async ({
         amount,
         { from: accountAddress, web3: instance },
     );
-    await OrdersFactory.refillOrderDeposit(orderAddress, amount, { from: accountAddress });
+    await OrdersFactory.refillOrderDeposit(orderAddress, amount, { from: accountAddress, web3: instance });
 };
 
 export const getOrderInfo = async (address?: string): Promise<GetOrderInfoResult> => {
