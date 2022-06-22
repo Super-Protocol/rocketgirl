@@ -1,4 +1,9 @@
-import { SubscriptionSource, useEventSubscription, SubscriptionType } from '@/gql/graphql';
+import {
+    SubscriptionSource,
+    useEventSubscription,
+    SubscriptionType,
+    TOfferType,
+} from '@/gql/graphql';
 import { FetcherByTable, UseTablesQueryFetcherResult } from '@/views/Home/hooks/useTablesQueryFetcher';
 import { Tables } from '@/views/Home/types';
 
@@ -38,11 +43,11 @@ export const useTablesSubscriptions = (fetcher: UseTablesQueryFetcherResult, con
                             ? [
                                 {
                                     source: SubscriptionSource.Order,
-                                    filter: { consumer },
+                                    filter: { consumer, offerType: TOfferType.TeeOffer },
                                 },
                                 {
                                     source: SubscriptionSource.Transaction,
-                                    filter: { consumer },
+                                    filter: { consumer, offerType: TOfferType.TeeOffer },
                                 },
                             ]
                             : []
