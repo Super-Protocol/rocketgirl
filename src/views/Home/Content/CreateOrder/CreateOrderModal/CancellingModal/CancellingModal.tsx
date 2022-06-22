@@ -111,7 +111,7 @@ export const CancellingModal: FC<CancellingModalProps> = memo(({ state }) => {
                 )}
                 {!!cancellingState?.[Process.DATA] && (
                     <ProcessItem
-                        name="Solution order"
+                        name="Data order"
                         className={classes.mrb}
                         status={getStatus(Process.DATA)}
                         error={getError(Process.DATA)}
