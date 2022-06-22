@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import dayjs from 'dayjs';
 import { Buffer } from 'buffer';
-import BlockchainConnector, {
+import {
     OfferType,
     OfferGroup,
     TcbStatus,
@@ -10,8 +10,6 @@ import BlockchainConnector, {
 import { TOfferType } from '@/gql/graphql';
 import { Item } from '@/uikit/Select/types';
 import CONFIG from '@/config';
-
-export const getAddressByKey = (key: string): string => BlockchainConnector.initActionAccount(key);
 
 export function getEnumName(value: string, en: { [key: string]: string | number }): string {
     if (!value) return '';
@@ -128,3 +126,5 @@ export const sliceWithDot = (str?: string, lenFrom = 6): string => {
     if (str.length < lenFrom) return str;
     return `${str.slice(0, lenFrom)}...${str.slice(str.length - lenFrom)}`;
 };
+
+export const sleep = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));

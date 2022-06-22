@@ -10,6 +10,7 @@ import { Offer, TeeOffer, TOfferType } from '@/gql/graphql';
 import { validateMnemonic } from '@/utils/crypto';
 import { Item, Value } from '@/uikit/types';
 import { Modes } from '@/uikit/MnemonicGenerator/types';
+import { getExternalId } from '@/common/helpers';
 import {
     FormValues,
     FormOffer,
@@ -28,6 +29,7 @@ export const valueOfferConvertNode: ConvertNode<Offer> = ({ node }): Item<Value,
         name: node?.offerInfo?.name || '',
         holdSum: node?.offerInfo?.holdSum || 0,
         restrictions: node?.offerInfo?.restrictions?.offers,
+        externalId: getExternalId(),
     },
 });
 
@@ -38,6 +40,7 @@ export const teeOfferConvertNode: ConvertNode<TeeOffer> = ({ node }): Item<Value
         description: node?.teeOfferInfo?.description || '',
         name: node?.teeOfferInfo?.name || '',
         holdSum: 0,
+        externalId: getExternalId(),
     },
 });
 

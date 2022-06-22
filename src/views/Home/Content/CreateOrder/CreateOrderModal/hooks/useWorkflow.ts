@@ -11,13 +11,13 @@ import { useFileUploader } from './useFileUploader';
 import { useGenerateTII } from './useGenerateTII';
 import { useEncryptFile } from './useEncryptFile';
 import { FormValues } from '../types';
-import { State, useWorkflowProcess } from './useWorkflowProcess';
+import { ChangeStateProps, State, useWorkflowProcess } from './useWorkflowProcess';
 
 export interface RunWorkflowProps {
     formValues: FormValues;
     actionAccountAddress?: string;
     web3?: Web3;
-    changeState: (process: Process, status: Status) => void;
+    state?: State;
 }
 
 export interface UseWorkflowResult {
@@ -26,7 +26,7 @@ export interface UseWorkflowResult {
     generating: boolean;
     encrypting: boolean;
     progress: number;
-    changeStateProcess: (process: Process, status: Status) => void;
+    changeStateProcess: (props: ChangeStateProps) => void;
     stateProcess: State;
 }
 
@@ -40,15 +40,19 @@ export const getWorkflowValues = (formValues: FormValues, mnemonic: string, tiiG
     } = formValues;
     return {
         mnemonic: mnemonic || '',
-        solution: [solution?.value as string]
+        solution: (
+            solution?.value
+                ? [{ value: solution?.value as string, externalId: solution?.data?.externalId as string }]
+                : []
+        )
             .concat(
                 solution?.data?.sub
-                    ?.map((item) => item?.value as string)
-                    .filter((value) => value) || [],
+                    ?.map((item) => ({ value: item?.value as string, externalId: item?.data?.externalId as string }))
+                    .filter(({ value }) => value) || [],
             ),
-        data: data?.map((d) => d?.value as string),
-        tee: tee?.value as string,
-        storage: storage?.value as string,
+        data: data?.map((d) => ({ value: d?.value as string, externalId: d?.data?.externalId as string })),
+        tee: { value: tee?.value as string, externalId: tee?.data?.externalId as string },
+        storage: storage?.value ? { value: storage.value as string, externalId: storage?.data?.externalId as string } : undefined,
         deposit: deposit || 0,
         args: tiiGeneratorId ? JSON.stringify({ data: [tiiGeneratorId] }) : undefined,
     };
@@ -63,29 +67,31 @@ export const getProcessList = (values: FormValues): Process[] => {
         file,
     } = values || {};
     return ([] as Process[])
-        .concat((tee ? Process.TEE : []))
-        .concat(solution ? Process.SOLUTION : [])
-        .concat(storage ? Process.STORAGE : [])
-        .concat(data?.length ? Process.DATA : [])
+        .concat((tee ? [Process.TEE_APPROVE, Process.TEE] : []))
+        .concat((solution ? Process.SOLUTION : []))
+        .concat((storage ? Process.STORAGE : []))
+        .concat((data?.length ? Process.DATA : []))
         .concat(file ? Process.FILE : [])
         .concat(Process.ORDER_START);
 };
 
-export const useWorkflow = (): UseWorkflowResult => {
+export const useWorkflow = (initState?: State): UseWorkflowResult => {
     const { uploading, uploadFile, getFilePath } = useFileUploader();
     const { generating, generateByOffer } = useGenerateTII();
     const { encrypting, encryptFile } = useEncryptFile();
     const {
         progress,
         changeState,
-        state,
+        state: stateProcess,
         init: initProcess,
-    } = useWorkflowProcess();
+        rerunNotDone,
+    } = useWorkflowProcess(initState);
     const runWorkflow = useCallback(async (props: RunWorkflowProps) => {
         const {
             formValues,
             actionAccountAddress,
             web3,
+            state,
         } = props || {};
         if (!actionAccountAddress || !web3) throw new Error('Metamask account not found');
         const {
@@ -99,20 +105,24 @@ export const useWorkflow = (): UseWorkflowResult => {
         const phrase = phraseTabMode === Modes.generate ? phraseGenerated : phraseInput;
         let tiiGeneratorId;
         if (!phrase) throw new Error('Seed phrase required');
-        initProcess(getProcessList(formValues));
-        if (!data?.length && file) {
+        if (!Object.keys(stateProcess).length) {
+            initProcess(getProcessList(formValues));
+        } else {
+            rerunNotDone();
+        }
+        if (!data?.length && file && stateProcess[Process.FILE]?.status !== Status.DONE) {
             if (!tee?.value) throw new Error('TEE required');
             try {
-                changeState(Process.FILE, Status.PROGRESS);
+                changeState({ process: Process.FILE, status: Status.PROGRESS });
                 const { encryption, key } = await encryptFile(file);
                 const { ciphertext, ...restEncryption } = encryption;
                 const uploadResult = await uploadFile({ fileName: file.name, ciphertext });
                 const filepath = getFilePath(uploadResult);
                 const tiiEncryption = { ...restEncryption, key };
                 tiiGeneratorId = await generateByOffer({ offerId: tee?.value, encryption: tiiEncryption, filepath });
-                changeState(Process.FILE, Status.DONE);
+                changeState({ process: Process.FILE, status: Status.DONE });
             } catch (e) {
-                changeState(Process.FILE, Status.ERROR, e as Error);
+                changeState({ process: Process.FILE, status: Status.ERROR, error: new Map().set(null, e as Error) });
                 throw e;
             }
         }
@@ -121,8 +131,9 @@ export const useWorkflow = (): UseWorkflowResult => {
             actionAccountAddress,
             web3,
             changeState,
+            state,
         });
-    }, [encryptFile, generateByOffer, uploadFile, getFilePath, changeState, initProcess]);
+    }, [encryptFile, generateByOffer, uploadFile, getFilePath, changeState, initProcess, stateProcess, rerunNotDone]);
 
     return {
         runWorkflow,
@@ -131,6 +142,6 @@ export const useWorkflow = (): UseWorkflowResult => {
         encrypting,
         progress,
         changeStateProcess: changeState,
-        stateProcess: state,
+        stateProcess,
     };
 };
