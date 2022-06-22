@@ -1,25 +1,36 @@
 import React, {
-    memo, FC, useCallback, useMemo, useContext,
+    memo, FC, useCallback, useMemo, useContext, useState,
 } from 'react';
 import { useMount } from 'react-use';
-import { Box, ProgressBar } from '@/uikit';
+import { Box, Button, ProgressBar } from '@/uikit';
 import { WalletContext } from '@/common/context';
 import { Process } from '@/connectors/orders';
 import { useErrorModal } from '@/common/hooks/useErrorModal';
 import { ProcessModalProps } from './types';
 import classes from './ProcessModal.module.scss';
 import { useWorkflow } from '../hooks/useWorkflow';
-import { ProcessItem } from './ProcessItem';
+import { ProcessItem } from '../ProcessItem';
+import { State } from '../hooks/useWorkflowProcess';
+// import { CancellingModal } from '../CancellingModal';
 
-export const ProcessModal: FC<ProcessModalProps> = memo(({ formValues }) => {
+export const ProcessModal: FC<ProcessModalProps> = memo(({ formValues, initialState }) => {
     const { selectedAddress, instance } = useContext(WalletContext);
-    const { showErrorModal, showSuccessModal } = useErrorModal();
+    const { showSuccessModal } = useErrorModal();
+    // const { showModal } = useContext(ModalOkCancelContext);
+    // const createCancellingModal = useCallback((state?: State) => {
+    //     showModal({
+    //         components: {
+    //             main: <CancellingModal state={state} />,
+    //         },
+    //         classNameBody: classes.cancellingBody,
+    //     });
+    // }, [showModal]);
+    const [loading, setLoading] = useState(true);
     const {
         runWorkflow,
         progress,
         stateProcess,
-        changeStateProcess,
-    } = useWorkflow();
+    } = useWorkflow(initialState);
     const {
         tee,
         solution,
@@ -27,22 +38,31 @@ export const ProcessModal: FC<ProcessModalProps> = memo(({ formValues }) => {
         data,
         file,
     } = useMemo(() => formValues, [formValues]);
-    const init = useCallback(async () => {
+    const executeWorkflow = useCallback(async (state?: State) => {
         try {
+            setLoading(true);
             await runWorkflow({
                 formValues,
                 actionAccountAddress: selectedAddress,
                 web3: instance,
-                changeState: changeStateProcess,
+                state,
             });
             showSuccessModal('Your order has been successfully created');
         } catch (e) {
-            showErrorModal(e);
+            console.warn(e);
+        } finally {
+            setLoading(false);
         }
-    }, [formValues, selectedAddress, instance, runWorkflow, changeStateProcess, showSuccessModal, showErrorModal]);
+    }, [instance, formValues, selectedAddress, runWorkflow, showSuccessModal]);
+    const getErrorFromMapList = useCallback((process: Process) => {
+        return stateProcess[process]?.error?.size
+            ? [...stateProcess[process].error as Map<string | null, Error>]?.[0]?.[1]
+            : undefined;
+    }, [stateProcess]);
     useMount(() => {
-        init();
+        executeWorkflow(initialState);
     });
+
     return (
         <Box direction="column" className={classes.wrap}>
             <ProgressBar progress={progress} />
@@ -54,7 +74,7 @@ export const ProcessModal: FC<ProcessModalProps> = memo(({ formValues }) => {
                         name="File uploading"
                         className={classes.mrb}
                         status={stateProcess[Process.FILE]?.status}
-                        error={stateProcess[Process.FILE]?.error}
+                        error={getErrorFromMapList(Process.FILE)}
                     />
                 )}
                 {!!tee && (
@@ -62,7 +82,7 @@ export const ProcessModal: FC<ProcessModalProps> = memo(({ formValues }) => {
                         name="Tee order"
                         className={classes.mrb}
                         status={stateProcess[Process.TEE]?.status}
-                        error={stateProcess[Process.TEE]?.error}
+                        error={getErrorFromMapList(Process.TEE_APPROVE) || getErrorFromMapList(Process.TEE)}
                     />
                 )}
                 {!!solution && (
@@ -70,7 +90,7 @@ export const ProcessModal: FC<ProcessModalProps> = memo(({ formValues }) => {
                         name="Solution order"
                         className={classes.mrb}
                         status={stateProcess[Process.SOLUTION]?.status}
-                        error={stateProcess[Process.SOLUTION]?.error}
+                        error={getErrorFromMapList(Process.SOLUTION)}
                     />
                 )}
                 {!!storage && (
@@ -78,7 +98,7 @@ export const ProcessModal: FC<ProcessModalProps> = memo(({ formValues }) => {
                         name="Storage order"
                         className={classes.mrb}
                         status={stateProcess[Process.STORAGE]?.status}
-                        error={stateProcess[Process.STORAGE]?.error}
+                        error={getErrorFromMapList(Process.STORAGE)}
                     />
                 )}
                 {!!data && (
@@ -86,15 +106,34 @@ export const ProcessModal: FC<ProcessModalProps> = memo(({ formValues }) => {
                         name="Data order"
                         className={classes.mrb}
                         status={stateProcess[Process.DATA]?.status}
-                        error={stateProcess[Process.DATA]?.error}
+                        error={getErrorFromMapList(Process.DATA)}
                     />
                 )}
                 <ProcessItem
                     name="Tee order start"
                     className={classes.mrb}
                     status={stateProcess[Process.ORDER_START]?.status}
-                    error={stateProcess[Process.ORDER_START]?.error}
+                    error={getErrorFromMapList(Process.ORDER_START)}
                 />
+                <Box justifyContent="flex-end" className={classes.btns}>
+                    {/*{!loading && Object.values(stateProcess || {})?.some(({ result }) => result) && (*/}
+                    {/*    <Button*/}
+                    {/*        className={classes.btnCancel}*/}
+                    {/*        onClick={() => createCancellingModal(stateProcess)}*/}
+                    {/*        variant="secondary"*/}
+                    {/*    >*/}
+                    {/*        Cancel order*/}
+                    {/*    </Button>*/}
+                    {/*)}*/}
+                    {!loading && (
+                        <Button
+                            variant="primary"
+                            onClick={() => executeWorkflow(stateProcess)}
+                        >
+                            Try again
+                        </Button>
+                    )}
+                </Box>
             </Box>
         </Box>
     );
