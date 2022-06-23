@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 import { OrderStatus } from '@super-protocol/sp-sdk-js';
+import { CopyToClipboard } from '@/uikit';
 import { StatusBar } from '@/common/components/StatusBar';
 import { OrderQuery } from '@/gql/graphql';
 import { getTableDate } from '@/common/helpers';
@@ -74,10 +75,10 @@ export const getTee = (order?: OrderQuery['order']): TableInfo | null => {
     if (!order) return null;
     const {
         teeOfferInfo,
-        consumer,
         orderInfo,
         orderHoldDeposit,
         depositSpent,
+        providerInfo,
     } = order || {};
     if (!teeOfferInfo) return null;
     const { name, description } = teeOfferInfo || {};
@@ -91,7 +92,7 @@ export const getTee = (order?: OrderQuery['order']): TableInfo | null => {
             },
             {
                 key: 'Provider',
-                value: consumer || '-', // todo change to provider
+                value: <CopyToClipboard title={providerInfo?.name}>{providerInfo?.actionAccount}</CopyToClipboard>,
             },
             {
                 key: 'Name',

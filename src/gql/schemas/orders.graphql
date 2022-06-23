@@ -95,6 +95,7 @@ query Order($id: String!) {
         }
         providerInfo {
             actionAccount
+            name
         }
         orderHoldDeposit
         depositSpent
@@ -138,6 +139,7 @@ query SubOrders($pagination: ConnectionArgs!, $filter: OrdersFilter) {
                     }
                     providerInfo {
                         actionAccount
+                        name
                     }
                     offerType
                     orderInfo {

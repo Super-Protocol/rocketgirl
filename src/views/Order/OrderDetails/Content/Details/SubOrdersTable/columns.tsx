@@ -28,9 +28,9 @@ export const getColumns = (): Array<ColumnProps<OrdersColumns>> => [
         Header: 'Provider',
         id: 'provider',
         Cell: ({ row }) => {
-            const { consumer } = row.original; // todo change to provider
-            if (!consumer) return '-';
-            return <CopyToClipboard>{consumer}</CopyToClipboard>;
+            const { providerInfo } = row.original;
+            if (!providerInfo?.actionAccount) return '-';
+            return <CopyToClipboard title={providerInfo?.name}>{providerInfo?.actionAccount}</CopyToClipboard>;
         },
         width: 'auto',
     },
