@@ -4,7 +4,6 @@ import React, {
     useContext,
     useMemo,
 } from 'react';
-import { BigNumber } from 'bignumber.js';
 import {
     Box,
 } from '@/uikit';
@@ -13,14 +12,15 @@ import { WalletConnectorBtn } from '@/common/components/WalletConnectorBtn';
 import { AccountDropdown } from './AccountDropdown';
 import { AccountProps } from './types';
 import classes from './Account.module.scss';
+import { getBalanceView } from './helpers';
 
 export const Account: FC<AccountProps> = memo(() => {
     const {
         balance,
         selectedAddress,
     } = useContext(WalletContext);
-    const matic = useMemo(() => (balance.matic ? new BigNumber(balance.matic).toFixed(3) : '-'), [balance.matic]);
-    const tee = useMemo(() => (balance.tee ? new BigNumber(balance.tee).toFixed(3) : '-'), [balance.tee]);
+    const matic = useMemo(() => getBalanceView(balance.matic), [balance.matic]);
+    const tee = useMemo(() => getBalanceView(balance.tee), [balance.tee]);
     return (
         <Box>
             {
