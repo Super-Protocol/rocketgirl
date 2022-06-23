@@ -6,11 +6,12 @@ import React, {
     useState,
 } from 'react';
 import cn from 'classnames';
+import toastr from '@/services/Toastr/toastr';
 import { Box, CardUi, Spinner } from '@/uikit';
 import { useOrderLazyQuery } from '@/gql/graphql';
 import { NoAccountBlock } from '@/common/components/NoAccountBlock';
 import { WalletContext } from '@/common/context/WalletProvider';
-import { getOrderInfo, GetOrderInfoResult } from '@/connectors/orders';
+import { getOrderSdk, GetOrderSdk } from '@/connectors/orders';
 import { DetailsProps } from './types';
 import { Title } from './Title';
 import { getInfo, getTee } from './helpers';
@@ -22,26 +23,29 @@ export const Details = memo<DetailsProps>(({ id }) => {
         isConnected,
         // selectedAddress,
     } = useContext(WalletContext);
-    const [orderInfo, setOrderInfo] = useState<GetOrderInfoResult>();
-    const [loadingOrderInfo, setLoadingOrderInfo] = useState(false);
+    const [orderSdk, setOrderSdk] = useState<GetOrderSdk>();
+    const [loadingOrderSdk, setLoadingOrderSdk] = useState(false);
     const [getOrder, orderResult] = useOrderLazyQuery({ variables: { id } });
     const updateOrderInfo = useCallback(async () => {
-        setLoadingOrderInfo(true);
-        const result = await getOrderInfo(id).catch(() => undefined);
-        setOrderInfo(result);
-        setLoadingOrderInfo(false);
-    }, [id]);
-    const loading = useMemo(() => orderResult?.loading || loadingOrderInfo, [orderResult, loadingOrderInfo]);
+        setLoadingOrderSdk(true);
+        try {
+            await getOrder();
+            setOrderSdk(await getOrderSdk(id));
+        } catch (e) {
+            toastr.error(e);
+        }
+        setLoadingOrderSdk(false);
+    }, [id, getOrder]);
+    const loading = useMemo(() => orderResult?.loading || loadingOrderSdk, [orderResult, loadingOrderSdk]);
     const order = useMemo(() => orderResult.data?.order, [orderResult]);
     const orderAddress = useMemo(() => order?.address, [order]);
-    const info = useMemo(() => getInfo(order, orderInfo), [order, orderInfo]);
+    const info = useMemo(() => getInfo(order, orderSdk), [order, orderSdk]);
     const tee = useMemo(() => getTee(order), [order]);
     // const isMyOrder = useMemo(() => order?.consumer === selectedAddress, [order, selectedAddress]);
 
     useEffect(() => {
-        getOrder();
         updateOrderInfo();
-    }, [getOrder, updateOrderInfo]);
+    }, [updateOrderInfo]);
 
     if (loading) return <Spinner fullscreen />;
     // if (!isMyOrder) return null; // todo hide before production
@@ -49,7 +53,7 @@ export const Details = memo<DetailsProps>(({ id }) => {
 
     return (
         <Box direction="column">
-            {!!order && <Title order={order} orderInfo={orderInfo} updateOrderInfo={updateOrderInfo} />}
+            {!!order && <Title order={order} orderSdk={orderSdk} updateOrderInfo={updateOrderInfo} />}
             <Box>
                 {!!info && (
                     <CardUi classNameWrap={cn(classes.card, { [classes.mr]: !!tee })}>

@@ -163,6 +163,8 @@ export type EventFilter = {
 export type EventFilterField = {
   /** filter events by consumer */
   consumer?: InputMaybe<Scalars['String']>;
+  /** filter by offerType */
+  offerType?: InputMaybe<TOfferType>;
 };
 
 export type EventSource = {

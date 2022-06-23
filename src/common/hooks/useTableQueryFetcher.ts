@@ -258,6 +258,7 @@ export const useTableQueryFetcher = <
     }, [pageData]);
 
     const onChangePage = useCallback(async (props: OnPageChangeProps) => {
+        deleteFromDiff?.();
         const {
             pageClick,
             pageIndex,
@@ -281,7 +282,7 @@ export const useTableQueryFetcher = <
             await getQueryData({ variables }).catch(() => {});
         }
         setPageIndex(pageIndex || 0);
-    }, [getQueryData, getVariables, pageInfo, isReverse, pageSize, deleteFromDiffTimeout]);
+    }, [getQueryData, getVariables, pageInfo, isReverse, pageSize, deleteFromDiffTimeout, deleteFromDiff]);
 
     const refetch = useCallback(async () => {
         await queryData.refetch().catch(() => {});
