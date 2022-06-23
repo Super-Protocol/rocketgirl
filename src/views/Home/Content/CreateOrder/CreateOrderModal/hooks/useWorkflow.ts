@@ -112,12 +112,15 @@ export const useWorkflow = (initState?: State): UseWorkflowResult => {
             rerunNotDone();
         }
         if (!data?.length && file && stateProcess[Process.FILE]?.status !== Status.DONE) {
+            const fileWithExtension = file.name.split('.');
+            if (fileWithExtension?.length < 2) throw new Error('File extension is not defined');
             if (!tee?.value) throw new Error('TEE required');
             try {
                 changeState({ process: Process.FILE, status: Status.PROGRESS });
                 const { encryption, key } = await encryptFile(file);
                 const { ciphertext, ...restEncryption } = encryption;
-                const fileName = uuid();
+                const extension = fileWithExtension.pop();
+                const fileName = `${uuid()}.${extension}`;
                 await uploadFile({ fileName, ciphertext });
                 const tiiEncryption = { ...restEncryption, key };
                 tiiGeneratorId = await generateByOffer({ offerId: tee?.value, encryption: tiiEncryption, filepath: fileName });
