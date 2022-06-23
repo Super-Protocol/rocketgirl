@@ -16,12 +16,12 @@ import { TitleProps } from './types';
 import { ReplenishOrderModal } from './ReplenishOrderModal';
 import { GetResultModal } from './GetResultModal';
 
-export const Title = memo<TitleProps>(({ order, orderInfo, updateOrderInfo }) => {
+export const Title = memo<TitleProps>(({ order, orderSdk, updateOrderInfo }) => {
     const { showModal } = useContext(ModalOkCancelContext);
     const { selectedAddress, instance } = useContext(WalletContext);
     const { showErrorModal, showSuccessModal } = useErrorModal();
     const [loading, setLoading] = useState(false);
-    const status = useMemo(() => orderInfo?.status, [orderInfo]);
+    const status = useMemo(() => orderSdk?.orderInfo?.status, [orderSdk]);
     const isShowCancelBtn = useMemo(() => !!status && ![
         OrderStatus.Canceled,
         OrderStatus.Done,

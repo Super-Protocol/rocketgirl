@@ -29,7 +29,11 @@ export interface ReplenishOrderProps {
     instance?: Web3;
     accountAddress?: string;
 }
-export type GetOrderInfoResult = OrderInfo;
+export interface GetOrderSdk {
+    orderInfo: OrderInfo;
+    depositSpent: string;
+    orderHoldDeposit: number;
+}
 export interface GetOrderParamsProps {
     offer: string;
     args?: string;
@@ -191,10 +195,17 @@ export const replenishOrder = async ({
     await OrdersFactory.refillOrderDeposit(orderAddress, amount, { from: accountAddress, web3: instance });
 };
 
-export const getOrderInfo = async (address?: string): Promise<GetOrderInfoResult> => {
+export const getOrderSdk = async (address?: string): Promise<GetOrderSdk> => {
     if (!address) throw new Error('Order address required');
     const order = new Order(address);
-    return order.getOrderInfo();
+    const orderInfo = await order.getOrderInfo();
+    const depositSpent = await order.getDepositSpent();
+    const orderHoldDeposit = await OrdersFactory.getOrderHoldDeposit(address);
+    return {
+        orderInfo,
+        depositSpent,
+        orderHoldDeposit,
+    };
 };
 
 export const createOrderSubscription = async (
