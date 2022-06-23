@@ -103,7 +103,7 @@ export const CancellingModal: FC<CancellingModalProps> = memo(({ state }) => {
                 <div className={classes.mrb}>Please sign transactions to get deposit back</div>
                 {!!cancellingState?.[Process.TEE] && (
                     <ProcessItem
-                        name="Tee order"
+                        name="TEE order"
                         className={classes.mrb}
                         status={getStatus(Process.TEE)}
                         error={getError(Process.TEE)}

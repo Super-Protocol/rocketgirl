@@ -80,7 +80,7 @@ export const ProcessModal: FC<ProcessModalProps> = memo(({ formValues, initialSt
                 )}
                 {!!tee && (
                     <ProcessItem
-                        name="Tee order"
+                        name="TEE order"
                         className={classes.mrb}
                         status={stateProcess[Process.TEE]?.status}
                         error={getErrorFromMapList(Process.TEE_APPROVE) || getErrorFromMapList(Process.TEE)}
@@ -111,7 +111,7 @@ export const ProcessModal: FC<ProcessModalProps> = memo(({ formValues, initialSt
                     />
                 )}
                 <ProcessItem
-                    name="Tee order start"
+                    name="TEE order start"
                     className={classes.mrb}
                     status={stateProcess[Process.ORDER_START]?.status}
                     error={getErrorFromMapList(Process.ORDER_START)}
