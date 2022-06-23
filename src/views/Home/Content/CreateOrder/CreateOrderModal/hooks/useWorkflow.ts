@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 import Web3 from 'web3';
+import { v4 as uuid } from 'uuid';
 import { Modes } from '@/uikit/MnemonicGenerator/types';
 import {
     workflow,
@@ -76,7 +77,7 @@ export const getProcessList = (values: FormValues): Process[] => {
 };
 
 export const useWorkflow = (initState?: State): UseWorkflowResult => {
-    const { uploading, uploadFile, getFilePath } = useFileUploader();
+    const { uploading, uploadFile } = useFileUploader();
     const { generating, generateByOffer } = useGenerateTII();
     const { encrypting, encryptFile } = useEncryptFile();
     const {
@@ -116,10 +117,10 @@ export const useWorkflow = (initState?: State): UseWorkflowResult => {
                 changeState({ process: Process.FILE, status: Status.PROGRESS });
                 const { encryption, key } = await encryptFile(file);
                 const { ciphertext, ...restEncryption } = encryption;
-                const uploadResult = await uploadFile({ fileName: file.name, ciphertext });
-                const filepath = getFilePath(uploadResult);
+                const fileName = uuid();
+                await uploadFile({ fileName, ciphertext });
                 const tiiEncryption = { ...restEncryption, key };
-                tiiGeneratorId = await generateByOffer({ offerId: tee?.value, encryption: tiiEncryption, filepath });
+                tiiGeneratorId = await generateByOffer({ offerId: tee?.value, encryption: tiiEncryption, filepath: fileName });
                 changeState({ process: Process.FILE, status: Status.DONE });
             } catch (e) {
                 changeState({ process: Process.FILE, status: Status.ERROR, error: new Map().set(null, e as Error) });
@@ -133,7 +134,7 @@ export const useWorkflow = (initState?: State): UseWorkflowResult => {
             changeState,
             state,
         });
-    }, [encryptFile, generateByOffer, uploadFile, getFilePath, changeState, initProcess, stateProcess, rerunNotDone]);
+    }, [encryptFile, generateByOffer, uploadFile, changeState, initProcess, stateProcess, rerunNotDone]);
 
     return {
         runWorkflow,

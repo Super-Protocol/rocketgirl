@@ -28,7 +28,6 @@ export interface UploadFileProps {
 export interface UseFileUploaderResult {
     uploadFile: (props: UploadFileProps) => Promise<UploadFileByS3Result>;
     uploading: boolean;
-    getFilePath: (props: UploadFileByS3Result) => string;
 }
 
 export const uploadFileByS3 = async (props: UploadFileByS3Props): Promise<UploadFileByS3Result> => {
@@ -84,15 +83,8 @@ export const useFileUploader = (): UseFileUploaderResult => {
         }
         return result;
     }, []);
-    const getFilePath = useCallback((result: UploadFileByS3Result) => {
-        const { httpRequest } = result || {};
-        const { path } = httpRequest || {};
-        if (!path) throw new Error('Bad file path');
-        return `${REACT_APP_S3_ENDPOINT}${path}`;
-    }, []);
     return {
         uploadFile,
         uploading,
-        getFilePath,
     };
 };
