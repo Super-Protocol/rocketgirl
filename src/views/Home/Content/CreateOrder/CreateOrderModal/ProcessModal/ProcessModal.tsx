@@ -2,6 +2,7 @@ import React, {
     memo, FC, useCallback, useMemo, useContext, useState,
 } from 'react';
 import { useMount } from 'react-use';
+import toastr from '@/services/Toastr/toastr';
 import { Box, Button, ProgressBar } from '@/uikit';
 import { WalletContext } from '@/common/context';
 import { Process } from '@/connectors/orders';
@@ -51,6 +52,7 @@ export const ProcessModal: FC<ProcessModalProps> = memo(({ formValues, initialSt
             showSuccessModal('Your order has been successfully created');
         } catch (e) {
             console.warn(e);
+            toastr.error((e as Error)?.message);
         } finally {
             setLoading(false);
         }
