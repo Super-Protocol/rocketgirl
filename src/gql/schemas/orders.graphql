@@ -93,6 +93,10 @@ query Order($id: String!) {
             modifiedBy
             modifiedDate
         }
+        providerInfo {
+            actionAccount
+            name
+        }
         orderHoldDeposit
         depositSpent
         offerType
@@ -132,6 +136,10 @@ query SubOrders($pagination: ConnectionArgs!, $filter: OrdersFilter) {
                         offerType
                         cancelable
                         description
+                    }
+                    providerInfo {
+                        actionAccount
+                        name
                     }
                     offerType
                     orderInfo {
