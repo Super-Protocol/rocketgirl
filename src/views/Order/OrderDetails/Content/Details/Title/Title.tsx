@@ -5,7 +5,7 @@ import React, {
     useMemo,
     useState,
 } from 'react';
-import { OrderStatus } from '@super-protocol/sp-sdk-js';
+import { OrderStatus, Order } from '@super-protocol/sp-sdk-js';
 import { Box, Button } from '@/uikit';
 import { cancelOrder } from '@/connectors/orders';
 import { WalletContext } from '@/common/context/WalletProvider';
@@ -99,8 +99,15 @@ export const Title = memo<TitleProps>(({ order, orderSdk, updateOrderInfo }) => 
     }, [showModal, order]);
 
     const onWithdrawDeposit = useCallback(async () => {
-
-    }, []);
+        setLoading(true);
+        try {
+            await new Order(order?.address).withdrawChange({ from: selectedAddress, web3: instance });
+            showSuccessModal('Withdraw deposit successfully');
+        } catch (e) {
+            showErrorModal(e);
+        }
+        setLoading(false);
+    }, [instance, order, selectedAddress, showErrorModal, showSuccessModal]);
 
     return (
         <Box justifyContent="space-between" className={classes.wrap}>
