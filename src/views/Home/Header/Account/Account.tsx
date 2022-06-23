@@ -4,7 +4,7 @@ import React, {
     useContext,
     useMemo,
 } from 'react';
-import Web3 from 'web3';
+import { BigNumber } from 'bignumber.js';
 import {
     Box,
 } from '@/uikit';
@@ -19,8 +19,8 @@ export const Account: FC<AccountProps> = memo(() => {
         balance,
         selectedAddress,
     } = useContext(WalletContext);
-    const matic = useMemo(() => (balance.matic ? Number.parseFloat(balance.matic).toFixed(3) : '-'), [balance.matic]);
-    const tee = useMemo(() => (balance.tee ? Web3.utils.fromWei(balance.tee) : '-'), [balance.tee]);
+    const matic = useMemo(() => (balance.matic ? new BigNumber(balance.matic).toFixed(3) : '-'), [balance.matic]);
+    const tee = useMemo(() => (balance.tee ? new BigNumber(balance.tee).toFixed(3) : '-'), [balance.tee]);
     return (
         <Box>
             {
