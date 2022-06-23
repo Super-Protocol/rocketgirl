@@ -71,18 +71,20 @@ export const getInfo = (order?: OrderQuery['order'], orderSdk?: GetOrderSdk): Ta
     };
 };
 
-export const getTee = (order?: OrderQuery['order']): TableInfo | null => {
+export const getTee = (order?: OrderQuery['order'], orderSdk?: GetOrderSdk): TableInfo | null => {
     if (!order) return null;
     const {
         teeOfferInfo,
         orderInfo,
-        orderHoldDeposit,
-        depositSpent,
         providerInfo,
     } = order || {};
     if (!teeOfferInfo) return null;
     const { name, description } = teeOfferInfo || {};
     const { offer } = orderInfo || {};
+    const {
+        orderHoldDeposit: orderHoldDepositSdk,
+        depositSpent: depositSpentSdk,
+    } = orderSdk || {};
     return {
         title: 'TEE',
         list: [
@@ -104,11 +106,11 @@ export const getTee = (order?: OrderQuery['order']): TableInfo | null => {
             },
             {
                 key: 'Estimated cost',
-                value: orderHoldDeposit || '-',
+                value: orderHoldDepositSdk || '-',
             },
             {
                 key: 'Actual cost',
-                value: depositSpent || '-',
+                value: depositSpentSdk || '-',
             },
         ],
     };

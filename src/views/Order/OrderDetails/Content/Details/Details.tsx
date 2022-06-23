@@ -40,7 +40,7 @@ export const Details = memo<DetailsProps>(({ id }) => {
     const order = useMemo(() => orderResult.data?.order, [orderResult]);
     const orderAddress = useMemo(() => order?.address, [order]);
     const info = useMemo(() => getInfo(order, orderSdk), [order, orderSdk]);
-    const tee = useMemo(() => getTee(order), [order]);
+    const tee = useMemo(() => getTee(order, orderSdk), [order, orderSdk]);
     // const isMyOrder = useMemo(() => order?.consumer === selectedAddress, [order, selectedAddress]);
 
     useEffect(() => {
