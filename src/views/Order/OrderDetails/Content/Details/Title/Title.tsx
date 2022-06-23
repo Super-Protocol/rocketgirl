@@ -5,7 +5,7 @@ import React, {
     useMemo,
     useState,
 } from 'react';
-import { OrderStatus } from '@super-protocol/sp-sdk-js';
+import { OrderStatus, Order } from '@super-protocol/sp-sdk-js';
 import { Box, Button } from '@/uikit';
 import { cancelOrder } from '@/connectors/orders';
 import { WalletContext } from '@/common/context/WalletProvider';
@@ -13,6 +13,7 @@ import { useErrorModal } from '@/common/hooks/useErrorModal';
 import { ModalOkCancelContext } from '@/common/context/ModalOkCancelProvider/ModalOkCancelProvider';
 import classes from './Title.module.scss';
 import { TitleProps } from './types';
+import { getUnspentDeposit } from '../helpers';
 import { ReplenishOrderModal } from './ReplenishOrderModal';
 import { GetResultModal } from './GetResultModal';
 
@@ -34,6 +35,21 @@ export const Title = memo<TitleProps>(({ order, orderSdk, updateOrderInfo }) => 
         OrderStatus.Canceling,
         OrderStatus.Error,
     ].includes(status), [status]);
+    const isShowWithdrawBtn = useMemo(() => {
+        const {
+            orderInfo: orderInfoSdk,
+            depositSpent: depositSpentSdk,
+            orderHoldDeposit: orderHoldDepositSdk,
+        } = orderSdk || {};
+        const unspentDeposit = getUnspentDeposit(orderHoldDepositSdk, depositSpentSdk);
+        const { status } = orderInfoSdk || {};
+        return !!status && [
+            OrderStatus.Canceled,
+            OrderStatus.Done,
+            OrderStatus.Canceling,
+            OrderStatus.Error,
+        ].includes(status) && unspentDeposit;
+    }, [orderSdk]);
     const result = useMemo(() => {
         const { orderResult } = order || {};
         const { encryptedResult, encryptedError } = orderResult || {};
@@ -82,6 +98,17 @@ export const Title = memo<TitleProps>(({ order, orderSdk, updateOrderInfo }) => 
         });
     }, [showModal, order]);
 
+    const onWithdrawDeposit = useCallback(async () => {
+        setLoading(true);
+        try {
+            await new Order(order?.address).withdrawChange({ from: selectedAddress, web3: instance });
+            showSuccessModal('Withdraw deposit successfully');
+        } catch (e) {
+            showErrorModal(e);
+        }
+        setLoading(false);
+    }, [instance, order, selectedAddress, showErrorModal, showSuccessModal]);
+
     return (
         <Box justifyContent="space-between" className={classes.wrap}>
             <div className={classes.title}>Order details</div>
@@ -103,6 +130,16 @@ export const Title = memo<TitleProps>(({ order, orderSdk, updateOrderInfo }) => 
                         onClick={onReplenishOrder}
                     >
                         Replenish Deposit
+                    </Button>
+                )}
+                {isShowWithdrawBtn && (
+                    <Button
+                        variant="quaternary"
+                        className={classes.replenishbtn}
+                        loading={loading}
+                        onClick={onWithdrawDeposit}
+                    >
+                        Withdraw deposit
                     </Button>
                 )}
                 {isShowResultBtn && (
