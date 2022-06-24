@@ -18,6 +18,7 @@ export const ModalOkCancel: FC<ModalOkCancelProps> = memo(({
     classNameHeader,
     classNameWrap,
     classNameBody,
+    classNameBottom,
     messages,
     children,
     components,
@@ -67,7 +68,7 @@ export const ModalOkCancel: FC<ModalOkCancelProps> = memo(({
                         </div>
                         {components?.footer || (
                             (!!messages?.cancel || !!messages?.ok) && (
-                                <div className={classes.bottom}>
+                                <div className={cn(classes.bottom, classNameBottom)}>
                                     {!!messages?.cancel && (
                                         <Button
                                             onClick={onCancel}
