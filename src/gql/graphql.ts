@@ -1016,6 +1016,7 @@ export type SubscriptionPayload = {
   __typename?: 'SubscriptionPayload';
   consumer?: Maybe<Scalars['String']>;
   data?: Maybe<Array<Scalars['String']>>;
+  offerType?: Maybe<TOfferType>;
   subscriptionSource: SubscriptionSource;
   type: SubscriptionType;
 };

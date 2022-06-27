@@ -47,7 +47,7 @@ export const useTablesSubscriptions = (fetcher: UseTablesQueryFetcherResult, con
                                 },
                                 {
                                     source: SubscriptionSource.Transaction,
-                                    filter: { consumer, offerType: TOfferType.TeeOffer },
+                                    filter: { consumer },
                                 },
                             ]
                             : []
