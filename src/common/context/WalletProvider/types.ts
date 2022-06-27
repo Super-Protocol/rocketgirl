@@ -7,12 +7,10 @@ export interface WalletInfo {
 
 export enum WalletType {
     metaMask = 'metaMask',
-    walletConnect = 'walletConnect',
 }
 
 export interface Wallet {
     [WalletType.metaMask]?: WalletInfo;
-    // [WalletType.walletConnect]?: WalletInfo;
 }
 
 export type SelectedWalletType = WalletType | null;

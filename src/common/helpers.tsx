@@ -40,7 +40,7 @@ export const getParsedErrorTransactions = (e: Error): { message: string; transac
 
 export const getTransactionHashLink = (hash?: string): string => {
     if (!hash) return '';
-    return `${CONFIG.REACT_APP_POLYGON_SCAN}/tx/${hash}`;
+    return `${CONFIG.REACT_APP_NETWORK_POLYGON_SCAN}/tx/${hash}`;
 };
 
 export const getErrorTransactionsTemplate = (e: Error): string => {
