@@ -46,7 +46,6 @@ export const Title = memo<TitleProps>(({ order, orderSdk, updateOrderInfo }) => 
         return !!status && [
             OrderStatus.Canceled,
             OrderStatus.Done,
-            OrderStatus.Canceling,
             OrderStatus.Error,
         ].includes(status) && unspentDeposit;
     }, [orderSdk]);
