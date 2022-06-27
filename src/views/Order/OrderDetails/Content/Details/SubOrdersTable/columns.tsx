@@ -28,9 +28,14 @@ export const getColumns = (): Array<ColumnProps<OrdersColumns>> => [
         Header: 'Provider',
         id: 'provider',
         Cell: ({ row }) => {
-            const { providerInfo } = row.original;
+            const { providerInfo } = row.original || {};
             if (!providerInfo?.actionAccount) return '-';
-            return <CopyToClipboard title={providerInfo?.name}>{providerInfo?.actionAccount}</CopyToClipboard>;
+            const { name, actionAccount } = providerInfo || {};
+            return (
+                <CopyToClipboard title={name} canShowTooltip={{ title: 'Provider' }}>
+                    {actionAccount}
+                </CopyToClipboard>
+            );
         },
         width: 'auto',
     },
@@ -50,7 +55,7 @@ export const getColumns = (): Array<ColumnProps<OrdersColumns>> => [
         Cell: ({ row }) => {
             const { offerInfo, teeOfferInfo } = row.original || {};
             const name = offerInfo?.name || teeOfferInfo?.name;
-            return name || '-';
+            return name ? <TooltipLink text={name} /> : '-';
         },
         width: 'auto',
         isEllipsis: true,
