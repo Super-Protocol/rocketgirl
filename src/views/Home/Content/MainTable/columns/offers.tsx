@@ -22,7 +22,11 @@ export const getColumns = (): Array<ColumnProps<OffersColumns>> => [
             const { providerInfo } = row.original;
             const { actionAccount, name } = providerInfo || {};
             if (!actionAccount) return '-';
-            return <CopyToClipboard title={name}>{actionAccount}</CopyToClipboard>;
+            return (
+                <CopyToClipboard title={name} canShowTooltip={{ title: 'Provider' }}>
+                    {actionAccount}
+                </CopyToClipboard>
+            );
         },
         width: 'auto',
     },

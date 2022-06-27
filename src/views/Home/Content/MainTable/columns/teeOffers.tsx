@@ -22,7 +22,11 @@ export const getColumns = (): Array<ColumnProps<TeeOffersColumns>> => [
             const { providerAddress, providerInfo } = row.original || {};
             const { name } = providerInfo || {};
             if (!providerAddress) return '-';
-            return <CopyToClipboard title={name}>{providerAddress}</CopyToClipboard>;
+            return (
+                <CopyToClipboard title={name} canShowTooltip={{ title: 'Provider' }}>
+                    {providerAddress}
+                </CopyToClipboard>
+            );
         },
         width: 'auto',
     },

@@ -3,6 +3,7 @@ import {
 } from 'react';
 import copy from 'copy-to-clipboard';
 import { Box, Icon, Ellipsis } from '@/uikit';
+import { TooltipLink } from '@/common/components/TooltipLink';
 import toastr from '@/services/Toastr/toastr';
 import { LinkTo } from './LinkTo';
 import { CopyToClipboardProps } from './types';
@@ -19,6 +20,7 @@ export const CopyToClipboard: FC<CopyToClipboardProps> = memo(({
     title,
     url,
     blank = false,
+    canShowTooltip,
 }) => {
     const onCopy = useCallback((event) => {
         copy(children);
@@ -27,7 +29,12 @@ export const CopyToClipboard: FC<CopyToClipboardProps> = memo(({
         }
         onClick(event);
     }, [onClick, children, notification]);
-    const element = useMemo(() => <LinkTo address={children} url={url} blank={blank} />, [children, url, blank]);
+    const element = useMemo(() => (
+        <LinkTo {...{
+            address: children, url, blank, canShowTooltip,
+        }}
+        />
+    ), [children, url, blank, canShowTooltip]);
     const renderIcon = useMemo(() => (
         <Box>
             <Icon
@@ -38,9 +45,14 @@ export const CopyToClipboard: FC<CopyToClipboardProps> = memo(({
             />
         </Box>
     ), [onCopy]);
+    const titleTooltip = useMemo(() => (
+        canShowTooltip && title
+            ? <TooltipLink text={title} title={canShowTooltip?.title} checkOverflow />
+            : title
+    ), [title, canShowTooltip]);
     const renderElement = useMemo(
-        () => (isEllipsis ? <Ellipsis className={classNameText}>{title || element}</Ellipsis> : element),
-        [isEllipsis, title, element, classNameText],
+        () => (isEllipsis ? <Ellipsis className={classNameText}>{titleTooltip || element}</Ellipsis> : element),
+        [isEllipsis, titleTooltip, element, classNameText],
     );
     if (!children && !title) return null;
     return (
