@@ -17,7 +17,6 @@ export const getInitialBalance = (): Balance => ({ matic: null, tee: null });
 
 export interface UseConnectToMetaMaskResult {
     connect: () => Promise<void>;
-    switchNetwork: () => Promise<void>;
     addTeeToken: () => Promise<void>;
 }
 
@@ -42,33 +41,6 @@ export const getBalance = async (address?: string): Promise<Balance> => {
 };
 
 export const useConnectToMetaMask = (actions: Actions): UseConnectToMetaMaskResult => {
-    const switchNetwork = useCallback(async () => {
-        if (!(window as any).ethereum) {
-            throw new Error('Metamask is not defined');
-        }
-        try {
-            await (window as any).ethereum.request({
-                method: 'wallet_switchEthereumChain',
-                params: [{ chainId: Web3.utils.toHex(CONFIG.REACT_APP_NETWORK_CHAIN_ID) }],
-            });
-        } catch (switchError) {
-            // This error code indicates that the chain has not been added to MetaMask.
-            if ((switchError as any).code === 4902) {
-                await (window as any).ethereum.request({
-                    method: 'wallet_addEthereumChain',
-                    params: [
-                        {
-                            chainId: Web3.utils.toHex(CONFIG.REACT_APP_NETWORK_CHAIN_ID),
-                            chainName: CONFIG.REACT_APP_NETWORK_NAME,
-                            rpcUrls: [CONFIG.REACT_APP_NETWORK_RPC],
-                        },
-                    ],
-                });
-            }
-            throw switchError;
-        }
-    }, []);
-
     const addTeeToken = useCallback(async () => {
         const success = (window as any).ethereum
             .request({
@@ -102,7 +74,6 @@ export const useConnectToMetaMask = (actions: Actions): UseConnectToMetaMaskResu
 
     return {
         connect,
-        switchNetwork,
         addTeeToken,
     };
 };
