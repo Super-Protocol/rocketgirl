@@ -15,7 +15,7 @@ export const getColumns = (): Array<ColumnProps<Columns>> => [
             const { hash } = row.original || {};
             if (!hash) return '-';
             return (
-                <CopyToClipboard url={`${CONFIG.REACT_APP_POLYGON_SCAN}/tx/${hash}`} blank>
+                <CopyToClipboard url={`${CONFIG.REACT_APP_NETWORK_POLYGON_SCAN}/tx/${hash}`} blank>
                     {hash}
                 </CopyToClipboard>
             );
@@ -37,7 +37,7 @@ export const getColumns = (): Array<ColumnProps<Columns>> => [
             const { blockNumber } = row.original || {};
             if (!blockNumber) return '-';
             return (
-                <CopyToClipboard url={`${CONFIG.REACT_APP_POLYGON_SCAN}/block/${blockNumber}`} blank>
+                <CopyToClipboard url={`${CONFIG.REACT_APP_NETWORK_POLYGON_SCAN}/block/${blockNumber}`} blank>
                     {blockNumber}
                 </CopyToClipboard>
             );
@@ -61,7 +61,14 @@ export const getColumns = (): Array<ColumnProps<Columns>> => [
         Cell: ({ row }) => {
             const { from } = row.original || {};
             if (!from) return '-';
-            return <CopyToClipboard url={`${CONFIG.REACT_APP_POLYGON_SCAN}/address/${from}`} blank>{from}</CopyToClipboard>;
+            return (
+                <CopyToClipboard
+                    url={`${CONFIG.REACT_APP_NETWORK_POLYGON_SCAN}/address/${from}`}
+                    blank
+                >
+                    {from}
+                </CopyToClipboard>
+            );
         },
         width: 'auto',
     },
@@ -71,7 +78,7 @@ export const getColumns = (): Array<ColumnProps<Columns>> => [
         Cell: ({ row }) => {
             const { to } = row.original || {};
             if (!to) return '-';
-            return <CopyToClipboard url={`${CONFIG.REACT_APP_POLYGON_SCAN}/address/${to}`} blank>{to}</CopyToClipboard>;
+            return <CopyToClipboard url={`${CONFIG.REACT_APP_NETWORK_POLYGON_SCAN}/address/${to}`} blank>{to}</CopyToClipboard>;
         },
         width: 'auto',
     },
