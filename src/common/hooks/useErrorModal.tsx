@@ -3,6 +3,7 @@ import { getParsedErrorTransactions } from '@/common/helpers';
 import { ModalResult } from '@/common/components/ModalResult';
 import { ModalOkCancelContext } from '@/common/context/ModalOkCancelProvider/ModalOkCancelProvider';
 import { ModalOkCancelProps } from '@/uikit/Modals/ModalOkCancel/types';
+import classes from './useErrorModal.module.scss';
 
 export interface UseErrorModalResult {
     showErrorModal: Function;
@@ -21,6 +22,10 @@ export const useErrorModal = (): UseErrorModalResult => {
     const showSuccessModal = useCallback(async (message?: string, children?: ReactNode) => {
         await showModal({
             children: children || <ModalResult type="success">{message || 'Success'}</ModalResult>,
+            messages: {
+                ok: 'Ok',
+            },
+            classNameBottom: classes.bottom,
         });
     }, [showModal]);
     return {
