@@ -10,11 +10,19 @@ export interface GetColumnsProps {
     urlBack: string;
 }
 
-const getCellValueOffer = (row, offerTypeProp) => {
+const getCellValueOffer = (row, offerTypeProp, sortByMain?: boolean) => {
     const { subOrders } = row?.original || {};
-    const offers = (subOrders || [])
-        .filter(({ offerType }) => offerType === offerTypeProp)
-        .map(({ offerInfo }) => ({ name: offerInfo?.name }));
+    const filteredOffers = (subOrders || []).reverse()
+        .filter(({ offerType }) => offerType === offerTypeProp);
+    const sortedOffers = sortByMain
+        ? filteredOffers
+            .sort((a, b) => {
+                const aIncludes = !a?.offerInfo?.restrictions?.types?.includes(offerTypeProp);
+                const bIncludes = !b?.offerInfo?.restrictions?.types?.includes(offerTypeProp);
+                return Number(aIncludes) - Number(bIncludes);
+            })
+        : filteredOffers;
+    const offers = sortedOffers.map(({ offerInfo }) => ({ name: offerInfo?.name }));
     if (!offers.length) return '-';
     return <TextCounter list={offers} />;
 };
@@ -47,7 +55,7 @@ export const getColumns = ({ urlBack }: GetColumnsProps): Array<ColumnProps<Orde
         Header: 'Solutions',
         id: 'solutions',
         width: 'auto',
-        Cell: ({ row }) => getCellValueOffer(row, TOfferType.Solution),
+        Cell: ({ row }) => getCellValueOffer(row, TOfferType.Solution, true),
     },
     {
         Header: 'Data',

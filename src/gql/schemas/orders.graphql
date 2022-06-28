@@ -43,6 +43,9 @@ query Orders($pagination: ConnectionArgs!, $filter: OrdersFilter) {
                         }
                         offerInfo {
                             name
+                            restrictions {
+                                types
+                            }
                         }
                         offerType
                     }
