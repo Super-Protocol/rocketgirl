@@ -55,7 +55,7 @@ export const getColumns = (): Array<ColumnProps<OrdersColumns>> => [
         Cell: ({ row }) => {
             const { offerInfo, teeOfferInfo } = row.original || {};
             const name = offerInfo?.name || teeOfferInfo?.name;
-            return name ? <TooltipLink text={name} /> : '-';
+            return name ? <TooltipLink text={name} title="Name" checkOverflow /> : '-';
         },
         width: 'auto',
         isEllipsis: true,
@@ -66,7 +66,7 @@ export const getColumns = (): Array<ColumnProps<OrdersColumns>> => [
         Cell: ({ row }) => {
             const { offerInfo, teeOfferInfo } = row.original || {};
             const description = offerInfo?.description || teeOfferInfo?.description;
-            return description ? <TooltipLink text={description} /> : '-';
+            return description ? <TooltipLink text={description} title="Description" checkOverflow /> : '-';
         },
         width: 'auto',
         isEllipsis: true,
