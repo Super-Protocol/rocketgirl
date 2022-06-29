@@ -117,13 +117,20 @@ export const useWorkflow = (initState?: State): UseWorkflowResult => {
             if (!tee?.value) throw new Error('TEE required');
             try {
                 changeState({ process: Process.FILE, status: Status.PROGRESS });
-                const { encryption, key } = await encryptFile(file);
-                const { ciphertext, ...restEncryption } = encryption;
                 const extension = fileWithExtension.pop();
                 const fileName = `${uuid()}.${extension}`;
+                console.log('fileName', fileName);
+                const { encryption, key } = await encryptFile(file);
+                const { ciphertext } = encryption;
                 await uploadFile({ fileName, ciphertext });
-                const tiiEncryption = { ...restEncryption, key };
-                tiiGeneratorId = await generateByOffer({ offerId: tee?.value, encryption: tiiEncryption, filepath: fileName });
+                const tiiEncryption = { ...encryption, key };
+                const { solution } = getWorkflowValues(formValues, phrase);
+                tiiGeneratorId = await generateByOffer({
+                    offerId: tee?.value,
+                    encryption: tiiEncryption,
+                    filepath: fileName,
+                    addresses: (solution || []).map(({ value }) => value),
+                });
                 changeState({ process: Process.FILE, status: Status.DONE });
             } catch (e) {
                 changeState({ process: Process.FILE, status: Status.ERROR, error: new Map().set(null, e as Error) });

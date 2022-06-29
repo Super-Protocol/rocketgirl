@@ -114,10 +114,10 @@ export const getBase64FromBlob = (blob: Blob): Promise<string | ArrayBuffer | nu
     reader.readAsDataURL(blob);
 });
 
-export const getBase64FromFile = (file: File): Promise<string | ArrayBuffer | null> => new Promise((resolve, reject) => {
+export const getBase64FromFile = (file: File): Promise<string> => new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
+    reader.onload = () => resolve(reader.result as string);
     reader.onerror = (error) => reject(error);
 });
 
