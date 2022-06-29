@@ -15,18 +15,31 @@ import classes from './FileUploader.module.scss';
 import { tooltipText } from './helpers';
 import { FileUploaderProps } from './types';
 
-export const FileUploader = memo<FileUploaderProps>(({ disabled, uploading, name }): ReactElement => {
-    const [, { value, error }, { setValue }] = useField(name);
+export const FileUploader = memo<FileUploaderProps>(({
+    disabled,
+    uploading,
+    name,
+    accept,
+}): ReactElement => {
+    const [, { value, error }, { setValue, setError }] = useField(name);
 
     const options = useMemo((): DropzoneOptions => {
         return {
             multiple: false,
             disabled,
             onDrop: (acceptedFiles) => {
+                setError(undefined);
                 setValue(acceptedFiles[0]);
             },
+            onDropRejected: (result) => {
+                const errors = result.map(({ errors }) => errors).flat();
+                if (errors.length) {
+                    setError(errors[0]?.message);
+                }
+            },
+            accept,
         };
-    }, [setValue, disabled]);
+    }, [setValue, disabled, accept, setError]);
 
     const onDeleteClick = useCallback(() => {
         if (!disabled) {

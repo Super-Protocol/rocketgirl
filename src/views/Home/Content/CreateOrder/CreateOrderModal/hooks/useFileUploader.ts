@@ -50,7 +50,6 @@ export const uploadFileByS3 = async (props: UploadFileByS3Props): Promise<Upload
         ACL: 'public-read',
         Body: buf,
         Bucket: 'inputs',
-        ContentEncoding: 'base64',
         Key: fileName,
     });
     result

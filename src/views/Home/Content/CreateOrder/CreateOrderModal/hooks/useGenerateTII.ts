@@ -14,6 +14,7 @@ export interface GenerateByOfferProps {
     offerId: string;
     encryption: Encryption;
     filepath: string;
+    addresses: string[];
 }
 
 export interface UsePublishTeeResult {
@@ -26,11 +27,17 @@ export const useGenerateTII = (): UsePublishTeeResult => {
     const generateByOffer = useCallback(async (props: GenerateByOfferProps): Promise<string | undefined> => {
         setGenerating(true);
         try {
-            const { offerId, encryption, filepath } = props;
+            const {
+                offerId,
+                encryption,
+                filepath,
+                addresses,
+            } = props;
+            const { hashes, linkage } = await TIIGenerator.getSolutionHashesAndLinkage(addresses);
             return TIIGenerator.generateByOffer(
                 offerId,
-                [],
-                undefined,
+                hashes,
+                linkage,
                 {
                     type: ResourceType.StorageProvider,
                     storageType: StorageType.StorJ,

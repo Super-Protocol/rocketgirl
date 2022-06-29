@@ -42,6 +42,7 @@ import {
     getValidationSchema,
     getMinDepositWorkflow,
     getInitialFilters,
+    acceptedFiles,
 } from './helpers';
 import { InputDeposit } from './InputDeposit';
 import { ProcessModal } from './ProcessModal';
@@ -237,7 +238,11 @@ export const CreateOrderModal: FC<CreateOrderModalProps> = memo(({ initialValues
                                     checkTouched={!isValidating}
                                     onDelete={onDelete}
                                 />
-                                <FileUploader {...{ disabled: !!values?.[Fields.data]?.length, name: Fields.file }} />
+                                <FileUploader
+                                    disabled={!!values?.[Fields.data]?.length}
+                                    name={Fields.file}
+                                    accept={acceptedFiles}
+                                />
                                 <MnemonicGenerator {...{
                                     notification: true,
                                     nameMode: Fields.phraseTabMode,
