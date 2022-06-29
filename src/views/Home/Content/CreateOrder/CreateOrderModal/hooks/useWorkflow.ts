@@ -119,7 +119,6 @@ export const useWorkflow = (initState?: State): UseWorkflowResult => {
                 changeState({ process: Process.FILE, status: Status.PROGRESS });
                 const extension = fileWithExtension.pop();
                 const fileName = `${uuid()}.${extension}`;
-                console.log('fileName', fileName);
                 const { encryption, key } = await encryptFile(file);
                 const { ciphertext } = encryption;
                 await uploadFile({ fileName, ciphertext });

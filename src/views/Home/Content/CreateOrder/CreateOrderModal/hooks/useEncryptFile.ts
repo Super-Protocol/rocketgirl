@@ -30,21 +30,6 @@ export const useEncryptFile = (): UseEncryptFileResult => {
                     key: privateKeyBase64,
                 },
             );
-            // const fileContent = await Crypto.decrypt({ ...encryption, key: privateKeyBase64 });
-            // console.log('fileContent', fileContent);
-            // console.log('base64', base64);
-            // console.log('base64Content', fileContent);
-            //
-            // const pom = document.createElement('a');
-            // pom.setAttribute('href', `data:application/octet-stream;charset=utf-16le;base64, ${fileContent}`);
-            // pom.setAttribute('download', 'test.gz');
-            // if (document.createEvent) {
-            //     const event = document.createEvent('MouseEvents');
-            //     event.initEvent('click', true, true);
-            //     pom.dispatchEvent(event);
-            // } else {
-            //     pom.click();
-            // }
             return {
                 encryption,
                 key: privateKeyBase64,

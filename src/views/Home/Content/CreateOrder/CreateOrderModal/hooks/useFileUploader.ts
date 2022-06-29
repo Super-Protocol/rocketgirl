@@ -45,9 +45,6 @@ export const uploadFileByS3 = async (props: UploadFileByS3Props): Promise<Upload
     const { onHttpUploadProgress, onComplete } = options || {};
     if (!ciphertext) throw new Error('File is empty');
     const buf = Buffer.from(ciphertext, 'base64');
-    console.log('ciphertext', ciphertext);
-    console.log('buf', buf);
-    console.log('base64', buf.toString('base64'));
     if (!buf?.length) throw new Error('File is empty');
     const result = await client.putObject({
         ACL: 'public-read',
