@@ -14,6 +14,7 @@ import { useWorkflow } from '../hooks/useWorkflow';
 import { ProcessItem } from '../ProcessItem';
 import { State } from '../hooks/useWorkflowProcess';
 import { CancellingModal } from '../CancellingModal';
+import { transmittalText } from './helpers';
 
 export const ProcessModal: FC<ProcessModalProps> = memo(({ formValues, initialState }) => {
     const { selectedAddress, instance } = useContext(WalletContext);
@@ -71,7 +72,7 @@ export const ProcessModal: FC<ProcessModalProps> = memo(({ formValues, initialSt
             <ProgressBar progress={progress} />
             <Box className={classes.body} direction="column">
                 <div className={classes.title}>Creating...</div>
-                <div className={classes.mrb}>Please do not reload or close window until all suborders created</div>
+                <div className={classes.text}>{transmittalText}</div>
                 {!!file && (
                     <ProcessItem
                         name="File uploading"
