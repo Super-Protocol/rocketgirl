@@ -10,7 +10,7 @@ export const ProgressBar: FC<ProgressBarProps> = memo(({ progress }) => {
     return (
         <div className={classes.progress}>
             <div
-                className={cn(classes.progressBar, { [classes['progressBar-progress']]: progress !== valuemax })}
+                className={cn(classes.progressBar, { [classes['progressBar-process']]: progress < valuemax })}
                 style={{ width: `${progress}%` }}
                 aria-valuemax={valuemax}
                 aria-valuenow={progress}
