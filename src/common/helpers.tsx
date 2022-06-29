@@ -121,6 +121,13 @@ export const getBase64FromFile = (file: File): Promise<string> => new Promise((r
     reader.onerror = (error) => reject(error);
 });
 
+export const getBinaryStringFromFile = (file: File): Promise<string> => new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsBinaryString(file);
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = (error) => reject(error);
+});
+
 export const sliceWithDot = (str?: string, lenFrom = 6): string => {
     if (!str) return '';
     if (str.length < lenFrom) return str;
