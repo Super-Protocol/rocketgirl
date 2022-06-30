@@ -30,7 +30,7 @@ const DEFAULT_CONFIG: Config = {
     // base app config
     REACT_APP_API_ENDPOINT: 'https://bff.dev.superprotocol.com/graphql',
     REACT_APP_AUTH: '',
-    REACT_APP_SP_MAIN_CONTRACT_ADDRESS: '0xC13ad9b5B6deCa9C5cD1e058D4836109D5C01B1a',
+    REACT_APP_SP_MAIN_CONTRACT_ADDRESS: '0x395fDaA1b4c6B4433842181884d6a13EF4850A39',
     REACT_APP_BLOCKCHAIN_URL: 'wss://wandering-snowy-sun.matic-testnet.quiknode.pro/98e3f8f8fe7ef3c53743ba59fbe6fd6771638d61/',
     REACT_APP_SP_GAS_PRICE: '60000000000',
     REACT_APP_SP_GAS_LIMIT: 7000000,
