@@ -25,9 +25,12 @@ export interface CheckboxUiProps {
     onChange?: Function;
     onClick?: Function;
     isInvalid?: boolean;
+    showError?: boolean;
+    error?: string;
     name?: string;
     classNameWrap?: string;
     classNameLabel?: string;
+    classNameError?: string;
     classNameCheckboxCheckmark?: string;
     dataTestId?: string;
     labelClickDisabled?: boolean;

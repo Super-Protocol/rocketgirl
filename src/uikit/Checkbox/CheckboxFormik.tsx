@@ -7,6 +7,7 @@ import { CheckboxFormikProps } from './types';
 export const CheckboxFormik: FC<CheckboxFormikProps> = memo(({
     isInvalid: isInvalidProp,
     name,
+    showError = false,
     checkTouched = true,
     onChange = () => {},
     ...rest
@@ -19,6 +20,8 @@ export const CheckboxFormik: FC<CheckboxFormikProps> = memo(({
         <CheckboxUi
             {...rest}
             isInvalid={isInvalid}
+            error={error}
+            showError={showError}
             checked={!!value}
             onChange={(val) => {
                 setValue(val);

@@ -18,6 +18,7 @@ export const MnemonicGeneratorComponent = memo<MnemonicGeneratorComponentProps>(
             <CheckboxFormik
                 name={nameAgreement}
                 label={chkboxlabel}
+                showError
                 classNameWrap={classes.checkboxWrap}
                 classNameLabel={classes.checkboxLabel}
                 classNameCheckboxCheckmark={classes.checkboxCheckmark}
