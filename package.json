@@ -5,7 +5,7 @@
   "dependencies": {
     "@apollo/client": "^3.6.2",
     "@super-protocol/sp-dto-js": "^0.0.10",
-    "@super-protocol/sp-sdk-js": "^0.2.63",
+    "@super-protocol/sp-sdk-js": "^0.3.0",
     "@types/node": "^16.4.13",
     "@types/react-table": "^7.7.2",
     "@web3-react/metamask": "^8.0.26-beta.0",
