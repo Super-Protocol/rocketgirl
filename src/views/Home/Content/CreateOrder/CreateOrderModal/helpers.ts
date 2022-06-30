@@ -146,4 +146,4 @@ export const getInitialFilters = (): GetInitialFiltersResult => {
     };
 };
 
-export const acceptedFiles: Accept = { 'application/gzip': [] };
+export const acceptedFiles: Accept = { 'application/gzip': ['.tar.gz'] };
