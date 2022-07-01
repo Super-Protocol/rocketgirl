@@ -1,10 +1,10 @@
 import { ReactNode } from 'react';
 import { OrderStatus } from '@super-protocol/sp-sdk-js';
+import { CopyToClipboard } from '@/uikit';
 import { StatusBar } from '@/common/components/StatusBar';
 import { OrderQuery } from '@/gql/graphql';
-import { CopyToClipboard } from '@/uikit';
 import { getTableDate } from '@/common/helpers';
-import { GetOrderInfoResult } from '@/connectors/orders';
+import { GetOrderSdk } from '@/connectors/orders';
 
 export interface TableInfoItem {
     key: string;
@@ -16,30 +16,27 @@ export interface TableInfo {
     list: TableInfoItem[];
 }
 
-export const getStatusInformation = (orderResult: OrderQuery['order']['orderResult']): ReactNode => {
-    if (!orderResult) return '-';
-    const text = orderResult?.encryptedResult || orderResult?.encryptedError;
-    if (!text) return '-';
-    return (
-        <CopyToClipboard isEllipsis>
-            {text}
-        </CopyToClipboard>
-    );
+export const getUnspentDeposit = (orderHoldDepositSdk?: string | number, depositSpentSdk?: string): number | null => {
+    const diff = Number(orderHoldDepositSdk) - Number(depositSpentSdk);
+    return Number.isNaN(diff) ? null : diff;
 };
 
-export const getInfo = (order?: OrderQuery['order'], orderInfoSdk?: GetOrderInfoResult): TableInfo | null => {
+export const getInfo = (order?: OrderQuery['order'], orderSdk?: GetOrderSdk): TableInfo | null => {
     if (!order) return null;
     const {
         address,
         origins,
-        orderHoldDeposit,
         orderResult,
-        depositSpent,
+        orderInfo,
     } = order || {};
     const {
-        status,
-    } = orderInfoSdk || {};
-    const statusInformation = getStatusInformation(orderResult);
+        orderInfo: orderInfoSdk,
+        depositSpent: depositSpentSdk,
+        orderHoldDeposit: orderHoldDepositSdk,
+    } = orderSdk || {};
+    const { status: statusSdk } = orderInfoSdk || {};
+    const { encryptedArgs } = orderInfo || {};
+    const unspentDeposit = getUnspentDeposit(orderHoldDepositSdk, depositSpentSdk);
     return {
         list: [
             {
@@ -48,25 +45,23 @@ export const getInfo = (order?: OrderQuery['order'], orderInfoSdk?: GetOrderInfo
             },
             {
                 key: 'File',
-                value: '',
+                value: encryptedArgs ? 'Encrypted file' : '-',
             },
             {
                 key: 'Total Deposit',
-                value: typeof orderHoldDeposit === 'number' ? orderHoldDeposit : '-',
+                value: orderHoldDepositSdk || '-',
             },
             {
                 key: 'Unspent Deposit',
-                value: typeof orderHoldDeposit === 'number'
-                    ? orderHoldDeposit - Number(depositSpent)
-                    : '-',
+                value: typeof unspentDeposit === 'number' ? unspentDeposit : '-',
             },
             {
                 key: 'Status',
-                value: <StatusBar status={status as OrderStatus} />,
+                value: <StatusBar status={statusSdk as OrderStatus} />,
             },
             {
                 key: 'Status information',
-                value: statusInformation,
+                value: orderResult?.encryptedResult || orderResult?.encryptedError ? 'Result is ready' : '-',
             },
             {
                 key: 'Modified Date',
@@ -76,18 +71,20 @@ export const getInfo = (order?: OrderQuery['order'], orderInfoSdk?: GetOrderInfo
     };
 };
 
-export const getTee = (order?: OrderQuery['order']): TableInfo | null => {
+export const getTee = (order?: OrderQuery['order'], orderSdk?: GetOrderSdk): TableInfo | null => {
     if (!order) return null;
     const {
         teeOfferInfo,
-        consumer,
         orderInfo,
-        orderHoldDeposit,
-        depositSpent,
+        providerInfo,
     } = order || {};
     if (!teeOfferInfo) return null;
     const { name, description } = teeOfferInfo || {};
     const { offer } = orderInfo || {};
+    const {
+        orderHoldDeposit: orderHoldDepositSdk,
+        depositSpent: depositSpentSdk,
+    } = orderSdk || {};
     return {
         title: 'TEE',
         list: [
@@ -97,7 +94,7 @@ export const getTee = (order?: OrderQuery['order']): TableInfo | null => {
             },
             {
                 key: 'Provider',
-                value: consumer || '-',
+                value: <CopyToClipboard title={providerInfo?.name}>{providerInfo?.actionAccount}</CopyToClipboard>,
             },
             {
                 key: 'Name',
@@ -109,11 +106,11 @@ export const getTee = (order?: OrderQuery['order']): TableInfo | null => {
             },
             {
                 key: 'Estimated cost',
-                value: orderHoldDeposit || '-',
+                value: orderHoldDepositSdk || '-',
             },
             {
                 key: 'Actual cost',
-                value: depositSpent || '-',
+                value: depositSpentSdk || '-',
             },
         ],
     };

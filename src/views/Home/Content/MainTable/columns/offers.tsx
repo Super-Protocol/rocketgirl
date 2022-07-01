@@ -12,7 +12,7 @@ export const getColumns = (): Array<ColumnProps<OffersColumns>> => [
     {
         Header: 'ID',
         id: 'id',
-        Cell: ({ row }) => <CopyToClipboard>{row.original?.address || '-'}</CopyToClipboard>,
+        Cell: ({ row }) => row.original?.address || '-',
         width: 'auto',
     },
     {
@@ -22,16 +22,22 @@ export const getColumns = (): Array<ColumnProps<OffersColumns>> => [
             const { providerInfo } = row.original;
             const { actionAccount, name } = providerInfo || {};
             if (!actionAccount) return '-';
-            return <CopyToClipboard title={name}>{actionAccount}</CopyToClipboard>;
+            return (
+                <CopyToClipboard title={name} canShowTooltip={{ title: 'Provider' }}>
+                    {actionAccount}
+                </CopyToClipboard>
+            );
         },
         width: 'auto',
     },
     {
         Header: 'Name',
         id: 'name',
-        Cell: ({ row }) => row.original?.offerInfo?.name || '-',
+        Cell: ({ row }) => {
+            const { name } = row.original?.offerInfo || {};
+            return name ? <TooltipLink text={name} title="Name" checkOverflow /> : '-';
+        },
         width: 'auto',
-        isEllipsis: true,
     },
     // todo add link support
     {
@@ -39,10 +45,9 @@ export const getColumns = (): Array<ColumnProps<OffersColumns>> => [
         id: 'description',
         Cell: ({ row }) => {
             const { description } = row.original?.offerInfo || {};
-            return description ? <TooltipLink text={description} /> : '-';
+            return description ? <TooltipLink text={description} title="Description" checkOverflow /> : '-';
         },
         width: 'auto',
-        isEllipsis: true,
     },
     {
         Header: 'Type',

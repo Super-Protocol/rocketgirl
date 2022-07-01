@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import dayjs from 'dayjs';
 import { Buffer } from 'buffer';
-import BlockchainConnector, {
+import {
     OfferType,
     OfferGroup,
     TcbStatus,
@@ -10,8 +10,6 @@ import BlockchainConnector, {
 import { TOfferType } from '@/gql/graphql';
 import { Item } from '@/uikit/Select/types';
 import CONFIG from '@/config';
-
-export const getAddressByKey = (key: string): string => BlockchainConnector.initActionAccount(key);
 
 export function getEnumName(value: string, en: { [key: string]: string | number }): string {
     if (!value) return '';
@@ -42,7 +40,7 @@ export const getParsedErrorTransactions = (e: Error): { message: string; transac
 
 export const getTransactionHashLink = (hash?: string): string => {
     if (!hash) return '';
-    return `${CONFIG.REACT_APP_POLYGON_SCAN}/${hash}`;
+    return `${CONFIG.REACT_APP_NETWORK_POLYGON_SCAN}/tx/${hash}`;
 };
 
 export const getErrorTransactionsTemplate = (e: Error): string => {
@@ -78,19 +76,6 @@ export const getBase64FromHex = (hex: string): string => {
     return Buffer.from(hex, 'hex').toString('base64');
 };
 
-export const getFormattedSatoshi = (num: number, count: number): string => {
-    if (!num) return '';
-    if (num > Number.MAX_SAFE_INTEGER) throw new Error('Value is bigger then MAX_SAFE_INTEGER');
-    const str = `${num}`;
-    if (!count) return str;
-    const newCount = count - str.length;
-    if (newCount > 0) {
-        const zeroStr = [...Array(newCount - 1).fill('0')].join('');
-        return `0.${zeroStr}${str}`;
-    }
-    return `${num / (10 ** count)}`;
-};
-
 export const genRanHex = (size: number): string => [...Array(size)]
     .map(() => Math.floor(Math.random() * 16).toString(16))
     .join('');
@@ -119,3 +104,34 @@ export const isJSONString = (str: string): boolean => {
 };
 
 export const getExternalId = (): string => genRanHex(16);
+
+export const getBase64FromBlob = (blob: Blob): Promise<string | ArrayBuffer | null> => new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = reject;
+    reader.onload = () => {
+        resolve(reader.result);
+    };
+    reader.readAsDataURL(blob);
+});
+
+export const getBase64FromFile = (file: File): Promise<string> => new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = (error) => reject(error);
+});
+
+export const getBinaryStringFromFile = (file: File): Promise<string> => new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsBinaryString(file);
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = (error) => reject(error);
+});
+
+export const sliceWithDot = (str?: string, lenFrom = 6): string => {
+    if (!str) return '';
+    if (str.length < lenFrom) return str;
+    return `${str.slice(0, lenFrom)}...${str.slice(str.length - lenFrom)}`;
+};
+
+export const sleep = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));

@@ -1,0 +1,32 @@
+$process-status-width: 100px;
+$process-status-mr-left: 10px;
+
+.item {
+  border-radius: 8px;
+  background-color: var(--grey20);
+  padding: 16px 8px;
+}
+
+.processStatus {
+  width: $process-status-width;
+  margin-left: $process-status-mr-left;
+}
+
+.name {
+  width: calc(100% - #{$process-status-width} - #{$process-status-mr-left});
+}
+
+.error {
+  font-size: 12px;
+  color: var(--red100);
+  margin-top: 8px;
+}
+
+.iconError {
+  margin-right: 5px;
+}
+
+.message {
+  flex: 1;
+  overflow-wrap: anywhere;
+}

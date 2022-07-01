@@ -1,6 +1,8 @@
 import { ReactNode } from 'react';
+import { DropzoneOptions } from 'react-dropzone';
 
 export interface FileUploaderUiProps {
     children: ReactNode;
-    uploadFile?: Function;
+    options?: DropzoneOptions;
+    error?: boolean;
 }

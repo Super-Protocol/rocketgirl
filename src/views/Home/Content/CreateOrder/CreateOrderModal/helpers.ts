@@ -1,4 +1,5 @@
 import * as Yup from 'yup';
+import { Accept } from 'react-dropzone';
 import {
     Superpro,
     ParamName,
@@ -6,9 +7,11 @@ import {
 } from '@super-protocol/sp-sdk-js';
 import sum from 'lodash.sum';
 import { ConvertNode } from '@/common/hooks/useSelectQueryCursorSPFetcher';
-import { WorkflowPropsValues } from '@/connectors/orders';
 import { Offer, TeeOffer, TOfferType } from '@/gql/graphql';
+import { validateMnemonic } from '@/utils/crypto';
 import { Item, Value } from '@/uikit/types';
+import { Modes } from '@/uikit/MnemonicGenerator/types';
+import { getExternalId } from '@/common/helpers';
 import {
     FormValues,
     FormOffer,
@@ -27,6 +30,7 @@ export const valueOfferConvertNode: ConvertNode<Offer> = ({ node }): Item<Value,
         name: node?.offerInfo?.name || '',
         holdSum: node?.offerInfo?.holdSum || 0,
         restrictions: node?.offerInfo?.restrictions?.offers,
+        externalId: getExternalId(),
     },
 });
 
@@ -37,6 +41,7 @@ export const teeOfferConvertNode: ConvertNode<TeeOffer> = ({ node }): Item<Value
         description: node?.teeOfferInfo?.description || '',
         name: node?.teeOfferInfo?.name || '',
         holdSum: 0,
+        externalId: getExternalId(),
     },
 });
 
@@ -46,6 +51,30 @@ const getOfferSchema = (field: string) => Yup.object().test(
     (item) => item?.value,
 ) as Yup.AnySchema<FormOffer>;
 
+export const getPhraseGeneratedSchema = (): Yup.BaseSchema => Yup.string().test(
+    Fields.phraseGenerated,
+    'Invalid phrase',
+    // eslint-disable-next-line func-names
+    function (value) {
+        return this.parent[Fields.phraseTabMode] === Modes.generate ? validateMnemonic(value as string) : true;
+    },
+) as Yup.BaseSchema;
+
+export const getPhraseInputSchema = (): Yup.BaseSchema => Yup.string().test(
+    Fields.phraseInput,
+    'Invalid phrase entered',
+    // eslint-disable-next-line func-names
+    function (value) {
+        return this.parent[Fields.phraseTabMode] === Modes.own ? validateMnemonic(value as string) : true;
+    },
+) as Yup.BaseSchema;
+
+export const getDepositSchema = (minDeposit?: number): Yup.BaseSchema => (minDeposit
+    ? Yup.number()
+        .required('required')
+        .min(minDeposit, `must be greater than or equal ${minDeposit}`)
+    : Yup.number().required('required'));
+
 export const getValidationSchema = (props?: GetValidationSchemaProps): Yup.SchemaOf<FormValues> => {
     const { minDeposit } = props || {};
     return Yup.object({
@@ -53,12 +82,12 @@ export const getValidationSchema = (props?: GetValidationSchemaProps): Yup.Schem
         [Fields.data]: Yup.array().of(getOfferSchema(Fields.data)),
         [Fields.tee]: getOfferSchema(Fields.tee),
         [Fields.storage]: getOfferSchema(Fields.storage),
-        [Fields.deposit]: minDeposit
-            ? Yup.number()
-                .required('required')
-                .min(minDeposit, `must be greater than or equal ${minDeposit}`)
-            : Yup.number().required('required'),
-        [Fields.file]: Yup.string(), // todo
+        [Fields.deposit]: getDepositSchema(minDeposit),
+        [Fields.file]: Yup.mixed(),
+        [Fields.phraseGenerated]: getPhraseGeneratedSchema(),
+        [Fields.phraseInput]: getPhraseInputSchema(),
+        [Fields.agreement]: Yup.boolean().oneOf([true], 'required'),
+        [Fields.phraseTabMode]: Yup.string(),
     });
 };
 
@@ -72,9 +101,9 @@ export const getCalcOrderDeposit = async (
         case OfferType.Storage:
         case OfferType.Solution:
         case OfferType.Data:
-            return Math.max(orderMinDeposit, offer?.info?.holdSum || 0);
+            return offer?.data?.holdSum || 0;
         case OfferType.TeeOffer:
-            return Math.max(orderMinDeposit, 0);
+            return orderMinDeposit;
         default:
             return 0;
     }
@@ -97,42 +126,24 @@ export const getMinDepositWorkflow = async (formValues: GetMinDepositWorkflow): 
         tee,
         storage,
     } = formValues || {};
-    return sum([
-        await getCalcOrderDepositSum(data, orderMinDeposit, OfferType.Data),
-        await getCalcOrderDepositSum(solution, orderMinDeposit, OfferType.Solution),
-        await getCalcOrderDeposit(tee, orderMinDeposit, OfferType.TeeOffer),
-        await getCalcOrderDeposit(storage, orderMinDeposit, OfferType.Storage),
-    ]);
-};
-
-export const getWorkflowValues = (formValues: FormValues, mnemonic: string): WorkflowPropsValues => {
-    const {
-        solution,
-        data,
-        tee,
-        storage,
-        deposit,
-    } = formValues;
-    return {
-        mnemonic: mnemonic || '',
-        solution: [solution?.value as string]
-            .concat(
-                solution?.info?.sub
-                    ?.map((item) => item?.value as string)
-                    .filter((value) => value) || [],
-            ),
-        data: data?.map((d) => d?.value as string),
-        tee: tee?.value as string,
-        storage: storage?.value as string,
-        deposit: deposit || 0,
-    };
+    return Math.max(
+        sum([
+            await getCalcOrderDepositSum(data, orderMinDeposit, OfferType.Data),
+            await getCalcOrderDepositSum(solution, orderMinDeposit, OfferType.Solution),
+            await getCalcOrderDeposit(tee, orderMinDeposit, OfferType.TeeOffer),
+            await getCalcOrderDeposit(storage, orderMinDeposit, OfferType.Storage),
+        ]),
+        orderMinDeposit,
+    );
 };
 
 export const getInitialFilters = (): GetInitialFiltersResult => {
     return {
-        [Fields.solution]: { offerType: TOfferType.Solution },
+        [Fields.solution]: { offerType: TOfferType.Solution, includeOfferRestrictionType: [TOfferType.Solution] },
         [Fields.data]: { offerType: TOfferType.Data },
         [Fields.storage]: { offerType: TOfferType.Storage },
         [Fields.tee]: {},
     };
 };
+
+export const acceptedFiles: Accept = { 'application/gzip': ['.tar.gz'] };

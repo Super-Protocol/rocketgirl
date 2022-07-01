@@ -90,6 +90,7 @@ export const Tooltip: FC<TooltipProps> = memo(({
                 transition={false}
             >
                 {(props) => {
+                    if (!tooltip) return null;
                     return (
                         <TooltipPopover {...{
                             popoverProps,

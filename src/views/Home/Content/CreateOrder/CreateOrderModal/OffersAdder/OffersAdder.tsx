@@ -78,13 +78,13 @@ export const OffersAdder: <TNode>(p: OffersAdderProps<TNode>) =>
         const renderItem = useCallback((item) => (
             <TooltipLink
                 title="Description"
-                message={item?.info?.description}
-                text={item?.info?.name}
+                text={item?.data?.description}
             />
         ), []);
 
         return (
             <ListAdderViewFormik
+                classNameListItem={classes.listItem}
                 disabled={disabled}
                 name={name}
                 label={label}

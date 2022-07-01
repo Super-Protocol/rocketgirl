@@ -3,7 +3,9 @@ import React, {
     FC,
     useState,
     useCallback,
-    useContext, useMemo, useEffect,
+    useContext,
+    useMemo,
+    useEffect,
 } from 'react';
 import { Formik } from 'formik';
 import intersectionby from 'lodash.intersectionby';
@@ -21,9 +23,7 @@ import {
     Spinner,
 } from '@/uikit';
 import { ModalOkCancelContext } from '@/common/context/ModalOkCancelProvider/ModalOkCancelProvider';
-import { workflow } from '@/connectors/orders';
-import { useErrorModal } from '@/common/hooks/useErrorModal';
-import { WalletContext } from '@/common/context/WalletProvider';
+import { Modes } from '@/uikit/MnemonicGenerator/types';
 import { generateMnemonic } from '@/utils/crypto';
 import {
     CreateOrderModalProps,
@@ -34,26 +34,31 @@ import {
 } from './types';
 import { OffersAdder } from './OffersAdder';
 import { FileUploader } from './FileUploader';
+import { MnemonicGenerator } from './MnemonicGenerator';
 import classes from './CreateOrderModal.module.scss';
 import {
     valueOfferConvertNode,
     teeOfferConvertNode,
     getValidationSchema,
     getMinDepositWorkflow,
-    getWorkflowValues,
     getInitialFilters,
+    acceptedFiles,
 } from './helpers';
-import { SuccessModal } from './SuccessModal';
 import { InputDeposit } from './InputDeposit';
+import { ProcessModal } from './ProcessModal';
+import { State } from './hooks/useWorkflowProcess';
 
 export const CreateOrderModal: FC<CreateOrderModalProps> = memo(({ initialValues: initialValuesProps }) => {
-    const { selectedAddress, instance } = useContext(WalletContext);
-    const { showErrorModal, showSuccessModal } = useErrorModal();
-    const { goBack } = useContext(ModalOkCancelContext);
+    const { goBack, showModal } = useContext(ModalOkCancelContext);
     const [isValidating, setIsValidating] = useState(false);
     const [loading, setLoading] = useState(false);
     const [filters, setFilters] = useState(getInitialFilters);
-    const [initialValues, setInitialValues] = useState<FormValues>(initialValuesProps || {});
+    const [initialValues, setInitialValues] = useState<FormValues>({
+        [Fields.phraseTabMode]: Modes.generate,
+        [Fields.agreement]: false,
+        [Fields.phraseGenerated]: generateMnemonic(),
+        ...initialValuesProps,
+    });
     const [minDeposit, setMinDeposit] = useState<number>(0);
     const [getOffersRestrictionsLazyQuery] = useOffersRestrictionsLazyQuery();
     const getOffersRestrictions = useCallback(async (list?: string[], offerType?: TOfferType) => {
@@ -99,22 +104,20 @@ export const CreateOrderModal: FC<CreateOrderModalProps> = memo(({ initialValues
         setIsValidating(true);
         submitForm();
     }, []);
+    const createProcessModal = useCallback((formValues: FormValues, state?: State) => {
+        showModal({
+            components: {
+                main: <ProcessModal formValues={formValues} createProcessModal={createProcessModal} initialState={state} />,
+            },
+            classNameBody: classes.processBody,
+        });
+    }, [showModal]);
     const onSubmitForm = useCallback(async (formValues: FormValues) => {
         setLoading(true);
         setIsValidating(true);
-        if (!selectedAddress || !instance) {
-            return showErrorModal('Metamask account not found');
-        }
-        try {
-            const mnemonic = generateMnemonic();
-            const values = getWorkflowValues(formValues, mnemonic);
-            await workflow({ values, actionAccountAddress: selectedAddress, web3: instance });
-            showSuccessModal(undefined, <SuccessModal mnemonic={mnemonic} />);
-        } catch (e) {
-            showErrorModal(e);
-        }
+        createProcessModal(formValues);
         setLoading(false);
-    }, [showSuccessModal, showErrorModal, instance, selectedAddress]);
+    }, [createProcessModal]);
     const updateMinDeposit = useCallback(async (values: FormValues) => {
         try {
             setLoading(true);
@@ -122,7 +125,7 @@ export const CreateOrderModal: FC<CreateOrderModalProps> = memo(({ initialValues
                 await getMinDepositWorkflow({
                     ...values,
                     [Fields.solution]: values[Fields.solution]?.value
-                        ? [values[Fields.solution] as FormOffer].concat(values[Fields.solutionBase] || [])
+                        ? [values[Fields.solution] as FormOffer].concat(values[Fields.solution]?.data?.sub || [])
                         : [],
                 }),
             );
@@ -227,7 +230,7 @@ export const CreateOrderModal: FC<CreateOrderModalProps> = memo(({ initialValues
                                     query={TeeOffersSelectDocument}
                                     label="TEE"
                                     filter={filters.tee}
-                                    name="tee"
+                                    name={Fields.tee}
                                     btnLabel="Add TEE"
                                     className={classes.adder}
                                     showError
@@ -235,7 +238,20 @@ export const CreateOrderModal: FC<CreateOrderModalProps> = memo(({ initialValues
                                     checkTouched={!isValidating}
                                     onDelete={onDelete}
                                 />
-                                <FileUploader />
+                                <FileUploader
+                                    disabled={!!values?.[Fields.data]?.length}
+                                    name={Fields.file}
+                                    accept={acceptedFiles}
+                                />
+                                <MnemonicGenerator {...{
+                                    notification: true,
+                                    nameMode: Fields.phraseTabMode,
+                                    nameAgreement: Fields.agreement,
+                                    namePhraseGenerated: Fields.phraseGenerated,
+                                    namePhraseInput: Fields.phraseInput,
+                                    classNameWrap: classes.mnemonicWrap,
+                                }}
+                                />
                                 <InputDeposit min={minDeposit} classNameWrap={classes.inputWrap} />
                             </Box>
                             <Box justifyContent="flex-end">

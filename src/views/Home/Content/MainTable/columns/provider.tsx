@@ -17,7 +17,10 @@ export const getColumns = (): Array<ColumnProps<ProviderColumns>> => [
     {
         Header: 'Name',
         id: 'name',
-        Cell: ({ row }) => row.original?.providerInfo?.name || '-',
+        Cell: ({ row }) => {
+            const { name } = row.original?.providerInfo || {};
+            return name ? <TooltipLink text={name} title="Name" checkOverflow /> : '-';
+        },
         width: 'auto',
         isEllipsis: true,
     },
@@ -27,7 +30,7 @@ export const getColumns = (): Array<ColumnProps<ProviderColumns>> => [
         id: 'description',
         Cell: ({ row }) => {
             const { description } = row.original?.providerInfo || {};
-            return description ? <TooltipLink text={description} /> : '-';
+            return description ? <TooltipLink text={description} title="Description" checkOverflow /> : '-';
         },
         width: 'auto',
         isEllipsis: true,

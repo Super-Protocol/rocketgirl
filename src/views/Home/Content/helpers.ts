@@ -1,6 +1,9 @@
 import { Tables } from '@/views/Home/types';
 import { Filter } from '@/views/Home/Content/FilterPopover/models';
-import { GetTablesProps } from './types';
+import { FetcherByTable, UseTablesQueryFetcherResult } from '@/views/Home/hooks/useTablesQueryFetcher';
+import { Diff } from '@/common/hooks/useTableDiff';
+import { UseTableQueryFetcherResultList } from '@/common/hooks/useTableQueryFetcher';
+import { GetTablesProps, GetDiffIndexesResult } from './types';
 
 export const getTables = (props: GetTablesProps): { value: Tables, label: string }[][] => {
     const { hide } = props || {};
@@ -26,4 +29,27 @@ export const getFilters = (values?: { [x: string]: Filter }): object | null => {
             ...(filter.value ? { [filter.name]: filter.value } : undefined),
         };
     }, {});
+};
+
+export const getDiff = (fetcherResult: UseTablesQueryFetcherResult): Map<Tables, Diff> => {
+    if (!fetcherResult) return new Map();
+    return Object.entries(fetcherResult).reduce((acc, [table, value]) => {
+        if (value.diff?.values?.size) {
+            acc.set(table, { ...value.diff, key: value.diff.key });
+        }
+        return acc;
+    }, new Map());
+};
+
+export const getDiffIndexes = (active?: FetcherByTable): GetDiffIndexesResult => {
+    if (!active) return null;
+    const { diff, list } = active;
+    if (!list?.length || !diff?.values?.size) return null;
+    return (list as UseTableQueryFetcherResultList<any>[]).reduce((acc, item, index) => {
+        const isFound = diff.values.has(item[diff.key as string]);
+        if (isFound) {
+            acc.set(index, new Set().add(item[diff.key as string]));
+        }
+        return acc;
+    }, new Map());
 };

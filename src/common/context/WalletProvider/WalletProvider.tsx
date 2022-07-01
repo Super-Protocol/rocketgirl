@@ -2,15 +2,15 @@ import React, {
     useCallback,
     useMemo,
     useState,
-    memo,
+    memo, useEffect,
 } from 'react';
 import Web3 from 'web3';
+import { useDebouncedCallback } from 'use-debounce';
 import { useMount } from 'react-use';
 import { Web3ReactStateUpdate } from '@web3-react/types';
-import { getBalance as getBalanceMetamask, useConnectToMetaMask } from '@/common/hooks/useConnectToMetaMask';
-import { getBalance as getBalanceWalletConnect, useConnectToWalletConnect } from '@/common/hooks/useConnectToWalletConnect';
-import { useLocalStorage } from '@/common/hooks/useLocalStorage';
 import CONFIG from '@/config';
+import { getBalance as getBalanceMetamask, useConnectToMetaMask } from '@/common/hooks/useConnectToMetaMask';
+import { useLocalStorage } from '@/common/hooks/useLocalStorage';
 import toastr from '@/services/Toastr/toastr';
 import {
     Balance, Wallet, WalletType, UseWalletResult, SelectedWalletType, WalletContextProps,
@@ -23,8 +23,6 @@ export const getBalance = async (walletType: SelectedWalletType, address?: strin
     switch (walletType) {
         case WalletType.metaMask:
             return getBalanceMetamask(address);
-        case WalletType.walletConnect:
-            return getBalanceWalletConnect(address);
         default:
             return getInitialBalance();
     }
@@ -34,6 +32,7 @@ export const useWallet = (): UseWalletResult => {
     const [balance, setBalance] = useState(getInitialBalance);
     const [selectedWalletType, setSelectedWalletType] = useLocalStorage<SelectedWalletType>('wallet', null);
     const [loading, setLoading] = useState(false);
+    const [loadingBalance, setLoadingBalance] = useState(false);
     const [wallet, setWallet] = useState(getInitialWallet);
     const instance = useMemo(() => {
         switch (selectedWalletType) {
@@ -43,21 +42,30 @@ export const useWallet = (): UseWalletResult => {
                 return undefined;
         }
     }, [selectedWalletType]);
-    const updateBalance = useCallback(async (walletType: SelectedWalletType, address?: string) => {
-        setBalance(await getBalance(walletType, address));
-    }, []);
+    const selectedWallet = useMemo(() => wallet[selectedWalletType as WalletType] || null, [wallet, selectedWalletType]);
+    const selectedAddress = useMemo(() => {
+        if (!selectedWallet?.accounts?.length) {
+            return undefined;
+        }
+        return Web3.utils.toChecksumAddress(selectedWallet.accounts[0]);
+    }, [selectedWallet]);
+    const updateBalance = useCallback(async () => {
+        try {
+            setLoadingBalance(true);
+            if (selectedWalletType && selectedAddress) {
+                setBalance(await getBalance(selectedWalletType, selectedAddress));
+            }
+        } catch (e) {
+            toastr.error((e as Error)?.message);
+        } finally {
+            setLoadingBalance(false);
+        }
+    }, [selectedWalletType, selectedAddress]);
     const actions = useCallback((walletType: WalletType) => ({
-        startActivation: () => () => { setSelectedWalletType(walletType); },
+        startActivation: () => () => setSelectedWalletType(walletType),
         update: async (stateUpdate: Web3ReactStateUpdate) => {
             setLoading(true);
             const { chainId, accounts } = stateUpdate || {};
-            if (chainId && CONFIG.REACT_APP_CHAIN_ID !== chainId) {
-                setSelectedWalletType(null);
-                toastr.error(new Error('ChainId is not supported'));
-                setLoading(false);
-                return;
-            }
-            const selected = accounts?.[0];
             setWallet((s) => ({
                 ...s,
                 [walletType]: {
@@ -66,17 +74,15 @@ export const useWallet = (): UseWalletResult => {
                     ...(accounts ? { accounts } : {}),
                 },
             }));
-            setSelectedWalletType(walletType);
-            await updateBalance(walletType, selected);
+            setSelectedWalletType(chainId && CONFIG.REACT_APP_NETWORK_CHAIN_ID !== chainId ? null : walletType);
             setLoading(false);
         },
-        reportError: (error: Error | undefined) => {
-            toastr.error(error?.message || 'error');
+        resetState: () => {
             setSelectedWalletType(null);
         },
-    }), [setSelectedWalletType, updateBalance]);
+    }), [setSelectedWalletType]);
     const { connect: connectMetaMask } = useConnectToMetaMask(actions(WalletType.metaMask));
-    const { connect: connectWalletConnect } = useConnectToWalletConnect(actions(WalletType.walletConnect));
+    // const { connect: connectWalletConnect } = useConnectToWalletConnect(actions(WalletType.walletConnect));
     const onChangeWallet = useCallback(async (walletType?: SelectedWalletType) => {
         if (loading || !walletType) return;
         setLoading(true);
@@ -85,39 +91,36 @@ export const useWallet = (): UseWalletResult => {
                 case WalletType.metaMask:
                     await connectMetaMask();
                     break;
-                case WalletType.walletConnect:
-                    await connectWalletConnect();
-                    break;
+                // case WalletType.walletConnect:
+                //     await connectWalletConnect();
+                //     break;
                 default:
                     break;
             }
         } catch (e) {
-            toastr.error(e);
+            toastr.error((e as Error)?.message);
             setSelectedWalletType(null);
         }
         setLoading(false);
-    }, [connectMetaMask, setSelectedWalletType, connectWalletConnect, loading]);
-    const selectedWallet = useMemo(() => wallet[selectedWalletType as WalletType] || null, [wallet, selectedWalletType]);
+    }, [connectMetaMask, setSelectedWalletType, loading]);
     const logout = useCallback(async () => {
         setSelectedWalletType(null);
         setWallet(getInitialWallet());
     }, [setSelectedWalletType]);
-    const selectedAddress = useMemo(() => {
-        if (!selectedWallet?.accounts?.length) {
-            return undefined;
-        }
-        return Web3.utils.toChecksumAddress(selectedWallet.accounts[0]);
-    }, [selectedWallet]);
     const isConnected = useMemo(() => !!selectedAddress, [selectedAddress]);
+    const debounceUpdateBalance = useDebouncedCallback(updateBalance, 300);
     useMount(() => {
         onChangeWallet(selectedWalletType);
     });
+    useEffect(() => {
+        debounceUpdateBalance();
+    }, [selectedWallet, debounceUpdateBalance]);
 
     return {
         wallet,
         selectedWalletType,
         selectedWallet,
-        loading,
+        loading: loading || loadingBalance,
         onChangeWallet,
         logout,
         balance,

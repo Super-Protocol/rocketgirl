@@ -31,24 +31,33 @@ export const useTables = (initialTable: Tables, consumer?: string): UseTablesRes
     const query = useMemo(() => qs.parse(location.search), [location]);
     const table = useMemo<Tables>(() => (query?.table as Tables) || initialTable, [query, initialTable]);
     const skipByWallet = useMemo(() => {
-        return (!consumer ? [Tables.Orders] : [])
-            .map((table) => ({
-                table,
+        return (!consumer ? [
+            {
+                table: Tables.Orders,
                 message: 'Connect wallet to see your orders',
                 type: UseTablesSkipType.wallet,
-            }));
+            },
+            {
+                table: Tables.Transactions,
+                message: 'Connect wallet to see your transactions',
+                type: UseTablesSkipType.wallet,
+            },
+        ] : []);
     }, [consumer]);
     const queryFetcher = useTablesQueryFetcher<UseTablesSkipType>({ table, skip: skipByWallet, consumer });
-    useTablesSubscriptions(queryFetcher);
+    useTablesSubscriptions(queryFetcher, consumer);
     const onChangeTable = useCallback((newTable: Tables, filter?: OperationVariables | null) => {
         history.push(`?table=${newTable}`);
         if (!skipByWallet.some(({ table }) => table === newTable)) {
             queryFetcher[newTable]?.onChangePage({ filter, pageClick: PageClick.FIRST });
         }
-        // reset query data
     }, [queryFetcher, skipByWallet, history]);
     useEffect(() => {
-        onChangeTable(table);
+        Object.entries(queryFetcher).forEach(([, fetcher]) => {
+            if (!fetcher.skip) {
+                fetcher.onChangePage({ pageClick: PageClick.FIRST });
+            }
+        });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [consumer]);
     return {

@@ -1,0 +1,23 @@
+.progress {
+  display: flex;
+  height: 8px;
+  overflow: hidden;
+  line-height: 0;
+  font-size: 0.75rem;
+  background-color: var(--grey20);
+}
+
+.progressBar {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+  color: var(--white100);
+  text-align: center;
+  white-space: nowrap;
+  background-color: var(--orange95);
+  transition: width 0.6s ease;
+  &-process {
+    border-radius: 0 0.25rem 0.25rem 0;
+  }
+}

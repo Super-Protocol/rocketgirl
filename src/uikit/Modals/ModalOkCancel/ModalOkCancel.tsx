@@ -1,23 +1,46 @@
-import { FC, memo } from 'react';
+import {
+    FC, memo, useState, useContext, useEffect,
+} from 'react';
 import { Modal } from 'react-bootstrap';
 import cn from 'classnames';
+
+import { ScrollbarContext } from '@/common/context';
 import { Button } from '@/uikit';
 import classes from './ModalOkCancel.module.scss';
-
 import { ModalOkCancelProps } from './types';
 
 export const ModalOkCancel: FC<ModalOkCancelProps> = memo(({
-    show,
+    show: showProps,
     onClose = () => {},
     onCancel = () => {},
     onContinue = () => {},
     classNameTitle,
     classNameHeader,
     classNameWrap,
+    classNameBody,
+    classNameBottom,
     messages,
     children,
     components,
+    showMuarScrollbar = false,
 }) => {
+    const { instance } = useContext(ScrollbarContext);
+    const [show, setShow] = useState(showProps);
+
+    useEffect(() => {
+        if (show && !showProps && showMuarScrollbar) {
+            if (instance) {
+                instance.update();
+            }
+        }
+        if (!show && showProps && showMuarScrollbar) {
+            if (instance) {
+                instance.sleep();
+            }
+        }
+        setShow(showProps);
+    }, [showProps, show, instance, showMuarScrollbar]);
+
     return (
         <Modal
             show={show}
@@ -28,7 +51,7 @@ export const ModalOkCancel: FC<ModalOkCancelProps> = memo(({
             backdropClassName={classes.backdrop}
             contentClassName={classes.content}
         >
-            <Modal.Body className={classes.body}>
+            <Modal.Body className={cn(classes.body, classNameBody)}>
                 {components?.main || (
                     <>
                         {components?.header || (
@@ -45,7 +68,7 @@ export const ModalOkCancel: FC<ModalOkCancelProps> = memo(({
                         </div>
                         {components?.footer || (
                             (!!messages?.cancel || !!messages?.ok) && (
-                                <div className={classes.bottom}>
+                                <div className={cn(classes.bottom, classNameBottom)}>
                                     {!!messages?.cancel && (
                                         <Button
                                             onClick={onCancel}

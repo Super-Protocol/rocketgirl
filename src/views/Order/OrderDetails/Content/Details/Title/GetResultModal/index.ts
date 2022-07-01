@@ -1,0 +1,1 @@
+export { GetResultModal } from './GetResultModal';

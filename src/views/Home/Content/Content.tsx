@@ -8,11 +8,12 @@ import { MainTable } from './MainTable';
 import classes from './Content.module.scss';
 // import { FilterContext } from './FilterPopover/FilterContext';
 import {
+    getDiff,
     getTables,
     // getFilters,
 } from './helpers';
 import { useTables } from '../hooks/useTables';
-// import { Transactions } from './Transactions';
+import { Transactions } from './Transactions';
 
 export const Content: FC<ContentProps> = memo(() => {
     const { selectedAddress } = useContext(WalletContext);
@@ -23,6 +24,7 @@ export const Content: FC<ContentProps> = memo(() => {
     const {
         queryFetcher, table, onChangeTable,
     } = useTables(tables[0]?.[0]?.value, selectedAddress);
+    const diff = useMemo(() => getDiff(queryFetcher), [queryFetcher]);
     // const onSubmit = useCallback(({ values }) => {
     //     onChangeTable(table, getFilters(values));
     // }, [onChangeTable, table]);
@@ -41,8 +43,9 @@ export const Content: FC<ContentProps> = memo(() => {
                 onChangeTable={handleTable}
                 tables={tables}
                 fetcher={queryFetcher}
+                diff={diff}
             />
-            {/*<Transactions />*/}
+            <Transactions fetcher={queryFetcher} diff={diff} />
         </ContentUIKit>
     );
 });

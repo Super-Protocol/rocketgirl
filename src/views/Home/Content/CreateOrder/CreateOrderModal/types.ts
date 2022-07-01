@@ -7,18 +7,22 @@ export type Info = {
     holdSum: number;
     restrictions?: string[] | null;
     sub?: FormOffer[];
+    externalId: string;
 }
 
 export type FormOffer = Item<Info, string>;
 
 export enum Fields {
     solution = 'solution',
-    solutionBase = 'solutionBase',
     data = 'data',
     tee = 'tee',
     storage = 'storage',
     file = 'file',
     deposit = 'deposit',
+    phraseGenerated = 'phraseGenerated',
+    phraseInput = 'phraseInput',
+    phraseTabMode = 'phraseTabMode',
+    agreement = 'agreement',
 }
 
 export interface FormValues {
@@ -26,8 +30,12 @@ export interface FormValues {
     [Fields.data]?: FormOffer[];
     [Fields.tee]?: FormOffer;
     [Fields.storage]?: FormOffer;
-    [Fields.file]?: any; // todo
+    [Fields.file]?: File | null;
     [Fields.deposit]?: number;
+    [Fields.phraseInput]?: string;
+    [Fields.phraseGenerated]?: string;
+    [Fields.agreement]?: boolean;
+    [Fields.phraseTabMode]?: string;
 }
 
 export interface CreateOrderModalProps {

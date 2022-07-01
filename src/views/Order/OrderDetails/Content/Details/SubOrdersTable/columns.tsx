@@ -28,9 +28,14 @@ export const getColumns = (): Array<ColumnProps<OrdersColumns>> => [
         Header: 'Provider',
         id: 'provider',
         Cell: ({ row }) => {
-            const { consumer } = row.original;
-            if (!consumer) return '-';
-            return <CopyToClipboard>{consumer}</CopyToClipboard>;
+            const { providerInfo } = row.original || {};
+            if (!providerInfo?.actionAccount) return '-';
+            const { name, actionAccount } = providerInfo || {};
+            return (
+                <CopyToClipboard title={name} canShowTooltip={{ title: 'Provider' }}>
+                    {actionAccount}
+                </CopyToClipboard>
+            );
         },
         width: 'auto',
     },
@@ -50,7 +55,7 @@ export const getColumns = (): Array<ColumnProps<OrdersColumns>> => [
         Cell: ({ row }) => {
             const { offerInfo, teeOfferInfo } = row.original || {};
             const name = offerInfo?.name || teeOfferInfo?.name;
-            return name || '-';
+            return name ? <TooltipLink text={name} title="Name" checkOverflow /> : '-';
         },
         width: 'auto',
         isEllipsis: true,
@@ -61,7 +66,7 @@ export const getColumns = (): Array<ColumnProps<OrdersColumns>> => [
         Cell: ({ row }) => {
             const { offerInfo, teeOfferInfo } = row.original || {};
             const description = offerInfo?.description || teeOfferInfo?.description;
-            return description ? <TooltipLink text={description} /> : '-';
+            return description ? <TooltipLink text={description} title="Description" checkOverflow /> : '-';
         },
         width: 'auto',
         isEllipsis: true,

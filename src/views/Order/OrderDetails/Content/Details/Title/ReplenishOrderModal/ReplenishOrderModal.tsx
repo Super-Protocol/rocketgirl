@@ -34,7 +34,7 @@ export const ReplenishOrderModal: FC<ReplenishOrderModalProps> = memo(({ orderAd
                 accountAddress: selectedAddress,
             });
             onClose();
-            showSuccessModal('Order successfully canceled');
+            showSuccessModal('Order successfully replenished');
             onSuccess();
         } catch (e) {
             showErrorModal(e);

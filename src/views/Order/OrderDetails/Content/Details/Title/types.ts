@@ -1,8 +1,8 @@
 import { OrderQuery } from '@/gql/graphql';
-import { GetOrderInfoResult } from '@/connectors/orders';
+import { GetOrderSdk } from '@/connectors/orders';
 
 export interface TitleProps {
     order: OrderQuery['order'];
-    orderInfo?: GetOrderInfoResult;
+    orderSdk?: GetOrderSdk;
     updateOrderInfo: () => Promise<void>;
 }

@@ -2,6 +2,7 @@ import React, {
     memo, FC, useMemo, useCallback, useContext,
 } from 'react';
 import { Dropdown } from '@/uikit';
+import { sliceWithDot } from '@/common/helpers';
 import { WalletContext } from '@/common/context/WalletProvider';
 import { AccountDropdownItem } from './AccountDropdownItem';
 import { AccountDropdownItemChildren } from './AccountDropdownItemChildren';
@@ -16,12 +17,12 @@ export const AccountDropdown: FC<AccountDropdownProps> = memo(() => {
     } = useContext(WalletContext);
     const list = useMemo(() => (
         selectedAddress
-            ? [{ value: selectedAddress, label: selectedAddress, title: 'Connected with MetaMask' }]
+            ? [{ value: selectedAddress, label: sliceWithDot(selectedAddress), title: 'Connected with MetaMask' }]
             : []
     ), [selectedAddress]);
     const renderItemLabel = useCallback((item) => {
-        const { label, title } = item || {};
-        return <AccountDropdownItemChildren label={label} title={title} />;
+        const { label, title, value } = item || {};
+        return <AccountDropdownItemChildren label={label} title={title} value={value} />;
     }, []);
 
     return (

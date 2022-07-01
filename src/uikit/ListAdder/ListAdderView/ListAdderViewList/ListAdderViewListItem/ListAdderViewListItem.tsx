@@ -11,7 +11,7 @@ export const ListAdderViewListItem: FC<ListAdderViewListItemProps> = memo(({
 }) => {
     return (
         <Box className={cn(classes.wrap, className)} alignItems="center" justifyContent="space-between">
-            <span className={classes.text}>{children}</span>
+            {children}
             {!!onDelete && (
                 <Box>
                     <Icon

@@ -155,6 +155,25 @@ export type Erc20rFilter = {
   owner?: InputMaybe<Scalars['String']>;
 };
 
+export type EventFilter = {
+  /** filter events by custom params */
+  events?: InputMaybe<Array<EventSource>>;
+};
+
+export type EventFilterField = {
+  /** filter events by consumer */
+  consumer?: InputMaybe<Scalars['String']>;
+  /** filter by offerType */
+  offerType?: InputMaybe<TOfferType>;
+};
+
+export type EventSource = {
+  /** filter */
+  filter?: InputMaybe<EventFilterField>;
+  /** subscribe on this events by source */
+  source?: InputMaybe<SubscriptionSource>;
+};
+
 export type ListConfigResponse = {
   __typename?: 'ListConfigResponse';
   page: ConfigConnection;
@@ -331,6 +350,7 @@ export type Offer = {
   /** contract address */
   address: Scalars['String'];
   authority?: Maybe<Scalars['String']>;
+  disabledAfter: Scalars['Float'];
   offerInfo: OfferInfo;
   origins?: Maybe<Origins>;
   providerInfo: ProviderInformation;
@@ -354,8 +374,12 @@ export type OfferFilter = {
   address?: InputMaybe<Scalars['String']>;
   /** filter by contract addresses */
   addresses?: InputMaybe<Array<Scalars['String']>>;
+  /** exclude filter by offerInfo -> restrictions -> type */
+  excludeOfferRestrictionType?: InputMaybe<Array<TOfferType>>;
   /** filter by offerInfo → group */
   group?: InputMaybe<Scalars['String']>;
+  /** include filter by offerInfo -> restrictions -> type */
+  includeOfferRestrictionType?: InputMaybe<Array<TOfferType>>;
   /** filter by offerInfo → name */
   name?: InputMaybe<Scalars['String']>;
   /** filter by offerInfo -> type */
@@ -371,7 +395,6 @@ export type OfferInfo = {
   argsPublicKey: Scalars['String'];
   cancelable: Scalars['Boolean'];
   description: Scalars['String'];
-  disabledAfter: Scalars['Float'];
   /**
    * The supported offers group.
    *
@@ -387,7 +410,7 @@ export type OfferInfo = {
   group: Scalars['String'];
   hash: Scalars['String'];
   holdSum: Scalars['Float'];
-  inputFormat: Scalars['String'];
+  input: Scalars['String'];
   linkage: Scalars['String'];
   maxDurationTimeMinutes: Scalars['Float'];
   name: Scalars['String'];
@@ -400,7 +423,7 @@ export type OfferInfo = {
    *
    */
   offerType: Scalars['String'];
-  outputFormat: Scalars['String'];
+  output: Scalars['String'];
   properties: Scalars['String'];
   restrictions?: Maybe<OfferRestrictions>;
   resultUrl: Scalars['String'];
@@ -412,7 +435,6 @@ export type OfferInfoInput = {
   argsPublicKey: Scalars['String'];
   cancelable: Scalars['Boolean'];
   description: Scalars['String'];
-  disabledAfter: Scalars['Float'];
   /**
    * The supported offers group.
    *
@@ -428,7 +450,7 @@ export type OfferInfoInput = {
   group: Scalars['String'];
   hash: Scalars['String'];
   holdSum: Scalars['Float'];
-  inputFormat: Scalars['String'];
+  input: Scalars['String'];
   linkage: Scalars['String'];
   maxDurationTimeMinutes: Scalars['Float'];
   name: Scalars['String'];
@@ -441,13 +463,14 @@ export type OfferInfoInput = {
    *
    */
   offerType: Scalars['String'];
-  outputFormat: Scalars['String'];
+  output: Scalars['String'];
   properties: Scalars['String'];
   restrictions?: InputMaybe<OfferRestrictionsInput>;
   resultUrl: Scalars['String'];
 };
 
 export type OfferInputType = {
+  disabledAfter: Scalars['Float'];
   offerInfo: OfferInfoInput;
   providerInfo: ProviderInformationInput;
   stats?: InputMaybe<OfferStatsInput>;
@@ -497,6 +520,7 @@ export type Order = {
   orderResult: OrderResult;
   origins?: Maybe<Origins>;
   parentOrder?: Maybe<ParentOrder>;
+  providerInfo: ProviderInformation;
   subOrders?: Maybe<Array<BaseOrder>>;
   teeOfferInfo?: Maybe<TeeOfferInfo>;
 };
@@ -600,6 +624,7 @@ export type OrderInputType = {
   orderInfo: OrderInfoInput;
   orderResult: OrderResultInput;
   parentOrder?: InputMaybe<ParentOrderInputType>;
+  providerInfo: ProviderInformationInput;
   subOrders?: InputMaybe<Array<BaseOrderInputType>>;
   teeOfferInfo?: InputMaybe<TeeOfferInfoInput>;
 };
@@ -632,7 +657,11 @@ export type OrdersFilter = {
   consumer?: InputMaybe<Scalars['String']>;
   /** filter by orderInfo -> args -> inputOffers */
   inputOffers?: InputMaybe<Array<Scalars['String']>>;
-  /** filter by parentOrder->orderAddress */
+  /** filter by orderInfo -> offer */
+  offer?: InputMaybe<Scalars['String']>;
+  /** filter by offerType */
+  offerType?: InputMaybe<TOfferType>;
+  /** filter by parentOrder -> orderAddress */
   parentOrder?: InputMaybe<Scalars['String']>;
   /** filter by orderInfo -> args -> selectedOffers */
   selectedOffers?: InputMaybe<Array<Scalars['String']>>;
@@ -974,13 +1003,20 @@ export type StatsInput = {
 
 export type Subscription = {
   __typename?: 'Subscription';
-  /** event - create or update an entity */
+  /** event - create or update an entity. My be filtered by consumer */
   event: SubscriptionPayload;
+};
+
+
+export type SubscriptionEventArgs = {
+  filter?: InputMaybe<EventFilter>;
 };
 
 export type SubscriptionPayload = {
   __typename?: 'SubscriptionPayload';
+  consumer?: Maybe<Scalars['String']>;
   data?: Maybe<Array<Scalars['String']>>;
+  offerType?: Maybe<TOfferType>;
   subscriptionSource: SubscriptionSource;
   type: SubscriptionType;
 };
@@ -1131,6 +1167,8 @@ export type TransactionEdge = {
 };
 
 export type TransactionFilter = {
+  /** filter by hash */
+  hash?: InputMaybe<Scalars['String']>;
   /** filter by receiver */
   receiver?: InputMaybe<Scalars['String']>;
   /** filter by sender */
@@ -1289,7 +1327,9 @@ export type Web3InputType = {
 
 export type PageDataDtoFragmentFragment = { __typename?: 'PageDataDto', count: number, limit: number, offset: number };
 
-export type EventSubscriptionVariables = Exact<{ [key: string]: never; }>;
+export type EventSubscriptionVariables = Exact<{
+  filter?: InputMaybe<EventFilter>;
+}>;
 
 
 export type EventSubscription = { __typename?: 'Subscription', event: { __typename?: 'SubscriptionPayload', data?: Array<string> | null, type: SubscriptionType, subscriptionSource: SubscriptionSource } };
@@ -1307,7 +1347,7 @@ export type OffersQueryVariables = Exact<{
 }>;
 
 
-export type OffersQuery = { __typename?: 'Query', result: { __typename?: 'ListOffersResponse', pageData?: { __typename?: 'PageDataDto', count: number, limit: number, offset: number } | null, page: { __typename?: 'OfferConnection', pageInfo?: { __typename?: 'OfferPageInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } | null, edges?: Array<{ __typename?: 'OfferEdge', cursor?: string | null, node?: { __typename?: 'Offer', _id: string, address: string, authority?: string | null, offerInfo: { __typename?: 'OfferInfo', group: string, offerType: string, allowedAccounts?: Array<string> | null, allowedArgs?: string | null, argsPublicKey: string, cancelable: boolean, description: string, disabledAfter: number, hash: string, holdSum: number, inputFormat: string, linkage: string, maxDurationTimeMinutes: number, name: string, outputFormat: string, properties: string, resultUrl: string, restrictions?: { __typename?: 'OfferRestrictions', offers?: Array<string> | null, types?: Array<TOfferType> | null } | null }, origins?: { __typename?: 'Origins', createdBy: string, createdDate: number, modifiedBy: string, modifiedDate: number } | null, providerInfo: { __typename?: 'ProviderInformation', actionAccount: string, description: string, metadata: string, name: string, tokenReceiver: string } } | null }> | null } } };
+export type OffersQuery = { __typename?: 'Query', result: { __typename?: 'ListOffersResponse', pageData?: { __typename?: 'PageDataDto', count: number, limit: number, offset: number } | null, page: { __typename?: 'OfferConnection', pageInfo?: { __typename?: 'OfferPageInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } | null, edges?: Array<{ __typename?: 'OfferEdge', cursor?: string | null, node?: { __typename?: 'Offer', _id: string, address: string, authority?: string | null, disabledAfter: number, offerInfo: { __typename?: 'OfferInfo', group: string, offerType: string, allowedAccounts?: Array<string> | null, allowedArgs?: string | null, argsPublicKey: string, cancelable: boolean, description: string, hash: string, holdSum: number, input: string, linkage: string, maxDurationTimeMinutes: number, name: string, output: string, properties: string, resultUrl: string, restrictions?: { __typename?: 'OfferRestrictions', offers?: Array<string> | null, types?: Array<TOfferType> | null } | null }, origins?: { __typename?: 'Origins', createdBy: string, createdDate: number, modifiedBy: string, modifiedDate: number } | null, providerInfo: { __typename?: 'ProviderInformation', actionAccount: string, description: string, metadata: string, name: string, tokenReceiver: string } } | null }> | null } } };
 
 export type OffersSelectQueryVariables = Exact<{
   pagination: ConnectionArgs;
@@ -1315,7 +1355,7 @@ export type OffersSelectQueryVariables = Exact<{
 }>;
 
 
-export type OffersSelectQuery = { __typename?: 'Query', result: { __typename?: 'ListOffersResponse', pageData?: { __typename?: 'PageDataDto', count: number, limit: number, offset: number } | null, page: { __typename?: 'OfferConnection', pageInfo?: { __typename?: 'OfferPageInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } | null, edges?: Array<{ __typename?: 'OfferEdge', cursor?: string | null, node?: { __typename?: 'Offer', address: string, offerInfo: { __typename?: 'OfferInfo', name: string, description: string, restrictions?: { __typename?: 'OfferRestrictions', offers?: Array<string> | null } | null } } | null }> | null } } };
+export type OffersSelectQuery = { __typename?: 'Query', result: { __typename?: 'ListOffersResponse', pageData?: { __typename?: 'PageDataDto', count: number, limit: number, offset: number } | null, page: { __typename?: 'OfferConnection', pageInfo?: { __typename?: 'OfferPageInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } | null, edges?: Array<{ __typename?: 'OfferEdge', cursor?: string | null, node?: { __typename?: 'Offer', address: string, offerInfo: { __typename?: 'OfferInfo', name: string, description: string, holdSum: number, restrictions?: { __typename?: 'OfferRestrictions', offers?: Array<string> | null } | null } } | null }> | null } } };
 
 export type OffersRestrictionsQueryVariables = Exact<{
   pagination: ConnectionArgs;
@@ -1331,7 +1371,7 @@ export type OrdersQueryVariables = Exact<{
 }>;
 
 
-export type OrdersQuery = { __typename?: 'Query', result: { __typename?: 'ListOrdersResponse', pageData?: { __typename?: 'PageDataDto', count: number, limit: number, offset: number } | null, page: { __typename?: 'OrderConnection', edges?: Array<{ __typename?: 'OrderEdge', cursor?: string | null, node?: { __typename?: 'Order', _id: string, address: string, authority?: string | null, consumer: string, orderHoldDeposit?: number | null, depositSpent?: string | null, offerType: TOfferType, parentOrder?: { __typename?: 'ParentOrder', address: string, offerInfo?: { __typename?: 'OfferInfo', name: string } | null } | null, offerInfo?: { __typename?: 'OfferInfo', name: string, offerType: string } | null, orderInfo: { __typename?: 'OrderInfo', offer: string, status: string }, origins?: { __typename?: 'Origins', createdBy: string, createdDate: number, modifiedBy: string, modifiedDate: number } | null, teeOfferInfo?: { __typename?: 'TeeOfferInfo', name: string } | null, subOrders?: Array<{ __typename?: 'BaseOrder', offerType: TOfferType, teeOfferInfo?: { __typename?: 'TeeOfferInfo', name: string } | null, offerInfo?: { __typename?: 'OfferInfo', name: string } | null }> | null } | null }> | null, pageInfo?: { __typename?: 'OrderPageInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } | null } } };
+export type OrdersQuery = { __typename?: 'Query', result: { __typename?: 'ListOrdersResponse', pageData?: { __typename?: 'PageDataDto', count: number, limit: number, offset: number } | null, page: { __typename?: 'OrderConnection', edges?: Array<{ __typename?: 'OrderEdge', cursor?: string | null, node?: { __typename?: 'Order', _id: string, address: string, authority?: string | null, consumer: string, orderHoldDeposit?: number | null, depositSpent?: string | null, offerType: TOfferType, parentOrder?: { __typename?: 'ParentOrder', address: string, offerInfo?: { __typename?: 'OfferInfo', name: string } | null } | null, offerInfo?: { __typename?: 'OfferInfo', name: string, offerType: string } | null, orderInfo: { __typename?: 'OrderInfo', offer: string, status: string }, origins?: { __typename?: 'Origins', createdBy: string, createdDate: number, modifiedBy: string, modifiedDate: number } | null, teeOfferInfo?: { __typename?: 'TeeOfferInfo', name: string } | null, subOrders?: Array<{ __typename?: 'BaseOrder', offerType: TOfferType, teeOfferInfo?: { __typename?: 'TeeOfferInfo', name: string } | null, offerInfo?: { __typename?: 'OfferInfo', name: string, restrictions?: { __typename?: 'OfferRestrictions', types?: Array<TOfferType> | null } | null } | null }> | null } | null }> | null, pageInfo?: { __typename?: 'OrderPageInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } | null } } };
 
 export type OrdersSelectQueryVariables = Exact<{
   pagination: ConnectionArgs;
@@ -1346,7 +1386,7 @@ export type OrderQueryVariables = Exact<{
 }>;
 
 
-export type OrderQuery = { __typename?: 'Query', order: { __typename?: 'Order', address: string, consumer: string, orderHoldDeposit?: number | null, depositSpent?: string | null, offerType: TOfferType, origins?: { __typename?: 'Origins', createdBy: string, createdDate: number, modifiedBy: string, modifiedDate: number } | null, orderInfo: { __typename?: 'OrderInfo', status: string, offer: string }, teeOfferInfo?: { __typename?: 'TeeOfferInfo', name: string, description: string } | null, orderResult: { __typename?: 'OrderResult', encryptedError?: string | null, encryptedResult?: string | null } } };
+export type OrderQuery = { __typename?: 'Query', order: { __typename?: 'Order', address: string, consumer: string, orderHoldDeposit?: number | null, depositSpent?: string | null, offerType: TOfferType, origins?: { __typename?: 'Origins', createdBy: string, createdDate: number, modifiedBy: string, modifiedDate: number } | null, providerInfo: { __typename?: 'ProviderInformation', actionAccount: string, name: string }, orderInfo: { __typename?: 'OrderInfo', status: string, offer: string, encryptedArgs: string }, teeOfferInfo?: { __typename?: 'TeeOfferInfo', name: string, description: string } | null, orderResult: { __typename?: 'OrderResult', encryptedResult?: string | null, encryptedError?: string | null } } };
 
 export type SubOrdersQueryVariables = Exact<{
   pagination: ConnectionArgs;
@@ -1354,7 +1394,7 @@ export type SubOrdersQueryVariables = Exact<{
 }>;
 
 
-export type SubOrdersQuery = { __typename?: 'Query', result: { __typename?: 'ListOrdersResponse', pageData?: { __typename?: 'PageDataDto', count: number, limit: number, offset: number } | null, page: { __typename?: 'OrderConnection', edges?: Array<{ __typename?: 'OrderEdge', cursor?: string | null, node?: { __typename?: 'Order', _id: string, address: string, authority?: string | null, consumer: string, orderHoldDeposit?: number | null, depositSpent?: string | null, offerType: TOfferType, offerInfo?: { __typename?: 'OfferInfo', name: string, offerType: string, cancelable: boolean, description: string } | null, orderInfo: { __typename?: 'OrderInfo', offer: string, status: string }, origins?: { __typename?: 'Origins', createdBy: string, createdDate: number, modifiedBy: string, modifiedDate: number } | null, teeOfferInfo?: { __typename?: 'TeeOfferInfo', name: string, description: string } | null } | null }> | null, pageInfo?: { __typename?: 'OrderPageInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } | null } } };
+export type SubOrdersQuery = { __typename?: 'Query', result: { __typename?: 'ListOrdersResponse', pageData?: { __typename?: 'PageDataDto', count: number, limit: number, offset: number } | null, page: { __typename?: 'OrderConnection', edges?: Array<{ __typename?: 'OrderEdge', cursor?: string | null, node?: { __typename?: 'Order', _id: string, address: string, authority?: string | null, consumer: string, orderHoldDeposit?: number | null, depositSpent?: string | null, offerType: TOfferType, offerInfo?: { __typename?: 'OfferInfo', name: string, offerType: string, cancelable: boolean, description: string } | null, providerInfo: { __typename?: 'ProviderInformation', actionAccount: string, name: string }, orderInfo: { __typename?: 'OrderInfo', offer: string, status: string }, origins?: { __typename?: 'Origins', createdBy: string, createdDate: number, modifiedBy: string, modifiedDate: number } | null, teeOfferInfo?: { __typename?: 'TeeOfferInfo', name: string, description: string } | null } | null }> | null, pageInfo?: { __typename?: 'OrderPageInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } | null } } };
 
 export type ProvidersQueryVariables = Exact<{
   pagination: ConnectionArgs;
@@ -1380,6 +1420,14 @@ export type TeeOffersSelectQueryVariables = Exact<{
 
 export type TeeOffersSelectQuery = { __typename?: 'Query', result: { __typename?: 'ListTeeOffersResponse', pageData?: { __typename?: 'PageDataDto', count: number, limit: number, offset: number } | null, page: { __typename?: 'TeeOfferConnection', pageInfo?: { __typename?: 'TeeOfferPageInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } | null, edges?: Array<{ __typename?: 'TeeOfferEdge', cursor?: string | null, node?: { __typename?: 'TeeOffer', address: string, teeOfferInfo: { __typename?: 'TeeOfferInfo', name: string, description: string } } | null }> | null } } };
 
+export type TransactionsQueryVariables = Exact<{
+  pagination: ConnectionArgs;
+  filter?: InputMaybe<TransactionFilter>;
+}>;
+
+
+export type TransactionsQuery = { __typename?: 'Query', result: { __typename?: 'ListTransactionResponse', pageData?: { __typename?: 'PageDataDto', count: number, limit: number, offset: number } | null, page: { __typename?: 'TransactionConnection', pageInfo?: { __typename?: 'TransactionPageInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } | null, edges?: Array<{ __typename?: 'TransactionEdge', cursor?: string | null, node?: { __typename?: 'Transaction', baseAddress: string, blockHash?: string | null, blockNumber?: number | null, from: string, gas: number, gasPrice: string, hash: string, input: string, nonce: number, r: string, s: string, timestamp: number, to?: string | null, transactionIndex: number, v: string, value: string } | null }> | null } } };
+
 export const PageDataDtoFragmentFragmentDoc = gql`
     fragment PageDataDtoFragment on PageDataDto {
   count
@@ -1388,8 +1436,8 @@ export const PageDataDtoFragmentFragmentDoc = gql`
 }
     `;
 export const EventDocument = gql`
-    subscription Event {
-  event {
+    subscription Event($filter: EventFilter) {
+  event(filter: $filter) {
     data
     type
     subscriptionSource
@@ -1409,6 +1457,7 @@ export const EventDocument = gql`
  * @example
  * const { data, loading, error } = useEventSubscription({
  *   variables: {
+ *      filter: // value for 'filter'
  *   },
  * });
  */
@@ -1467,6 +1516,7 @@ export const OffersDocument = gql`
           _id
           address
           authority
+          disabledAfter
           offerInfo {
             group
             offerType
@@ -1475,14 +1525,13 @@ export const OffersDocument = gql`
             argsPublicKey
             cancelable
             description
-            disabledAfter
             hash
             holdSum
-            inputFormat
+            input
             linkage
             maxDurationTimeMinutes
             name
-            outputFormat
+            output
             properties
             resultUrl
             restrictions {
@@ -1558,6 +1607,7 @@ export const OffersSelectDocument = gql`
           offerInfo {
             name
             description
+            holdSum
             restrictions {
               offers
             }
@@ -1691,6 +1741,9 @@ export const OrdersDocument = gql`
             }
             offerInfo {
               name
+              restrictions {
+                types
+              }
             }
             offerType
           }
@@ -1801,20 +1854,25 @@ export const OrderDocument = gql`
       modifiedBy
       modifiedDate
     }
+    providerInfo {
+      actionAccount
+      name
+    }
     orderHoldDeposit
     depositSpent
     offerType
     orderInfo {
       status
       offer
+      encryptedArgs
     }
     teeOfferInfo {
       name
       description
     }
     orderResult {
-      encryptedError
       encryptedResult
+      encryptedError
     }
   }
 }
@@ -1868,6 +1926,10 @@ export const SubOrdersDocument = gql`
             offerType
             cancelable
             description
+          }
+          providerInfo {
+            actionAccount
+            name
           }
           offerType
           orderInfo {
@@ -2135,3 +2197,70 @@ export function useTeeOffersSelectLazyQuery(baseOptions?: ApolloReactHooks.LazyQ
 export type TeeOffersSelectQueryHookResult = ReturnType<typeof useTeeOffersSelectQuery>;
 export type TeeOffersSelectLazyQueryHookResult = ReturnType<typeof useTeeOffersSelectLazyQuery>;
 export type TeeOffersSelectQueryResult = Apollo.QueryResult<TeeOffersSelectQuery, TeeOffersSelectQueryVariables>;
+export const TransactionsDocument = gql`
+    query Transactions($pagination: ConnectionArgs!, $filter: TransactionFilter) {
+  result: transactions(pagination: $pagination, filter: $filter) {
+    pageData {
+      ...PageDataDtoFragment
+    }
+    page {
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+      }
+      edges {
+        node {
+          baseAddress
+          blockHash
+          blockNumber
+          from
+          gas
+          gasPrice
+          hash
+          input
+          nonce
+          r
+          s
+          timestamp
+          to
+          transactionIndex
+          v
+          value
+        }
+        cursor
+      }
+    }
+  }
+}
+    ${PageDataDtoFragmentFragmentDoc}`;
+
+/**
+ * __useTransactionsQuery__
+ *
+ * To run a query within a React component, call `useTransactionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useTransactionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useTransactionsQuery({
+ *   variables: {
+ *      pagination: // value for 'pagination'
+ *      filter: // value for 'filter'
+ *   },
+ * });
+ */
+export function useTransactionsQuery(baseOptions: ApolloReactHooks.QueryHookOptions<TransactionsQuery, TransactionsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<TransactionsQuery, TransactionsQueryVariables>(TransactionsDocument, options);
+      }
+export function useTransactionsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<TransactionsQuery, TransactionsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<TransactionsQuery, TransactionsQueryVariables>(TransactionsDocument, options);
+        }
+export type TransactionsQueryHookResult = ReturnType<typeof useTransactionsQuery>;
+export type TransactionsLazyQueryHookResult = ReturnType<typeof useTransactionsLazyQuery>;
+export type TransactionsQueryResult = Apollo.QueryResult<TransactionsQuery, TransactionsQueryVariables>;

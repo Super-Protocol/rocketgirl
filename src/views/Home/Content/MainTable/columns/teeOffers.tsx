@@ -10,36 +10,41 @@ export type TeeOffersColumns = UseTableQueryFetcherResultList<TeeOffer>;
 
 export const getColumns = (): Array<ColumnProps<TeeOffersColumns>> => [
     {
+        Header: 'ID',
+        id: 'id',
+        Cell: ({ row }) => (row.original?.address || '-'),
+        width: 'auto',
+    },
+    {
         Header: 'Provider',
         id: 'provider',
         Cell: ({ row }) => {
             const { providerAddress, providerInfo } = row.original || {};
             const { name } = providerInfo || {};
             if (!providerAddress) return '-';
-            return <CopyToClipboard title={name}>{providerAddress}</CopyToClipboard>;
+            return (
+                <CopyToClipboard title={name} canShowTooltip={{ title: 'Provider' }}>
+                    {providerAddress}
+                </CopyToClipboard>
+            );
         },
-        width: 'auto',
-    },
-    {
-        Header: 'ID',
-        id: 'id',
-        Cell: ({ row }) => (row.original?.address ? <CopyToClipboard>{row.original?.address}</CopyToClipboard> : '-'),
         width: 'auto',
     },
     {
         Header: 'Name',
         id: 'name',
-        Cell: ({ row }) => row.original?.teeOfferInfo?.name || '-',
+        Cell: ({ row }) => {
+            const { name } = row.original?.teeOfferInfo || {};
+            return name ? <TooltipLink text={name} title="Name" checkOverflow /> : '-';
+        },
         width: 'auto',
-        isEllipsis: true,
     },
-    // todo add link support
     {
         Header: 'Description',
         id: 'description',
         Cell: ({ row }) => {
             const { description } = row.original?.teeOfferInfo || {};
-            return description ? <TooltipLink text={description} /> : '-';
+            return description ? <TooltipLink text={description} title="Description" checkOverflow /> : '-';
         },
         width: 'auto',
         isEllipsis: true,

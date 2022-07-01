@@ -5,15 +5,15 @@
   "dependencies": {
     "@apollo/client": "^3.6.2",
     "@super-protocol/sp-dto-js": "^0.0.10",
-    "@super-protocol/sp-sdk-js": "^0.2.43",
+    "@super-protocol/sp-sdk-js": "^0.3.0",
     "@types/node": "^16.4.13",
     "@types/react-table": "^7.7.2",
-    "@web3-react/metamask": "^8.0.0-beta.0",
-    "@web3-react/walletconnect": "^8.0.1-beta.0",
+    "@web3-react/metamask": "^8.0.26-beta.0",
     "abortcontroller-polyfill": "^1.7.3",
     "add-dependencies": "^1.1.0",
     "apollo-upload-client": "^17.0.0",
     "aws-sdk": "^2.1146.0",
+    "bignumber.js": "^9.0.2",
     "bip39": "^3.0.4",
     "bootstrap": "^4.3.1",
     "classnames": "^2.3.1",
@@ -34,6 +34,7 @@
     "lodash.sum": "^4.0.2",
     "lodash.uniqby": "^4.7.0",
     "node-sass": "^6.0.1",
+    "overlayscrollbars": "^1.13.2",
     "query-string": "^7.0.1",
     "react": "^17.0.2",
     "react-app-polyfill": "^2.0.0",
@@ -96,6 +97,7 @@
     ]
   },
   "resolutions": {
+    "//": "See https://github.com/facebook/create-react-app/issues/11773",
     "react-error-overlay": "6.0.9"
   },
   "babel": {

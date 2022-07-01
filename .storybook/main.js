@@ -9,5 +9,11 @@ module.exports = {
     "@storybook/addon-essentials",
     "@storybook/preset-create-react-app",
   ],
-  webpackFinal: config => webpackConfigOverrides(config),
+  webpackFinal: async (config, { configType }) => {
+    config.node = {
+      ...config.node,
+      fs: 'empty',
+    };
+    return webpackConfigOverrides(config);
+  },
 }

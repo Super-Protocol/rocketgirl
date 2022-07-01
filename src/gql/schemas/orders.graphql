@@ -43,6 +43,9 @@ query Orders($pagination: ConnectionArgs!, $filter: OrdersFilter) {
                         }
                         offerInfo {
                             name
+                            restrictions {
+                                types
+                            }
                         }
                         offerType
                     }
@@ -93,20 +96,25 @@ query Order($id: String!) {
             modifiedBy
             modifiedDate
         }
+        providerInfo {
+            actionAccount
+            name
+        }
         orderHoldDeposit
         depositSpent
         offerType
         orderInfo {
             status
             offer
+            encryptedArgs
         }
         teeOfferInfo {
             name
             description
         }
         orderResult {
-            encryptedError
             encryptedResult
+            encryptedError
         }
     }
 }
@@ -131,6 +139,10 @@ query SubOrders($pagination: ConnectionArgs!, $filter: OrdersFilter) {
                         offerType
                         cancelable
                         description
+                    }
+                    providerInfo {
+                        actionAccount
+                        name
                     }
                     offerType
                     orderInfo {

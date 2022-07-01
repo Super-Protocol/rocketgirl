@@ -2,60 +2,73 @@ import React, {
     memo,
     FC,
     useMemo,
-    useCallback,
+    useCallback, useContext,
 } from 'react';
+import isEqual from 'lodash.isequal';
 import { PageClick } from '@/uikit/Table/TablePagination/types';
-import CONFIG from '@/config';
-import { SubOrdersDocument } from '@/gql/graphql'; // todo
-import { useTableQueryFetcher } from '@/common/hooks/useTableQueryFetcher';
 import { Table, Box } from '@/uikit';
+import { getDiffIndexes } from '@/views/Home/Content/helpers';
+import useMemoCompare from '@/common/hooks/useMemoCompare';
+import { GetDiffIndexesResult } from '@/views/Home/Content/types';
+import { Tables } from '@/views/Home/types';
+import { NoAccountBlock } from '@/common/components/NoAccountBlock';
+import { WalletContext } from '@/common/context/WalletProvider';
 import { TransactionsProps, Columns } from './types';
-import { getFilters, spinnerProps, styles } from './helpers';
+import {
+    getFilters,
+    spinnerProps,
+    styles,
+    tables,
+} from './helpers';
 import { getColumns } from './columns';
 import classes from './Transactions.module.scss';
 import { FilterForm } from './Filter';
 import { Filter } from './Filter/FilterForm/types';
+import { TableHeaderList } from '../TableHeaderList';
 
-export const Transactions: FC<TransactionsProps> = memo(({ classNameWrap }) => {
-    const transactions = useTableQueryFetcher({
-        gql: SubOrdersDocument, // todo change query
-        queryOptions: { variables: { pagination: { sortBy: 'origins.modifiedDate' } } },
-    });
-    const onClickTxnHash = useCallback((id?: string) => {
-        if (!id) return;
-        window.open(`${CONFIG.REACT_APP_POLYGON_SCAN}/${id}`, '_blank');
-    }, []);
-    const columns = useMemo(() => getColumns({ onClickTxnHash }), [onClickTxnHash]);
-    const data = useMemo(() => (transactions?.list ? transactions?.list : []), [transactions]);
-    const pageCount = useMemo(() => transactions?.pageCount || 0, [transactions]);
+export const Transactions: FC<TransactionsProps> = memo(({ classNameWrap, fetcher, diff }) => {
+    const { selectedAddress } = useContext(WalletContext);
+    const transactionFetcher = useMemo(() => fetcher[Tables.Transactions], [fetcher]);
+    const activeDiffIndexes = useMemo(() => getDiffIndexes(transactionFetcher), [transactionFetcher]);
+    const activeDiffIndexesMemoCompare = useMemoCompare<GetDiffIndexesResult>(activeDiffIndexes, isEqual);
+    const columns = useMemo(() => getColumns(), []);
+    const data = useMemo(() => (transactionFetcher?.list ? transactionFetcher?.list : []), [transactionFetcher]);
+    const pageCount = useMemo(() => transactionFetcher?.pageCount || 0, [transactionFetcher]);
     const onSubmit = useCallback((filter: Filter) => {
-        transactions?.onChangePage({ filter: getFilters(filter?.values), pageClick: PageClick.FIRST });
-    }, [transactions]);
+        transactionFetcher?.onChangePage({ filter: getFilters(filter?.values), pageClick: PageClick.FIRST });
+    }, [transactionFetcher]);
 
     return (
         <Box direction="column" className={classNameWrap}>
             <Box className={classes.header} alignItems="center" justifyContent="space-between">
-                <Box className={classes.title}>Transactions</Box>
-                <FilterForm onSubmit={onSubmit} />
+                <TableHeaderList
+                    list={tables}
+                    active={Tables.Transactions}
+                    diff={diff}
+                />
+                {!!selectedAddress && <FilterForm onSubmit={onSubmit} />}
             </Box>
-            <Table
-                <Columns>
-                pageIndex={transactions?.pageIndex}
-                columns={columns}
-                data={data}
-                pageCount={pageCount}
-                pageSize={transactions?.pageSize}
-                onPageChange={transactions?.onChangePage}
-                onChangePageSize={transactions?.onChangePageSize}
-                spinnerProps={spinnerProps}
-                loading={transactions?.loading}
-                error={transactions?.error ? 'Error' : ''}
-                noDataMessage={transactions?.noDataMessage}
-                called
-                styles={styles}
-                showLoader
-                isUseCursor
-            />
+            {!transactionFetcher.skip ? (
+                <Table
+                    <Columns>
+                    pageIndex={transactionFetcher?.pageIndex}
+                    columns={columns}
+                    diff={activeDiffIndexesMemoCompare}
+                    data={data}
+                    pageCount={pageCount}
+                    pageSize={transactionFetcher?.pageSize}
+                    onPageChange={transactionFetcher?.onChangePage}
+                    onChangePageSize={transactionFetcher?.onChangePageSize}
+                    spinnerProps={spinnerProps}
+                    loading={transactionFetcher?.loading}
+                    error={transactionFetcher?.error ? 'Error' : ''}
+                    noDataMessage={transactionFetcher?.noDataMessage}
+                    called
+                    styles={styles}
+                    showLoader
+                    isUseCursor
+                />
+            ) : <NoAccountBlock message={transactionFetcher.skip?.message} />}
         </Box>
     );
 });

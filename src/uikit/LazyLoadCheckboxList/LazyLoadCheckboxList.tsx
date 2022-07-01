@@ -46,7 +46,7 @@ export const LazyLoadCheckboxList: FC<LazyLoadCheckboxListProps<Info>> = memo(({
                             key={value as string}
                             className={classes.option}
                             alignItems="flex-start"
-                            onClick={() => onChange({ value, info: data }, !checked)}
+                            onClick={() => onChange({ value, data }, !checked)}
                         >
                             <Box className={classes.check}>
                                 {isMulti ? (
@@ -55,7 +55,7 @@ export const LazyLoadCheckboxList: FC<LazyLoadCheckboxListProps<Info>> = memo(({
                                         checked={checked}
                                         onChange={(checked, e) => {
                                             e.preventDefault();
-                                            onChange({ value, info: data }, !checked);
+                                            onChange({ value, data }, !checked);
                                         }}
                                     />
                                 ) : label}

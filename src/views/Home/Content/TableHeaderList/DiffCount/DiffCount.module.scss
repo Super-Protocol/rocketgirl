@@ -1,0 +1,23 @@
+.diff {
+  background-color: var(--orange100);
+  padding: 0 4px;
+  border-radius: 5px;
+  min-width: 17px;
+  min-height: 17px;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 2px;
+  right: -20px;
+}
+
+.diffText {
+  font-size: 11px;
+  color: var(--white100);
+}
+
+.relative {
+  position: relative;
+  top: 0;
+  right: 0;
+}

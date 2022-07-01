@@ -1,4 +1,9 @@
-import { SubscriptionSource, useEventSubscription, SubscriptionType } from '@/gql/graphql';
+import {
+    SubscriptionSource,
+    useEventSubscription,
+    SubscriptionType,
+    TOfferType,
+} from '@/gql/graphql';
 import { FetcherByTable, UseTablesQueryFetcherResult } from '@/views/Home/hooks/useTablesQueryFetcher';
 import { Tables } from '@/views/Home/types';
 
@@ -12,14 +17,44 @@ export const getFetcherBySubSource = (subscriptionSource?: SubscriptionSource): 
             return Tables.TEEOffers;
         case SubscriptionSource.Order:
             return Tables.Orders;
+        case SubscriptionSource.Transaction:
+            return Tables.Transactions;
         default:
             return null;
     }
 };
 
-export const useTablesSubscriptions = (fetcher: UseTablesQueryFetcherResult): void => {
+export const useTablesSubscriptions = (fetcher: UseTablesQueryFetcherResult, consumer?: string): void => {
     useEventSubscription(
         {
+            variables: {
+                filter: {
+                    events: [
+                        {
+                            source: SubscriptionSource.Provider,
+                        },
+                        {
+                            source: SubscriptionSource.TeeOffer,
+                        },
+                        {
+                            source: SubscriptionSource.Offer,
+                        },
+                        ...(consumer
+                            ? [
+                                {
+                                    source: SubscriptionSource.Order,
+                                    filter: { consumer, offerType: TOfferType.TeeOffer },
+                                },
+                                {
+                                    source: SubscriptionSource.Transaction,
+                                    filter: { consumer },
+                                },
+                            ]
+                            : []
+                        ),
+                    ],
+                },
+            },
             onSubscriptionData: async ({ subscriptionData }) => {
                 const { event } = subscriptionData?.data || {};
                 const { subscriptionSource, data, type } = event || {};

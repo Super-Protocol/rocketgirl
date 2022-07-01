@@ -82,7 +82,7 @@ $color-orange: var(--orange90);
     }
 
     &_invalid {
-      border-color: var(--red100);
+      border-color: var(--red100) !important;
     }
 
     svg {
@@ -145,4 +145,10 @@ $color-orange: var(--orange90);
 
 .labelTooltip {
   margin-left: 0 !important;
+}
+
+.error {
+  margin-top: 2px;
+  color: var(--red100);
+  min-height: 18px;
 }

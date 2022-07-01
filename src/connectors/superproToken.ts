@@ -16,8 +16,10 @@ export const getSuperproToken = async (address?: string): Promise<string | null>
 };
 
 export const getSuperproTokenCatched = async (address?: string): Promise<string | null> => {
+    if (!address) return null;
     try {
-        return getSuperproToken(address);
+        const count = await getSuperproToken(address);
+        return count ? Web3.utils.fromWei(count) : null;
     } catch (e) {
         console.error('Error get tee balance');
         return null;

@@ -1,12 +1,2 @@
-import CONFIG from '@/config';
-
-const { REACT_APP_S3_CONFIG } = CONFIG;
-
-export const S3_BUCKET = 'inputs';
-
-export const S3_CONFIG = {
-    ...REACT_APP_S3_CONFIG,
-    s3ForcePathStyle: true,
-    signatureVersion: 'v4',
-    httpOptions: { timeout: 0 },
-};
+// eslint-disable-next-line max-len
+export const tooltipText = 'Uploading a file must be supported by the chosen solution. Additionally, you must specify Storage offer and you must NOT use any Data offers. For additional details and requirements for the file format see the description to the chosen solution.';

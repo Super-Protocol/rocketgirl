@@ -1,6 +1,6 @@
 import type { ReactNode, DetailedHTMLProps, ButtonHTMLAttributes } from 'react';
 
-export type variants = 'primary' | 'secondary' | 'tertiary' | 'link' | 'quaternary';
+export type variants = 'primary' | 'secondary' | 'tertiary' | 'link' | 'quaternary' | 'base';
 
 export type sizes = 'sm' | 'lg';
 
