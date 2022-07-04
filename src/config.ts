@@ -37,8 +37,8 @@ const DEFAULT_CONFIG: Config = {
     REACT_APP_FAUCET_MATIC_API: 'https://api.faucet.matic.network',
     REACT_APP_S3_UPLOAD_ACCESS_KEY_ID: '',
     REACT_APP_S3_UPLOAD_ACCESS_SECRET_KEY: '',
-    REACT_APP_S3_DOWNLOAD_ACCESS_KEY_ID: '',
-    REACT_APP_S3_DOWNLOAD_ACCESS_SECRET_KEY: '',
+    REACT_APP_S3_DOWNLOAD_ACCESS_KEY_ID: 'jv7cbacoeh2p6lcnmz7ds4wwo7mq',
+    REACT_APP_S3_DOWNLOAD_ACCESS_SECRET_KEY: 'jyf7fya654huxwkqvvndcry7nkgr6v3sy6btopfhdxpppzfvt7ldw',
     REACT_APP_ARGS_BUCKET_READ_ACCESS: '',
     REACT_APP_S3_ENDPOINT: 'https://gateway.storjshare.io',
 

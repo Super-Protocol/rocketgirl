@@ -103,7 +103,7 @@ export const encodingAndDownloadFile = async (
         throw new Error('Wrong url');
     }
     const data = await fetch(url);
-    if (data?.status === 403) {
+    if ([403, 404].includes(data?.status)) {
         throw new Error('Unable to get file result');
     }
     const dataBlob = await data.blob();
