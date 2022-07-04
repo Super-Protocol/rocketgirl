@@ -72,20 +72,26 @@ export const encodingAndDownloadFile = async (
     let decrypted = '';
 
     const encryptedObj: { resource: Encryption, encryption: Encryption } = JSON.parse(encryptedStr);
-    if (encryptedObj.resource && encryptedObj.encryption) {
-        const encryptedResource: Encryption = encryptedObj.resource;
-        encryptedResource.key = privateKeyBase64;
-        const decryptedResource = await Crypto.decrypt(encryptedResource);
+    try {
+        if (encryptedObj.resource && encryptedObj.encryption) {
+            const encryptedResource: Encryption = encryptedObj.resource;
+            encryptedResource.key = privateKeyBase64;
+            const decryptedResource = await Crypto.decrypt(encryptedResource);
 
-        const encryptedEncryption: Encryption = encryptedObj.encryption;
-        encryptedEncryption.key = privateKeyBase64;
-        const decryptedEncryption = await Crypto.decrypt(encryptedEncryption);
+            const encryptedEncryption: Encryption = encryptedObj.encryption;
+            encryptedEncryption.key = privateKeyBase64;
+            const decryptedEncryption = await Crypto.decrypt(encryptedEncryption);
 
-        decrypted = `{ "resource": ${decryptedResource}, "encryption": ${decryptedEncryption} }`;
-    } else {
-        const encryptedObj: Encryption = JSON.parse(encryptedStr);
-        encryptedObj.key = privateKeyBase64;
-        decrypted = await Crypto.decrypt(encryptedObj);
+            decrypted = `{ "resource": ${decryptedResource}, "encryption": ${decryptedEncryption} }`;
+        } else {
+            const encryptedObj = JSON.parse(encryptedStr);
+            const { encryptedResource } = encryptedObj || {};
+            encryptedResource.key = privateKeyBase64;
+            decrypted = await Crypto.decrypt(encryptedResource);
+        }
+    } catch (e) {
+        console.error(e);
+        throw new Error('Unable to decrypt the order result');
     }
 
     const decryptedObj: { resource: StorageProviderResource, encryption: Encryption } = JSON.parse(decrypted);
