@@ -109,6 +109,9 @@ export const encodingAndDownloadFile = async (
         throw new Error('Wrong url');
     }
     const data = await fetch(url);
+    if ([403, 404].includes(data?.status)) {
+        throw new Error('Unable to get file result');
+    }
     const dataBlob = await data.blob();
     const base64WithoutTags = (await getBase64FromBlob(dataBlob) as string).split(',').pop();
     if (!base64WithoutTags) throw new Error('File is empty');
