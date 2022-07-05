@@ -11,3 +11,8 @@ export enum Fields {
     agreement = 'agreement',
     phraseTabMode = 'phraseTabMode',
 }
+
+export type ErrorDecription = {
+    name: string;
+    message: string;
+}
