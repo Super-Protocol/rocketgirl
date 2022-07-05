@@ -13,7 +13,7 @@ import {
 } from '@/common/helpers';
 import CONFIG from '@/config';
 import { generateECIESKeys, validateMnemonic } from '@/utils/crypto';
-import { Fields } from './types';
+import { Fields, ErrorDecription } from './types';
 
 export const getPhraseSchema = (): Yup.BaseSchema => Yup.string().test(
     Fields.phrase,
@@ -84,10 +84,13 @@ export const encodingAndDownloadFile = async (
 
             decrypted = `{ "resource": ${decryptedResource}, "encryption": ${decryptedEncryption} }`;
         } else {
-            const encryptedObj = JSON.parse(encryptedStr);
-            const { encryptedResource } = encryptedObj || {};
-            encryptedResource.key = privateKeyBase64;
-            decrypted = await Crypto.decrypt(encryptedResource);
+            const encryptedObj: Encryption = JSON.parse(encryptedStr);
+            encryptedObj.key = privateKeyBase64;
+            decrypted = await Crypto.decrypt(encryptedObj);
+            const decryptedResult: ErrorDecription = JSON.parse(decrypted);
+            if (decryptedResult?.name.indexOf('Error') !== -1) {
+                throw new Error(decryptedResult?.message);
+            }
         }
     } catch (e) {
         console.error(e);
