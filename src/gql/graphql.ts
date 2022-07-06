@@ -1332,6 +1332,13 @@ export type TransferMutationVariables = Exact<{
 
 export type TransferMutation = { __typename?: 'Mutation', transfer: boolean };
 
+export type TeeTransferMutationVariables = Exact<{
+  transfer: TransferInputType;
+}>;
+
+
+export type TeeTransferMutation = { __typename?: 'Mutation', teeTransfer: boolean };
+
 export type OffersQueryVariables = Exact<{
   pagination: ConnectionArgs;
   filter?: InputMaybe<OfferFilter>;
@@ -1489,6 +1496,37 @@ export function useTransferMutation(baseOptions?: ApolloReactHooks.MutationHookO
 export type TransferMutationHookResult = ReturnType<typeof useTransferMutation>;
 export type TransferMutationResult = Apollo.MutationResult<TransferMutation>;
 export type TransferMutationOptions = Apollo.BaseMutationOptions<TransferMutation, TransferMutationVariables>;
+export const TeeTransferDocument = gql`
+    mutation TeeTransfer($transfer: TransferInputType!) {
+  teeTransfer(transfer: $transfer)
+}
+    `;
+export type TeeTransferMutationFn = Apollo.MutationFunction<TeeTransferMutation, TeeTransferMutationVariables>;
+
+/**
+ * __useTeeTransferMutation__
+ *
+ * To run a mutation, you first call `useTeeTransferMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useTeeTransferMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [teeTransferMutation, { data, loading, error }] = useTeeTransferMutation({
+ *   variables: {
+ *      transfer: // value for 'transfer'
+ *   },
+ * });
+ */
+export function useTeeTransferMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<TeeTransferMutation, TeeTransferMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useMutation<TeeTransferMutation, TeeTransferMutationVariables>(TeeTransferDocument, options);
+      }
+export type TeeTransferMutationHookResult = ReturnType<typeof useTeeTransferMutation>;
+export type TeeTransferMutationResult = Apollo.MutationResult<TeeTransferMutation>;
+export type TeeTransferMutationOptions = Apollo.BaseMutationOptions<TeeTransferMutation, TeeTransferMutationVariables>;
 export const OffersDocument = gql`
     query Offers($pagination: ConnectionArgs!, $filter: OfferFilter) {
   result: offers(pagination: $pagination, filter: $filter) {
