@@ -18,6 +18,7 @@ import classes from './GetResultModal.module.scss';
 
 export const GetResultModal = memo<GetResultModalProps>(({
     orderAddress,
+    status,
 }): ReactElement => {
     const { onClose } = useContext(ModalOkCancelContext);
     const { showErrorModal, showSuccessModal } = useErrorModal();
@@ -28,7 +29,7 @@ export const GetResultModal = memo<GetResultModalProps>(({
         setLoading(true);
         try {
             const { phrase = '' } = values || {};
-            const { isFile, content } = await encodingAndDownloadFile(orderAddress, phrase);
+            const { isFile, content } = await encodingAndDownloadFile(orderAddress, phrase, status);
             setLoading(false);
             onClose();
             showSuccessModal(isFile ? 'File downloaded successfully' : content);
@@ -36,7 +37,7 @@ export const GetResultModal = memo<GetResultModalProps>(({
             setLoading(false);
             showErrorModal(e);
         }
-    }, [showSuccessModal, showErrorModal, onClose, orderAddress]);
+    }, [showSuccessModal, showErrorModal, onClose, orderAddress, status]);
 
     const onDownload = useCallback((submitForm) => () => {
         setIsValidating(true);

@@ -3,6 +3,7 @@ import { S3 } from 'aws-sdk';
 import {
     Crypto,
     Order,
+    OrderStatus,
 } from '@super-protocol/sp-sdk-js';
 import {
     Encryption,
@@ -62,6 +63,7 @@ export const getFileUrlFromS3Storage = async (fileName: string, bucket: string):
 export const encodingAndDownloadFile = async (
     orderAddress: string,
     phrase: string,
+    status?: OrderStatus,
 ): Promise<{ isFile: boolean, content: string }> => {
     const { privateKeyBase64 } = generateECIESKeys(phrase);
     const order = new Order(orderAddress);
@@ -72,8 +74,8 @@ export const encodingAndDownloadFile = async (
     let decrypted = '';
 
     const encryptedObj: { resource: Encryption, encryption: Encryption } = JSON.parse(encryptedStr);
-    try {
-        if (encryptedObj.resource && encryptedObj.encryption) {
+    if (encryptedObj.resource && encryptedObj.encryption) {
+        try {
             const encryptedResource: Encryption = encryptedObj.resource;
             encryptedResource.key = privateKeyBase64;
             const decryptedResource = await Crypto.decrypt(encryptedResource);
@@ -83,18 +85,27 @@ export const encodingAndDownloadFile = async (
             const decryptedEncryption = await Crypto.decrypt(encryptedEncryption);
 
             decrypted = `{ "resource": ${decryptedResource}, "encryption": ${decryptedEncryption} }`;
-        } else {
-            const encryptedObj: Encryption = JSON.parse(encryptedStr);
-            encryptedObj.key = privateKeyBase64;
+        } catch (e) {
+            console.error(e);
+            throw new Error('Unable to decrypt the order result');
+        }
+    } else {
+        const encryptedObj: Encryption = JSON.parse(encryptedStr);
+        encryptedObj.key = privateKeyBase64;
+        try {
             decrypted = await Crypto.decrypt(encryptedObj);
-            const decryptedResult: ErrorDecription = JSON.parse(decrypted);
-            if (decryptedResult?.name.indexOf('Error') !== -1) {
+        } catch (e) {
+            console.error(e);
+            throw new Error('Unable to decrypt the order result');
+        }
+        const decryptedResult: ErrorDecription = JSON.parse(decrypted);
+        if (decryptedResult?.name.indexOf('Error') !== -1) {
+            if (status === OrderStatus.Error) {
                 throw new Error(decryptedResult?.message);
+            } else {
+                decrypted = decryptedResult?.message;
             }
         }
-    } catch (e) {
-        console.error(e);
-        throw new Error('Unable to decrypt the order result');
     }
 
     const decryptedObj: { resource: StorageProviderResource, encryption: Encryption } = JSON.parse(decrypted);
