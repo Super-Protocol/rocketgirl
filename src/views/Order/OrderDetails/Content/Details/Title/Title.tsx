@@ -90,12 +90,12 @@ export const Title = memo<TitleProps>(({ order, orderSdk, updateOrderInfo }) => 
 
     const onGetResult = useCallback(async () => {
         showModal({
-            children: <GetResultModal orderAddress={order?.address} />,
+            children: <GetResultModal orderAddress={order?.address} status={status} />,
             messages: {
                 header: 'Get result',
             },
         });
-    }, [showModal, order]);
+    }, [showModal, order, status]);
 
     const onWithdrawDeposit = useCallback(async () => {
         setLoading(true);
