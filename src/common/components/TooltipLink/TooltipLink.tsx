@@ -17,7 +17,7 @@ export const TooltipLink: FC<TooltipLinkProps> = memo(({
     text,
     title,
     link,
-    checkOverflow = true,
+    checkOverflow = false,
     isFullWidth = true,
     classNameTooltip,
 }) => {
