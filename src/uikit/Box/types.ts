@@ -15,5 +15,6 @@ export interface BoxProps {
     className?: string;
     onClick?: (event: SyntheticEvent) => void;
     ref?: LegacyRef<HTMLDivElement>;
+    id?: string;
     'data-testid'?: string;
 }

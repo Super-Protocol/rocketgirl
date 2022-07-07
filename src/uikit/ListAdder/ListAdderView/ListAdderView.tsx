@@ -25,6 +25,7 @@ export const ListAdderView: FC<ListAdderViewProps<Info>> = memo(({
     renderItem,
     disabled,
     classNameListItem,
+    name,
 }) => {
     const onAdd = useCallback(() => {
         onAddProps?.({ isMulti, values });
@@ -37,7 +38,7 @@ export const ListAdderView: FC<ListAdderViewProps<Info>> = memo(({
     }, [isMulti, values]);
 
     return (
-        <Box direction="column" className={cn(className, { [classes.invalid]: isInvalid })}>
+        <Box direction="column" className={cn(className, { [classes.invalid]: isInvalid })} id={name}>
             <Box className={classes.label}>{label}</Box>
             <ListAdderViewList
                 list={list}
