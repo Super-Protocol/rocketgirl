@@ -147,3 +147,20 @@ export const getInitialFilters = (): GetInitialFiltersResult => {
 };
 
 export const acceptedFiles: Accept = { 'application/gzip': ['.tar.gz'] };
+
+export const scrollToPosition = (resolve: {[x: string]: string}): void => {
+    const orderElements = {
+        solution: 1,
+        storage: 2,
+        tee: 3,
+        agreement: 4,
+    };
+    const keys = Object.keys(resolve);
+    if (keys?.length) {
+        const sorted = keys.sort((a, b) => orderElements[a] - orderElements[b]);
+
+        document.getElementById(sorted[0])?.scrollIntoView({
+            behavior: 'smooth',
+        });
+    }
+};

@@ -7,5 +7,5 @@ export const ListAdderViewFormik: FC<ListAdderViewFormikProps<Info>> = memo(({ n
     const [, { value, error, touched }] = useField(name);
     const isInvalid: boolean = useMemo(() => !!(error && (!checkTouched || touched)),
         [error, touched, checkTouched]);
-    return <ListAdderView {...rest} values={value} isInvalid={isInvalid} error={error} />;
+    return <ListAdderView {...rest} values={value} isInvalid={isInvalid} error={error} name={name} />;
 });
