@@ -7,7 +7,7 @@ import React, {
     useRef,
 } from 'react';
 import cn from 'classnames';
-import { Tooltip, Ellipsis } from '@/uikit';
+import { Tooltip, Ellipsis, HtmlBox } from '@/uikit';
 import { TooltipTheme } from '@/uikit/Tooltip/types';
 import { TooltipLinkProps } from './types';
 import { TooltipLinkPopover } from './TooltipLinkPopover';
@@ -28,7 +28,11 @@ export const TooltipLink: FC<TooltipLinkProps> = memo(({
             setIsOverflow(ref?.current?.scrollWidth > ref?.current?.clientWidth);
         }
     }, [ref, checkOverflow]);
-    const textBlock = useMemo(() => <span className={cn(classes.text, { [classes.link]: !!link })}>{text}</span>, [text, link]);
+    const textBlock = useMemo(() => (
+        <span className={cn(classes.text, { [classes.link]: !!link })}>
+            <HtmlBox text={text} />
+        </span>
+    ), [text, link]);
     if ((text || title)) {
         return (
             <Tooltip
