@@ -7,7 +7,7 @@ import React, {
     useRef,
 } from 'react';
 import cn from 'classnames';
-import { Tooltip, Ellipsis, HtmlBox } from '@/uikit';
+import { Tooltip, HtmlBox } from '@/uikit';
 import { TooltipTheme } from '@/uikit/Tooltip/types';
 import { TooltipLinkProps } from './types';
 import { TooltipLinkPopover } from './TooltipLinkPopover';
@@ -17,20 +17,21 @@ export const TooltipLink: FC<TooltipLinkProps> = memo(({
     text,
     title,
     link,
-    checkOverflow = false,
+    checkOverflow = true,
     isFullWidth = true,
     classNameTooltip,
 }) => {
     const [isOverflow, setIsOverflow] = useState(false);
     const ref = useRef<any>(null);
+    const refBlock = useRef<any>(null);
     useEffect(() => {
         if (checkOverflow) {
-            setIsOverflow(ref?.current?.scrollWidth > ref?.current?.clientWidth);
+            setIsOverflow(refBlock?.current?.scrollWidth > ref?.current?.clientWidth);
         }
-    }, [ref, checkOverflow]);
+    }, [ref, refBlock, checkOverflow, text]);
     const textBlock = useMemo(() => (
         <span className={cn(classes.text, { [classes.link]: !!link })}>
-            <HtmlBox text={text} />
+            <HtmlBox text={text} ref={refBlock} />
         </span>
     ), [text, link]);
     if ((text || title)) {
@@ -42,7 +43,7 @@ export const TooltipLink: FC<TooltipLinkProps> = memo(({
                 classNamePopoverChildren={classes.popoverChildren}
                 className={cn(classes.tooltip, { [classes.tooltipFull]: isFullWidth }, classNameTooltip)}
             >
-                <Ellipsis ref={ref}>{textBlock}</Ellipsis>
+                <div ref={ref} className={classes.text}>{textBlock}</div>
             </Tooltip>
         );
     }
