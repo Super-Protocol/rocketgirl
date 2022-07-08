@@ -42,7 +42,6 @@ import {
     getValidationSchema,
     getMinDepositWorkflow,
     getInitialFilters,
-    acceptedFiles,
     scrollToPosition,
 } from './helpers';
 import { InputDeposit } from './InputDeposit';
