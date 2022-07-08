@@ -15,6 +15,7 @@ import classes from './TooltipLink.module.scss';
 
 export const TooltipLink: FC<TooltipLinkProps> = memo(({
     text,
+    description,
     title,
     link,
     checkOverflow = false,
@@ -37,7 +38,11 @@ export const TooltipLink: FC<TooltipLinkProps> = memo(({
     if ((text || title)) {
         return (
             <Tooltip
-                tooltip={isOverflow || !checkOverflow ? <TooltipLinkPopover title={title} link={link} text={text} /> : null}
+                tooltip={
+                    (isOverflow || !checkOverflow)
+                        ? <TooltipLinkPopover title={title} link={link} text={description || text} />
+                        : null
+                }
                 placement="top"
                 theme={TooltipTheme.white}
                 classNamePopoverChildren={classes.popoverChildren}

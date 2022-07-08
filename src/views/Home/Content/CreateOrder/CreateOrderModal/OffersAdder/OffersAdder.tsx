@@ -75,12 +75,16 @@ export const OffersAdder: <TNode>(p: OffersAdderProps<TNode>) =>
             }
             onDeleteProps?.({ ...initialValues, [name]: updatedValue });
         }, [value, onDeleteProps, name, values, reset]);
-        const renderItem = useCallback((item) => (
-            <TooltipLink
-                title="Description"
-                text={item?.data?.description}
-            />
-        ), []);
+        const renderItem = useCallback((item) => {
+            const { name = '', description = '' } = item?.data || {};
+            return (
+                <TooltipLink
+                    title="Description"
+                    text={name}
+                    description={description}
+                />
+            );
+        }, []);
 
         return (
             <ListAdderViewFormik
