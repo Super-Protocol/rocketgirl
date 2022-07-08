@@ -81,7 +81,7 @@ export const getColumns = ({ urlBack }: GetColumnsProps): Array<ColumnProps<Orde
         isEllipsis: true,
     },
     {
-        Header: 'Total Deposit TEE',
+        Header: 'Total Deposit, TEE',
         id: 'totalDeposit',
         Cell: ({ row }) => {
             const { orderHoldDeposit } = row.original || {};
@@ -90,7 +90,7 @@ export const getColumns = ({ urlBack }: GetColumnsProps): Array<ColumnProps<Orde
         width: 'auto',
     },
     {
-        Header: 'Unspent Deposit TEE',
+        Header: 'Unspent Deposit, TEE',
         id: 'unspentDeposit',
         Cell: ({ row }) => {
             const { orderHoldDeposit, depositSpent } = row.original || {};

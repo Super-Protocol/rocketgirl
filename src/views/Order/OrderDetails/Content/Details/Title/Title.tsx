@@ -49,14 +49,9 @@ export const Title = memo<TitleProps>(({ order, orderSdk, updateOrderInfo }) => 
             OrderStatus.Error,
         ].includes(status) && unspentDeposit;
     }, [orderSdk]);
-    const result = useMemo(() => {
-        const { orderResult } = order || {};
-        const { encryptedResult, encryptedError } = orderResult || {};
-        return encryptedResult || encryptedError;
-    }, [order]);
     const isShowResultBtn = useMemo(
-        () => !!status && [OrderStatus.Done, OrderStatus.Error].includes(status) && !!result,
-        [status, result],
+        () => !!status && [OrderStatus.Done, OrderStatus.Error].includes(status),
+        [status],
     );
 
     const onCancelOrder = useCallback(async () => {
