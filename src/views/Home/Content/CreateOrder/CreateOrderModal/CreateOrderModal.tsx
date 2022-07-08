@@ -245,7 +245,6 @@ export const CreateOrderModal: FC<CreateOrderModalProps> = memo(({ initialValues
                                 <FileUploader
                                     disabled={!!values?.[Fields.data]?.length}
                                     name={Fields.file}
-                                    accept={acceptedFiles}
                                 />
                                 <MnemonicGenerator {...{
                                     notification: true,

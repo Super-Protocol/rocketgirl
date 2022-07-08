@@ -19,7 +19,6 @@ export const FileUploader = memo<FileUploaderProps>(({
     disabled,
     uploading,
     name,
-    accept,
 }): ReactElement => {
     const [, { value, error }, { setValue, setError }] = useField(name);
 
@@ -29,8 +28,13 @@ export const FileUploader = memo<FileUploaderProps>(({
             disabled,
             onDrop: (acceptedFiles) => {
                 const file = acceptedFiles[0];
-                if (file.size > 67108864) {
+                const { size, name } = file || {};
+                if (size > 67108864) {
                     setError('File size should not exceed 64MB');
+                    return;
+                }
+                if (!(name.endsWith('.tar') || name.endsWith('.tar.gz'))) {
+                    setError('File format must be .tar or .tar.gz');
                     return;
                 }
                 setError(undefined);
@@ -42,9 +46,8 @@ export const FileUploader = memo<FileUploaderProps>(({
                     setError(errors[0]?.message);
                 }
             },
-            accept,
         };
-    }, [setValue, disabled, accept, setError]);
+    }, [setValue, disabled, setError]);
 
     const onDeleteClick = useCallback(() => {
         if (!disabled) {
