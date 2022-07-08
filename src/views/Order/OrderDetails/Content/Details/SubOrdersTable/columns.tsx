@@ -94,7 +94,7 @@ export const getColumns = (): Array<ColumnProps<OrdersColumns>> => [
         isEllipsis: true,
     },
     {
-        Header: 'Estimated cost TEE',
+        Header: 'Estimated cost, TEE',
         id: 'estimatedCost',
         Cell: ({ row }) => {
             const { orderHoldDeposit } = row.original || {};
@@ -103,7 +103,7 @@ export const getColumns = (): Array<ColumnProps<OrdersColumns>> => [
         width: 'auto',
     },
     {
-        Header: 'Actual cost TEE',
+        Header: 'Actual cost, TEE',
         id: 'actualCost',
         Cell: ({ row }) => {
             const { depositSpent } = row.original || {};
