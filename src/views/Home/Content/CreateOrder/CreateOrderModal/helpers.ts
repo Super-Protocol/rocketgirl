@@ -1,5 +1,4 @@
 import * as Yup from 'yup';
-import { Accept } from 'react-dropzone';
 import {
     Superpro,
     ParamName,
@@ -145,8 +144,6 @@ export const getInitialFilters = (): GetInitialFiltersResult => {
         [Fields.tee]: {},
     };
 };
-
-export const acceptedFiles: Accept = { 'application/gzip': ['.tar.gz'] };
 
 export const scrollToPosition = (resolve: {[x: string]: string}): void => {
     const orderElements = {
