@@ -28,8 +28,13 @@ export const FileUploader = memo<FileUploaderProps>(({
             multiple: false,
             disabled,
             onDrop: (acceptedFiles) => {
+                const file = acceptedFiles[0];
+                if (file.size > 67108864) {
+                    setError('File size should not exceed 64MB');
+                    return;
+                }
                 setError(undefined);
-                setValue(acceptedFiles[0]);
+                setValue(file);
             },
             onDropRejected: (result) => {
                 const errors = result.map(({ errors }) => errors).flat();
