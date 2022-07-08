@@ -88,7 +88,6 @@ export const getColumns = ({ urlBack }: GetColumnsProps): Array<ColumnProps<Orde
             return typeof orderHoldDeposit === 'number' ? orderHoldDeposit : '-';
         },
         width: 'auto',
-        isEllipsis: true,
     },
     {
         Header: 'Unspent Deposit TEE',
@@ -100,7 +99,6 @@ export const getColumns = ({ urlBack }: GetColumnsProps): Array<ColumnProps<Orde
                 : '-';
         },
         width: 'auto',
-        isEllipsis: true,
     },
     {
         Header: 'Modified Date',
