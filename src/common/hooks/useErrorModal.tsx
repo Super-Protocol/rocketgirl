@@ -19,11 +19,17 @@ export const useErrorModal = (): UseErrorModalResult => {
             ...props,
         });
     }, [showModal]);
-    const showSuccessModal = useCallback(async (message?: string, children?: ReactNode) => {
+    const showSuccessModal = useCallback(async (
+        message?: string,
+        children?: ReactNode,
+        okButtonName = 'Ok',
+        action?: () => void,
+    ) => {
         await showModal({
             children: children || <ModalResult type="success">{message || 'Success'}</ModalResult>,
+            onContinue: action,
             messages: {
-                ok: 'Ok',
+                ok: okButtonName,
             },
             classNameBottom: classes.bottom,
         });

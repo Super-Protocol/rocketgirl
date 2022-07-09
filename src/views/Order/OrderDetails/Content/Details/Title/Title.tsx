@@ -86,9 +86,6 @@ export const Title = memo<TitleProps>(({ order, orderSdk, updateOrderInfo }) => 
     const onGetResult = useCallback(async () => {
         showModal({
             children: <GetResultModal orderAddress={order?.address} status={status} />,
-            messages: {
-                header: 'Get result',
-            },
         });
     }, [showModal, order, status]);
 
@@ -109,7 +106,7 @@ export const Title = memo<TitleProps>(({ order, orderSdk, updateOrderInfo }) => 
             <Box>
                 {isShowCancelBtn && (
                     <Button
-                        variant="tertiary"
+                        variant="tertiary-fill"
                         loading={loading}
                         onClick={onCancelOrder}
                     >
@@ -118,7 +115,7 @@ export const Title = memo<TitleProps>(({ order, orderSdk, updateOrderInfo }) => 
                 )}
                 {isShowReplenishBtn && (
                     <Button
-                        variant="quaternary"
+                        variant="quaternary-fill"
                         className={classes.replenishbtn}
                         loading={loading}
                         onClick={onReplenishOrder}
@@ -128,7 +125,7 @@ export const Title = memo<TitleProps>(({ order, orderSdk, updateOrderInfo }) => 
                 )}
                 {isShowWithdrawBtn && (
                     <Button
-                        variant="quaternary"
+                        variant="quaternary-fill"
                         className={classes.replenishbtn}
                         loading={loading}
                         onClick={onWithdrawDeposit}

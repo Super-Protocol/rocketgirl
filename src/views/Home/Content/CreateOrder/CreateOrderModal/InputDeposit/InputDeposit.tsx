@@ -15,7 +15,7 @@ export const InputDeposit: FC<InputDepositProps> = memo(({ min, classNameWrap })
         <Box direction="column" className={classNameWrap}>
             <InputFormik
                 name={Fields.deposit}
-                label="Deposit"
+                label="Deposit, TEE"
                 classNameWrap={classes.inputWrap}
                 checkTouched={false}
                 showError={false}

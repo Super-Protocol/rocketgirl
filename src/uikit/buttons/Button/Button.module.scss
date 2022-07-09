@@ -61,9 +61,25 @@
   }
 }
 
+.tertiary-fill {
+  color: var(--orange100);
+  background-color: var(--gray55);
+  &:hover:not(.disabled) {
+    background-color: var(--orange20);
+    color: var(--orange100);
+  }
+}
+
 .quaternary {
   &:hover:not(.disabled) {
     background-color: var(--orange10);
+  }
+}
+
+.quaternary-fill {
+  background-color: var(--gray55);
+  &:hover:not(.disabled) {
+    background-color: var(--orange20);
   }
 }
 

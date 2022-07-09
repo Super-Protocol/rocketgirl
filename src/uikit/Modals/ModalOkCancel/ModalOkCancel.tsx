@@ -4,6 +4,7 @@ import {
 import { Modal } from 'react-bootstrap';
 import cn from 'classnames';
 
+import { useIsMounted } from '@/common/hooks/useIsMounted';
 import { ScrollbarContext } from '@/common/context';
 import { Button } from '@/uikit';
 import classes from './ModalOkCancel.module.scss';
@@ -26,20 +27,25 @@ export const ModalOkCancel: FC<ModalOkCancelProps> = memo(({
 }) => {
     const { instance } = useContext(ScrollbarContext);
     const [show, setShow] = useState(showProps);
+    const isMounted = useIsMounted();
 
     useEffect(() => {
-        if (show && !showProps && showMuarScrollbar) {
-            if (instance) {
-                instance.update();
+        if (showMuarScrollbar) {
+            if (show && !showProps) {
+                if (instance) {
+                    instance.update();
+                }
+            }
+            if (!show && showProps) {
+                if (instance) {
+                    instance.sleep();
+                }
             }
         }
-        if (!show && showProps && showMuarScrollbar) {
-            if (instance) {
-                instance.sleep();
-            }
+        if (isMounted()) {
+            setShow(showProps);
         }
-        setShow(showProps);
-    }, [showProps, show, instance, showMuarScrollbar]);
+    }, [showProps, show, instance, showMuarScrollbar, isMounted]);
 
     return (
         <Modal
