@@ -13,7 +13,7 @@ export const getColumns = (): Array<ColumnProps<OrdersColumns>> => [
     {
         Header: 'ID',
         id: 'id',
-        width: 'auto',
+        width: 100,
         Cell: ({ row }) => {
             const { address } = row.original || {};
             if (!address) return '-';
@@ -37,7 +37,7 @@ export const getColumns = (): Array<ColumnProps<OrdersColumns>> => [
                 </CopyToClipboard>
             );
         },
-        width: 'auto',
+        width: 162,
     },
     {
         Header: 'Type',
@@ -94,24 +94,22 @@ export const getColumns = (): Array<ColumnProps<OrdersColumns>> => [
         isEllipsis: true,
     },
     {
-        Header: 'Estimated cost',
+        Header: 'Estimated cost, TEE',
         id: 'estimatedCost',
         Cell: ({ row }) => {
             const { orderHoldDeposit } = row.original || {};
             return orderHoldDeposit || '-';
         },
         width: 'auto',
-        isEllipsis: true,
     },
     {
-        Header: 'Actual cost',
+        Header: 'Actual cost, TEE',
         id: 'actualCost',
         Cell: ({ row }) => {
             const { depositSpent } = row.original || {};
             return depositSpent || '-';
         },
         width: 'auto',
-        isEllipsis: true,
     },
     {
         Header: 'Modified Date',

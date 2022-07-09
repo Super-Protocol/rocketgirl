@@ -6,7 +6,7 @@ import React, {
     useCallback,
 } from 'react';
 import cn from 'classnames';
-import { Box } from '@/uikit';
+import { Box, HtmlBox } from '@/uikit';
 import { LazyLoadCheckboxListDescriptionProps } from './types';
 import { LIMIT_CHAR, getCheckedStr } from './helpers';
 import classes from './LazyLoadCheckboxListDescription.module.scss';
@@ -21,18 +21,21 @@ export const LazyLoadCheckboxListDescription: FC<LazyLoadCheckboxListDescription
         e.stopPropagation();
         setIsShow(!isShow);
     }, [isShow]);
+    const strBox = useMemo(() => (
+        <HtmlBox text={isLimit ? isShow ? str : strLimited : str} />
+    ), [isLimit, isShow, str, strLimited]);
     return (
         <Box className={classesProps?.wrap} direction="column">
             {isLimit ? (
                 <>
-                    {isShow ? str : strLimited}
+                    {strBox}
                     <Box>
                         <span onClick={onPress} className={cn(classes.toggle, classesProps?.toggle)}>
                             {isShow ? 'Hide' : 'Read all'}
                         </span>
                     </Box>
                 </>
-            ) : str}
+            ) : strBox}
         </Box>
     );
 });

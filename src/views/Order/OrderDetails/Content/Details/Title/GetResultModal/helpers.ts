@@ -3,6 +3,7 @@ import { S3 } from 'aws-sdk';
 import {
     Crypto,
     Order,
+    OrderStatus,
 } from '@super-protocol/sp-sdk-js';
 import {
     Encryption,
@@ -13,7 +14,7 @@ import {
 } from '@/common/helpers';
 import CONFIG from '@/config';
 import { generateECIESKeys, validateMnemonic } from '@/utils/crypto';
-import { Fields } from './types';
+import { Fields, ErrorDecription } from './types';
 
 export const getPhraseSchema = (): Yup.BaseSchema => Yup.string().test(
     Fields.phrase,
@@ -62,6 +63,7 @@ export const getFileUrlFromS3Storage = async (fileName: string, bucket: string):
 export const encodingAndDownloadFile = async (
     orderAddress: string,
     phrase: string,
+    status?: OrderStatus,
 ): Promise<{ isFile: boolean, content: string }> => {
     const { privateKeyBase64 } = generateECIESKeys(phrase);
     const order = new Order(orderAddress);
@@ -73,19 +75,37 @@ export const encodingAndDownloadFile = async (
 
     const encryptedObj: { resource: Encryption, encryption: Encryption } = JSON.parse(encryptedStr);
     if (encryptedObj.resource && encryptedObj.encryption) {
-        const encryptedResource: Encryption = encryptedObj.resource;
-        encryptedResource.key = privateKeyBase64;
-        const decryptedResource = await Crypto.decrypt(encryptedResource);
+        try {
+            const encryptedResource: Encryption = encryptedObj.resource;
+            encryptedResource.key = privateKeyBase64;
+            const decryptedResource = await Crypto.decrypt(encryptedResource);
 
-        const encryptedEncryption: Encryption = encryptedObj.encryption;
-        encryptedEncryption.key = privateKeyBase64;
-        const decryptedEncryption = await Crypto.decrypt(encryptedEncryption);
+            const encryptedEncryption: Encryption = encryptedObj.encryption;
+            encryptedEncryption.key = privateKeyBase64;
+            const decryptedEncryption = await Crypto.decrypt(encryptedEncryption);
 
-        decrypted = `{ "resource": ${decryptedResource}, "encryption": ${decryptedEncryption} }`;
+            decrypted = `{ "resource": ${decryptedResource}, "encryption": ${decryptedEncryption} }`;
+        } catch (e) {
+            console.error(e);
+            throw new Error('Unable to decrypt the order result');
+        }
     } else {
         const encryptedObj: Encryption = JSON.parse(encryptedStr);
         encryptedObj.key = privateKeyBase64;
-        decrypted = await Crypto.decrypt(encryptedObj);
+        try {
+            decrypted = await Crypto.decrypt(encryptedObj);
+        } catch (e) {
+            console.error(e);
+            throw new Error('Unable to decrypt the order result');
+        }
+        const decryptedResult: ErrorDecription = JSON.parse(decrypted);
+        if (decryptedResult?.name.indexOf('Error') !== -1) {
+            if (status === OrderStatus.Error) {
+                throw new Error(decryptedResult?.message);
+            } else {
+                decrypted = decryptedResult?.message;
+            }
+        }
     }
 
     const decryptedObj: { resource: StorageProviderResource, encryption: Encryption } = JSON.parse(decrypted);
@@ -103,6 +123,9 @@ export const encodingAndDownloadFile = async (
         throw new Error('Wrong url');
     }
     const data = await fetch(url);
+    if ([403, 404].includes(data?.status)) {
+        throw new Error('Unable to get file result');
+    }
     const dataBlob = await data.blob();
     const base64WithoutTags = (await getBase64FromBlob(dataBlob) as string).split(',').pop();
     if (!base64WithoutTags) throw new Error('File is empty');

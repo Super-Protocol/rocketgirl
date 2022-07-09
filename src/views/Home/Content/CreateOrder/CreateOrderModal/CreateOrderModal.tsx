@@ -42,7 +42,7 @@ import {
     getValidationSchema,
     getMinDepositWorkflow,
     getInitialFilters,
-    acceptedFiles,
+    scrollToPosition,
 } from './helpers';
 import { InputDeposit } from './InputDeposit';
 import { ProcessModal } from './ProcessModal';
@@ -100,7 +100,10 @@ export const CreateOrderModal: FC<CreateOrderModalProps> = memo(({ initialValues
     const onCancel = useCallback(() => {
         goBack();
     }, [goBack]);
-    const onSubmit = useCallback((submitForm) => async () => {
+    const onSubmit = useCallback((submitForm, validateForm) => async () => {
+        validateForm().then((resolve) => {
+            scrollToPosition(resolve);
+        });
         setIsValidating(true);
         submitForm();
     }, []);
@@ -172,7 +175,7 @@ export const CreateOrderModal: FC<CreateOrderModalProps> = memo(({ initialValues
                 validationSchema={validationSchema}
                 onSubmit={onSubmitForm}
             >
-                {({ submitForm, values }) => {
+                {({ submitForm, values, validateForm }) => {
                     return (
                         <Box direction="column">
                             {loading && (
@@ -241,7 +244,6 @@ export const CreateOrderModal: FC<CreateOrderModalProps> = memo(({ initialValues
                                 <FileUploader
                                     disabled={!!values?.[Fields.data]?.length}
                                     name={Fields.file}
-                                    accept={acceptedFiles}
                                 />
                                 <MnemonicGenerator {...{
                                     notification: true,
@@ -262,7 +264,7 @@ export const CreateOrderModal: FC<CreateOrderModalProps> = memo(({ initialValues
                                 >
                                     Cancel
                                 </Button>
-                                <Button variant="primary" onClick={onSubmit(submitForm)}>Create</Button>
+                                <Button variant="primary" onClick={onSubmit(submitForm, validateForm)}>Create</Button>
                             </Box>
                         </Box>
                     );

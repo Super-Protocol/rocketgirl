@@ -296,8 +296,10 @@ export type Mutation = {
   removeConfig: Config;
   removeOffer: TeeOffer;
   removeProvider: Provider;
+  /** Transfers specific amount of TEE tokens to specific address */
+  teeTransfer: Scalars['Boolean'];
   /** Transfers specific amount of SP tokens to specific address */
-  transfer: Scalars['String'];
+  transfer: Scalars['Boolean'];
   updateConfig: Config;
   updateOffer: TeeOffer;
   updateProvider: Provider;
@@ -321,6 +323,11 @@ export type MutationRemoveOfferArgs = {
 
 export type MutationRemoveProviderArgs = {
   _id: Scalars['String'];
+};
+
+
+export type MutationTeeTransferArgs = {
+  transfer: TransferInputType;
 };
 
 
@@ -1256,16 +1263,13 @@ export type ValueObject = {
   actionAccountAddress?: Maybe<Scalars['String']>;
   authorityAccountAddress?: Maybe<Scalars['String']>;
   consensus?: Maybe<Scalars['String']>;
-  epochDurationSeconds?: Maybe<Scalars['Float']>;
   epochs?: Maybe<Scalars['String']>;
   lastBlocks?: Maybe<Scalars['String']>;
   offerSecDeposit?: Maybe<Scalars['Float']>;
   orderMinimumDeposit?: Maybe<Scalars['Float']>;
   ordersFactory?: Maybe<Scalars['String']>;
-  profitWithdrawDelayDays?: Maybe<Scalars['Float']>;
   providerRegistry?: Maybe<Scalars['String']>;
   staking?: Maybe<Scalars['String']>;
-  stopDelayDays?: Maybe<Scalars['Float']>;
   superpro?: Maybe<Scalars['String']>;
   suspicious?: Maybe<Scalars['String']>;
   teeOfferSecDeposit?: Maybe<Scalars['Float']>;
@@ -1275,27 +1279,19 @@ export type ValueObject = {
   tokenReceiverAddress?: Maybe<Scalars['String']>;
   valueOffersFactory?: Maybe<Scalars['String']>;
   voting?: Maybe<Scalars['String']>;
-  votingDeposit?: Maybe<Scalars['Float']>;
-  votingDurationDays?: Maybe<Scalars['Float']>;
-  votingExecutionTimeoutDays?: Maybe<Scalars['Float']>;
-  votingHoldDays?: Maybe<Scalars['Float']>;
-  votingMinimumTurnout?: Maybe<Scalars['Float']>;
 };
 
 export type ValueObjectType = {
   actionAccountAddress?: InputMaybe<Scalars['String']>;
   authorityAccountAddress?: InputMaybe<Scalars['String']>;
   consensus?: InputMaybe<Scalars['String']>;
-  epochDurationSeconds?: InputMaybe<Scalars['Float']>;
   epochs?: InputMaybe<Scalars['String']>;
   lastBlocks?: InputMaybe<Scalars['String']>;
   offerSecDeposit?: InputMaybe<Scalars['Float']>;
   orderMinimumDeposit?: InputMaybe<Scalars['Float']>;
   ordersFactory?: InputMaybe<Scalars['String']>;
-  profitWithdrawDelayDays?: InputMaybe<Scalars['Float']>;
   providerRegistry?: InputMaybe<Scalars['String']>;
   staking?: InputMaybe<Scalars['String']>;
-  stopDelayDays?: InputMaybe<Scalars['Float']>;
   superpro?: InputMaybe<Scalars['String']>;
   suspicious?: InputMaybe<Scalars['String']>;
   teeOfferSecDeposit?: InputMaybe<Scalars['Float']>;
@@ -1305,11 +1301,6 @@ export type ValueObjectType = {
   tokenReceiverAddress?: InputMaybe<Scalars['String']>;
   valueOffersFactory?: InputMaybe<Scalars['String']>;
   voting?: InputMaybe<Scalars['String']>;
-  votingDeposit?: InputMaybe<Scalars['Float']>;
-  votingDurationDays?: InputMaybe<Scalars['Float']>;
-  votingExecutionTimeoutDays?: InputMaybe<Scalars['Float']>;
-  votingHoldDays?: InputMaybe<Scalars['Float']>;
-  votingMinimumTurnout?: InputMaybe<Scalars['Float']>;
 };
 
 export type Web3 = {
@@ -1339,7 +1330,14 @@ export type TransferMutationVariables = Exact<{
 }>;
 
 
-export type TransferMutation = { __typename?: 'Mutation', transfer: string };
+export type TransferMutation = { __typename?: 'Mutation', transfer: boolean };
+
+export type TeeTransferMutationVariables = Exact<{
+  transfer: TransferInputType;
+}>;
+
+
+export type TeeTransferMutation = { __typename?: 'Mutation', teeTransfer: boolean };
 
 export type OffersQueryVariables = Exact<{
   pagination: ConnectionArgs;
@@ -1498,6 +1496,37 @@ export function useTransferMutation(baseOptions?: ApolloReactHooks.MutationHookO
 export type TransferMutationHookResult = ReturnType<typeof useTransferMutation>;
 export type TransferMutationResult = Apollo.MutationResult<TransferMutation>;
 export type TransferMutationOptions = Apollo.BaseMutationOptions<TransferMutation, TransferMutationVariables>;
+export const TeeTransferDocument = gql`
+    mutation TeeTransfer($transfer: TransferInputType!) {
+  teeTransfer(transfer: $transfer)
+}
+    `;
+export type TeeTransferMutationFn = Apollo.MutationFunction<TeeTransferMutation, TeeTransferMutationVariables>;
+
+/**
+ * __useTeeTransferMutation__
+ *
+ * To run a mutation, you first call `useTeeTransferMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useTeeTransferMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [teeTransferMutation, { data, loading, error }] = useTeeTransferMutation({
+ *   variables: {
+ *      transfer: // value for 'transfer'
+ *   },
+ * });
+ */
+export function useTeeTransferMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<TeeTransferMutation, TeeTransferMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useMutation<TeeTransferMutation, TeeTransferMutationVariables>(TeeTransferDocument, options);
+      }
+export type TeeTransferMutationHookResult = ReturnType<typeof useTeeTransferMutation>;
+export type TeeTransferMutationResult = Apollo.MutationResult<TeeTransferMutation>;
+export type TeeTransferMutationOptions = Apollo.BaseMutationOptions<TeeTransferMutation, TeeTransferMutationVariables>;
 export const OffersDocument = gql`
     query Offers($pagination: ConnectionArgs!, $filter: OfferFilter) {
   result: offers(pagination: $pagination, filter: $filter) {
