@@ -655,7 +655,6 @@ export const workflow = async (props: WorkflowProps): Promise<void> => {
         if (errorSubOrders?.size) throw new Error('Workflow sub orders error');
     }
     changeState({ process: Process.ORDER_START, status: Status.PROGRESS });
-    console.log('teeOrderAddress', teeOrderAddress);
     await startOrder({ orderAddress: teeOrderAddress, actionAccountAddress, web3 }).catch((e) => {
         changeState({ process: Process.ORDER_START, status: Status.ERROR, error: new Map().set(null, e as Error) });
         throw e;

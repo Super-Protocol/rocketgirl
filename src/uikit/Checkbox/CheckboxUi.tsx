@@ -6,7 +6,7 @@ import cn from 'classnames';
 import { v1 as uuidv1 } from 'uuid';
 
 import { ReactComponent as CheckmarkIcon } from '@/assets/icons/checkmark.svg';
-import { Tooltip, Box } from '@/uikit';
+import { Tooltip, Box, ErrorBox } from '@/uikit';
 import { calcLabelLimit } from './helpers';
 import { CheckboxUiProps, themes } from './types';
 import classes from './CheckboxUi.module.scss';
@@ -120,9 +120,7 @@ export const CheckboxUi: FC<CheckboxUiProps> = memo(({
                     )}
                 </span>
             </label>
-            {showError && isInvalid && error && (
-                <span data-testid="checkbox-error" className={cn(classes.error, classNameError)}>{error}</span>
-            )}
+            <ErrorBox showError={showError && isInvalid} error={error} />
         </Box>
     );
 });

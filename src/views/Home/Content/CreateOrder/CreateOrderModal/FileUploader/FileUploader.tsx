@@ -7,7 +7,7 @@ import cn from 'classnames';
 import { useField } from 'formik';
 
 import {
-    Box, Icon, Spinner, FileUploaderUi,
+    Box, Icon, Spinner, FileUploaderUi, ErrorBox,
 } from '@/uikit';
 import { LabelToolkit } from '@/common/components';
 import { FileName } from './FileName';
@@ -98,9 +98,7 @@ export const FileUploader = memo<FileUploaderProps>(({
                     </Box>
                 </FileUploaderUi>
             )}
-            {error ? (
-                <div className={classes.error}>{error}</div>
-            ) : <div className={classes.errorEmpty} />}
+            <ErrorBox error={error} />
         </LabelToolkit>
     );
 });

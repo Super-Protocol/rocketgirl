@@ -14,7 +14,7 @@ import { useWorkflow } from '../hooks/useWorkflow';
 import { ProcessItem } from '../ProcessItem';
 import { State } from '../hooks/useWorkflowProcess';
 import { CancellingModal } from '../CancellingModal';
-import { transmittalText, gotoOrder } from './helpers';
+import { transmittalText } from './helpers';
 
 export const ProcessModal: FC<ProcessModalProps> = memo(({ formValues, initialState }) => {
     const { selectedAddress, instance } = useContext(WalletContext);
@@ -54,7 +54,7 @@ export const ProcessModal: FC<ProcessModalProps> = memo(({ formValues, initialSt
                 'Your order has been successfully created',
                 undefined,
                 'Go to order',
-                () => gotoOrder('349'),
+                // () => gotoOrder(),
             );
         } catch (e) {
             console.warn(e);

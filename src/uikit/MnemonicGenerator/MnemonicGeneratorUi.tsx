@@ -3,7 +3,9 @@ import {
 } from 'react';
 import cn from 'classnames';
 
-import { Box, CopyToClipboardSimple, InputUi } from '@/uikit';
+import {
+    Box, CopyToClipboardSimple, InputUi, ErrorBox,
+} from '@/uikit';
 import { MnemonicGeneratorUiProps, Modes } from './types';
 import { modeTitle, agreement, placeholder } from './helpers';
 import classes from './MnemonicGeneratorUi.module.scss';
@@ -61,6 +63,7 @@ export const MnemonicGeneratorUi = memo<MnemonicGeneratorUiProps>(({
                             classNameError: classes.inputError,
                             placeholder,
                             classNameInput: classes.input,
+                            renderError: (error) => <ErrorBox error={error} />,
                         }}
                         as="textarea"
                     />
