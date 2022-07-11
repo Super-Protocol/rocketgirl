@@ -5,4 +5,4 @@ export const modeTitle = {
     own: 'Enter your own',
 };
 
-export const placeholder = 'Enter a passphrase here...';
+export const placeholder = 'BIP-39 Passphrase with 24 words...';
