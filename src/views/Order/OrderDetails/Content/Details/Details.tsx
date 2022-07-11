@@ -8,13 +8,14 @@ import React, {
 import cn from 'classnames';
 import toastr from '@/services/Toastr/toastr';
 import { Box, CardUi, Spinner } from '@/uikit';
-import { useOrderLazyQuery } from '@/gql/graphql';
+import { useOrderLazyQuery, Order, SubOrdersDocument } from '@/gql/graphql';
+import { useTableQueryFetcher } from '@/common/hooks/useTableQueryFetcher';
 import { NoAccountBlock } from '@/common/components/NoAccountBlock';
 import { WalletContext } from '@/common/context/WalletProvider';
 import { getOrderSdk, GetOrderSdk } from '@/connectors/orders';
 import { DetailsProps } from './types';
 import { Title } from './Title';
-import { getInfo, getTee } from './helpers';
+import { getInfo, getTee, getSubOrdersList } from './helpers';
 import classes from './Details.module.scss';
 import { SubOrdersTable } from './SubOrdersTable';
 
@@ -39,10 +40,14 @@ export const Details = memo<DetailsProps>(({ id }) => {
     const loading = useMemo(() => orderResult?.loading || loadingOrderSdk, [orderResult, loadingOrderSdk]);
     const order = useMemo(() => orderResult.data?.order, [orderResult]);
     const orderAddress = useMemo(() => order?.address, [order]);
+    const orders = useTableQueryFetcher<Order>({
+        gql: SubOrdersDocument,
+        queryOptions: { variables: { pagination: { sortBy: 'origins.modifiedDate' }, filter: { parentOrder: orderAddress } } },
+    });
     const info = useMemo(() => getInfo(order, orderSdk), [order, orderSdk]);
     const tee = useMemo(() => getTee(order, orderSdk), [order, orderSdk]);
+    const subOrdersList = useMemo(() => getSubOrdersList(orders), [orders]);
     // const isMyOrder = useMemo(() => order?.consumer === selectedAddress, [order, selectedAddress]);
-
     useEffect(() => {
         updateOrderInfo();
     }, [updateOrderInfo]);
@@ -53,7 +58,12 @@ export const Details = memo<DetailsProps>(({ id }) => {
 
     return (
         <Box direction="column">
-            {!!order && <Title order={order} orderSdk={orderSdk} updateOrderInfo={updateOrderInfo} />}
+            {!!order && (
+                <Title {...{
+                    order, orderSdk, updateOrderInfo, subOrdersList,
+                }}
+                />
+            )}
             <Box>
                 {!!info && (
                     <CardUi classNameWrap={cn(classes.card, { [classes.mr]: !!tee })}>
@@ -87,7 +97,7 @@ export const Details = memo<DetailsProps>(({ id }) => {
                     </CardUi>
                 )}
             </Box>
-            {!!orderAddress && <SubOrdersTable address={orderAddress} classNameWrap={classes.table} />}
+            {!!orderAddress && <SubOrdersTable orders={orders} classNameWrap={classes.table} />}
         </Box>
     );
 });

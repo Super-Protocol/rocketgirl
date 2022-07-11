@@ -4,5 +4,6 @@ import { GetOrderSdk } from '@/connectors/orders';
 export interface TitleProps {
     order: OrderQuery['order'];
     orderSdk?: GetOrderSdk;
+    subOrdersList?: string[];
     updateOrderInfo: () => Promise<void>;
 }

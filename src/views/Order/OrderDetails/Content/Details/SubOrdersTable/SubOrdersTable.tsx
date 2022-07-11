@@ -1,17 +1,11 @@
-import React, { memo, FC, useMemo } from 'react';
-import { Order, SubOrdersDocument } from '@/gql/graphql';
-import { useTableQueryFetcher } from '@/common/hooks/useTableQueryFetcher';
+import { memo, FC, useMemo } from 'react';
 import { Table, Box } from '@/uikit';
 import { SubOrdersTableProps, Columns } from './types';
 import { spinnerProps, styles } from './helpers';
 import { getColumns } from './columns';
 import classes from './SubOrdersTable.module.scss';
 
-export const SubOrdersTable: FC<SubOrdersTableProps> = memo(({ address, classNameWrap }) => {
-    const orders = useTableQueryFetcher<Order>({
-        gql: SubOrdersDocument,
-        queryOptions: { variables: { pagination: { sortBy: 'origins.modifiedDate' }, filter: { parentOrder: address } } },
-    });
+export const SubOrdersTable: FC<SubOrdersTableProps> = memo(({ orders, classNameWrap }) => {
     const columns = useMemo(() => getColumns(), []);
     const data = useMemo(() => (orders?.list ? orders?.list : []), [orders]);
     const pageCount = useMemo(() => orders?.pageCount || 0, [orders]);
