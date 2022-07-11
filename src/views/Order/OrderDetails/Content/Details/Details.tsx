@@ -8,14 +8,13 @@ import React, {
 import cn from 'classnames';
 import toastr from '@/services/Toastr/toastr';
 import { Box, CardUi, Spinner } from '@/uikit';
-import { useOrderLazyQuery, Order, SubOrdersDocument } from '@/gql/graphql';
-import { useTableQueryFetcher } from '@/common/hooks/useTableQueryFetcher';
+import { useOrderLazyQuery } from '@/gql/graphql';
 import { NoAccountBlock } from '@/common/components/NoAccountBlock';
 import { WalletContext } from '@/common/context/WalletProvider';
 import { getOrderSdk, GetOrderSdk } from '@/connectors/orders';
 import { DetailsProps } from './types';
 import { Title } from './Title';
-import { getInfo, getTee, getSubOrdersList } from './helpers';
+import { getInfo, getTee } from './helpers';
 import classes from './Details.module.scss';
 import { SubOrdersTable } from './SubOrdersTable';
 
@@ -26,6 +25,7 @@ export const Details = memo<DetailsProps>(({ id }) => {
     } = useContext(WalletContext);
     const [orderSdk, setOrderSdk] = useState<GetOrderSdk>();
     const [loadingOrderSdk, setLoadingOrderSdk] = useState(false);
+    const [subOrdersList, setSubOrdersList] = useState([]);
     const [getOrder, orderResult] = useOrderLazyQuery({ variables: { id } });
     const updateOrderInfo = useCallback(async () => {
         setLoadingOrderSdk(true);
@@ -40,18 +40,11 @@ export const Details = memo<DetailsProps>(({ id }) => {
     const loading = useMemo(() => orderResult?.loading || loadingOrderSdk, [orderResult, loadingOrderSdk]);
     const order = useMemo(() => orderResult.data?.order, [orderResult]);
     const orderAddress = useMemo(() => order?.address, [order]);
-    const orders = useTableQueryFetcher<Order>({
-        gql: SubOrdersDocument,
-        queryOptions: { variables: { pagination: { sortBy: 'origins.modifiedDate' }, filter: { parentOrder: orderAddress } } },
-    });
     const info = useMemo(() => getInfo(order, orderSdk), [order, orderSdk]);
     const tee = useMemo(() => getTee(order, orderSdk), [order, orderSdk]);
-    const subOrdersList = useMemo(() => getSubOrdersList(orders), [orders]);
-    // const isMyOrder = useMemo(() => order?.consumer === selectedAddress, [order, selectedAddress]);
     useEffect(() => {
         updateOrderInfo();
     }, [updateOrderInfo]);
-
     if (loading) return <Spinner fullscreen />;
     // if (!isMyOrder) return null; // todo hide before production
     if (!isConnected) return <NoAccountBlock message="Connect your wallet to see if you made an order" />;
@@ -97,7 +90,13 @@ export const Details = memo<DetailsProps>(({ id }) => {
                     </CardUi>
                 )}
             </Box>
-            {!!orderAddress && <SubOrdersTable orders={orders} classNameWrap={classes.table} />}
+            {!!orderAddress && (
+                <SubOrdersTable
+                    address={orderAddress}
+                    classNameWrap={classes.table}
+                    setSubOrdersList={setSubOrdersList}
+                />
+            )}
         </Box>
     );
 });

@@ -5,7 +5,6 @@ import { StatusBarToolkit } from '@/common/components/';
 import { OrderQuery } from '@/gql/graphql';
 import { getTableDate } from '@/common/helpers';
 import { GetOrderSdk } from '@/connectors/orders';
-import { OrderResult } from '@/views/Order/OrderDetails/Content/Details/SubOrdersTable/types';
 
 export interface TableInfoItem {
     key: string;
@@ -116,9 +115,3 @@ export const getTee = (order?: OrderQuery['order'], orderSdk?: GetOrderSdk): Tab
         ],
     };
 };
-
-export const getSubOrdersList = (orders: OrderResult): string[] => (
-    orders?.list
-        ? orders.list.map(({ address }) => address)
-        : []
-);
