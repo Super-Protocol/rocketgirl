@@ -28,7 +28,7 @@ export type Config = {
 
 const DEFAULT_CONFIG: Config = {
     // base app config
-    REACT_APP_API_ENDPOINT: 'https://bff.dev.superprotocol.com/graphql',
+    REACT_APP_API_ENDPOINT: 'https://bff.testnet.superprotocol.com/graphql',
     REACT_APP_AUTH: '',
     REACT_APP_SP_MAIN_CONTRACT_ADDRESS: '0xC6fe7108cDc41Ff3DBEe9fF0D2fcFFF5F51ff65A',
     REACT_APP_BLOCKCHAIN_URL: 'wss://wandering-snowy-sun.matic-testnet.quiknode.pro/98e3f8f8fe7ef3c53743ba59fbe6fd6771638d61/',
