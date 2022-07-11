@@ -22,7 +22,12 @@ import {
 } from '@super-protocol/sp-dto-js';
 import { generateECIESKeys } from '@/utils/crypto';
 
-export interface CancelOrderProps { orderAddress?: string; web3?: Web3; actionAccountAddress?: string; }
+export interface CancelOrderProps {
+    orderAddress?: string;
+    subOrdersList?: string[],
+    web3?: Web3;
+    actionAccountAddress?: string;
+}
 export interface ReplenishOrderProps {
     orderAddress?: string;
     amount?: number;
@@ -170,10 +175,22 @@ export interface ChangeStateSubOrdersProps {
     previousResultSubOrders?: Map<Process, Map<string | null, string>>;
 }
 
-export const cancelOrder = async ({ orderAddress, web3, actionAccountAddress }: CancelOrderProps): Promise<void> => {
+export const cancelOrder = async ({
+    orderAddress,
+    subOrdersList,
+    web3,
+    actionAccountAddress,
+}: CancelOrderProps): Promise<void> => {
     if (!orderAddress) throw new Error('Order address required');
     if (!actionAccountAddress) throw new Error('Account address required');
     if (!web3) throw new Error('Web3 instance required');
+    if (subOrdersList) {
+        await Promise.all(
+            subOrdersList.map(async (address) => {
+                await new Order(address).cancelOrder({ from: actionAccountAddress, web3 });
+            }),
+        );
+    }
     await new Order(orderAddress).cancelOrder({ from: actionAccountAddress, web3 });
 };
 

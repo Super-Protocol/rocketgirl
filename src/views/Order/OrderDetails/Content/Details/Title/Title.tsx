@@ -17,7 +17,9 @@ import { getUnspentDeposit } from '../helpers';
 import { ReplenishOrderModal } from './ReplenishOrderModal';
 import { GetResultModal } from './GetResultModal';
 
-export const Title = memo<TitleProps>(({ order, orderSdk, updateOrderInfo }) => {
+export const Title = memo<TitleProps>(({
+    order, orderSdk, updateOrderInfo, subOrdersList,
+}) => {
     const { showModal } = useContext(ModalOkCancelContext);
     const { selectedAddress, instance } = useContext(WalletContext);
     const { showErrorModal, showSuccessModal } = useErrorModal();
@@ -59,6 +61,7 @@ export const Title = memo<TitleProps>(({ order, orderSdk, updateOrderInfo }) => 
         try {
             await cancelOrder({
                 orderAddress: order?.address,
+                subOrdersList,
                 actionAccountAddress: selectedAddress,
                 web3: instance,
             });
@@ -68,7 +71,7 @@ export const Title = memo<TitleProps>(({ order, orderSdk, updateOrderInfo }) => 
             showErrorModal(e);
         }
         setLoading(false);
-    }, [showErrorModal, selectedAddress, instance, order, showSuccessModal, updateOrderInfo]);
+    }, [showErrorModal, selectedAddress, instance, order, showSuccessModal, updateOrderInfo, subOrdersList]);
 
     const onSuccessReplenish = useCallback(async () => {
         await updateOrderInfo();
