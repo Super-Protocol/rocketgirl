@@ -20,7 +20,6 @@ export const MnemonicGeneratorComponent = memo<MnemonicGeneratorComponentProps>(
                 label={chkboxlabel}
                 showError
                 classNameWrap={classes.checkboxWrap}
-                classNameLabel={classes.checkboxLabel}
                 classNameCheckboxCheckmark={classes.checkboxCheckmark}
             />
         </Box>

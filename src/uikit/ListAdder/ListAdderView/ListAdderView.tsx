@@ -5,7 +5,9 @@ import React, {
     useMemo,
 } from 'react';
 import cn from 'classnames';
-import { Box, Button, Icon } from '@/uikit';
+import {
+    Box, Button, Icon, ErrorBox,
+} from '@/uikit';
 import { Item } from '@/uikit/LazyLoadCheckboxList/types';
 import { ListAdderViewProps, Info } from './types';
 import classes from './ListAdderView.module.scss';
@@ -56,11 +58,7 @@ export const ListAdderView: FC<ListAdderViewProps<Info>> = memo(({
                     {!!btnLabel && <span className={classes.text}>{btnLabel}</span>}
                 </Button>
             )}
-            {showError && (isInvalid && error ? (
-                <span className={cn(classes.error)}>{error}</span>
-            ) : (
-                <div className={cn(classes.errorEmpty)} />
-            ))}
+            <ErrorBox showError={isInvalid && showError} error={error} />
         </Box>
     );
 });

@@ -1,0 +1,8 @@
+.iconInfo {
+  color: var(--orange40);
+  margin: 0 5px 0 9px;
+  cursor: pointer;
+  &:hover {
+    color: var(--orange100);
+  }
+}

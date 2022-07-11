@@ -50,7 +50,12 @@ export const ProcessModal: FC<ProcessModalProps> = memo(({ formValues, initialSt
                 web3: instance,
                 state,
             });
-            showSuccessModal('Your order has been successfully created');
+            showSuccessModal(
+                'Your order has been successfully created',
+                undefined,
+                'Go to order',
+                // () => gotoOrder(),
+            );
         } catch (e) {
             console.warn(e);
             toastr.error((e as Error)?.message);
@@ -115,29 +120,28 @@ export const ProcessModal: FC<ProcessModalProps> = memo(({ formValues, initialSt
                 )}
                 <ProcessItem
                     name="TEE order start"
-                    className={classes.mrb}
                     status={stateProcess[Process.ORDER_START]?.status}
                     error={getErrorFromMapList(Process.ORDER_START)}
                 />
-                <Box justifyContent="flex-end" className={classes.btns}>
-                    {!loading && Object.values(stateProcess || {})?.some(({ result }) => result) && (
-                        <Button
-                            className={classes.btnCancel}
-                            onClick={() => createCancellingModal(stateProcess)}
-                            variant="secondary"
-                        >
-                            Cancel order
-                        </Button>
-                    )}
-                    {!loading && (
+                {!loading && (
+                    <Box justifyContent="flex-end" className={classes.btns}>
+                        {Object.values(stateProcess || {})?.some(({ result }) => result) && (
+                            <Button
+                                className={classes.btnCancel}
+                                onClick={() => createCancellingModal(stateProcess)}
+                                variant="secondary"
+                            >
+                                Cancel order
+                            </Button>
+                        )}
                         <Button
                             variant="primary"
                             onClick={() => executeWorkflow(stateProcess)}
                         >
                             Try again
                         </Button>
-                    )}
-                </Box>
+                    </Box>
+                )}
             </Box>
         </Box>
     );
