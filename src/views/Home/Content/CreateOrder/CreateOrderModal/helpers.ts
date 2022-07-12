@@ -11,6 +11,7 @@ import { validateMnemonic } from '@/utils/crypto';
 import { Item, Value } from '@/uikit/types';
 import { Modes } from '@/uikit/MnemonicGenerator/types';
 import { getExternalId } from '@/common/helpers';
+import Web3 from 'web3';
 import {
     FormValues,
     FormOffer,
@@ -100,7 +101,7 @@ export const getCalcOrderDeposit = async (
         case OfferType.Storage:
         case OfferType.Solution:
         case OfferType.Data:
-            return offer?.data?.holdSum || 0;
+            return Number(Web3.utils.fromWei(offer?.data?.holdSum.toString() || '0'));
         case OfferType.TeeOffer:
             return orderMinDeposit;
         default:
@@ -118,7 +119,7 @@ export const getCalcOrderDepositSum = async (
 };
 
 export const getMinDepositWorkflow = async (formValues: GetMinDepositWorkflow): Promise<number> => {
-    const orderMinDeposit = await Superpro.getParam(ParamName.OrderMinimumDeposit);
+    const orderMinDeposit = Number(Web3.utils.fromWei(await Superpro.getParam(ParamName.OrderMinimumDeposit)));
     const {
         data = [],
         solution = [],
