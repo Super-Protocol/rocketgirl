@@ -42,8 +42,9 @@ jobs:
             type=ref,event=pr
             type=raw,value=build-${{ github.run_id }}
 
-      - name: Build and push Docker image
+      - name: "Develop: Build and push Docker image"
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        if: github.ref == 'refs/heads/develop'
         with:
           context: .
           push: true
@@ -52,3 +53,15 @@ jobs:
           build-args: |
             NPM_TOKEN=${{ secrets.NPM_TOKEN_GH }}
             ENV_FILE=${{ secrets.DEVELOP_ENV_FILE_BASE64 }}
+
+      - name: "Master: Build and push Docker image"
+        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        if: github.ref == 'refs/heads/master'
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            NPM_TOKEN=${{ secrets.NPM_TOKEN_GH }}
+            ENV_FILE=${{ secrets.MASTER_ENV_FILE_BASE64 }}
