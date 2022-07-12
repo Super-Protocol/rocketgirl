@@ -11,6 +11,7 @@ export const InputDeposit: FC<InputDepositProps> = memo(({ min, classNameWrap })
     const onSetMinDeposit = useCallback(() => {
         setValue(min);
     }, [min, setValue]);
+
     return (
         <Box direction="column" className={classNameWrap}>
             <InputFormik
@@ -19,6 +20,7 @@ export const InputDeposit: FC<InputDepositProps> = memo(({ min, classNameWrap })
                 classNameWrap={classes.inputWrap}
                 checkTouched={false}
                 showError={false}
+                markLabelError={false}
             />
             {error && touched && min ? <ErrorDeposit onClick={onSetMinDeposit} min={min} /> : <div className={classes.empty} />}
         </Box>
