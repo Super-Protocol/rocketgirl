@@ -22,7 +22,7 @@ export interface RunWorkflowProps {
 }
 
 export interface UseWorkflowResult {
-    runWorkflow: (props: RunWorkflowProps) => Promise<void>;
+    runWorkflow: (props: RunWorkflowProps) => Promise<string | undefined>;
     uploading: boolean;
     generating: boolean;
     encrypting: boolean;
@@ -87,7 +87,7 @@ export const useWorkflow = (initState?: State): UseWorkflowResult => {
         init: initProcess,
         rerunNotDone,
     } = useWorkflowProcess(initState);
-    const runWorkflow = useCallback(async (props: RunWorkflowProps) => {
+    const runWorkflow = useCallback(async (props: RunWorkflowProps): Promise<string | undefined> => {
         const {
             formValues,
             actionAccountAddress,
@@ -136,13 +136,14 @@ export const useWorkflow = (initState?: State): UseWorkflowResult => {
                 throw e;
             }
         }
-        await workflow({
+        const teeOrderAddress = await workflow({
             values: getWorkflowValues(formValues, phrase as string, tiiGeneratorId),
             actionAccountAddress,
             web3,
             changeState,
             state,
         });
+        return teeOrderAddress;
     }, [encryptFile, generateByOffer, uploadFile, changeState, initProcess, stateProcess, rerunNotDone]);
 
     return {

@@ -563,7 +563,7 @@ export const changeStateSubOrders = ({
     });
 };
 
-export const workflow = async (props: WorkflowProps): Promise<void> => {
+export const workflow = async (props: WorkflowProps): Promise<string | undefined> => {
     const {
         values,
         actionAccountAddress,
@@ -680,6 +680,7 @@ export const workflow = async (props: WorkflowProps): Promise<void> => {
         throw e;
     });
     changeState({ process: Process.ORDER_START, status: Status.DONE });
+    return teeOrderAddress;
 };
 
 export const cancelOrders = async (props: CancelOrdersProps): Promise<CancelOrdersResult> => {
