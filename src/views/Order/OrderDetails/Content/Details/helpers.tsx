@@ -117,7 +117,9 @@ export const getTee = (order?: OrderQuery['order'], orderSdk?: GetOrderSdk): Tab
             },
             {
                 key: 'Actual cost',
-                value: depositSpentSdk || '-',
+                value: depositSpentSdk
+                    ? (Math.round(Number(depositSpentSdk) * 1000) / 1000).toFixed(3)
+                    : '-',
             },
         ],
     };

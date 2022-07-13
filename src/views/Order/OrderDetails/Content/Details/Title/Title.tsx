@@ -49,7 +49,7 @@ export const Title = memo<TitleProps>(({
             OrderStatus.Canceled,
             OrderStatus.Done,
             OrderStatus.Error,
-        ].includes(status) && unspentDeposit;
+        ].includes(status) && !!unspentDeposit;
     }, [orderSdk]);
     const isShowResultBtn = useMemo(
         () => !!status && [OrderStatus.Done, OrderStatus.Error].includes(status),
@@ -96,7 +96,7 @@ export const Title = memo<TitleProps>(({
         setLoading(true);
         try {
             await new Order(order?.address).withdrawChange({ from: selectedAddress, web3: instance });
-            showSuccessModal('Withdraw deposit successfully');
+            showSuccessModal('Withdraw deposit successfully done');
         } catch (e) {
             showErrorModal(e);
         }
