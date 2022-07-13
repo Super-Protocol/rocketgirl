@@ -17,7 +17,9 @@ import { getUnspentDeposit } from '../helpers';
 import { ReplenishOrderModal } from './ReplenishOrderModal';
 import { GetResultModal } from './GetResultModal';
 
-export const Title = memo<TitleProps>(({ order, orderSdk, updateOrderInfo }) => {
+export const Title = memo<TitleProps>(({
+    order, orderSdk, updateOrderInfo, subOrdersList,
+}) => {
     const { showModal } = useContext(ModalOkCancelContext);
     const { selectedAddress, instance } = useContext(WalletContext);
     const { showErrorModal, showSuccessModal } = useErrorModal();
@@ -59,6 +61,7 @@ export const Title = memo<TitleProps>(({ order, orderSdk, updateOrderInfo }) => 
         try {
             await cancelOrder({
                 orderAddress: order?.address,
+                subOrdersList,
                 actionAccountAddress: selectedAddress,
                 web3: instance,
             });
@@ -68,7 +71,7 @@ export const Title = memo<TitleProps>(({ order, orderSdk, updateOrderInfo }) => 
             showErrorModal(e);
         }
         setLoading(false);
-    }, [showErrorModal, selectedAddress, instance, order, showSuccessModal, updateOrderInfo]);
+    }, [showErrorModal, selectedAddress, instance, order, showSuccessModal, updateOrderInfo, subOrdersList]);
 
     const onSuccessReplenish = useCallback(async () => {
         await updateOrderInfo();
@@ -86,9 +89,6 @@ export const Title = memo<TitleProps>(({ order, orderSdk, updateOrderInfo }) => 
     const onGetResult = useCallback(async () => {
         showModal({
             children: <GetResultModal orderAddress={order?.address} status={status} />,
-            messages: {
-                header: 'Get result',
-            },
         });
     }, [showModal, order, status]);
 
@@ -109,7 +109,7 @@ export const Title = memo<TitleProps>(({ order, orderSdk, updateOrderInfo }) => 
             <Box>
                 {isShowCancelBtn && (
                     <Button
-                        variant="tertiary"
+                        variant="tertiary-fill"
                         loading={loading}
                         onClick={onCancelOrder}
                     >
@@ -118,7 +118,7 @@ export const Title = memo<TitleProps>(({ order, orderSdk, updateOrderInfo }) => 
                 )}
                 {isShowReplenishBtn && (
                     <Button
-                        variant="quaternary"
+                        variant="quaternary-fill"
                         className={classes.replenishbtn}
                         loading={loading}
                         onClick={onReplenishOrder}
@@ -128,7 +128,7 @@ export const Title = memo<TitleProps>(({ order, orderSdk, updateOrderInfo }) => 
                 )}
                 {isShowWithdrawBtn && (
                     <Button
-                        variant="quaternary"
+                        variant="quaternary-fill"
                         className={classes.replenishbtn}
                         loading={loading}
                         onClick={onWithdrawDeposit}

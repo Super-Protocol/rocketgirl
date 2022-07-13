@@ -52,6 +52,7 @@ export interface InputUiProps {
     alwaysShowMask?: boolean;
     beforeMaskedStateChange?: Function;
     renderError?: (error: any) => ReactNode;
+    markLabelError?: boolean;
 }
 
 export enum InputUiTypes {

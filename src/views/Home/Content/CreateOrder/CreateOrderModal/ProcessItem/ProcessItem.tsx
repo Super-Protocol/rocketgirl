@@ -1,4 +1,4 @@
-import React, { memo, FC } from 'react';
+import { memo, FC } from 'react';
 import cn from 'classnames';
 import { Box, Ellipsis, Icon } from '@/uikit';
 import { ProcessItemProps } from './types';
@@ -20,8 +20,7 @@ export const ProcessItem: FC<ProcessItemProps> = memo(({
             {!!error && (
                 <Box className={classes.error}>
                     <Icon
-                        width={14}
-                        name="info_fill"
+                        name="info_fill2"
                         className={classes.iconError}
                     />
                     <Box className={classes.message}>{error?.message}</Box>

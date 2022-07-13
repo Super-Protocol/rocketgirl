@@ -18,3 +18,8 @@ export interface BoxProps {
     id?: string;
     'data-testid'?: string;
 }
+
+export interface ErrorBoxProps {
+    error?: string;
+    showError?: boolean;
+}

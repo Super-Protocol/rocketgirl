@@ -22,7 +22,12 @@ import {
 } from '@super-protocol/sp-dto-js';
 import { generateECIESKeys } from '@/utils/crypto';
 
-export interface CancelOrderProps { orderAddress?: string; web3?: Web3; actionAccountAddress?: string; }
+export interface CancelOrderProps {
+    orderAddress?: string;
+    subOrdersList?: string[],
+    web3?: Web3;
+    actionAccountAddress?: string;
+}
 export interface ReplenishOrderProps {
     orderAddress?: string;
     amount?: number;
@@ -170,10 +175,22 @@ export interface ChangeStateSubOrdersProps {
     previousResultSubOrders?: Map<Process, Map<string | null, string>>;
 }
 
-export const cancelOrder = async ({ orderAddress, web3, actionAccountAddress }: CancelOrderProps): Promise<void> => {
+export const cancelOrder = async ({
+    orderAddress,
+    subOrdersList,
+    web3,
+    actionAccountAddress,
+}: CancelOrderProps): Promise<void> => {
     if (!orderAddress) throw new Error('Order address required');
     if (!actionAccountAddress) throw new Error('Account address required');
     if (!web3) throw new Error('Web3 instance required');
+    if (subOrdersList) {
+        await Promise.all(
+            subOrdersList.map(async (address) => {
+                await new Order(address).cancelOrder({ from: actionAccountAddress, web3 });
+            }),
+        );
+    }
     await new Order(orderAddress).cancelOrder({ from: actionAccountAddress, web3 });
 };
 
@@ -187,12 +204,15 @@ export const replenishOrder = async ({
     if (!accountAddress) throw new Error('Account address required');
     if (!instance) throw new Error('Web3 instance required');
     if (!amount) throw new Error('Amount required');
+
+    const amountInWei = Web3.utils.toWei(amount.toString());
+
     await SuperproToken.approve(
         OrdersFactory.address,
-        amount,
+        amountInWei,
         { from: accountAddress, web3: instance },
     );
-    await OrdersFactory.refillOrderDeposit(orderAddress, amount, { from: accountAddress, web3: instance });
+    await OrdersFactory.refillOrderDeposit(orderAddress, amountInWei, { from: accountAddress, web3: instance });
 };
 
 export const getOrderSdk = async (address?: string): Promise<GetOrderSdk> => {
@@ -200,7 +220,7 @@ export const getOrderSdk = async (address?: string): Promise<GetOrderSdk> => {
     const order = new Order(address);
     const orderInfo = await order.getOrderInfo();
     const depositSpent = await order.getDepositSpent();
-    const orderHoldDeposit = await OrdersFactory.getOrderHoldDeposit(address);
+    const orderHoldDeposit = Number(Web3.utils.fromWei(await OrdersFactory.getOrderHoldDeposit(address)));
     return {
         orderInfo,
         depositSpent,
@@ -342,9 +362,9 @@ export const getOfferInfo = async (offer?: string): Promise<GetOfferInfoResult> 
     };
 };
 
-export const getOfferHoldSum = async (offer?: string): Promise<number> => {
+export const getOfferHoldSum = async (offer?: string): Promise<string> => {
     const { info, offerType } = await getOfferInfo(offer) || {};
-    return offerType === OfferType.TeeOffer ? 0 : (info as OfferInfo)?.holdSum;
+    return offerType === OfferType.TeeOffer ? '0' : (info as OfferInfo)?.holdSum;
 };
 
 export const createOrder = async (props: CreateOrderProps): Promise<string> => {
@@ -364,12 +384,12 @@ export const createOrder = async (props: CreateOrderProps): Promise<string> => {
         externalId,
     } = values || {};
     if (!actionAccountAddress) throw new Error('Account address is not defined');
-    const orderMinDeposit = await Superpro.getParam(ParamName.OrderMinimumDeposit) || 0;
-    const offerHoldSum = await getOfferHoldSum(offer);
+    const orderMinDeposit = Number(Web3.utils.fromWei(await Superpro.getParam(ParamName.OrderMinimumDeposit) || '0'));
+    const offerHoldSum = Number(Web3.utils.fromWei(await getOfferHoldSum(offer)));
     const params = await getOrderParams(values);
     let orderAddress = '';
     const requiredDeposit = Math.max(offerHoldSum, orderMinDeposit);
-    const deposit = Math.max(requiredDeposit, calcOrderDeposit);
+    const deposit = Web3.utils.toWei(Math.max(requiredDeposit, calcOrderDeposit).toString());
     if (parentTeeOrder) {
         orderAddress = await createOrderSubscription(
             async () => new Order(parentTeeOrder).createSubOrder(

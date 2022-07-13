@@ -6,7 +6,7 @@
 }
 
 .text {
-  font-size: 12px;
+  font-size: 14px;
   margin-left: 8px;
 }
 
@@ -21,9 +21,6 @@
 }
 
 .invalid {
-  .label {
-    color: var(--red100);
-  }
   .btn {
     border-color: var(--red100);
     color: var(--red100);
@@ -36,7 +33,6 @@
 
 .error {
   margin-top: 2px;
-  font-size: 80%;
   color: var(--red100);
   min-height: 18px;
 }

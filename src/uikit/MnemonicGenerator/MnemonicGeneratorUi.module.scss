@@ -3,10 +3,12 @@
   background-color: var(--white);
   padding: 12px;
   border-radius: 4px;
+  font-size: 16px;
 }
 
 .agreement {
   margin-top: 8px;
+  font-size: 14px;
 }
 
 .modeswitcher {
@@ -16,7 +18,7 @@
 .mode {
   margin-left: 20px;
   color: var(--grey15);
-  font-size: 14px;
+  font-size: 16px;
   cursor: pointer;
   &-active {
     font-weight: 600;
@@ -28,10 +30,10 @@
 }
 
 .inputError {
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .input {
   height: 86px;
-  font-size: 14px;
+  font-size: 16px;
 }

@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import { OrderStatus } from '@super-protocol/sp-sdk-js';
 import { CopyToClipboard } from '@/uikit';
-import { StatusBar } from '@/common/components/StatusBar';
+import { StatusBarToolkit } from '@/common/components/';
 import { OrderQuery } from '@/gql/graphql';
 import { getTableDate } from '@/common/helpers';
 import { GetOrderSdk } from '@/connectors/orders';
@@ -57,7 +57,7 @@ export const getInfo = (order?: OrderQuery['order'], orderSdk?: GetOrderSdk): Ta
             },
             {
                 key: 'Status',
-                value: <StatusBar status={statusSdk as OrderStatus} />,
+                value: <StatusBarToolkit status={statusSdk as OrderStatus} />,
             },
             {
                 key: 'Status information',

@@ -25,6 +25,7 @@ export const Details = memo<DetailsProps>(({ id }) => {
     } = useContext(WalletContext);
     const [orderSdk, setOrderSdk] = useState<GetOrderSdk>();
     const [loadingOrderSdk, setLoadingOrderSdk] = useState(false);
+    const [subOrdersList, setSubOrdersList] = useState([]);
     const [getOrder, orderResult] = useOrderLazyQuery({ variables: { id } });
     const updateOrderInfo = useCallback(async () => {
         setLoadingOrderSdk(true);
@@ -41,19 +42,21 @@ export const Details = memo<DetailsProps>(({ id }) => {
     const orderAddress = useMemo(() => order?.address, [order]);
     const info = useMemo(() => getInfo(order, orderSdk), [order, orderSdk]);
     const tee = useMemo(() => getTee(order, orderSdk), [order, orderSdk]);
-    // const isMyOrder = useMemo(() => order?.consumer === selectedAddress, [order, selectedAddress]);
-
     useEffect(() => {
         updateOrderInfo();
     }, [updateOrderInfo]);
-
     if (loading) return <Spinner fullscreen />;
     // if (!isMyOrder) return null; // todo hide before production
     if (!isConnected) return <NoAccountBlock message="Connect your wallet to see if you made an order" />;
 
     return (
         <Box direction="column">
-            {!!order && <Title order={order} orderSdk={orderSdk} updateOrderInfo={updateOrderInfo} />}
+            {!!order && (
+                <Title {...{
+                    order, orderSdk, updateOrderInfo, subOrdersList,
+                }}
+                />
+            )}
             <Box>
                 {!!info && (
                     <CardUi classNameWrap={cn(classes.card, { [classes.mr]: !!tee })}>
@@ -87,7 +90,13 @@ export const Details = memo<DetailsProps>(({ id }) => {
                     </CardUi>
                 )}
             </Box>
-            {!!orderAddress && <SubOrdersTable address={orderAddress} classNameWrap={classes.table} />}
+            {!!orderAddress && (
+                <SubOrdersTable
+                    address={orderAddress}
+                    classNameWrap={classes.table}
+                    setSubOrdersList={setSubOrdersList}
+                />
+            )}
         </Box>
     );
 });

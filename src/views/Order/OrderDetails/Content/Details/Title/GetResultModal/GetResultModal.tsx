@@ -89,7 +89,7 @@ export const GetResultModal = memo<GetResultModalProps>(({
                             variant="primary"
                             loading={loading}
                         >
-                            Send
+                            Get result
                         </Button>
                     </Box>
                 </Box>
