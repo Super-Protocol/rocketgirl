@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+
 import { OrderStatus } from '@super-protocol/sp-sdk-js';
 import { CopyToClipboard } from '@/uikit';
 import { StatusBarToolkit } from '@/common/components/';
@@ -49,11 +50,15 @@ export const getInfo = (order?: OrderQuery['order'], orderSdk?: GetOrderSdk): Ta
             },
             {
                 key: 'Total Deposit',
-                value: orderHoldDepositSdk || '-',
+                value: orderHoldDepositSdk
+                    ? (Math.round(orderHoldDepositSdk * 1000) / 1000).toFixed(3)
+                    : '-',
             },
             {
                 key: 'Unspent Deposit',
-                value: typeof unspentDeposit === 'number' ? unspentDeposit : '-',
+                value: typeof unspentDeposit === 'number'
+                    ? (Math.round(unspentDeposit * 1000) / 1000).toFixed(3)
+                    : '-',
             },
             {
                 key: 'Status',
@@ -106,7 +111,9 @@ export const getTee = (order?: OrderQuery['order'], orderSdk?: GetOrderSdk): Tab
             },
             {
                 key: 'Estimated cost',
-                value: orderHoldDepositSdk || '-',
+                value: orderHoldDepositSdk
+                    ? (Math.round(orderHoldDepositSdk * 1000) / 1000).toFixed(3)
+                    : '-',
             },
             {
                 key: 'Actual cost',

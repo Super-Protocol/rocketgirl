@@ -1,4 +1,5 @@
 import { ColumnProps } from 'react-table';
+import Web3 from 'web3';
 import { Order, TOfferType } from '@/gql/graphql';
 import { CopyToClipboard, TextCounter } from '@/uikit';
 import { UseTableQueryFetcherResultList } from '@/common/hooks/useTableQueryFetcher';
@@ -85,7 +86,9 @@ export const getColumns = ({ urlBack }: GetColumnsProps): Array<ColumnProps<Orde
         id: 'totalDeposit',
         Cell: ({ row }) => {
             const { orderHoldDeposit } = row.original || {};
-            return typeof orderHoldDeposit === 'number' ? orderHoldDeposit : '-';
+            return typeof orderHoldDeposit === 'number'
+                ? (Math.round(Number(Web3.utils.fromWei(orderHoldDeposit.toString())) * 1000) / 1000).toFixed(3)
+                : '-';
         },
         width: 'auto',
     },
@@ -93,9 +96,15 @@ export const getColumns = ({ urlBack }: GetColumnsProps): Array<ColumnProps<Orde
         Header: 'Unspent Deposit, TEE',
         id: 'unspentDeposit',
         Cell: ({ row }) => {
-            const { orderHoldDeposit, depositSpent } = row.original || {};
+            const { orderHoldDeposit, depositSpent: depositSpentProps } = row.original || {};
+            const holdDeposit = typeof orderHoldDeposit === 'number'
+                ? Number(Web3.utils.fromWei(orderHoldDeposit.toString()))
+                : 0;
+            const depositSpent: number = depositSpentProps && typeof depositSpentProps === 'number'
+                ? Number(Web3.utils.fromWei(depositSpentProps.toString()))
+                : 0;
             return typeof orderHoldDeposit === 'number'
-                ? orderHoldDeposit - Number(depositSpent)
+                ? (Math.round((holdDeposit - depositSpent) * 1000) / 1000).toFixed(3)
                 : '-';
         },
         width: 'auto',

@@ -1,5 +1,6 @@
-import React from 'react';
+import Web3 from 'web3';
 import { ColumnProps } from 'react-table';
+
 import { Order } from '@/gql/graphql';
 import { CopyToClipboard } from '@/uikit';
 import { UseTableQueryFetcherResultList } from '@/common/hooks/useTableQueryFetcher';
@@ -98,7 +99,9 @@ export const getColumns = (): Array<ColumnProps<OrdersColumns>> => [
         id: 'estimatedCost',
         Cell: ({ row }) => {
             const { orderHoldDeposit } = row.original || {};
-            return orderHoldDeposit || '-';
+            return orderHoldDeposit && typeof orderHoldDeposit === 'number'
+                ? (Math.round(Number(Web3.utils.fromWei(orderHoldDeposit.toString())) * 1000) / 1000).toFixed(3)
+                : '-';
         },
         width: 'auto',
     },
@@ -107,7 +110,9 @@ export const getColumns = (): Array<ColumnProps<OrdersColumns>> => [
         id: 'actualCost',
         Cell: ({ row }) => {
             const { depositSpent } = row.original || {};
-            return depositSpent || '-';
+            return depositSpent && typeof depositSpent === 'number'
+                ? (Math.round(Number(Web3.utils.fromWei(depositSpent.toString())) * 1000) / 1000).toFixed(3)
+                : '-';
         },
         width: 'auto',
     },
