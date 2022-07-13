@@ -119,7 +119,7 @@ export const getCalcOrderDepositSum = async (
 };
 
 export const getMinDepositWorkflow = async (formValues: GetMinDepositWorkflow): Promise<number> => {
-    const orderMinDeposit = Number(Web3.utils.fromWei(await Superpro.getParam(ParamName.OrderMinimumDeposit)));
+    const orderMinDeposit = Math.round(Number(Web3.utils.fromWei(await Superpro.getParam(ParamName.OrderMinimumDeposit))) || 0);
     const {
         data = [],
         solution = [],
