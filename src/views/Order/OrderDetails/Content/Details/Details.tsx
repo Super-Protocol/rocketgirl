@@ -11,7 +11,7 @@ import { Box, CardUi, Spinner } from '@/uikit';
 import { useOrderLazyQuery } from '@/gql/graphql';
 import { NoAccountBlock } from '@/common/components/NoAccountBlock';
 import { WalletContext } from '@/common/context/WalletProvider';
-import { getOrderSdk, GetOrderSdk } from '@/connectors/orders';
+import { getOrderSdk, GetOrderSdk, onOrdersStatusUpdatedSubscription } from '@/connectors/orders';
 import { DetailsProps } from './types';
 import { Title } from './Title';
 import { getInfo, getTee } from './helpers';
@@ -21,7 +21,7 @@ import { SubOrdersTable } from './SubOrdersTable';
 export const Details = memo<DetailsProps>(({ id }) => {
     const {
         isConnected,
-        // selectedAddress,
+        selectedAddress,
     } = useContext(WalletContext);
     const [orderSdk, setOrderSdk] = useState<GetOrderSdk>();
     const [loadingOrderSdk, setLoadingOrderSdk] = useState(false);
@@ -45,6 +45,27 @@ export const Details = memo<DetailsProps>(({ id }) => {
     useEffect(() => {
         updateOrderInfo();
     }, [updateOrderInfo]);
+    useEffect(() => {
+        let subscription: () => void;
+        if (orderAddress) {
+            subscription = onOrdersStatusUpdatedSubscription(
+                (status) => {
+                    setOrderSdk((prev: any) => {
+                        return {
+                            ...prev,
+                            orderInfo: { ...(prev?.orderInfo ? prev.orderInfo : {}), status },
+                        };
+                    });
+                },
+                orderAddress,
+            );
+        }
+        return () => {
+            if (subscription) {
+                subscription();
+            }
+        };
+    }, [orderAddress]);
     if (loading) return <Spinner fullscreen />;
     // if (!isMyOrder) return null; // todo hide before production
     if (!isConnected) return <NoAccountBlock message="Connect your wallet to see if you made an order" />;
@@ -95,6 +116,7 @@ export const Details = memo<DetailsProps>(({ id }) => {
                     address={orderAddress}
                     classNameWrap={classes.table}
                     setSubOrdersList={setSubOrdersList}
+                    selectedAddress={selectedAddress}
                 />
             )}
         </Box>
