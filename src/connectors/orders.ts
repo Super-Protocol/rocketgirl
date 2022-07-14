@@ -706,3 +706,12 @@ export const cancelOrders = async (props: CancelOrdersProps): Promise<CancelOrde
             }, { success: [] as CancelOrdersResultSuccess[], error: [] as CancelOrdersResultError[] });
         });
 };
+
+export const onOrdersStatusUpdatedSubscription = (cb: (status: OrderStatus) => void, orderId: string): () => void => {
+    return OrdersFactory.onOrdersStatusUpdated(
+        (_, status: OrderStatus) => {
+            cb(status);
+        },
+        orderId,
+    );
+};

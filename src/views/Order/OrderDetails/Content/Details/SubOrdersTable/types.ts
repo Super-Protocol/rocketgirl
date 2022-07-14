@@ -6,6 +6,7 @@ export type OrderResult = UseTableQueryFetcherResult<Order>;
 
 export interface SubOrdersTableProps {
     address: string;
+    selectedAddress?: string;
     classNameWrap?: string;
     setSubOrdersList: Function;
 }
