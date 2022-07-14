@@ -8,7 +8,7 @@ export interface SubOrdersTableProps {
     address: string;
     selectedAddress?: string;
     classNameWrap?: string;
-    setSubOrdersList: Function;
+    setAddressSuborders: Function;
 }
 
 export type Columns = OrdersColumns;

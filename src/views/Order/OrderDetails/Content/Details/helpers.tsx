@@ -6,6 +6,7 @@ import { StatusBarToolkit } from '@/common/components/';
 import { OrderQuery } from '@/gql/graphql';
 import { getTableDate } from '@/common/helpers';
 import { GetOrderSdk } from '@/connectors/orders';
+import { SubOrderInfo } from './types';
 
 export interface TableInfoItem {
     key: string;
@@ -22,7 +23,17 @@ export const getUnspentDeposit = (orderHoldDepositSdk?: string | number, deposit
     return Number.isNaN(diff) ? null : diff;
 };
 
-export const getInfo = (order?: OrderQuery['order'], orderSdk?: GetOrderSdk): TableInfo | null => {
+const getSubOrdersDeposit = (addressSuborders?: SubOrderInfo): number => {
+    return addressSuborders
+        ? Object.values(addressSuborders).reduce((acc: number, item) => (acc + item.orderHoldDeposit), 0)
+        : 0;
+};
+
+export const getInfo = (
+    order?: OrderQuery['order'],
+    orderSdk?: GetOrderSdk,
+    addressSuborders?: SubOrderInfo,
+): TableInfo | null => {
     if (!order) return null;
     const {
         address,
@@ -38,6 +49,7 @@ export const getInfo = (order?: OrderQuery['order'], orderSdk?: GetOrderSdk): Ta
     const { status: statusSdk } = orderInfoSdk || {};
     const { encryptedArgs } = orderInfo || {};
     const unspentDeposit = getUnspentDeposit(orderHoldDepositSdk, depositSpentSdk);
+    const subOrdersDeposit = getSubOrdersDeposit(addressSuborders);
     return {
         list: [
             {
@@ -51,7 +63,7 @@ export const getInfo = (order?: OrderQuery['order'], orderSdk?: GetOrderSdk): Ta
             {
                 key: 'Total Deposit',
                 value: orderHoldDepositSdk
-                    ? (Math.round(orderHoldDepositSdk * 1000) / 1000).toFixed(3)
+                    ? (Math.round((orderHoldDepositSdk + subOrdersDeposit) * 1000) / 1000).toFixed(3)
                     : '-',
             },
             {
@@ -124,3 +136,11 @@ export const getTee = (order?: OrderQuery['order'], orderSdk?: GetOrderSdk): Tab
         ],
     };
 };
+
+export const getOrdersCancelList = (addressSuborders?: SubOrderInfo): string[] => (
+    addressSuborders
+        ? Object.entries(addressSuborders).reduce((acc: string[], [k, v]) => (
+            v.cancellable ? [...acc, k] : acc
+        ), [])
+        : []
+);
