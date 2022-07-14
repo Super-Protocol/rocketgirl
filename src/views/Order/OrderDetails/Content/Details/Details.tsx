@@ -12,9 +12,9 @@ import { useOrderLazyQuery } from '@/gql/graphql';
 import { NoAccountBlock } from '@/common/components/NoAccountBlock';
 import { WalletContext } from '@/common/context/WalletProvider';
 import { getOrderSdk, GetOrderSdk, onOrdersStatusUpdatedSubscription } from '@/connectors/orders';
-import { DetailsProps } from './types';
+import { DetailsProps, SubOrderInfo } from './types';
 import { Title } from './Title';
-import { getInfo, getTee } from './helpers';
+import { getInfo, getTee, getOrdersCancelList } from './helpers';
 import classes from './Details.module.scss';
 import { SubOrdersTable } from './SubOrdersTable';
 
@@ -25,7 +25,7 @@ export const Details = memo<DetailsProps>(({ id }) => {
     } = useContext(WalletContext);
     const [orderSdk, setOrderSdk] = useState<GetOrderSdk>();
     const [loadingOrderSdk, setLoadingOrderSdk] = useState(false);
-    const [subOrdersList, setSubOrdersList] = useState([]);
+    const [addressSuborders, setAddressSuborders] = useState<SubOrderInfo>();
     const [getOrder, orderResult] = useOrderLazyQuery({ variables: { id } });
     const updateOrderInfo = useCallback(async () => {
         setLoadingOrderSdk(true);
@@ -40,8 +40,9 @@ export const Details = memo<DetailsProps>(({ id }) => {
     const loading = useMemo(() => orderResult?.loading || loadingOrderSdk, [orderResult, loadingOrderSdk]);
     const order = useMemo(() => orderResult.data?.order, [orderResult]);
     const orderAddress = useMemo(() => order?.address, [order]);
-    const info = useMemo(() => getInfo(order, orderSdk), [order, orderSdk]);
+    const info = useMemo(() => getInfo(order, orderSdk, addressSuborders), [order, orderSdk, addressSuborders]);
     const tee = useMemo(() => getTee(order, orderSdk), [order, orderSdk]);
+    const subOrdersList = useMemo(() => getOrdersCancelList(addressSuborders), [addressSuborders]);
     useEffect(() => {
         updateOrderInfo();
     }, [updateOrderInfo]);
@@ -115,7 +116,7 @@ export const Details = memo<DetailsProps>(({ id }) => {
                 <SubOrdersTable
                     address={orderAddress}
                     classNameWrap={classes.table}
-                    setSubOrdersList={setSubOrdersList}
+                    setAddressSuborders={setAddressSuborders}
                     selectedAddress={selectedAddress}
                 />
             )}

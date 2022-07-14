@@ -13,7 +13,7 @@ import { getColumns } from './columns';
 import classes from './SubOrdersTable.module.scss';
 
 export const SubOrdersTable: FC<SubOrdersTableProps> = memo(({
-    address, setSubOrdersList, classNameWrap, selectedAddress,
+    address, setAddressSuborders, classNameWrap, selectedAddress,
 }) => {
     const orders = useTableQueryFetcher<Order>({
         gql: SubOrdersDocument,
@@ -26,8 +26,10 @@ export const SubOrdersTable: FC<SubOrdersTableProps> = memo(({
     const pageCount = useMemo(() => orders?.pageCount || 0, [orders]);
 
     useEffect(() => {
-        setSubOrdersList(getSubOrdersList(orders));
-    }, [orders, setSubOrdersList]);
+        if (orders?.list?.length) {
+            setAddressSuborders(getSubOrdersList(orders.list));
+        }
+    }, [orders, setAddressSuborders]);
 
     return (
         <Box direction="column" className={classNameWrap}>
