@@ -16,4 +16,5 @@ export interface DropdownProps {
     renderItemLabel?: (value: any) => ReactNode | null;
     loading?: boolean;
     header?: string | ReactNode;
+    footer?: string | ReactNode;
 }

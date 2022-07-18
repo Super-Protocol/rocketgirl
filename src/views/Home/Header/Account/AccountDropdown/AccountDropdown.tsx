@@ -7,6 +7,7 @@ import { WalletContext } from '@/common/context/WalletProvider';
 import { AccountDropdownItem } from './AccountDropdownItem';
 import { AccountDropdownItemChildren } from './AccountDropdownItemChildren';
 import { AccountDropdownHeader } from './AccountDropdownHeader';
+import { AccountDropdownFooter } from './AccountDropdownFooter';
 import { AccountDropdownProps } from './types';
 import classes from './AccountDropdown.module.scss';
 
@@ -35,6 +36,7 @@ export const AccountDropdown: FC<AccountDropdownProps> = memo(() => {
             DropdownItemComponent={AccountDropdownItem}
             renderItemLabel={renderItemLabel}
             header={<AccountDropdownHeader />}
+            footer={<AccountDropdownFooter />}
         />
     );
 });

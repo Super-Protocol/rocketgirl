@@ -22,6 +22,7 @@ export const Dropdown: FC<DropdownProps> = memo(({
     defaultActive,
     loading,
     header,
+    footer,
 }) => {
     const activeItemInList = useMemo(() => list.find(({ value }) => value === active), [list, active]);
     const activeItem = useMemo(() => activeItemInList || defaultActive || list[0], [activeItemInList, list, defaultActive]);
@@ -49,6 +50,7 @@ export const Dropdown: FC<DropdownProps> = memo(({
                         {typeof renderItemLabel === 'function' ? renderItemLabel(item) : item?.label}
                     </DropdownBootstrap.Item>
                 ))}
+                {footer}
             </DropdownBootstrap.Menu>
         </DropdownBootstrap>
     );

@@ -7,6 +7,6 @@ export const useNavigateBack: (state?: any) => Function = (state) => {
         const { pathname, search } = history.location;
         const searchStr = search || pathname.split('?')[1];
         const { goBackUrl } = queryString.parse(searchStr);
-        history.push(goBackUrl || '/', state);
+        history.push(goBackUrl as string || '/', state);
     };
 };

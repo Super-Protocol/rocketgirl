@@ -27,4 +27,5 @@ export interface ModalOkCancelProps {
     classNameWrap?: string;
     classNameBottom?: string;
     showMuarScrollbar?: boolean;
+    backdrop?: true | false | 'static';
 }

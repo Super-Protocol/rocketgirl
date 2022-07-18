@@ -5,7 +5,7 @@ export type flexJusifyContent = 'flex-start' | 'flex-end' | 'center' | 'space-ar
 export type flexAlignItems = 'stretch' | 'baseline' | 'center' | 'flex-start' | 'flex-end';
 export type flexWrap = 'nowrap' | 'wrap' | 'wrap-reverse';
 
-export interface BoxProps {
+export interface BoxProps extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
     container?: boolean;
     children?: ReactNode | string;
     direction?: flexDirection;
