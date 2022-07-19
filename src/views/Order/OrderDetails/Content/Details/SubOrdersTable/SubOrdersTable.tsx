@@ -13,12 +13,12 @@ import { getColumns } from './columns';
 import classes from './SubOrdersTable.module.scss';
 
 export const SubOrdersTable: FC<SubOrdersTableProps> = memo(({
-    address, setAddressSuborders, classNameWrap, selectedAddress,
+    id, setAddressSuborders, classNameWrap, selectedAddress,
 }) => {
     const orders = useTableQueryFetcher<Order>({
         gql: SubOrdersDocument,
-        queryOptions: { variables: { pagination: { sortBy: 'origins.modifiedDate' }, filter: { parentOrder: address } } },
-        subscriptionKey: 'address',
+        queryOptions: { variables: { pagination: { sortBy: 'origins.modifiedDate' }, filter: { parentOrder: id } } },
+        subscriptionKey: 'id',
     });
     useTablesSubscriptions({ [Tables.Orders]: orders } as any, selectedAddress);
     const columns = useMemo(() => getColumns(), []);

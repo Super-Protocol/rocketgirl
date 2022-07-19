@@ -36,7 +36,7 @@ export const getInfo = (
 ): TableInfo | null => {
     if (!order) return null;
     const {
-        address,
+        id,
         origins,
         orderResult,
         orderInfo,
@@ -54,7 +54,7 @@ export const getInfo = (
         list: [
             {
                 key: 'Id',
-                value: address,
+                value: id,
             },
             {
                 key: 'File',

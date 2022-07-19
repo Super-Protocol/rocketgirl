@@ -10,10 +10,10 @@ export const styles = { theme: TableTheme.orange };
 
 export const getSubOrdersList = (list: any[]): SubOrderInfo => (
     list
-        ? list.reduce((acc, { address, orderHoldDeposit, orderInfo }) => {
+        ? list.reduce((acc, { id, orderHoldDeposit, orderInfo }) => {
             return {
                 ...acc,
-                [address]: {
+                [id]: {
                     cancellable: !!orderInfo?.status && ![
                         OrderStatus.Canceled,
                         OrderStatus.Done,

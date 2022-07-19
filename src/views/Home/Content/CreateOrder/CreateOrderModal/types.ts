@@ -4,7 +4,7 @@ import { Item } from '@/uikit/LazyLoadCheckboxList/types';
 export type Info = {
     description: string;
     name: string;
-    holdSum: number;
+    holdSum: string;
     restrictions?: string[] | null;
     sub?: FormOffer[];
     externalId: string;

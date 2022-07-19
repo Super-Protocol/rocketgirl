@@ -5,7 +5,7 @@ export type OrdersColumns = UseTableQueryFetcherResultList<Order>;
 export type OrderResult = UseTableQueryFetcherResult<Order>;
 
 export interface SubOrdersTableProps {
-    address: string;
+    id: string;
     selectedAddress?: string;
     classNameWrap?: string;
     setAddressSuborders: Function;

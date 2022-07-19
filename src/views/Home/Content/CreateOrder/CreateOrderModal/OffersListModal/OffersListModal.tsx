@@ -29,7 +29,7 @@ export const OffersListModal: FC<OffersListModalProps> = memo(({
                 variables: {
                     pagination: { first: Infinity },
                     filter: {
-                        addresses: list,
+                        ids: list,
                         offerType,
                     },
                 },

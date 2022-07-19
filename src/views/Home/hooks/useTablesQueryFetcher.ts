@@ -61,13 +61,13 @@ export const useTablesQueryFetcher = <SkipType>(
     const offers = useTableQueryFetcher<Offer>({
         gql: OffersDocument,
         queryOptions: { variables: { pagination: { sortBy: 'origins.modifiedDate' } } },
-        subscriptionKey: 'address',
+        subscriptionKey: 'id',
         skip: getSkipQuery(Tables.Offers),
     });
     const teeOffers = useTableQueryFetcher<TeeOffer>({
         gql: TeeOffersDocument,
         queryOptions: { variables: { pagination: { sortBy: 'origins.modifiedDate' } } },
-        subscriptionKey: 'address',
+        subscriptionKey: 'id',
         skip: getSkipQuery(Tables.TEEOffers),
     });
     const orders = useTableQueryFetcher<Order>({
@@ -78,7 +78,7 @@ export const useTablesQueryFetcher = <SkipType>(
                 filter: { consumer, offerType: TOfferType.TeeOffer },
             },
         },
-        subscriptionKey: 'address',
+        subscriptionKey: 'id',
         noDataMessage: getSkipQuery(Tables.Orders)?.message,
         skip: getSkipQuery(Tables.Orders),
     });

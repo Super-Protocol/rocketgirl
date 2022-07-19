@@ -7,29 +7,29 @@ import { FilterMode } from '../models/types';
 
 export const filtersOffers = [
     new Filter({
-        name: 'address',
+        name: 'id',
         label: 'search',
         mode: FilterMode.regex,
-        placeholder: 'Search by address',
+        placeholder: 'Search by id',
     }),
     new Filter({ name: 'offerType', label: 'Type', options: getOfferOptions() }),
 ];
 
 export const filtersOrders = [
     new Filter({
-        name: 'address',
+        name: 'id',
         label: 'search',
         mode: FilterMode.regex,
-        placeholder: 'Search by address',
+        placeholder: 'Search by id',
     }),
 ];
 
 export const filtersTeeOffers = [
     new Filter({
-        name: 'address',
+        name: 'id',
         label: 'search',
         mode: FilterMode.regex,
-        placeholder: 'Search by address',
+        placeholder: 'Search by id',
     }),
 ];
 

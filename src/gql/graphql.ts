@@ -20,14 +20,14 @@ export type BaseOrder = {
   __typename?: 'BaseOrder';
   /** system identifier */
   _id: Scalars['String'];
-  /** contract address */
-  address: Scalars['String'];
   authority?: Maybe<Scalars['String']>;
   consumer: Scalars['String'];
   depositSpent?: Maybe<Scalars['String']>;
+  /** blockchain id */
+  id: Scalars['String'];
   offerInfo?: Maybe<OfferInfo>;
   offerType: TOfferType;
-  orderHoldDeposit?: Maybe<Scalars['Float']>;
+  orderHoldDeposit?: Maybe<Scalars['String']>;
   orderInfo: OrderInfo;
   orderResult: OrderResult;
   origins?: Maybe<Origins>;
@@ -39,7 +39,7 @@ export type BaseOrderInputType = {
   depositSpent?: InputMaybe<Scalars['String']>;
   offerInfo?: InputMaybe<OfferInfoInput>;
   offerType: TOfferType;
-  orderHoldDeposit?: InputMaybe<Scalars['Float']>;
+  orderHoldDeposit?: InputMaybe<Scalars['String']>;
   orderInfo: OrderInfoInput;
   orderResult: OrderResultInput;
   teeOfferInfo?: InputMaybe<TeeOfferInfoInput>;
@@ -101,10 +101,10 @@ export type ConnectionArgs = {
 };
 
 export type CreateProviderInput = {
-  /** provider contract address */
+  /** provider address */
   address: Scalars['String'];
   authority?: InputMaybe<Scalars['String']>;
-  availableDeposit?: InputMaybe<Scalars['Float']>;
+  availableDeposit?: InputMaybe<Scalars['String']>;
   origins?: InputMaybe<OriginsInput>;
   providerInfo: ProviderInfoInput;
   teeOffers?: InputMaybe<Array<Scalars['String']>>;
@@ -115,7 +115,7 @@ export type Erc20 = {
   __typename?: 'Erc20';
   /** system identifier */
   _id: Scalars['String'];
-  balance?: Maybe<Scalars['Float']>;
+  balance?: Maybe<Scalars['String']>;
   netBalance: Scalars['String'];
   /** owner address */
   owner: Scalars['String'];
@@ -136,7 +136,7 @@ export type Erc20Edge = {
 export type Erc20InputType = {
   /** system identifier */
   _id: Scalars['String'];
-  balance?: InputMaybe<Scalars['Float']>;
+  balance?: InputMaybe<Scalars['String']>;
   netBalance: Scalars['String'];
   /** owner address */
   owner: Scalars['String'];
@@ -230,14 +230,14 @@ export type ListTransactionResponse = {
 
 export type LockInfo = {
   __typename?: 'LockInfo';
-  amount: Scalars['Float'];
+  amount: Scalars['String'];
   contract: TLockInfoSource;
   fromDate: Scalars['Float'];
   toDate: Scalars['Float'];
 };
 
 export type LockInfoInput = {
-  amount: Scalars['Float'];
+  amount: Scalars['String'];
   contract: TLockInfoSource;
   fromDate: Scalars['Float'];
   toDate: Scalars['Float'];
@@ -283,11 +283,6 @@ export type LockingPageInfo = {
   hasNextPage: Scalars['Boolean'];
   hasPreviousPage: Scalars['Boolean'];
   startCursor?: Maybe<Scalars['String']>;
-};
-
-export type MockSchemaExample = {
-  __typename?: 'MockSchemaExample';
-  id?: Maybe<Scalars['String']>;
 };
 
 export type Mutation = {
@@ -354,10 +349,10 @@ export type Offer = {
   __typename?: 'Offer';
   /** system identifier */
   _id: Scalars['String'];
-  /** contract address */
-  address: Scalars['String'];
   authority?: Maybe<Scalars['String']>;
   disabledAfter: Scalars['Float'];
+  /** blockchain id */
+  id: Scalars['String'];
   offerInfo: OfferInfo;
   origins?: Maybe<Origins>;
   providerInfo: ProviderInformation;
@@ -377,14 +372,14 @@ export type OfferEdge = {
 };
 
 export type OfferFilter = {
-  /** filter by contract address */
-  address?: InputMaybe<Scalars['String']>;
-  /** filter by contract addresses */
-  addresses?: InputMaybe<Array<Scalars['String']>>;
   /** exclude filter by offerInfo -> restrictions -> type */
   excludeOfferRestrictionType?: InputMaybe<Array<TOfferType>>;
   /** filter by offerInfo → group */
   group?: InputMaybe<Scalars['String']>;
+  /** filter by blockchain id */
+  id?: InputMaybe<Scalars['String']>;
+  /** filter by offer ids */
+  ids?: InputMaybe<Array<Scalars['String']>>;
   /** include filter by offerInfo -> restrictions -> type */
   includeOfferRestrictionType?: InputMaybe<Array<TOfferType>>;
   /** filter by offerInfo → name */
@@ -416,7 +411,7 @@ export type OfferInfo = {
    */
   group: Scalars['String'];
   hash: Scalars['String'];
-  holdSum: Scalars['Float'];
+  holdSum: Scalars['String'];
   input: Scalars['String'];
   linkage: Scalars['String'];
   maxDurationTimeMinutes: Scalars['Float'];
@@ -456,7 +451,7 @@ export type OfferInfoInput = {
    */
   group: Scalars['String'];
   hash: Scalars['String'];
-  holdSum: Scalars['Float'];
+  holdSum: Scalars['String'];
   input: Scalars['String'];
   linkage: Scalars['String'];
   maxDurationTimeMinutes: Scalars['Float'];
@@ -515,14 +510,14 @@ export type Order = {
   __typename?: 'Order';
   /** system identifier */
   _id: Scalars['String'];
-  /** contract address */
-  address: Scalars['String'];
   authority?: Maybe<Scalars['String']>;
   consumer: Scalars['String'];
   depositSpent?: Maybe<Scalars['String']>;
+  /** blockchain id */
+  id: Scalars['String'];
   offerInfo?: Maybe<OfferInfo>;
   offerType: TOfferType;
-  orderHoldDeposit?: Maybe<Scalars['Float']>;
+  orderHoldDeposit?: Maybe<Scalars['String']>;
   orderInfo: OrderInfo;
   orderResult: OrderResult;
   origins?: Maybe<Origins>;
@@ -627,7 +622,7 @@ export type OrderInputType = {
   depositSpent?: InputMaybe<Scalars['String']>;
   offerInfo?: InputMaybe<OfferInfoInput>;
   offerType: TOfferType;
-  orderHoldDeposit?: InputMaybe<Scalars['Float']>;
+  orderHoldDeposit?: InputMaybe<Scalars['String']>;
   orderInfo: OrderInfoInput;
   orderResult: OrderResultInput;
   parentOrder?: InputMaybe<ParentOrderInputType>;
@@ -648,27 +643,27 @@ export type OrderResult = {
   __typename?: 'OrderResult';
   encryptedError?: Maybe<Scalars['String']>;
   encryptedResult?: Maybe<Scalars['String']>;
-  orderPrice?: Maybe<Scalars['Float']>;
+  orderPrice?: Maybe<Scalars['String']>;
 };
 
 export type OrderResultInput = {
   encryptedError?: InputMaybe<Scalars['String']>;
   encryptedResult?: InputMaybe<Scalars['String']>;
-  orderPrice?: InputMaybe<Scalars['Float']>;
+  orderPrice?: InputMaybe<Scalars['String']>;
 };
 
 export type OrdersFilter = {
-  /** filter by contract address */
-  address?: InputMaybe<Scalars['String']>;
   /** filter by orderInfo -> consumer */
   consumer?: InputMaybe<Scalars['String']>;
+  /** filter by blockchain id */
+  id?: InputMaybe<Scalars['String']>;
   /** filter by orderInfo -> args -> inputOffers */
   inputOffers?: InputMaybe<Array<Scalars['String']>>;
   /** filter by orderInfo -> offer */
   offer?: InputMaybe<Scalars['String']>;
   /** filter by offerType */
   offerType?: InputMaybe<TOfferType>;
-  /** filter by parentOrder -> orderAddress */
+  /** filter by parentOrder -> orderId */
   parentOrder?: InputMaybe<Scalars['String']>;
   /** filter by orderInfo -> args -> selectedOffers */
   selectedOffers?: InputMaybe<Array<Scalars['String']>>;
@@ -705,14 +700,14 @@ export type ParentOrder = {
   __typename?: 'ParentOrder';
   /** system identifier */
   _id: Scalars['String'];
-  /** contract address */
-  address: Scalars['String'];
   authority?: Maybe<Scalars['String']>;
   consumer: Scalars['String'];
   depositSpent?: Maybe<Scalars['String']>;
+  /** blockchain id */
+  id: Scalars['String'];
   offerInfo?: Maybe<OfferInfo>;
   offerType: TOfferType;
-  orderHoldDeposit?: Maybe<Scalars['Float']>;
+  orderHoldDeposit?: Maybe<Scalars['String']>;
   orderInfo: OrderInfo;
   orderResult: OrderResult;
   origins?: Maybe<Origins>;
@@ -725,7 +720,7 @@ export type ParentOrderInputType = {
   depositSpent?: InputMaybe<Scalars['String']>;
   offerInfo?: InputMaybe<OfferInfoInput>;
   offerType: TOfferType;
-  orderHoldDeposit?: InputMaybe<Scalars['Float']>;
+  orderHoldDeposit?: InputMaybe<Scalars['String']>;
   orderInfo: OrderInfoInput;
   orderResult: OrderResultInput;
   parentOrder?: InputMaybe<Scalars['String']>;
@@ -736,10 +731,10 @@ export type Provider = {
   __typename?: 'Provider';
   /** system identifier */
   _id: Scalars['String'];
-  /** contract address */
+  /** provider address */
   address: Scalars['String'];
   authority?: Maybe<Scalars['String']>;
-  availableDeposit?: Maybe<Scalars['Float']>;
+  availableDeposit?: Maybe<Scalars['String']>;
   origins?: Maybe<Origins>;
   providerInfo: ProviderInfo;
   teeOffers?: Maybe<Array<Scalars['String']>>;
@@ -759,7 +754,7 @@ export type ProviderEdge = {
 };
 
 export type ProviderFilter = {
-  /** filter by contract address */
+  /** filter by address */
   address?: InputMaybe<Scalars['String']>;
 };
 
@@ -798,8 +793,13 @@ export type ProviderInformationInput = {
 };
 
 export type ProviderInputType = {
+  /** system identifier */
+  _id: Scalars['String'];
+  /** provider address */
+  address: Scalars['String'];
   authority?: InputMaybe<Scalars['String']>;
-  availableDeposit?: InputMaybe<Scalars['Float']>;
+  availableDeposit?: InputMaybe<Scalars['String']>;
+  origins?: InputMaybe<OriginsInput>;
   providerInfo: ProviderInfoInput;
   teeOffers?: InputMaybe<Array<Scalars['String']>>;
   valueOffers?: InputMaybe<Array<Scalars['String']>>;
@@ -893,7 +893,7 @@ export type QueryOffersArgs = {
 
 
 export type QueryOrderArgs = {
-  address: Scalars['String'];
+  id: Scalars['String'];
 };
 
 
@@ -942,17 +942,17 @@ export type QueryTransactionsArgs = {
 
 export type StakeInfo = {
   __typename?: 'StakeInfo';
-  amount: Scalars['Float'];
-  profit: Scalars['Float'];
+  amount: Scalars['String'];
+  profit: Scalars['String'];
   startDate: Scalars['Float'];
-  totalLocked: Scalars['Float'];
+  totalLocked: Scalars['String'];
 };
 
 export type StakeInfoInput = {
-  amount: Scalars['Float'];
-  profit: Scalars['Float'];
+  amount: Scalars['String'];
+  profit: Scalars['String'];
   startDate: Scalars['Float'];
-  totalLocked: Scalars['Float'];
+  totalLocked: Scalars['String'];
 };
 
 export type Staking = {
@@ -1068,10 +1068,10 @@ export type TeeOffer = {
   __typename?: 'TeeOffer';
   /** system identifier */
   _id: Scalars['String'];
-  /** contract address */
-  address: Scalars['String'];
   authority?: Maybe<Scalars['String']>;
   disabledAfter: Scalars['Float'];
+  /** blockchain id */
+  id: Scalars['String'];
   origins?: Maybe<Origins>;
   providerAddress: Scalars['String'];
   providerInfo: ProviderInformation;
@@ -1092,10 +1092,10 @@ export type TeeOfferEdge = {
 };
 
 export type TeeOfferFilter = {
-  /** filter by contract address */
-  address?: InputMaybe<Scalars['String']>;
-  /** filter by contract addresses */
-  addresses?: InputMaybe<Array<Scalars['String']>>;
+  /** filter by blockchain id */
+  id?: InputMaybe<Scalars['String']>;
+  /** filter by TEE offer ids */
+  ids?: InputMaybe<Array<Scalars['String']>>;
   /** filter by teeOfferInfo → name */
   name?: InputMaybe<Scalars['String']>;
 };
@@ -1238,10 +1238,10 @@ export type UpdateConfigInput = {
 
 export type UpdateProviderInput = {
   _id: Scalars['String'];
-  /** provider contract address */
+  /** provider address */
   address?: InputMaybe<Scalars['String']>;
   authority?: InputMaybe<Scalars['String']>;
-  availableDeposit?: InputMaybe<Scalars['Float']>;
+  availableDeposit?: InputMaybe<Scalars['String']>;
   origins?: InputMaybe<OriginsInput>;
   providerInfo?: InputMaybe<ProviderInfoInput>;
   teeOffers?: InputMaybe<Array<Scalars['String']>>;
@@ -1250,9 +1250,9 @@ export type UpdateProviderInput = {
 
 export type UpdateTeeOfferInput = {
   _id: Scalars['String'];
-  /** provider contract address */
-  address?: InputMaybe<Scalars['String']>;
   authority?: InputMaybe<Scalars['String']>;
+  /** TEE offer id */
+  id?: InputMaybe<Scalars['String']>;
   offerInfo?: InputMaybe<TeeOfferInfoInput>;
   origins?: InputMaybe<OriginsInput>;
   provider?: InputMaybe<Scalars['String']>;
@@ -1265,16 +1265,16 @@ export type ValueObject = {
   consensus?: Maybe<Scalars['String']>;
   epochs?: Maybe<Scalars['String']>;
   lastBlocks?: Maybe<Scalars['String']>;
-  offerSecDeposit?: Maybe<Scalars['Float']>;
-  orderMinimumDeposit?: Maybe<Scalars['Float']>;
+  offerSecDeposit?: Maybe<Scalars['String']>;
+  orderMinimumDeposit?: Maybe<Scalars['String']>;
   ordersFactory?: Maybe<Scalars['String']>;
   providerRegistry?: Maybe<Scalars['String']>;
   staking?: Maybe<Scalars['String']>;
   superpro?: Maybe<Scalars['String']>;
   suspicious?: Maybe<Scalars['String']>;
-  teeOfferSecDeposit?: Maybe<Scalars['Float']>;
+  teeOfferSecDeposit?: Maybe<Scalars['String']>;
   teeOffersFactory?: Maybe<Scalars['String']>;
-  teeRewardPerEpoch?: Maybe<Scalars['Float']>;
+  teeRewardPerEpoch?: Maybe<Scalars['String']>;
   token?: Maybe<Scalars['String']>;
   tokenReceiverAddress?: Maybe<Scalars['String']>;
   valueOffersFactory?: Maybe<Scalars['String']>;
@@ -1287,16 +1287,16 @@ export type ValueObjectType = {
   consensus?: InputMaybe<Scalars['String']>;
   epochs?: InputMaybe<Scalars['String']>;
   lastBlocks?: InputMaybe<Scalars['String']>;
-  offerSecDeposit?: InputMaybe<Scalars['Float']>;
-  orderMinimumDeposit?: InputMaybe<Scalars['Float']>;
+  offerSecDeposit?: InputMaybe<Scalars['String']>;
+  orderMinimumDeposit?: InputMaybe<Scalars['String']>;
   ordersFactory?: InputMaybe<Scalars['String']>;
   providerRegistry?: InputMaybe<Scalars['String']>;
   staking?: InputMaybe<Scalars['String']>;
   superpro?: InputMaybe<Scalars['String']>;
   suspicious?: InputMaybe<Scalars['String']>;
-  teeOfferSecDeposit?: InputMaybe<Scalars['Float']>;
+  teeOfferSecDeposit?: InputMaybe<Scalars['String']>;
   teeOffersFactory?: InputMaybe<Scalars['String']>;
-  teeRewardPerEpoch?: InputMaybe<Scalars['Float']>;
+  teeRewardPerEpoch?: InputMaybe<Scalars['String']>;
   token?: InputMaybe<Scalars['String']>;
   tokenReceiverAddress?: InputMaybe<Scalars['String']>;
   valueOffersFactory?: InputMaybe<Scalars['String']>;
@@ -1350,7 +1350,7 @@ export type OffersQueryVariables = Exact<{
 }>;
 
 
-export type OffersQuery = { __typename?: 'Query', result: { __typename?: 'ListOffersResponse', pageData?: { __typename?: 'PageDataDto', count: number, limit: number, offset: number } | null, page: { __typename?: 'OfferConnection', pageInfo?: { __typename?: 'OfferPageInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } | null, edges?: Array<{ __typename?: 'OfferEdge', cursor?: string | null, node?: { __typename?: 'Offer', _id: string, address: string, authority?: string | null, disabledAfter: number, offerInfo: { __typename?: 'OfferInfo', group: string, offerType: string, allowedAccounts?: Array<string> | null, allowedArgs?: string | null, argsPublicKey: string, cancelable: boolean, description: string, hash: string, holdSum: number, input: string, linkage: string, maxDurationTimeMinutes: number, name: string, output: string, properties: string, resultUrl: string, restrictions?: { __typename?: 'OfferRestrictions', offers?: Array<string> | null, types?: Array<TOfferType> | null } | null }, origins?: { __typename?: 'Origins', createdBy: string, createdDate: number, modifiedBy: string, modifiedDate: number } | null, providerInfo: { __typename?: 'ProviderInformation', actionAccount: string, description: string, metadata: string, name: string, tokenReceiver: string } } | null }> | null } } };
+export type OffersQuery = { __typename?: 'Query', result: { __typename?: 'ListOffersResponse', pageData?: { __typename?: 'PageDataDto', count: number, limit: number, offset: number } | null, page: { __typename?: 'OfferConnection', pageInfo?: { __typename?: 'OfferPageInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } | null, edges?: Array<{ __typename?: 'OfferEdge', cursor?: string | null, node?: { __typename?: 'Offer', _id: string, id: string, authority?: string | null, disabledAfter: number, offerInfo: { __typename?: 'OfferInfo', group: string, offerType: string, allowedAccounts?: Array<string> | null, allowedArgs?: string | null, argsPublicKey: string, cancelable: boolean, description: string, hash: string, holdSum: string, input: string, linkage: string, maxDurationTimeMinutes: number, name: string, output: string, properties: string, resultUrl: string, restrictions?: { __typename?: 'OfferRestrictions', offers?: Array<string> | null, types?: Array<TOfferType> | null } | null }, origins?: { __typename?: 'Origins', createdBy: string, createdDate: number, modifiedBy: string, modifiedDate: number } | null, providerInfo: { __typename?: 'ProviderInformation', actionAccount: string, description: string, metadata: string, name: string, tokenReceiver: string } } | null }> | null } } };
 
 export type OffersSelectQueryVariables = Exact<{
   pagination: ConnectionArgs;
@@ -1358,7 +1358,7 @@ export type OffersSelectQueryVariables = Exact<{
 }>;
 
 
-export type OffersSelectQuery = { __typename?: 'Query', result: { __typename?: 'ListOffersResponse', pageData?: { __typename?: 'PageDataDto', count: number, limit: number, offset: number } | null, page: { __typename?: 'OfferConnection', pageInfo?: { __typename?: 'OfferPageInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } | null, edges?: Array<{ __typename?: 'OfferEdge', cursor?: string | null, node?: { __typename?: 'Offer', address: string, offerInfo: { __typename?: 'OfferInfo', name: string, description: string, holdSum: number, restrictions?: { __typename?: 'OfferRestrictions', offers?: Array<string> | null } | null } } | null }> | null } } };
+export type OffersSelectQuery = { __typename?: 'Query', result: { __typename?: 'ListOffersResponse', pageData?: { __typename?: 'PageDataDto', count: number, limit: number, offset: number } | null, page: { __typename?: 'OfferConnection', pageInfo?: { __typename?: 'OfferPageInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } | null, edges?: Array<{ __typename?: 'OfferEdge', cursor?: string | null, node?: { __typename?: 'Offer', id: string, offerInfo: { __typename?: 'OfferInfo', name: string, description: string, holdSum: string, restrictions?: { __typename?: 'OfferRestrictions', offers?: Array<string> | null } | null } } | null }> | null } } };
 
 export type OffersRestrictionsQueryVariables = Exact<{
   pagination: ConnectionArgs;
@@ -1366,7 +1366,7 @@ export type OffersRestrictionsQueryVariables = Exact<{
 }>;
 
 
-export type OffersRestrictionsQuery = { __typename?: 'Query', result: { __typename?: 'ListOffersResponse', page: { __typename?: 'OfferConnection', edges?: Array<{ __typename?: 'OfferEdge', node?: { __typename?: 'Offer', address: string, offerInfo: { __typename?: 'OfferInfo', restrictions?: { __typename?: 'OfferRestrictions', offers?: Array<string> | null } | null } } | null }> | null } } };
+export type OffersRestrictionsQuery = { __typename?: 'Query', result: { __typename?: 'ListOffersResponse', page: { __typename?: 'OfferConnection', edges?: Array<{ __typename?: 'OfferEdge', node?: { __typename?: 'Offer', id: string, offerInfo: { __typename?: 'OfferInfo', restrictions?: { __typename?: 'OfferRestrictions', offers?: Array<string> | null } | null } } | null }> | null } } };
 
 export type OrdersQueryVariables = Exact<{
   pagination: ConnectionArgs;
@@ -1374,7 +1374,7 @@ export type OrdersQueryVariables = Exact<{
 }>;
 
 
-export type OrdersQuery = { __typename?: 'Query', result: { __typename?: 'ListOrdersResponse', pageData?: { __typename?: 'PageDataDto', count: number, limit: number, offset: number } | null, page: { __typename?: 'OrderConnection', edges?: Array<{ __typename?: 'OrderEdge', cursor?: string | null, node?: { __typename?: 'Order', _id: string, address: string, authority?: string | null, consumer: string, orderHoldDeposit?: number | null, depositSpent?: string | null, offerType: TOfferType, parentOrder?: { __typename?: 'ParentOrder', address: string, offerInfo?: { __typename?: 'OfferInfo', name: string } | null } | null, offerInfo?: { __typename?: 'OfferInfo', name: string, offerType: string } | null, orderInfo: { __typename?: 'OrderInfo', offer: string, status: string }, origins?: { __typename?: 'Origins', createdBy: string, createdDate: number, modifiedBy: string, modifiedDate: number } | null, teeOfferInfo?: { __typename?: 'TeeOfferInfo', name: string } | null, subOrders?: Array<{ __typename?: 'BaseOrder', offerType: TOfferType, teeOfferInfo?: { __typename?: 'TeeOfferInfo', name: string } | null, offerInfo?: { __typename?: 'OfferInfo', name: string, restrictions?: { __typename?: 'OfferRestrictions', types?: Array<TOfferType> | null } | null } | null }> | null } | null }> | null, pageInfo?: { __typename?: 'OrderPageInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } | null } } };
+export type OrdersQuery = { __typename?: 'Query', result: { __typename?: 'ListOrdersResponse', pageData?: { __typename?: 'PageDataDto', count: number, limit: number, offset: number } | null, page: { __typename?: 'OrderConnection', edges?: Array<{ __typename?: 'OrderEdge', cursor?: string | null, node?: { __typename?: 'Order', _id: string, id: string, authority?: string | null, consumer: string, orderHoldDeposit?: string | null, depositSpent?: string | null, offerType: TOfferType, parentOrder?: { __typename?: 'ParentOrder', id: string, offerInfo?: { __typename?: 'OfferInfo', name: string } | null } | null, offerInfo?: { __typename?: 'OfferInfo', name: string, offerType: string } | null, orderInfo: { __typename?: 'OrderInfo', offer: string, status: string }, origins?: { __typename?: 'Origins', createdBy: string, createdDate: number, modifiedBy: string, modifiedDate: number } | null, teeOfferInfo?: { __typename?: 'TeeOfferInfo', name: string } | null, subOrders?: Array<{ __typename?: 'BaseOrder', offerType: TOfferType, teeOfferInfo?: { __typename?: 'TeeOfferInfo', name: string } | null, offerInfo?: { __typename?: 'OfferInfo', name: string, restrictions?: { __typename?: 'OfferRestrictions', types?: Array<TOfferType> | null } | null } | null }> | null } | null }> | null, pageInfo?: { __typename?: 'OrderPageInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } | null } } };
 
 export type OrdersSelectQueryVariables = Exact<{
   pagination: ConnectionArgs;
@@ -1382,14 +1382,14 @@ export type OrdersSelectQueryVariables = Exact<{
 }>;
 
 
-export type OrdersSelectQuery = { __typename?: 'Query', result: { __typename?: 'ListOrdersResponse', pageData?: { __typename?: 'PageDataDto', count: number, limit: number, offset: number } | null, page: { __typename?: 'OrderConnection', edges?: Array<{ __typename?: 'OrderEdge', cursor?: string | null, node?: { __typename?: 'Order', address: string, offerInfo?: { __typename?: 'OfferInfo', holdSum: number } | null } | null }> | null, pageInfo?: { __typename?: 'OrderPageInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } | null } } };
+export type OrdersSelectQuery = { __typename?: 'Query', result: { __typename?: 'ListOrdersResponse', pageData?: { __typename?: 'PageDataDto', count: number, limit: number, offset: number } | null, page: { __typename?: 'OrderConnection', edges?: Array<{ __typename?: 'OrderEdge', cursor?: string | null, node?: { __typename?: 'Order', id: string, offerInfo?: { __typename?: 'OfferInfo', holdSum: string } | null } | null }> | null, pageInfo?: { __typename?: 'OrderPageInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } | null } } };
 
 export type OrderQueryVariables = Exact<{
   id: Scalars['String'];
 }>;
 
 
-export type OrderQuery = { __typename?: 'Query', order: { __typename?: 'Order', address: string, consumer: string, orderHoldDeposit?: number | null, depositSpent?: string | null, offerType: TOfferType, origins?: { __typename?: 'Origins', createdBy: string, createdDate: number, modifiedBy: string, modifiedDate: number } | null, providerInfo: { __typename?: 'ProviderInformation', actionAccount: string, name: string }, orderInfo: { __typename?: 'OrderInfo', status: string, offer: string, encryptedArgs: string }, teeOfferInfo?: { __typename?: 'TeeOfferInfo', name: string, description: string } | null, orderResult: { __typename?: 'OrderResult', encryptedResult?: string | null, encryptedError?: string | null } } };
+export type OrderQuery = { __typename?: 'Query', order: { __typename?: 'Order', id: string, consumer: string, orderHoldDeposit?: string | null, depositSpent?: string | null, offerType: TOfferType, origins?: { __typename?: 'Origins', createdBy: string, createdDate: number, modifiedBy: string, modifiedDate: number } | null, providerInfo: { __typename?: 'ProviderInformation', actionAccount: string, name: string }, orderInfo: { __typename?: 'OrderInfo', status: string, offer: string, encryptedArgs: string }, teeOfferInfo?: { __typename?: 'TeeOfferInfo', name: string, description: string } | null, orderResult: { __typename?: 'OrderResult', encryptedResult?: string | null, encryptedError?: string | null } } };
 
 export type SubOrdersQueryVariables = Exact<{
   pagination: ConnectionArgs;
@@ -1397,7 +1397,7 @@ export type SubOrdersQueryVariables = Exact<{
 }>;
 
 
-export type SubOrdersQuery = { __typename?: 'Query', result: { __typename?: 'ListOrdersResponse', pageData?: { __typename?: 'PageDataDto', count: number, limit: number, offset: number } | null, page: { __typename?: 'OrderConnection', edges?: Array<{ __typename?: 'OrderEdge', cursor?: string | null, node?: { __typename?: 'Order', _id: string, address: string, authority?: string | null, consumer: string, orderHoldDeposit?: number | null, depositSpent?: string | null, offerType: TOfferType, offerInfo?: { __typename?: 'OfferInfo', name: string, offerType: string, cancelable: boolean, description: string } | null, providerInfo: { __typename?: 'ProviderInformation', actionAccount: string, name: string }, orderInfo: { __typename?: 'OrderInfo', offer: string, status: string }, origins?: { __typename?: 'Origins', createdBy: string, createdDate: number, modifiedBy: string, modifiedDate: number } | null, teeOfferInfo?: { __typename?: 'TeeOfferInfo', name: string, description: string } | null } | null }> | null, pageInfo?: { __typename?: 'OrderPageInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } | null } } };
+export type SubOrdersQuery = { __typename?: 'Query', result: { __typename?: 'ListOrdersResponse', pageData?: { __typename?: 'PageDataDto', count: number, limit: number, offset: number } | null, page: { __typename?: 'OrderConnection', edges?: Array<{ __typename?: 'OrderEdge', cursor?: string | null, node?: { __typename?: 'Order', _id: string, id: string, authority?: string | null, consumer: string, orderHoldDeposit?: string | null, depositSpent?: string | null, offerType: TOfferType, offerInfo?: { __typename?: 'OfferInfo', name: string, offerType: string, cancelable: boolean, description: string } | null, providerInfo: { __typename?: 'ProviderInformation', actionAccount: string, name: string }, orderInfo: { __typename?: 'OrderInfo', offer: string, status: string }, origins?: { __typename?: 'Origins', createdBy: string, createdDate: number, modifiedBy: string, modifiedDate: number } | null, teeOfferInfo?: { __typename?: 'TeeOfferInfo', name: string, description: string } | null } | null }> | null, pageInfo?: { __typename?: 'OrderPageInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } | null } } };
 
 export type ProvidersQueryVariables = Exact<{
   pagination: ConnectionArgs;
@@ -1405,7 +1405,7 @@ export type ProvidersQueryVariables = Exact<{
 }>;
 
 
-export type ProvidersQuery = { __typename?: 'Query', result: { __typename?: 'ListProvidersResponse', pageData?: { __typename?: 'PageDataDto', count: number, limit: number, offset: number } | null, page: { __typename?: 'ProviderConnection', pageInfo?: { __typename?: 'ProviderPageInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } | null, edges?: Array<{ __typename?: 'ProviderEdge', cursor?: string | null, node?: { __typename?: 'Provider', _id: string, address: string, authority?: string | null, availableDeposit?: number | null, valueOffers?: Array<string> | null, teeOffers?: Array<string> | null, origins?: { __typename?: 'Origins', createdBy: string, createdDate: number, modifiedBy: string, modifiedDate: number } | null, providerInfo: { __typename?: 'ProviderInfo', actionAccount: string, description: string, metadata: string, name: string, tokenReceiver: string } } | null }> | null } } };
+export type ProvidersQuery = { __typename?: 'Query', result: { __typename?: 'ListProvidersResponse', pageData?: { __typename?: 'PageDataDto', count: number, limit: number, offset: number } | null, page: { __typename?: 'ProviderConnection', pageInfo?: { __typename?: 'ProviderPageInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } | null, edges?: Array<{ __typename?: 'ProviderEdge', cursor?: string | null, node?: { __typename?: 'Provider', _id: string, address: string, authority?: string | null, availableDeposit?: string | null, valueOffers?: Array<string> | null, teeOffers?: Array<string> | null, origins?: { __typename?: 'Origins', createdBy: string, createdDate: number, modifiedBy: string, modifiedDate: number } | null, providerInfo: { __typename?: 'ProviderInfo', actionAccount: string, description: string, metadata: string, name: string, tokenReceiver: string } } | null }> | null } } };
 
 export type TeeOffersQueryVariables = Exact<{
   pagination: ConnectionArgs;
@@ -1413,7 +1413,7 @@ export type TeeOffersQueryVariables = Exact<{
 }>;
 
 
-export type TeeOffersQuery = { __typename?: 'Query', result: { __typename?: 'ListTeeOffersResponse', pageData?: { __typename?: 'PageDataDto', count: number, limit: number, offset: number } | null, page: { __typename?: 'TeeOfferConnection', edges?: Array<{ __typename?: 'TeeOfferEdge', cursor?: string | null, node?: { __typename?: 'TeeOffer', _id: string, address: string, authority?: string | null, disabledAfter: number, providerAddress: string, origins?: { __typename?: 'Origins', createdBy: string, createdDate: number, modifiedBy: string, modifiedDate: number } | null, providerInfo: { __typename?: 'ProviderInformation', actionAccount: string, description: string, metadata: string, name: string, tokenReceiver: string }, stats?: { __typename?: 'Stats', freeCores: number, ordersInQueue: number } | null, teeOfferInfo: { __typename?: 'TeeOfferInfo', argsPublicKey: string, description: string, minTimeMinutes: number, name: string, properties: string, slots: number, tcb: string, teeType: string, tlb: string } } | null }> | null, pageInfo?: { __typename?: 'TeeOfferPageInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } | null } } };
+export type TeeOffersQuery = { __typename?: 'Query', result: { __typename?: 'ListTeeOffersResponse', pageData?: { __typename?: 'PageDataDto', count: number, limit: number, offset: number } | null, page: { __typename?: 'TeeOfferConnection', edges?: Array<{ __typename?: 'TeeOfferEdge', cursor?: string | null, node?: { __typename?: 'TeeOffer', _id: string, id: string, authority?: string | null, disabledAfter: number, providerAddress: string, origins?: { __typename?: 'Origins', createdBy: string, createdDate: number, modifiedBy: string, modifiedDate: number } | null, providerInfo: { __typename?: 'ProviderInformation', actionAccount: string, description: string, metadata: string, name: string, tokenReceiver: string }, stats?: { __typename?: 'Stats', freeCores: number, ordersInQueue: number } | null, teeOfferInfo: { __typename?: 'TeeOfferInfo', argsPublicKey: string, description: string, minTimeMinutes: number, name: string, properties: string, slots: number, tcb: string, teeType: string, tlb: string } } | null }> | null, pageInfo?: { __typename?: 'TeeOfferPageInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } | null } } };
 
 export type TeeOffersSelectQueryVariables = Exact<{
   pagination: ConnectionArgs;
@@ -1421,7 +1421,7 @@ export type TeeOffersSelectQueryVariables = Exact<{
 }>;
 
 
-export type TeeOffersSelectQuery = { __typename?: 'Query', result: { __typename?: 'ListTeeOffersResponse', pageData?: { __typename?: 'PageDataDto', count: number, limit: number, offset: number } | null, page: { __typename?: 'TeeOfferConnection', pageInfo?: { __typename?: 'TeeOfferPageInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } | null, edges?: Array<{ __typename?: 'TeeOfferEdge', cursor?: string | null, node?: { __typename?: 'TeeOffer', address: string, teeOfferInfo: { __typename?: 'TeeOfferInfo', name: string, description: string } } | null }> | null } } };
+export type TeeOffersSelectQuery = { __typename?: 'Query', result: { __typename?: 'ListTeeOffersResponse', pageData?: { __typename?: 'PageDataDto', count: number, limit: number, offset: number } | null, page: { __typename?: 'TeeOfferConnection', pageInfo?: { __typename?: 'TeeOfferPageInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } | null, edges?: Array<{ __typename?: 'TeeOfferEdge', cursor?: string | null, node?: { __typename?: 'TeeOffer', id: string, teeOfferInfo: { __typename?: 'TeeOfferInfo', name: string, description: string } } | null }> | null } } };
 
 export type TransactionsQueryVariables = Exact<{
   pagination: ConnectionArgs;
@@ -1588,7 +1588,7 @@ export const OffersDocument = gql`
       edges {
         node {
           _id
-          address
+          id
           authority
           disabledAfter
           offerInfo {
@@ -1677,7 +1677,7 @@ export const OffersSelectDocument = gql`
       }
       edges {
         node {
-          address
+          id
           offerInfo {
             name
             description
@@ -1728,7 +1728,7 @@ export const OffersRestrictionsDocument = gql`
     page {
       edges {
         node {
-          address
+          id
           offerInfo {
             restrictions {
               offers
@@ -1780,7 +1780,7 @@ export const OrdersDocument = gql`
         cursor
         node {
           _id
-          address
+          id
           authority
           consumer
           orderHoldDeposit
@@ -1789,7 +1789,7 @@ export const OrdersDocument = gql`
             offerInfo {
               name
             }
-            address
+            id
           }
           offerInfo {
             name
@@ -1872,7 +1872,7 @@ export const OrdersSelectDocument = gql`
       edges {
         cursor
         node {
-          address
+          id
           offerInfo {
             holdSum
           }
@@ -1919,8 +1919,8 @@ export type OrdersSelectLazyQueryHookResult = ReturnType<typeof useOrdersSelectL
 export type OrdersSelectQueryResult = Apollo.QueryResult<OrdersSelectQuery, OrdersSelectQueryVariables>;
 export const OrderDocument = gql`
     query Order($id: String!) {
-  order(address: $id) {
-    address
+  order(id: $id) {
+    id
     consumer
     origins {
       createdBy
@@ -1990,7 +1990,7 @@ export const SubOrdersDocument = gql`
         cursor
         node {
           _id
-          address
+          id
           authority
           consumer
           orderHoldDeposit
@@ -2142,7 +2142,7 @@ export const TeeOffersDocument = gql`
         cursor
         node {
           _id
-          address
+          id
           authority
           disabledAfter
           providerAddress
@@ -2230,7 +2230,7 @@ export const TeeOffersSelectDocument = gql`
       }
       edges {
         node {
-          address
+          id
           teeOfferInfo {
             name
             description
