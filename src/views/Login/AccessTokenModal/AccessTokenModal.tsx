@@ -44,11 +44,11 @@ export const AccessTokenModal: FC<AccessTokenModalProps> = memo(({ onSuccess = (
             if (!response?.error) {
                 onSuccess();
             } else {
-                setToken('');
+                // setToken('');
                 setFieldError(Fields.token, response.error?.message || DEFAULT_TOKEN_ERROR);
             }
         } catch (e) {
-            setToken('');
+            // setToken('');
             setFieldError(Fields.token, (e as Error)?.message || DEFAULT_TOKEN_ERROR);
         }
         setLoading(false);
