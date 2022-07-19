@@ -67,7 +67,7 @@ export const CreateOrderModal: FC<CreateOrderModalProps> = memo(({ initialValues
                 variables: {
                     pagination: { first: Infinity },
                     filter: {
-                        addresses: list,
+                        ids: list,
                         ...(offerType ? { offerType } : {}),
                     },
                 },
@@ -90,8 +90,8 @@ export const CreateOrderModal: FC<CreateOrderModalProps> = memo(({ initialValues
         );
         setFilters((f) => ({
             ...f,
-            [Fields.tee]: { ...f[Fields.tee], addresses: restrictionsByTeeFromSolution },
-            [Fields.data]: { ...f[Fields.data], addresses: restrictionsByTeeFromDataAndSolution },
+            [Fields.tee]: { ...f[Fields.tee], ids: restrictionsByTeeFromSolution },
+            [Fields.data]: { ...f[Fields.data], ids: restrictionsByTeeFromDataAndSolution },
         }));
     }, [getOffersRestrictions]);
     const validationSchema = useMemo(() => getValidationSchema({

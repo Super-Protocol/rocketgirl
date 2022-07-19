@@ -16,11 +16,11 @@ export const getColumns = (): Array<ColumnProps<OrdersColumns>> => [
         id: 'id',
         width: 100,
         Cell: ({ row }) => {
-            const { address } = row.original || {};
-            if (!address) return '-';
+            const { id } = row.original || {};
+            if (!id) return '-';
             return (
                 <CopyToClipboard>
-                    {address}
+                    {id}
                 </CopyToClipboard>
             );
         },
@@ -99,8 +99,8 @@ export const getColumns = (): Array<ColumnProps<OrdersColumns>> => [
         id: 'estimatedCost',
         Cell: ({ row }) => {
             const { orderHoldDeposit } = row.original || {};
-            return orderHoldDeposit && typeof orderHoldDeposit === 'number'
-                ? (Math.round(Number(Web3.utils.fromWei(orderHoldDeposit.toString())) * 1000) / 1000).toFixed(3)
+            return orderHoldDeposit && typeof orderHoldDeposit === 'string'
+                ? (Math.round(Number(Web3.utils.fromWei(orderHoldDeposit)) * 1000) / 1000).toFixed(3)
                 : '-';
         },
         width: 'auto',
@@ -110,8 +110,8 @@ export const getColumns = (): Array<ColumnProps<OrdersColumns>> => [
         id: 'actualCost',
         Cell: ({ row }) => {
             const { depositSpent } = row.original || {};
-            return depositSpent && typeof depositSpent === 'number'
-                ? (Math.round(Number(Web3.utils.fromWei(depositSpent.toString())) * 1000) / 1000).toFixed(3)
+            return depositSpent && typeof depositSpent === 'string'
+                ? (Math.round(Number(Web3.utils.fromWei(depositSpent)) * 1000) / 1000).toFixed(3)
                 : '-';
         },
         width: 'auto',

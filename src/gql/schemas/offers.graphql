@@ -13,7 +13,7 @@ query Offers($pagination: ConnectionArgs!, $filter: OfferFilter) {
             edges {
                 node {
                     _id
-                    address
+                    id
                     authority
                     disabledAfter
                     offerInfo {
@@ -72,7 +72,7 @@ query OffersSelect($pagination: ConnectionArgs!, $filter: OfferFilter) {
             }
             edges {
                 node {
-                    address
+                    id
                     offerInfo {
                         name
                         description
@@ -93,7 +93,7 @@ query OffersRestrictions($pagination: ConnectionArgs!, $filter: OfferFilter) {
         page {
             edges {
                 node {
-                    address
+                    id
                     offerInfo {
                         restrictions {
                             offers

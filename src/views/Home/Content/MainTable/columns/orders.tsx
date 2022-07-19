@@ -34,11 +34,11 @@ export const getColumns = ({ urlBack }: GetColumnsProps): Array<ColumnProps<Orde
         id: 'id',
         width: 'auto',
         Cell: ({ row }) => {
-            const { address } = row.original || {};
-            if (!address) return '-';
+            const { id } = row.original || {};
+            if (!id) return '-';
             return (
-                <CopyToClipboard url={`order/${address}?${urlBack}`}>
-                    {address}
+                <CopyToClipboard url={`order/${id}?${urlBack}`}>
+                    {id}
                 </CopyToClipboard>
             );
         },
@@ -86,8 +86,8 @@ export const getColumns = ({ urlBack }: GetColumnsProps): Array<ColumnProps<Orde
         id: 'totalDeposit',
         Cell: ({ row }) => {
             const { orderHoldDeposit } = row.original || {};
-            return typeof orderHoldDeposit === 'number'
-                ? (Math.round(Number(Web3.utils.fromWei(orderHoldDeposit.toString())) * 1000) / 1000).toFixed(3)
+            return typeof orderHoldDeposit === 'string'
+                ? (Math.round(Number(Web3.utils.fromWei(orderHoldDeposit)) * 1000) / 1000).toFixed(3)
                 : '-';
         },
         width: 'auto',
@@ -97,13 +97,13 @@ export const getColumns = ({ urlBack }: GetColumnsProps): Array<ColumnProps<Orde
         id: 'unspentDeposit',
         Cell: ({ row }) => {
             const { orderHoldDeposit, depositSpent: depositSpentProps } = row.original || {};
-            const holdDeposit = typeof orderHoldDeposit === 'number'
-                ? Number(Web3.utils.fromWei(orderHoldDeposit.toString()))
+            const holdDeposit = typeof orderHoldDeposit === 'string'
+                ? Number(Web3.utils.fromWei(orderHoldDeposit))
                 : 0;
-            const depositSpent: number = depositSpentProps && typeof depositSpentProps === 'number'
-                ? Number(Web3.utils.fromWei(depositSpentProps.toString()))
+            const depositSpent: number = depositSpentProps && typeof depositSpentProps === 'string'
+                ? Number(Web3.utils.fromWei(depositSpentProps))
                 : 0;
-            return typeof orderHoldDeposit === 'number'
+            return typeof orderHoldDeposit === 'string'
                 ? (Math.round((holdDeposit - depositSpent) * 1000) / 1000).toFixed(3)
                 : '-';
         },

@@ -8,16 +8,17 @@ async function generateGraphQLCode() {
         {
             overwrite: true,
             schema: REACT_APP_API_ENDPOINT,
-            headers: {
-                Authorization: REACT_APP_AUTH,
-            },
+            ...(REACT_APP_AUTH ? {
+                headers: {
+                    Authorization: REACT_APP_AUTH,
+                },
+            } : {}),
             documents: './src/gql/schemas/*.graphql',
             config: {
                 apolloReactHooksImportFrom: '@/apollo/hooks',
             },
             generates: {
                 './src/gql/graphql.ts': {
-                    schema: './src/gql/mockSchemas/*.graphql',
                     plugins: [
                         'typescript',
                         'typescript-operations',

@@ -39,7 +39,7 @@ export const Details = memo<DetailsProps>(({ id }) => {
     }, [id, getOrder]);
     const loading = useMemo(() => orderResult?.loading || loadingOrderSdk, [orderResult, loadingOrderSdk]);
     const order = useMemo(() => orderResult.data?.order, [orderResult]);
-    const orderAddress = useMemo(() => order?.address, [order]);
+    const orderId = useMemo(() => order?.id, [order]);
     const info = useMemo(() => getInfo(order, orderSdk, addressSuborders), [order, orderSdk, addressSuborders]);
     const tee = useMemo(() => getTee(order, orderSdk), [order, orderSdk]);
     const subOrdersList = useMemo(() => getOrdersCancelList(addressSuborders), [addressSuborders]);
@@ -48,7 +48,7 @@ export const Details = memo<DetailsProps>(({ id }) => {
     }, [updateOrderInfo]);
     useEffect(() => {
         let subscription: () => void;
-        if (orderAddress) {
+        if (orderId) {
             subscription = onOrdersStatusUpdatedSubscription(
                 (status) => {
                     setOrderSdk((prev: any) => {
@@ -58,7 +58,7 @@ export const Details = memo<DetailsProps>(({ id }) => {
                         };
                     });
                 },
-                orderAddress,
+                orderId,
             );
         }
         return () => {
@@ -66,7 +66,7 @@ export const Details = memo<DetailsProps>(({ id }) => {
                 subscription();
             }
         };
-    }, [orderAddress]);
+    }, [orderId]);
     if (loading) return <Spinner fullscreen />;
     // if (!isMyOrder) return null; // todo hide before production
     if (!isConnected) return <NoAccountBlock message="Connect your wallet to see if you made an order" />;
@@ -112,9 +112,9 @@ export const Details = memo<DetailsProps>(({ id }) => {
                     </CardUi>
                 )}
             </Box>
-            {!!orderAddress && (
+            {!!orderId && (
                 <SubOrdersTable
-                    address={orderAddress}
+                    id={orderId}
                     classNameWrap={classes.table}
                     setAddressSuborders={setAddressSuborders}
                     selectedAddress={selectedAddress}
