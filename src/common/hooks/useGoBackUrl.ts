@@ -1,6 +1,6 @@
-import { useHistory } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 export const useGoBackUrl = (): string => {
-    const { location: { pathname, search } } = useHistory();
+    const { pathname, search } = useLocation();
     return `goBackUrl=${encodeURIComponent(pathname)}${encodeURIComponent(search)}`;
 };

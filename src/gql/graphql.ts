@@ -1316,6 +1316,11 @@ export type Web3InputType = {
   version?: InputMaybe<Scalars['String']>;
 };
 
+export type AuthCheckerQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type AuthCheckerQuery = { __typename?: 'Query', result: { __typename?: 'ListProvidersResponse', page: { __typename?: 'ProviderConnection', edges?: Array<{ __typename?: 'ProviderEdge', node?: { __typename?: 'Provider', _id: string } | null }> | null } } };
+
 export type PageDataDtoFragmentFragment = { __typename?: 'PageDataDto', count: number, limit: number, offset: number };
 
 export type EventSubscriptionVariables = Exact<{
@@ -1433,6 +1438,46 @@ export const PageDataDtoFragmentFragmentDoc = gql`
   offset
 }
     `;
+export const AuthCheckerDocument = gql`
+    query AuthChecker {
+  result: providers(pagination: {first: 1}, filter: {}) {
+    page {
+      edges {
+        node {
+          _id
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useAuthCheckerQuery__
+ *
+ * To run a query within a React component, call `useAuthCheckerQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAuthCheckerQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAuthCheckerQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useAuthCheckerQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<AuthCheckerQuery, AuthCheckerQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<AuthCheckerQuery, AuthCheckerQueryVariables>(AuthCheckerDocument, options);
+      }
+export function useAuthCheckerLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<AuthCheckerQuery, AuthCheckerQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<AuthCheckerQuery, AuthCheckerQueryVariables>(AuthCheckerDocument, options);
+        }
+export type AuthCheckerQueryHookResult = ReturnType<typeof useAuthCheckerQuery>;
+export type AuthCheckerLazyQueryHookResult = ReturnType<typeof useAuthCheckerLazyQuery>;
+export type AuthCheckerQueryResult = Apollo.QueryResult<AuthCheckerQuery, AuthCheckerQueryVariables>;
 export const EventDocument = gql`
     subscription Event($filter: EventFilter) {
   event(filter: $filter) {

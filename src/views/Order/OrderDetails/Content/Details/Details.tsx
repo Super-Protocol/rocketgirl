@@ -18,7 +18,7 @@ import { getInfo, getTee, getOrdersCancelList } from './helpers';
 import classes from './Details.module.scss';
 import { SubOrdersTable } from './SubOrdersTable';
 
-export const Details = memo<DetailsProps>(({ id }) => {
+export const Details = memo<DetailsProps>(({ id = '' }) => {
     const {
         isConnected,
         selectedAddress,

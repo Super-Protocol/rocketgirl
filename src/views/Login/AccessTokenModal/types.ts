@@ -1,5 +1,5 @@
 export interface AccessTokenModalProps {
-    onSuccess?: (token: string) => void;
+    onSuccess?: () => void;
 }
 
 export enum Fields {

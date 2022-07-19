@@ -5,7 +5,7 @@ import {
 } from 'react';
 import qs from 'query-string';
 import { useLocation } from 'react-router-dom';
-import { useHistory } from 'react-router';
+import { useNavigate } from 'react-router';
 import { OperationVariables } from '@apollo/client';
 import { Tables } from '@/views/Home/types';
 import { PageClick } from '@/uikit/Table/TablePagination/types';
@@ -26,7 +26,7 @@ export interface UseTablesResult {
 }
 
 export const useTables = (initialTable: Tables, consumer?: string): UseTablesResult => {
-    const history = useHistory();
+    const navigate = useNavigate();
     const location = useLocation();
     const query = useMemo(() => qs.parse(location.search), [location]);
     const table = useMemo<Tables>(() => (query?.table as Tables) || initialTable, [query, initialTable]);
@@ -47,11 +47,11 @@ export const useTables = (initialTable: Tables, consumer?: string): UseTablesRes
     const queryFetcher = useTablesQueryFetcher<UseTablesSkipType>({ table, skip: skipByWallet, consumer });
     useTablesSubscriptions(queryFetcher, consumer);
     const onChangeTable = useCallback((newTable: Tables, filter?: OperationVariables | null) => {
-        history.push(`?table=${newTable}`);
+        navigate(`?table=${newTable}`);
         if (!skipByWallet.some(({ table }) => table === newTable)) {
             queryFetcher[newTable]?.onChangePage({ filter, pageClick: PageClick.FIRST });
         }
-    }, [queryFetcher, skipByWallet, history]);
+    }, [queryFetcher, skipByWallet, navigate]);
     useEffect(() => {
         Object.entries(queryFetcher).forEach(([, fetcher]) => {
             if (!fetcher.skip) {

@@ -4,22 +4,18 @@ import React, {
     useContext, useCallback,
 } from 'react';
 import { useMount } from 'react-use';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { ModalOkCancelContext } from '@/common/context';
-import { AUTH_TOKEN } from '@/common/constants';
-import { useLocalStorage } from '@/common/hooks/useLocalStorage';
 import { LoginProps } from './types';
 import { AccessTokenModal } from './AccessTokenModal';
 
 const Login: FC<LoginProps> = () => {
-    const history = useHistory();
-    const [, setToken] = useLocalStorage<string>(AUTH_TOKEN, undefined);
+    const navigate = useNavigate();
     const { showModal, onClose } = useContext(ModalOkCancelContext);
-    const onSuccess = useCallback((token) => {
-        setToken(token);
-        history.replace('');
+    const onSuccess = useCallback(() => {
+        navigate('/');
         onClose();
-    }, [onClose, history, setToken]);
+    }, [onClose, navigate]);
     useMount(() => {
         showModal({
             children: <AccessTokenModal onSuccess={onSuccess} />,

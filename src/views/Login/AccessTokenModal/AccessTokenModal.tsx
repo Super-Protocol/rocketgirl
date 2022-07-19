@@ -4,19 +4,26 @@ import React, {
     useCallback,
     useState, useMemo,
 } from 'react';
-import { Formik } from 'formik';
+import { Formik, FormikHelpers } from 'formik';
 import {
     Box,
     Button,
     Spinner,
-    InputFormik, ErrorBox,
+    InputFormik,
+    ErrorBox,
 } from '@/uikit';
+import { useAuthCheckerLazyQuery } from '@/gql/graphql';
+import { useLocalStorage } from '@/common/hooks/useLocalStorage';
+import { AUTH_TOKEN } from '@/common/constants';
 import { AccessTokenModalProps, FormValues, Fields } from './types';
-import { getValidationSchema } from './helpers';
+import { DEFAULT_TOKEN_ERROR, getValidationSchema } from './helpers';
+import classes from './AccessTokenModal.module.scss';
 
 export const AccessTokenModal: FC<AccessTokenModalProps> = memo(({ onSuccess = () => {} }) => {
+    const [checkAuth] = useAuthCheckerLazyQuery();
     const [isValidating, setIsValidating] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [, setToken] = useLocalStorage<string>(AUTH_TOKEN, undefined);
     const validationSchema = useMemo(() => getValidationSchema(), []);
     const [initialValues] = useState<FormValues>({ token: '' });
     const onSubmit = useCallback((submitForm) => async () => {
@@ -24,21 +31,34 @@ export const AccessTokenModal: FC<AccessTokenModalProps> = memo(({ onSuccess = (
         submitForm();
     }, []);
 
-    const onSubmitForm = useCallback(async (formValues: FormValues) => {
+    const onSubmitForm = useCallback(async (
+        formValues: FormValues,
+        { setFieldError }: FormikHelpers<FormValues>,
+    ) => {
         setLoading(true);
-        const { token } = formValues || {};
-        // todo check token
-        onSuccess(token);
-        //
         setIsValidating(true);
+        try {
+            const { token } = formValues || {};
+            setToken(token); // for header Authorization
+            const response = await checkAuth();
+            if (!response?.error) {
+                onSuccess();
+            } else {
+                setToken('');
+                setFieldError(Fields.token, response.error?.message || DEFAULT_TOKEN_ERROR);
+            }
+        } catch (e) {
+            setToken('');
+            setFieldError(Fields.token, (e as Error)?.message || DEFAULT_TOKEN_ERROR);
+        }
         setLoading(false);
-    }, [onSuccess]);
+    }, [checkAuth, setToken, onSuccess]);
     return (
         <Box direction="column">
             <Formik
                 <FormValues>
                 validateOnChange={isValidating}
-                validateOnBlur={isValidating}
+                validateOnBlur={false}
                 initialValues={initialValues}
                 enableReinitialize
                 validationSchema={validationSchema}
@@ -62,7 +82,8 @@ export const AccessTokenModal: FC<AccessTokenModalProps> = memo(({ onSuccess = (
                                     <InputFormik
                                         placeholder="Enter the token to get access..."
                                         name={Fields.token}
-                                        renderError={(error) => <ErrorBox error={error} />}
+                                        classNameErrorEmpty={classes.errorBox}
+                                        renderError={(error) => <ErrorBox className={classes.errorBox} error={error} />}
                                     />
                                 </Box>
                                 <Box justifyContent="flex-end">

@@ -22,4 +22,5 @@ export interface BoxProps extends React.DetailedHTMLProps<React.HTMLAttributes<H
 export interface ErrorBoxProps {
     error?: string;
     showError?: boolean;
+    className?: string;
 }

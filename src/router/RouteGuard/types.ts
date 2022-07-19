@@ -1,3 +1,5 @@
-import { RouteProps } from 'react-router';
+import { ReactElement } from 'react';
 
-export interface RouteGuardProps extends RouteProps {}
+export interface RouteGuardProps {
+    children: ReactElement<any, any> | null;
+}
