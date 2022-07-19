@@ -4,7 +4,12 @@ import { Box, Icon } from '@/uikit';
 import classes from './ErrorBox.module.scss';
 import { ErrorBoxProps } from './types';
 
-export const ErrorBox = memo<ErrorBoxProps>(({ error, showError = true, className }) => {
+export const ErrorBox = memo<ErrorBoxProps>(({
+    error,
+    showError = true,
+    className,
+    classNameError,
+}) => {
     return (
         showError && error ? (
             <Box alignItems="center" className={cn(classes.errorBox, className)}>
@@ -14,7 +19,7 @@ export const ErrorBox = memo<ErrorBoxProps>(({ error, showError = true, classNam
                     height={16}
                     className={classes.iconInfo}
                 />
-                <span className={classes.error}>{error}</span>
+                <span className={cn(classes.error, classNameError)}>{error}</span>
             </Box>
         ) : <div className={cn(classes.errorEmpty, className)} />
     );

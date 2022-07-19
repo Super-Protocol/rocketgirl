@@ -23,4 +23,5 @@ export interface ErrorBoxProps {
     error?: string;
     showError?: boolean;
     className?: string;
+    classNameError?: string;
 }
