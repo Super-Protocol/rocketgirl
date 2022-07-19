@@ -293,7 +293,7 @@ export type Mutation = {
   removeProvider: Provider;
   /** Transfers specific amount of TEE tokens to specific address */
   teeTransfer: Scalars['Boolean'];
-  /** Transfers specific amount of SP tokens to specific address */
+  /** Transfers specific amount of TEE tokens to specific address */
   transfer: Scalars['Boolean'];
   updateConfig: Config;
   updateOffer: TeeOffer;
@@ -322,12 +322,12 @@ export type MutationRemoveProviderArgs = {
 
 
 export type MutationTeeTransferArgs = {
-  transfer: TransferInputType;
+  address: Scalars['String'];
 };
 
 
 export type MutationTransferArgs = {
-  transfer: TransferInputType;
+  address: Scalars['String'];
 };
 
 
@@ -830,6 +830,7 @@ export type Query = {
   provider: Provider;
   providers: ListProvidersResponse;
   staking: Staking;
+  teeBalanceOf: Scalars['String'];
   teeOffer: TeeOffer;
   teeOffers: ListTeeOffersResponse;
   transaction: Transaction;
@@ -916,6 +917,11 @@ export type QueryProvidersArgs = {
 
 export type QueryStakingArgs = {
   _id: Scalars['String'];
+};
+
+
+export type QueryTeeBalanceOfArgs = {
+  address: Scalars['String'];
 };
 
 
@@ -1201,32 +1207,12 @@ export type TransactionInputType = {
   value: Scalars['String'];
 };
 
-export type TransactionOptions = {
-  __typename?: 'TransactionOptions';
-  from: Scalars['String'];
-  gas: Scalars['Float'];
-  gasPrice: Scalars['String'];
-  web3: Web3;
-};
-
-export type TransactionOptionsInputType = {
-  from: Scalars['String'];
-  gas: Scalars['Float'];
-  gasPrice: Scalars['String'];
-  web3: Web3InputType;
-};
-
 export type TransactionPageInfo = {
   __typename?: 'TransactionPageInfo';
   endCursor?: Maybe<Scalars['String']>;
   hasNextPage: Scalars['Boolean'];
   hasPreviousPage: Scalars['Boolean'];
   startCursor?: Maybe<Scalars['String']>;
-};
-
-export type TransferInputType = {
-  to: Scalars['String'];
-  transactionOptions?: InputMaybe<TransactionOptionsInputType>;
 };
 
 export type UpdateConfigInput = {
@@ -1303,20 +1289,21 @@ export type ValueObjectType = {
   voting?: InputMaybe<Scalars['String']>;
 };
 
-export type Web3 = {
-  __typename?: 'Web3';
-  defaultAccount?: Maybe<Scalars['String']>;
-  defaultBlock?: Maybe<Scalars['String']>;
-  version?: Maybe<Scalars['String']>;
-};
-
-export type Web3InputType = {
-  defaultAccount?: InputMaybe<Scalars['String']>;
-  defaultBlock?: InputMaybe<Scalars['String']>;
-  version?: InputMaybe<Scalars['String']>;
-};
-
 export type PageDataDtoFragmentFragment = { __typename?: 'PageDataDto', count: number, limit: number, offset: number };
+
+export type BalanceOfQueryVariables = Exact<{
+  address: Scalars['String'];
+}>;
+
+
+export type BalanceOfQuery = { __typename?: 'Query', result: string };
+
+export type TeeBalanceOfQueryVariables = Exact<{
+  address: Scalars['String'];
+}>;
+
+
+export type TeeBalanceOfQuery = { __typename?: 'Query', result: string };
 
 export type EventSubscriptionVariables = Exact<{
   filter?: InputMaybe<EventFilter>;
@@ -1326,14 +1313,14 @@ export type EventSubscriptionVariables = Exact<{
 export type EventSubscription = { __typename?: 'Subscription', event: { __typename?: 'SubscriptionPayload', data?: Array<string> | null, type: SubscriptionType, subscriptionSource: SubscriptionSource } };
 
 export type TransferMutationVariables = Exact<{
-  transfer: TransferInputType;
+  address: Scalars['String'];
 }>;
 
 
 export type TransferMutation = { __typename?: 'Mutation', transfer: boolean };
 
 export type TeeTransferMutationVariables = Exact<{
-  transfer: TransferInputType;
+  address: Scalars['String'];
 }>;
 
 
@@ -1433,6 +1420,72 @@ export const PageDataDtoFragmentFragmentDoc = gql`
   offset
 }
     `;
+export const BalanceOfDocument = gql`
+    query BalanceOf($address: String!) {
+  result: balanceOf(address: $address)
+}
+    `;
+
+/**
+ * __useBalanceOfQuery__
+ *
+ * To run a query within a React component, call `useBalanceOfQuery` and pass it any options that fit your needs.
+ * When your component renders, `useBalanceOfQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useBalanceOfQuery({
+ *   variables: {
+ *      address: // value for 'address'
+ *   },
+ * });
+ */
+export function useBalanceOfQuery(baseOptions: ApolloReactHooks.QueryHookOptions<BalanceOfQuery, BalanceOfQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<BalanceOfQuery, BalanceOfQueryVariables>(BalanceOfDocument, options);
+      }
+export function useBalanceOfLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<BalanceOfQuery, BalanceOfQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<BalanceOfQuery, BalanceOfQueryVariables>(BalanceOfDocument, options);
+        }
+export type BalanceOfQueryHookResult = ReturnType<typeof useBalanceOfQuery>;
+export type BalanceOfLazyQueryHookResult = ReturnType<typeof useBalanceOfLazyQuery>;
+export type BalanceOfQueryResult = Apollo.QueryResult<BalanceOfQuery, BalanceOfQueryVariables>;
+export const TeeBalanceOfDocument = gql`
+    query TeeBalanceOf($address: String!) {
+  result: teeBalanceOf(address: $address)
+}
+    `;
+
+/**
+ * __useTeeBalanceOfQuery__
+ *
+ * To run a query within a React component, call `useTeeBalanceOfQuery` and pass it any options that fit your needs.
+ * When your component renders, `useTeeBalanceOfQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useTeeBalanceOfQuery({
+ *   variables: {
+ *      address: // value for 'address'
+ *   },
+ * });
+ */
+export function useTeeBalanceOfQuery(baseOptions: ApolloReactHooks.QueryHookOptions<TeeBalanceOfQuery, TeeBalanceOfQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<TeeBalanceOfQuery, TeeBalanceOfQueryVariables>(TeeBalanceOfDocument, options);
+      }
+export function useTeeBalanceOfLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<TeeBalanceOfQuery, TeeBalanceOfQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<TeeBalanceOfQuery, TeeBalanceOfQueryVariables>(TeeBalanceOfDocument, options);
+        }
+export type TeeBalanceOfQueryHookResult = ReturnType<typeof useTeeBalanceOfQuery>;
+export type TeeBalanceOfLazyQueryHookResult = ReturnType<typeof useTeeBalanceOfLazyQuery>;
+export type TeeBalanceOfQueryResult = Apollo.QueryResult<TeeBalanceOfQuery, TeeBalanceOfQueryVariables>;
 export const EventDocument = gql`
     subscription Event($filter: EventFilter) {
   event(filter: $filter) {
@@ -1466,8 +1519,8 @@ export function useEventSubscription(baseOptions?: ApolloReactHooks.Subscription
 export type EventSubscriptionHookResult = ReturnType<typeof useEventSubscription>;
 export type EventSubscriptionResult = Apollo.SubscriptionResult<EventSubscription>;
 export const TransferDocument = gql`
-    mutation Transfer($transfer: TransferInputType!) {
-  transfer(transfer: $transfer)
+    mutation Transfer($address: String!) {
+  transfer(address: $address)
 }
     `;
 export type TransferMutationFn = Apollo.MutationFunction<TransferMutation, TransferMutationVariables>;
@@ -1485,7 +1538,7 @@ export type TransferMutationFn = Apollo.MutationFunction<TransferMutation, Trans
  * @example
  * const [transferMutation, { data, loading, error }] = useTransferMutation({
  *   variables: {
- *      transfer: // value for 'transfer'
+ *      address: // value for 'address'
  *   },
  * });
  */
@@ -1497,8 +1550,8 @@ export type TransferMutationHookResult = ReturnType<typeof useTransferMutation>;
 export type TransferMutationResult = Apollo.MutationResult<TransferMutation>;
 export type TransferMutationOptions = Apollo.BaseMutationOptions<TransferMutation, TransferMutationVariables>;
 export const TeeTransferDocument = gql`
-    mutation TeeTransfer($transfer: TransferInputType!) {
-  teeTransfer(transfer: $transfer)
+    mutation TeeTransfer($address: String!) {
+  teeTransfer(address: $address)
 }
     `;
 export type TeeTransferMutationFn = Apollo.MutationFunction<TeeTransferMutation, TeeTransferMutationVariables>;
@@ -1516,7 +1569,7 @@ export type TeeTransferMutationFn = Apollo.MutationFunction<TeeTransferMutation,
  * @example
  * const [teeTransferMutation, { data, loading, error }] = useTeeTransferMutation({
  *   variables: {
- *      transfer: // value for 'transfer'
+ *      address: // value for 'address'
  *   },
  * });
  */
