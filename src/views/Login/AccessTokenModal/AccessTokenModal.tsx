@@ -59,7 +59,11 @@ export const AccessTokenModal: FC<AccessTokenModalProps> = memo(({ onSuccess = (
                                     <Spinner fullscreen />
                                 )}
                                 <Box direction="column">
-                                    <InputFormik name={Fields.token} renderError={(error) => <ErrorBox error={error} />} />
+                                    <InputFormik
+                                        placeholder="Enter the token to get access..."
+                                        name={Fields.token}
+                                        renderError={(error) => <ErrorBox error={error} />}
+                                    />
                                 </Box>
                                 <Box justifyContent="flex-end">
                                     <Button variant="primary" onClick={onSubmit(submitForm)}>Log in</Button>
