@@ -4,7 +4,7 @@ import { Order, TOfferType } from '@/gql/graphql';
 import { CopyToClipboard, TextCounter } from '@/uikit';
 import { UseTableQueryFetcherResultList } from '@/common/hooks/useTableQueryFetcher';
 import { StatusBar } from '@/common/components/StatusBar';
-import { getTableDate } from '@/common/helpers';
+import { getFixedDeposit, getTableDate } from '@/common/helpers';
 
 export type OrdersColumns = UseTableQueryFetcherResultList<Order>;
 export interface GetColumnsProps {
@@ -86,9 +86,7 @@ export const getColumns = ({ urlBack }: GetColumnsProps): Array<ColumnProps<Orde
         id: 'totalDeposit',
         Cell: ({ row }) => {
             const { orderHoldDeposit } = row.original || {};
-            return typeof orderHoldDeposit === 'string'
-                ? (Math.round(Number(Web3.utils.fromWei(orderHoldDeposit)) * 1000) / 1000).toFixed(3)
-                : '-';
+            return getFixedDeposit(orderHoldDeposit, true);
         },
         width: 'auto',
     },
@@ -103,9 +101,8 @@ export const getColumns = ({ urlBack }: GetColumnsProps): Array<ColumnProps<Orde
             const depositSpent: number = depositSpentProps && typeof depositSpentProps === 'string'
                 ? Number(Web3.utils.fromWei(depositSpentProps))
                 : 0;
-            return typeof orderHoldDeposit === 'string'
-                ? (Math.round((holdDeposit - depositSpent) * 1000) / 1000).toFixed(3)
-                : '-';
+            const diff = holdDeposit - depositSpent;
+            return getFixedDeposit(!Number.isNaN(diff) ? `${diff}` : '');
         },
         width: 'auto',
     },
