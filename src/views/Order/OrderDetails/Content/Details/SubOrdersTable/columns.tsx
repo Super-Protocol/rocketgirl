@@ -99,9 +99,7 @@ export const getColumns = (): Array<ColumnProps<OrdersColumns>> => [
         id: 'estimatedCost',
         Cell: ({ row }) => {
             const { orderHoldDeposit } = row.original || {};
-            return orderHoldDeposit && typeof orderHoldDeposit === 'string'
-                ? (Math.round(Number(Web3.utils.fromWei(orderHoldDeposit)) * 1000) / 1000).toFixed(3)
-                : '-';
+            return ((orderHoldDeposit ? Math.round(Number(Web3.utils.fromWei(orderHoldDeposit)) * 1000) / 1000 : 0)).toFixed(3);
         },
         width: 'auto',
     },
@@ -110,9 +108,7 @@ export const getColumns = (): Array<ColumnProps<OrdersColumns>> => [
         id: 'actualCost',
         Cell: ({ row }) => {
             const { depositSpent } = row.original || {};
-            return depositSpent && typeof depositSpent === 'string'
-                ? (Math.round(Number(Web3.utils.fromWei(depositSpent)) * 1000) / 1000).toFixed(3)
-                : '-';
+            return ((depositSpent ? Math.round(Number(Web3.utils.fromWei(depositSpent)) * 1000) / 1000 : 0)).toFixed(3);
         },
         width: 'auto',
     },
