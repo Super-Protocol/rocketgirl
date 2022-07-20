@@ -1,10 +1,9 @@
 import { ReactNode } from 'react';
-
 import { OrderStatus } from '@super-protocol/sp-sdk-js';
 import { CopyToClipboard } from '@/uikit';
 import { StatusBarToolkit } from '@/common/components/';
 import { OrderQuery } from '@/gql/graphql';
-import { getTableDate } from '@/common/helpers';
+import { getFixedDeposit, getTableDate } from '@/common/helpers';
 import { GetOrderSdk } from '@/connectors/orders';
 import { SubOrderInfo } from './types';
 
@@ -50,6 +49,7 @@ export const getInfo = (
     const { encryptedArgs } = orderInfo || {};
     const unspentDeposit = getUnspentDeposit(orderHoldDepositSdk, depositSpentSdk);
     const subOrdersDeposit = getSubOrdersDeposit(addressSuborders);
+    const totalDeposit = (orderHoldDepositSdk || 0) + (subOrdersDeposit || 0);
     return {
         list: [
             {
@@ -62,15 +62,11 @@ export const getInfo = (
             },
             {
                 key: 'Total Deposit',
-                value: orderHoldDepositSdk
-                    ? (Math.round((orderHoldDepositSdk + subOrdersDeposit) * 1000) / 1000).toFixed(3)
-                    : '-',
+                value: getFixedDeposit(!Number.isNaN(totalDeposit) ? `${totalDeposit}` : ''),
             },
             {
                 key: 'Unspent Deposit',
-                value: typeof unspentDeposit === 'number'
-                    ? (Math.round(unspentDeposit * 1000) / 1000).toFixed(3)
-                    : '-',
+                value: getFixedDeposit(!Number.isNaN(unspentDeposit) ? `${unspentDeposit}` : ''),
             },
             {
                 key: 'Status',
