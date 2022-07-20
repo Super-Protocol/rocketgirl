@@ -4,7 +4,7 @@ export interface DetailsProps {
 
 export type SubOrderInfo = {
     [x: string]: {
-        cancellable: boolean;
+        cancelable: boolean;
         orderHoldDeposit: number;
     };
 }

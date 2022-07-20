@@ -136,7 +136,7 @@ export const getTee = (order?: OrderQuery['order'], orderSdk?: GetOrderSdk): Tab
 export const getOrdersCancelList = (addressSuborders?: SubOrderInfo): string[] => (
     addressSuborders
         ? Object.entries(addressSuborders).reduce((acc: string[], [k, v]) => (
-            v.cancellable ? [...acc, k] : acc
+            v.cancelable ? [...acc, k] : acc
         ), [])
         : []
 );

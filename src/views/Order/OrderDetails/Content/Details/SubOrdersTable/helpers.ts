@@ -14,7 +14,7 @@ export const getSubOrdersList = (list: any[]): SubOrderInfo => (
             return {
                 ...acc,
                 [id]: {
-                    cancellable: !!orderInfo?.status && ![
+                    cancelable: !!orderInfo?.status && ![
                         OrderStatus.Canceled,
                         OrderStatus.Done,
                         OrderStatus.Canceling,

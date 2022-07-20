@@ -71,8 +71,8 @@ export const getColumns = (): Array<ColumnProps<OrdersColumns>> => [
         isEllipsis: true,
     },
     {
-        Header: 'Cancellable',
-        id: 'cancellable',
+        Header: 'Cancelable',
+        id: 'cancelable',
         Cell: ({ row }) => {
             const { offerInfo } = row.original || {};
             const { cancelable } = offerInfo || {};
