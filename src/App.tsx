@@ -5,7 +5,7 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import AppRouter from '@/router/AppRouter';
 import { Spinner } from '@/uikit';
 import { ApolloClientProvider } from '@/apollo/providers/ApolloClientProvider';
-import { ScrollbarProvider, ModalOkCancelProvider } from '@/common/context';
+import { ScrollbarProvider } from '@/common/context';
 
 const queryClient = new QueryClient();
 
@@ -14,9 +14,7 @@ const App = (): ReactElement => (
         <ApolloClientProvider>
             <QueryClientProvider client={queryClient}>
                 <ScrollbarProvider>
-                    <ModalOkCancelProvider>
-                        <AppRouter />
-                    </ModalOkCancelProvider>
+                    <AppRouter />
                 </ScrollbarProvider>
             </QueryClientProvider>
         </ApolloClientProvider>

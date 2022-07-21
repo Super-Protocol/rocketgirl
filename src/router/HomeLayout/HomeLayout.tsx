@@ -1,7 +1,9 @@
 import React, { memo, FC } from 'react';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import { WalletContextProvider } from '@/common/context';
+import { Outlet } from 'react-router-dom';
+import { RouteGuard } from '@/router/RouteGuard';
+import { ModalOkCancelProvider, WalletContextProvider } from '@/common/context';
 import { useBlockchainConnector } from '@/common/hooks/useBlockchainConnector';
 import { Spinner } from '@/uikit';
 import { HomeLayoutProps } from './types';
@@ -12,9 +14,13 @@ const HomeLayout: FC<HomeLayoutProps> = ({ children }) => {
     const init = useBlockchainConnector();
     if (!init) return <Spinner fullscreen />;
     return (
-        <WalletContextProvider>
-            {children}
-        </WalletContextProvider>
+        <RouteGuard>
+            <WalletContextProvider>
+                <ModalOkCancelProvider>
+                    <Outlet />
+                </ModalOkCancelProvider>
+            </WalletContextProvider>
+        </RouteGuard>
     );
 };
 

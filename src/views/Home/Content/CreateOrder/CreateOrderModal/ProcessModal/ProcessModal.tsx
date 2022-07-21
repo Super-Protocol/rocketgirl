@@ -2,6 +2,7 @@ import React, {
     memo, FC, useCallback, useMemo, useContext, useState,
 } from 'react';
 import { useMount } from 'react-use';
+import { useNavigate } from 'react-router-dom';
 import toastr from '@/services/Toastr/toastr';
 import { Box, Button, ProgressBar } from '@/uikit';
 import { WalletContext } from '@/common/context';
@@ -14,9 +15,10 @@ import { useWorkflow } from '../hooks/useWorkflow';
 import { ProcessItem } from '../ProcessItem';
 import { State } from '../hooks/useWorkflowProcess';
 import { CancellingModal } from '../CancellingModal';
-import { transmittalText, gotoOrder } from './helpers';
+import { transmittalText } from './helpers';
 
 export const ProcessModal: FC<ProcessModalProps> = memo(({ formValues, initialState }) => {
+    const navigate = useNavigate();
     const { selectedAddress, instance } = useContext(WalletContext);
     const { showSuccessModal } = useErrorModal();
     const { showModal } = useContext(ModalOkCancelContext);
@@ -54,7 +56,7 @@ export const ProcessModal: FC<ProcessModalProps> = memo(({ formValues, initialSt
                 'Your order has been successfully created',
                 undefined,
                 'Go to order',
-                () => gotoOrder(teeOrderAddress),
+                () => navigate(`order/${teeOrderAddress}`),
             );
         } catch (e) {
             console.warn(e);
@@ -62,7 +64,7 @@ export const ProcessModal: FC<ProcessModalProps> = memo(({ formValues, initialSt
         } finally {
             setLoading(false);
         }
-    }, [instance, formValues, selectedAddress, runWorkflow, showSuccessModal]);
+    }, [instance, formValues, selectedAddress, runWorkflow, showSuccessModal, navigate]);
     const getErrorFromMapList = useCallback((process: Process) => {
         return stateProcess[process]?.error?.size
             ? [...stateProcess[process].error as Map<string | null, Error>]?.[0]?.[1]

@@ -40,6 +40,7 @@ export const useWallet = (): UseWalletResult => {
         }
         return Web3.utils.toChecksumAddress(selectedWallet.accounts[0]);
     }, [selectedWallet]);
+
     const actions = useCallback((walletType: WalletType) => ({
         startActivation: () => () => setSelectedWalletType(walletType),
         update: async (stateUpdate: Web3ReactStateUpdate) => {
