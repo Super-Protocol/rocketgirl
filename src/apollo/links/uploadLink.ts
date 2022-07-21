@@ -17,7 +17,7 @@ const uploadLink = (): createUploadLink => {
         fetch: fetchUpload,
         ...(REACT_APP_AUTH ? {
             headers: {
-                authorization: REACT_APP_AUTH,
+                Authorization: REACT_APP_AUTH,
             },
         } : {}),
     });

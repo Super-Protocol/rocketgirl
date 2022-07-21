@@ -23,24 +23,24 @@ import {
 } from './types';
 
 export const valueOfferConvertNode: ConvertNode<Offer> = ({ node }): Item<Value, Info> => ({
-    value: node?.address,
+    value: node?.id,
     label: node?.offerInfo?.name || '',
     data: {
         description: node?.offerInfo?.description || '',
         name: node?.offerInfo?.name || '',
-        holdSum: node?.offerInfo?.holdSum || 0,
+        holdSum: node?.offerInfo?.holdSum || '0',
         restrictions: node?.offerInfo?.restrictions?.offers,
         externalId: getExternalId(),
     },
 });
 
 export const teeOfferConvertNode: ConvertNode<TeeOffer> = ({ node }): Item<Value, Info> => ({
-    value: node?.address,
+    value: node?.id,
     label: node?.teeOfferInfo?.name || '',
     data: {
         description: node?.teeOfferInfo?.description || '',
         name: node?.teeOfferInfo?.name || '',
-        holdSum: 0,
+        holdSum: '0',
         externalId: getExternalId(),
     },
 });
@@ -101,7 +101,7 @@ export const getCalcOrderDeposit = async (
         case OfferType.Storage:
         case OfferType.Solution:
         case OfferType.Data:
-            return Number(Web3.utils.fromWei(offer?.data?.holdSum.toString() || '0'));
+            return Number(Web3.utils.fromWei(offer?.data?.holdSum || '0'));
         case OfferType.TeeOffer:
             return orderMinDeposit;
         default:
@@ -119,7 +119,7 @@ export const getCalcOrderDepositSum = async (
 };
 
 export const getMinDepositWorkflow = async (formValues: GetMinDepositWorkflow): Promise<number> => {
-    const orderMinDeposit = Number(Web3.utils.fromWei(await Superpro.getParam(ParamName.OrderMinimumDeposit)));
+    const orderMinDeposit = Math.round(Number(Web3.utils.fromWei(await Superpro.getParam(ParamName.OrderMinimumDeposit))) || 0);
     const {
         data = [],
         solution = [],

@@ -101,7 +101,7 @@ export const CheckboxUi: FC<CheckboxUiProps> = memo(({
                     onClick={handleOnClick}
                 >
                     {labelURL ? (
-                        <Link to={{ pathname: labelURL, state: { from: document.location.pathname, localState } }}>
+                        <Link to={{ pathname: labelURL }}>
                             {label}
                         </Link>
                     ) : (

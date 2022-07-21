@@ -1,0 +1,1 @@
+export { useTableQueryFetcher } from './useTableQueryFetcher';

@@ -12,7 +12,7 @@ export const getColumns = (): Array<ColumnProps<TeeOffersColumns>> => [
     {
         Header: 'ID',
         id: 'id',
-        Cell: ({ row }) => (row.original?.address || '-'),
+        Cell: ({ row }) => (row.original?.id || '-'),
         width: 'auto',
     },
     {

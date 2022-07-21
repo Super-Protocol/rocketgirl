@@ -49,7 +49,7 @@ export const Title = memo<TitleProps>(({
             OrderStatus.Canceled,
             OrderStatus.Done,
             OrderStatus.Error,
-        ].includes(status) && unspentDeposit;
+        ].includes(status) && !!unspentDeposit;
     }, [orderSdk]);
     const isShowResultBtn = useMemo(
         () => !!status && [OrderStatus.Done, OrderStatus.Error].includes(status),
@@ -60,7 +60,7 @@ export const Title = memo<TitleProps>(({
         setLoading(true);
         try {
             await cancelOrder({
-                orderAddress: order?.address,
+                orderAddress: order?.id,
                 subOrdersList,
                 actionAccountAddress: selectedAddress,
                 web3: instance,
@@ -79,7 +79,7 @@ export const Title = memo<TitleProps>(({
 
     const onReplenishOrder = useCallback(async () => {
         showModal({
-            children: <ReplenishOrderModal orderAddress={order?.address} onSuccess={onSuccessReplenish} />,
+            children: <ReplenishOrderModal orderAddress={order?.id} onSuccess={onSuccessReplenish} />,
             messages: {
                 header: 'Replenish deposit',
             },
@@ -88,15 +88,15 @@ export const Title = memo<TitleProps>(({
 
     const onGetResult = useCallback(async () => {
         showModal({
-            children: <GetResultModal orderAddress={order?.address} status={status} />,
+            children: <GetResultModal orderAddress={order?.id} status={status} />,
         });
     }, [showModal, order, status]);
 
     const onWithdrawDeposit = useCallback(async () => {
         setLoading(true);
         try {
-            await new Order(order?.address).withdrawChange({ from: selectedAddress, web3: instance });
-            showSuccessModal('Withdraw deposit successfully');
+            await new Order(order?.id).withdrawChange({ from: selectedAddress, web3: instance });
+            showSuccessModal('Withdraw deposit successfully done');
         } catch (e) {
             showErrorModal(e);
         }

@@ -9,7 +9,7 @@ import { useDebouncedCallback } from 'use-debounce';
 import { useMount } from 'react-use';
 import { Web3ReactStateUpdate } from '@web3-react/types';
 import CONFIG from '@/config';
-import { getBalance as getBalanceMetamask, useConnectToMetaMask } from '@/common/hooks/useConnectToMetaMask';
+import { useConnectToMetaMask } from '@/common/hooks/useConnectToMetaMask';
 import { useLocalStorage } from '@/common/hooks/useLocalStorage';
 import toastr from '@/services/Toastr/toastr';
 import {
@@ -18,15 +18,6 @@ import {
 
 export const getInitialWallet = (): Wallet => ({});
 export const getInitialBalance = (): Balance => ({ matic: null, tee: null });
-
-export const getBalance = async (walletType: SelectedWalletType, address?: string): Promise<Balance> => {
-    switch (walletType) {
-        case WalletType.metaMask:
-            return getBalanceMetamask(address);
-        default:
-            return getInitialBalance();
-    }
-};
 
 export const useWallet = (): UseWalletResult => {
     const [balance, setBalance] = useState(getInitialBalance);
@@ -49,18 +40,7 @@ export const useWallet = (): UseWalletResult => {
         }
         return Web3.utils.toChecksumAddress(selectedWallet.accounts[0]);
     }, [selectedWallet]);
-    const updateBalance = useCallback(async () => {
-        try {
-            setLoadingBalance(true);
-            if (selectedWalletType && selectedAddress) {
-                setBalance(await getBalance(selectedWalletType, selectedAddress));
-            }
-        } catch (e) {
-            toastr.error((e as Error)?.message);
-        } finally {
-            setLoadingBalance(false);
-        }
-    }, [selectedWalletType, selectedAddress]);
+
     const actions = useCallback((walletType: WalletType) => ({
         startActivation: () => () => setSelectedWalletType(walletType),
         update: async (stateUpdate: Web3ReactStateUpdate) => {
@@ -81,7 +61,19 @@ export const useWallet = (): UseWalletResult => {
             setSelectedWalletType(null);
         },
     }), [setSelectedWalletType]);
-    const { connect: connectMetaMask } = useConnectToMetaMask(actions(WalletType.metaMask));
+    const { connect: connectMetaMask, getBalance } = useConnectToMetaMask(actions(WalletType.metaMask));
+    const updateBalance = useCallback(async () => {
+        try {
+            setLoadingBalance(true);
+            if (selectedWalletType && selectedAddress) {
+                setBalance(await getBalance(selectedAddress));
+            }
+        } catch (e) {
+            toastr.error((e as Error)?.message);
+        } finally {
+            setLoadingBalance(false);
+        }
+    }, [selectedAddress, getBalance, selectedWalletType]);
     // const { connect: connectWalletConnect } = useConnectToWalletConnect(actions(WalletType.walletConnect));
     const onChangeWallet = useCallback(async (walletType?: SelectedWalletType) => {
         if (loading || !walletType) return;

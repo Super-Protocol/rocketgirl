@@ -11,21 +11,21 @@ import { Box, CardUi, Spinner } from '@/uikit';
 import { useOrderLazyQuery } from '@/gql/graphql';
 import { NoAccountBlock } from '@/common/components/NoAccountBlock';
 import { WalletContext } from '@/common/context/WalletProvider';
-import { getOrderSdk, GetOrderSdk } from '@/connectors/orders';
-import { DetailsProps } from './types';
+import { getOrderSdk, GetOrderSdk, onOrdersStatusUpdatedSubscription } from '@/connectors/orders';
+import { DetailsProps, SubOrderInfo } from './types';
 import { Title } from './Title';
-import { getInfo, getTee } from './helpers';
+import { getInfo, getTee, getOrdersCancelList } from './helpers';
 import classes from './Details.module.scss';
 import { SubOrdersTable } from './SubOrdersTable';
 
-export const Details = memo<DetailsProps>(({ id }) => {
+export const Details = memo<DetailsProps>(({ id = '' }) => {
     const {
         isConnected,
-        // selectedAddress,
+        selectedAddress,
     } = useContext(WalletContext);
     const [orderSdk, setOrderSdk] = useState<GetOrderSdk>();
     const [loadingOrderSdk, setLoadingOrderSdk] = useState(false);
-    const [subOrdersList, setSubOrdersList] = useState([]);
+    const [addressSuborders, setAddressSuborders] = useState<SubOrderInfo>();
     const [getOrder, orderResult] = useOrderLazyQuery({ variables: { id } });
     const updateOrderInfo = useCallback(async () => {
         setLoadingOrderSdk(true);
@@ -39,12 +39,34 @@ export const Details = memo<DetailsProps>(({ id }) => {
     }, [id, getOrder]);
     const loading = useMemo(() => orderResult?.loading || loadingOrderSdk, [orderResult, loadingOrderSdk]);
     const order = useMemo(() => orderResult.data?.order, [orderResult]);
-    const orderAddress = useMemo(() => order?.address, [order]);
-    const info = useMemo(() => getInfo(order, orderSdk), [order, orderSdk]);
+    const orderId = useMemo(() => order?.id, [order]);
+    const info = useMemo(() => getInfo(order, orderSdk, addressSuborders), [order, orderSdk, addressSuborders]);
     const tee = useMemo(() => getTee(order, orderSdk), [order, orderSdk]);
+    const subOrdersList = useMemo(() => getOrdersCancelList(addressSuborders), [addressSuborders]);
     useEffect(() => {
         updateOrderInfo();
     }, [updateOrderInfo]);
+    useEffect(() => {
+        let subscription: () => void;
+        if (orderId) {
+            subscription = onOrdersStatusUpdatedSubscription(
+                (status) => {
+                    setOrderSdk((prev: any) => {
+                        return {
+                            ...prev,
+                            orderInfo: { ...(prev?.orderInfo ? prev.orderInfo : {}), status },
+                        };
+                    });
+                },
+                orderId,
+            );
+        }
+        return () => {
+            if (subscription) {
+                subscription();
+            }
+        };
+    }, [orderId]);
     if (loading) return <Spinner fullscreen />;
     // if (!isMyOrder) return null; // todo hide before production
     if (!isConnected) return <NoAccountBlock message="Connect your wallet to see if you made an order" />;
@@ -90,11 +112,12 @@ export const Details = memo<DetailsProps>(({ id }) => {
                     </CardUi>
                 )}
             </Box>
-            {!!orderAddress && (
+            {!!orderId && (
                 <SubOrdersTable
-                    address={orderAddress}
+                    id={orderId}
                     classNameWrap={classes.table}
-                    setSubOrdersList={setSubOrdersList}
+                    setAddressSuborders={setAddressSuborders}
+                    selectedAddress={selectedAddress}
                 />
             )}
         </Box>

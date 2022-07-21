@@ -21,7 +21,6 @@ export const GetMaticTokens: FC<GetMaticTokensProps> = memo(({ className }) => {
         setLoading(true);
         try {
             await transfer({
-                variables: { transfer: { to: selectedAddress } },
                 onCompleted: (data) => {
                     if (data?.transfer) {
                         showSuccessModal('Tokens will be transferred to you in 1-2 minutes');

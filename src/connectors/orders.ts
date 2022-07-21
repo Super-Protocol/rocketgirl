@@ -186,8 +186,8 @@ export const cancelOrder = async ({
     if (!web3) throw new Error('Web3 instance required');
     if (subOrdersList) {
         await Promise.all(
-            subOrdersList.map(async (address) => {
-                await new Order(address).cancelOrder({ from: actionAccountAddress, web3 });
+            subOrdersList.map(async (id) => {
+                await new Order(id).cancelOrder({ from: actionAccountAddress, web3 });
             }),
         );
     }
@@ -215,12 +215,12 @@ export const replenishOrder = async ({
     await OrdersFactory.refillOrderDeposit(orderAddress, amountInWei, { from: accountAddress, web3: instance });
 };
 
-export const getOrderSdk = async (address?: string): Promise<GetOrderSdk> => {
-    if (!address) throw new Error('Order address required');
-    const order = new Order(address);
+export const getOrderSdk = async (id?: string): Promise<GetOrderSdk> => {
+    if (!id) throw new Error('Order address required');
+    const order = new Order(id);
     const orderInfo = await order.getOrderInfo();
     const depositSpent = await order.getDepositSpent();
-    const orderHoldDeposit = Number(Web3.utils.fromWei(await OrdersFactory.getOrderHoldDeposit(address)));
+    const orderHoldDeposit = Number(Web3.utils.fromWei(await OrdersFactory.getOrderHoldDeposit(id)));
     return {
         orderInfo,
         depositSpent,
@@ -563,7 +563,7 @@ export const changeStateSubOrders = ({
     });
 };
 
-export const workflow = async (props: WorkflowProps): Promise<void> => {
+export const workflow = async (props: WorkflowProps): Promise<string | undefined> => {
     const {
         values,
         actionAccountAddress,
@@ -680,6 +680,7 @@ export const workflow = async (props: WorkflowProps): Promise<void> => {
         throw e;
     });
     changeState({ process: Process.ORDER_START, status: Status.DONE });
+    return teeOrderAddress;
 };
 
 export const cancelOrders = async (props: CancelOrdersProps): Promise<CancelOrdersResult> => {
@@ -704,4 +705,13 @@ export const cancelOrders = async (props: CancelOrdersProps): Promise<CancelOrde
                 return acc;
             }, { success: [] as CancelOrdersResultSuccess[], error: [] as CancelOrdersResultError[] });
         });
+};
+
+export const onOrdersStatusUpdatedSubscription = (cb: (status: OrderStatus) => void, orderId: string): () => void => {
+    return OrdersFactory.onOrdersStatusUpdated(
+        (_, status: OrderStatus) => {
+            cb(status);
+        },
+        orderId,
+    );
 };

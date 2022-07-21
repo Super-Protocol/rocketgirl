@@ -10,12 +10,24 @@ export interface UseErrorModalResult {
     showSuccessModal: Function;
 }
 
+export interface ModalResultProps {
+    classNameWrap?: string;
+}
+
 export const useErrorModal = (): UseErrorModalResult => {
     const { showModal } = useContext(ModalOkCancelContext);
-    const showErrorModal = useCallback(async (error: Error, props: ModalOkCancelProps) => {
+    const showErrorModal = useCallback(async (error: Error, props: ModalOkCancelProps, modalResultProps: ModalResultProps) => {
         const e = getParsedErrorTransactions(error);
         await showModal({
-            children: <ModalResult transactionHash={e?.transactionHash} type="error">{e?.message}</ModalResult>,
+            children: (
+                <ModalResult
+                    transactionHash={e?.transactionHash}
+                    type="error"
+                    {...modalResultProps}
+                >
+                    {e?.message}
+                </ModalResult>
+            ),
             ...props,
         });
     }, [showModal]);

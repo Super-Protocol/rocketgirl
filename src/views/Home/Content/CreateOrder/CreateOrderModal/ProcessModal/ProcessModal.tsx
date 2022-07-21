@@ -2,6 +2,7 @@ import React, {
     memo, FC, useCallback, useMemo, useContext, useState,
 } from 'react';
 import { useMount } from 'react-use';
+import { useNavigate } from 'react-router-dom';
 import toastr from '@/services/Toastr/toastr';
 import { Box, Button, ProgressBar } from '@/uikit';
 import { WalletContext } from '@/common/context';
@@ -17,6 +18,7 @@ import { CancellingModal } from '../CancellingModal';
 import { transmittalText } from './helpers';
 
 export const ProcessModal: FC<ProcessModalProps> = memo(({ formValues, initialState }) => {
+    const navigate = useNavigate();
     const { selectedAddress, instance } = useContext(WalletContext);
     const { showSuccessModal } = useErrorModal();
     const { showModal } = useContext(ModalOkCancelContext);
@@ -44,7 +46,7 @@ export const ProcessModal: FC<ProcessModalProps> = memo(({ formValues, initialSt
     const executeWorkflow = useCallback(async (state?: State) => {
         try {
             setLoading(true);
-            await runWorkflow({
+            const teeOrderAddress = await runWorkflow({
                 formValues,
                 actionAccountAddress: selectedAddress,
                 web3: instance,
@@ -54,7 +56,7 @@ export const ProcessModal: FC<ProcessModalProps> = memo(({ formValues, initialSt
                 'Your order has been successfully created',
                 undefined,
                 'Go to order',
-                // () => gotoOrder(),
+                () => navigate(`order/${teeOrderAddress}`),
             );
         } catch (e) {
             console.warn(e);
@@ -62,7 +64,7 @@ export const ProcessModal: FC<ProcessModalProps> = memo(({ formValues, initialSt
         } finally {
             setLoading(false);
         }
-    }, [instance, formValues, selectedAddress, runWorkflow, showSuccessModal]);
+    }, [instance, formValues, selectedAddress, runWorkflow, showSuccessModal, navigate]);
     const getErrorFromMapList = useCallback((process: Process) => {
         return stateProcess[process]?.error?.size
             ? [...stateProcess[process].error as Map<string | null, Error>]?.[0]?.[1]

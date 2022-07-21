@@ -10,6 +10,7 @@ import {
 import { TOfferType } from '@/gql/graphql';
 import { Item } from '@/uikit/Select/types';
 import CONFIG from '@/config';
+import Web3 from 'web3';
 
 export function getEnumName(value: string, en: { [key: string]: string | number }): string {
     if (!value) return '';
@@ -103,6 +104,14 @@ export const isJSONString = (str: string): boolean => {
     return true;
 };
 
+export const JSONParseSafe = (str: string): string => {
+    try {
+        return JSON.parse(str);
+    } catch (e) {
+        return '';
+    }
+};
+
 export const getExternalId = (): string => genRanHex(16);
 
 export const getBase64FromBlob = (blob: Blob): Promise<string | ArrayBuffer | null> => new Promise((resolve, reject) => {
@@ -135,3 +144,16 @@ export const sliceWithDot = (str?: string, lenFrom = 6): string => {
 };
 
 export const sleep = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
+
+export const getFixedDeposit = (deposit: string, wei = false): string => (
+    (deposit ? Math.round(Number(wei ? Web3.utils.fromWei(deposit) : deposit) * 1000) / 1000 : 0)
+).toFixed(3);
+
+export function parseJwt<T>(token?: string): T | null {
+    if (!token) return null;
+    try {
+        return JSON.parse(atob(token.split('.')[1]));
+    } catch (e) {
+        return null;
+    }
+}

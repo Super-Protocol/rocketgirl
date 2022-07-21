@@ -1,0 +1,1 @@
+export { AccountDropdownFooter } from './AccountDropdownFooter';

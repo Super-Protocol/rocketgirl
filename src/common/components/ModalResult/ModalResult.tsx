@@ -8,6 +8,7 @@ import classes from './ModalResult.module.scss';
 export const ModalResult: FC<ModalResultProps> = memo(({
     children,
     classNameMessage,
+    classNameWrap,
     transactionHash,
     type,
 }) => {
@@ -45,7 +46,7 @@ export const ModalResult: FC<ModalResultProps> = memo(({
         }
     }, [type]);
     return (
-        <Box className={classes.wrap} direction="column" alignItems="center" justifyContent="center">
+        <Box className={cn(classes.wrap, classNameWrap)} direction="column" alignItems="center" justifyContent="center">
             {renderType}
             {!!link && <a href={link} target="_blank" rel="noopener noreferrer">transaction link</a>}
             <div className={cn(classes.txt, classNameMessage)}>{children}</div>

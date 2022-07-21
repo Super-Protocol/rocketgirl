@@ -3,8 +3,9 @@ import { OrderStatus } from '@super-protocol/sp-sdk-js';
 import { CopyToClipboard } from '@/uikit';
 import { StatusBarToolkit } from '@/common/components/';
 import { OrderQuery } from '@/gql/graphql';
-import { getTableDate } from '@/common/helpers';
+import { getFixedDeposit, getTableDate } from '@/common/helpers';
 import { GetOrderSdk } from '@/connectors/orders';
+import { SubOrderInfo } from './types';
 
 export interface TableInfoItem {
     key: string;
@@ -21,10 +22,20 @@ export const getUnspentDeposit = (orderHoldDepositSdk?: string | number, deposit
     return Number.isNaN(diff) ? null : diff;
 };
 
-export const getInfo = (order?: OrderQuery['order'], orderSdk?: GetOrderSdk): TableInfo | null => {
+const getSubOrdersDeposit = (addressSuborders?: SubOrderInfo): number => {
+    return addressSuborders
+        ? Object.values(addressSuborders).reduce((acc: number, item) => (acc + item.orderHoldDeposit), 0)
+        : 0;
+};
+
+export const getInfo = (
+    order?: OrderQuery['order'],
+    orderSdk?: GetOrderSdk,
+    addressSuborders?: SubOrderInfo,
+): TableInfo | null => {
     if (!order) return null;
     const {
-        address,
+        id,
         origins,
         orderResult,
         orderInfo,
@@ -37,11 +48,13 @@ export const getInfo = (order?: OrderQuery['order'], orderSdk?: GetOrderSdk): Ta
     const { status: statusSdk } = orderInfoSdk || {};
     const { encryptedArgs } = orderInfo || {};
     const unspentDeposit = getUnspentDeposit(orderHoldDepositSdk, depositSpentSdk);
+    const subOrdersDeposit = getSubOrdersDeposit(addressSuborders);
+    const totalDeposit = (orderHoldDepositSdk || 0) + (subOrdersDeposit || 0);
     return {
         list: [
             {
                 key: 'Id',
-                value: address,
+                value: id,
             },
             {
                 key: 'File',
@@ -49,11 +62,11 @@ export const getInfo = (order?: OrderQuery['order'], orderSdk?: GetOrderSdk): Ta
             },
             {
                 key: 'Total Deposit',
-                value: orderHoldDepositSdk || '-',
+                value: getFixedDeposit(!Number.isNaN(totalDeposit) ? `${totalDeposit}` : ''),
             },
             {
                 key: 'Unspent Deposit',
-                value: typeof unspentDeposit === 'number' ? unspentDeposit : '-',
+                value: getFixedDeposit(!Number.isNaN(unspentDeposit) ? `${unspentDeposit}` : ''),
             },
             {
                 key: 'Status',
@@ -106,12 +119,24 @@ export const getTee = (order?: OrderQuery['order'], orderSdk?: GetOrderSdk): Tab
             },
             {
                 key: 'Estimated cost',
-                value: orderHoldDepositSdk || '-',
+                value: orderHoldDepositSdk
+                    ? (Math.round(orderHoldDepositSdk * 1000) / 1000).toFixed(3)
+                    : '-',
             },
             {
                 key: 'Actual cost',
-                value: depositSpentSdk || '-',
+                value: depositSpentSdk
+                    ? (Math.round(Number(depositSpentSdk) * 1000) / 1000).toFixed(3)
+                    : '-',
             },
         ],
     };
 };
+
+export const getOrdersCancelList = (addressSuborders?: SubOrderInfo): string[] => (
+    addressSuborders
+        ? Object.entries(addressSuborders).reduce((acc: string[], [k, v]) => (
+            v.cancelable ? [...acc, k] : acc
+        ), [])
+        : []
+);

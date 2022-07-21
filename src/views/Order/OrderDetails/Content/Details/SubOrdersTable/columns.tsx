@@ -1,10 +1,9 @@
-import React from 'react';
 import { ColumnProps } from 'react-table';
 import { Order } from '@/gql/graphql';
 import { CopyToClipboard } from '@/uikit';
 import { UseTableQueryFetcherResultList } from '@/common/hooks/useTableQueryFetcher';
 import { StatusBar } from '@/common/components/StatusBar';
-import { getOfferTypeName, getTableDate } from '@/common/helpers';
+import { getFixedDeposit, getOfferTypeName, getTableDate } from '@/common/helpers';
 import { TooltipLink } from '@/common/components/TooltipLink';
 
 export type OrdersColumns = UseTableQueryFetcherResultList<Order>;
@@ -15,11 +14,11 @@ export const getColumns = (): Array<ColumnProps<OrdersColumns>> => [
         id: 'id',
         width: 100,
         Cell: ({ row }) => {
-            const { address } = row.original || {};
-            if (!address) return '-';
+            const { id } = row.original || {};
+            if (!id) return '-';
             return (
                 <CopyToClipboard>
-                    {address}
+                    {id}
                 </CopyToClipboard>
             );
         },
@@ -72,8 +71,8 @@ export const getColumns = (): Array<ColumnProps<OrdersColumns>> => [
         isEllipsis: true,
     },
     {
-        Header: 'Cancellable',
-        id: 'cancellable',
+        Header: 'Cancelable',
+        id: 'cancelable',
         Cell: ({ row }) => {
             const { offerInfo } = row.original || {};
             const { cancelable } = offerInfo || {};
@@ -98,7 +97,7 @@ export const getColumns = (): Array<ColumnProps<OrdersColumns>> => [
         id: 'estimatedCost',
         Cell: ({ row }) => {
             const { orderHoldDeposit } = row.original || {};
-            return orderHoldDeposit || '-';
+            return getFixedDeposit(orderHoldDeposit, true);
         },
         width: 'auto',
     },
@@ -107,7 +106,7 @@ export const getColumns = (): Array<ColumnProps<OrdersColumns>> => [
         id: 'actualCost',
         Cell: ({ row }) => {
             const { depositSpent } = row.original || {};
-            return depositSpent || '-';
+            return getFixedDeposit(depositSpent, true);
         },
         width: 'auto',
     },

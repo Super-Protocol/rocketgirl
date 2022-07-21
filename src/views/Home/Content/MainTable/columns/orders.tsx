@@ -1,9 +1,10 @@
 import { ColumnProps } from 'react-table';
+import Web3 from 'web3';
 import { Order, TOfferType } from '@/gql/graphql';
 import { CopyToClipboard, TextCounter } from '@/uikit';
 import { UseTableQueryFetcherResultList } from '@/common/hooks/useTableQueryFetcher';
 import { StatusBar } from '@/common/components/StatusBar';
-import { getTableDate } from '@/common/helpers';
+import { getFixedDeposit, getTableDate } from '@/common/helpers';
 
 export type OrdersColumns = UseTableQueryFetcherResultList<Order>;
 export interface GetColumnsProps {
@@ -33,11 +34,11 @@ export const getColumns = ({ urlBack }: GetColumnsProps): Array<ColumnProps<Orde
         id: 'id',
         width: 'auto',
         Cell: ({ row }) => {
-            const { address } = row.original || {};
-            if (!address) return '-';
+            const { id } = row.original || {};
+            if (!id) return '-';
             return (
-                <CopyToClipboard url={`order/${address}?${urlBack}`}>
-                    {address}
+                <CopyToClipboard url={`order/${id}?${urlBack}`}>
+                    {id}
                 </CopyToClipboard>
             );
         },
@@ -85,7 +86,7 @@ export const getColumns = ({ urlBack }: GetColumnsProps): Array<ColumnProps<Orde
         id: 'totalDeposit',
         Cell: ({ row }) => {
             const { orderHoldDeposit } = row.original || {};
-            return typeof orderHoldDeposit === 'number' ? orderHoldDeposit : '-';
+            return getFixedDeposit(orderHoldDeposit, true);
         },
         width: 'auto',
     },
@@ -93,10 +94,15 @@ export const getColumns = ({ urlBack }: GetColumnsProps): Array<ColumnProps<Orde
         Header: 'Unspent Deposit, TEE',
         id: 'unspentDeposit',
         Cell: ({ row }) => {
-            const { orderHoldDeposit, depositSpent } = row.original || {};
-            return typeof orderHoldDeposit === 'number'
-                ? orderHoldDeposit - Number(depositSpent)
-                : '-';
+            const { orderHoldDeposit, depositSpent: depositSpentProps } = row.original || {};
+            const holdDeposit = typeof orderHoldDeposit === 'string'
+                ? Number(Web3.utils.fromWei(orderHoldDeposit))
+                : 0;
+            const depositSpent: number = depositSpentProps && typeof depositSpentProps === 'string'
+                ? Number(Web3.utils.fromWei(depositSpentProps))
+                : 0;
+            const diff = holdDeposit - depositSpent;
+            return getFixedDeposit(!Number.isNaN(diff) ? `${diff}` : '');
         },
         width: 'auto',
     },
