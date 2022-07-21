@@ -148,3 +148,12 @@ export const sleep = (ms: number): Promise<void> => new Promise((resolve) => set
 export const getFixedDeposit = (deposit: string, wei = false): string => (
     (deposit ? Math.round(Number(wei ? Web3.utils.fromWei(deposit) : deposit) * 1000) / 1000 : 0)
 ).toFixed(3);
+
+export function parseJwt<T>(token?: string): T | null {
+    if (!token) return null;
+    try {
+        return JSON.parse(atob(token.split('.')[1]));
+    } catch (e) {
+        return null;
+    }
+}
