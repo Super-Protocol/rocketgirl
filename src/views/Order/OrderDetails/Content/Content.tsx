@@ -5,7 +5,7 @@ import { Content as ContentUIKit } from '@/uikit';
 import { Details } from './Details';
 
 export const Content = (): ReactElement => {
-    const { id } = useParams();
+    const { id } = useParams<{ id: string }>();
 
     return (
         <ContentUIKit>

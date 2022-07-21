@@ -104,6 +104,14 @@ export const isJSONString = (str: string): boolean => {
     return true;
 };
 
+export const JSONParseSafe = (str: string): string => {
+    try {
+        return JSON.parse(str);
+    } catch (e) {
+        return '';
+    }
+};
+
 export const getExternalId = (): string => genRanHex(16);
 
 export const getBase64FromBlob = (blob: Blob): Promise<string | ArrayBuffer | null> => new Promise((resolve, reject) => {

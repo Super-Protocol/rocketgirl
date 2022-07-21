@@ -1,5 +1,5 @@
 export interface DetailsProps {
-    id: string;
+    id?: string;
 }
 
 export type SubOrderInfo = {

@@ -5,6 +5,8 @@ import compact from 'lodash.compact';
 import { getMainDefinition } from '@apollo/client/utilities';
 import wsLink from './links/wsLink';
 import uploadLink from './links/uploadLink';
+import authLink from './links/authLink';
+import errorLink from './links/errorLink';
 // import removeTypenameLink from './links/removeTypenameLink';
 
 const getClient = (): ApolloClient<any> => {
@@ -20,6 +22,8 @@ const getClient = (): ApolloClient<any> => {
     return new ApolloClient({
         link: ApolloLink.from(compact([
             // removeTypenameLink,
+            errorLink,
+            authLink,
             connectionsLink,
         ])),
         cache: new InMemoryCache({}),

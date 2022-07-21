@@ -100,17 +100,6 @@ export type ConnectionArgs = {
   sortDir?: InputMaybe<Scalars['String']>;
 };
 
-export type CreateProviderInput = {
-  /** provider address */
-  address: Scalars['String'];
-  authority?: InputMaybe<Scalars['String']>;
-  availableDeposit?: InputMaybe<Scalars['String']>;
-  origins?: InputMaybe<OriginsInput>;
-  providerInfo: ProviderInfoInput;
-  teeOffers?: InputMaybe<Array<Scalars['String']>>;
-  valueOffers?: InputMaybe<Array<Scalars['String']>>;
-};
-
 export type Erc20 = {
   __typename?: 'Erc20';
   /** system identifier */
@@ -287,62 +276,10 @@ export type LockingPageInfo = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  createProvider: Provider;
-  removeConfig: Config;
-  removeOffer: TeeOffer;
-  removeProvider: Provider;
   /** Transfers specific amount of TEE tokens to specific address */
   teeTransfer: Scalars['Boolean'];
   /** Transfers specific amount of TEE tokens to specific address */
   transfer: Scalars['Boolean'];
-  updateConfig: Config;
-  updateOffer: TeeOffer;
-  updateProvider: Provider;
-};
-
-
-export type MutationCreateProviderArgs = {
-  createProviderInput: CreateProviderInput;
-};
-
-
-export type MutationRemoveConfigArgs = {
-  _id: Scalars['String'];
-};
-
-
-export type MutationRemoveOfferArgs = {
-  _id: Scalars['String'];
-};
-
-
-export type MutationRemoveProviderArgs = {
-  _id: Scalars['String'];
-};
-
-
-export type MutationTeeTransferArgs = {
-  address: Scalars['String'];
-};
-
-
-export type MutationTransferArgs = {
-  address: Scalars['String'];
-};
-
-
-export type MutationUpdateConfigArgs = {
-  updateConfigInput: UpdateConfigInput;
-};
-
-
-export type MutationUpdateOfferArgs = {
-  updateTeeOfferInput: UpdateTeeOfferInput;
-};
-
-
-export type MutationUpdateProviderArgs = {
-  updateProviderInput: UpdateProviderInput;
 };
 
 export type Offer = {
@@ -816,6 +753,7 @@ export type ProviderPageInfo = {
 export type Query = {
   __typename?: 'Query';
   balanceOf: Scalars['String'];
+  checkAuthToken: Scalars['String'];
   config: Config;
   configs: ListConfigResponse;
   erc20: Erc20;
@@ -1215,35 +1153,6 @@ export type TransactionPageInfo = {
   startCursor?: Maybe<Scalars['String']>;
 };
 
-export type UpdateConfigInput = {
-  _id: Scalars['String'];
-  /** config name */
-  name?: InputMaybe<Scalars['String']>;
-  value?: InputMaybe<ValueObjectType>;
-};
-
-export type UpdateProviderInput = {
-  _id: Scalars['String'];
-  /** provider address */
-  address?: InputMaybe<Scalars['String']>;
-  authority?: InputMaybe<Scalars['String']>;
-  availableDeposit?: InputMaybe<Scalars['String']>;
-  origins?: InputMaybe<OriginsInput>;
-  providerInfo?: InputMaybe<ProviderInfoInput>;
-  teeOffers?: InputMaybe<Array<Scalars['String']>>;
-  valueOffers?: InputMaybe<Array<Scalars['String']>>;
-};
-
-export type UpdateTeeOfferInput = {
-  _id: Scalars['String'];
-  authority?: InputMaybe<Scalars['String']>;
-  /** TEE offer id */
-  id?: InputMaybe<Scalars['String']>;
-  offerInfo?: InputMaybe<TeeOfferInfoInput>;
-  origins?: InputMaybe<OriginsInput>;
-  provider?: InputMaybe<Scalars['String']>;
-};
-
 export type ValueObject = {
   __typename?: 'ValueObject';
   actionAccountAddress?: Maybe<Scalars['String']>;
@@ -1289,6 +1198,11 @@ export type ValueObjectType = {
   voting?: InputMaybe<Scalars['String']>;
 };
 
+export type CheckAuthTokenQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type CheckAuthTokenQuery = { __typename?: 'Query', checkAuthToken: string };
+
 export type PageDataDtoFragmentFragment = { __typename?: 'PageDataDto', count: number, limit: number, offset: number };
 
 export type BalanceOfQueryVariables = Exact<{
@@ -1312,16 +1226,12 @@ export type EventSubscriptionVariables = Exact<{
 
 export type EventSubscription = { __typename?: 'Subscription', event: { __typename?: 'SubscriptionPayload', data?: Array<string> | null, type: SubscriptionType, subscriptionSource: SubscriptionSource } };
 
-export type TransferMutationVariables = Exact<{
-  address: Scalars['String'];
-}>;
+export type TransferMutationVariables = Exact<{ [key: string]: never; }>;
 
 
 export type TransferMutation = { __typename?: 'Mutation', transfer: boolean };
 
-export type TeeTransferMutationVariables = Exact<{
-  address: Scalars['String'];
-}>;
+export type TeeTransferMutationVariables = Exact<{ [key: string]: never; }>;
 
 
 export type TeeTransferMutation = { __typename?: 'Mutation', teeTransfer: boolean };
@@ -1420,6 +1330,38 @@ export const PageDataDtoFragmentFragmentDoc = gql`
   offset
 }
     `;
+export const CheckAuthTokenDocument = gql`
+    query CheckAuthToken {
+  checkAuthToken
+}
+    `;
+
+/**
+ * __useCheckAuthTokenQuery__
+ *
+ * To run a query within a React component, call `useCheckAuthTokenQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCheckAuthTokenQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCheckAuthTokenQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useCheckAuthTokenQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<CheckAuthTokenQuery, CheckAuthTokenQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<CheckAuthTokenQuery, CheckAuthTokenQueryVariables>(CheckAuthTokenDocument, options);
+      }
+export function useCheckAuthTokenLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<CheckAuthTokenQuery, CheckAuthTokenQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<CheckAuthTokenQuery, CheckAuthTokenQueryVariables>(CheckAuthTokenDocument, options);
+        }
+export type CheckAuthTokenQueryHookResult = ReturnType<typeof useCheckAuthTokenQuery>;
+export type CheckAuthTokenLazyQueryHookResult = ReturnType<typeof useCheckAuthTokenLazyQuery>;
+export type CheckAuthTokenQueryResult = Apollo.QueryResult<CheckAuthTokenQuery, CheckAuthTokenQueryVariables>;
 export const BalanceOfDocument = gql`
     query BalanceOf($address: String!) {
   result: balanceOf(address: $address)
@@ -1519,8 +1461,8 @@ export function useEventSubscription(baseOptions?: ApolloReactHooks.Subscription
 export type EventSubscriptionHookResult = ReturnType<typeof useEventSubscription>;
 export type EventSubscriptionResult = Apollo.SubscriptionResult<EventSubscription>;
 export const TransferDocument = gql`
-    mutation Transfer($address: String!) {
-  transfer(address: $address)
+    mutation Transfer {
+  transfer
 }
     `;
 export type TransferMutationFn = Apollo.MutationFunction<TransferMutation, TransferMutationVariables>;
@@ -1538,7 +1480,6 @@ export type TransferMutationFn = Apollo.MutationFunction<TransferMutation, Trans
  * @example
  * const [transferMutation, { data, loading, error }] = useTransferMutation({
  *   variables: {
- *      address: // value for 'address'
  *   },
  * });
  */
@@ -1550,8 +1491,8 @@ export type TransferMutationHookResult = ReturnType<typeof useTransferMutation>;
 export type TransferMutationResult = Apollo.MutationResult<TransferMutation>;
 export type TransferMutationOptions = Apollo.BaseMutationOptions<TransferMutation, TransferMutationVariables>;
 export const TeeTransferDocument = gql`
-    mutation TeeTransfer($address: String!) {
-  teeTransfer(address: $address)
+    mutation TeeTransfer {
+  teeTransfer
 }
     `;
 export type TeeTransferMutationFn = Apollo.MutationFunction<TeeTransferMutation, TeeTransferMutationVariables>;
@@ -1569,7 +1510,6 @@ export type TeeTransferMutationFn = Apollo.MutationFunction<TeeTransferMutation,
  * @example
  * const [teeTransferMutation, { data, loading, error }] = useTeeTransferMutation({
  *   variables: {
- *      address: // value for 'address'
  *   },
  * });
  */

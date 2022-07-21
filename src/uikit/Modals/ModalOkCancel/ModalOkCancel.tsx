@@ -12,6 +12,7 @@ import { ModalOkCancelProps } from './types';
 
 export const ModalOkCancel: FC<ModalOkCancelProps> = memo(({
     show: showProps,
+    backdrop,
     onClose = () => {},
     onCancel = () => {},
     onContinue = () => {},
@@ -52,6 +53,7 @@ export const ModalOkCancel: FC<ModalOkCancelProps> = memo(({
             show={show}
             onHide={onClose}
             size="lg"
+            backdrop={backdrop}
             dialogClassName={cn(classes.root, classNameWrap)}
             centered
             backdropClassName={classes.backdrop}
