@@ -5,6 +5,7 @@ import { Outlet } from 'react-router-dom';
 import { RouteGuard } from '@/router/RouteGuard';
 import { ModalOkCancelProvider, WalletContextProvider } from '@/common/context';
 import { useBlockchainConnector } from '@/common/hooks/useBlockchainConnector';
+import { AccessTokenAndWalletChecker } from '@/common/components/AccessTokenAndWalletChecker';
 import { Spinner } from '@/uikit';
 import { HomeLayoutProps } from './types';
 
@@ -17,7 +18,9 @@ const HomeLayout: FC<HomeLayoutProps> = ({ children }) => {
         <RouteGuard>
             <WalletContextProvider>
                 <ModalOkCancelProvider>
-                    <Outlet />
+                    <AccessTokenAndWalletChecker>
+                        <Outlet />
+                    </AccessTokenAndWalletChecker>
                 </ModalOkCancelProvider>
             </WalletContextProvider>
         </RouteGuard>

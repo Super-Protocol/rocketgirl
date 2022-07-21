@@ -21,6 +21,7 @@ export const ModalOkCancel: FC<ModalOkCancelProps> = memo(({
     classNameWrap,
     classNameBody,
     classNameBottom,
+    classNameMain,
     messages,
     children,
     components,
@@ -69,7 +70,7 @@ export const ModalOkCancel: FC<ModalOkCancelProps> = memo(({
                                 </div>
                             )
                         )}
-                        <div className={classes.main}>
+                        <div className={cn(classes.main, classNameMain)}>
                             {children || messages?.title?.map((message, index) => (
                                 <div className={cn(classes.title, classNameTitle)} key={index}>{message}</div>
                             ))}
