@@ -1,11 +1,9 @@
-import Web3 from 'web3';
 import { ColumnProps } from 'react-table';
-
 import { Order } from '@/gql/graphql';
 import { CopyToClipboard } from '@/uikit';
 import { UseTableQueryFetcherResultList } from '@/common/hooks/useTableQueryFetcher';
 import { StatusBar } from '@/common/components/StatusBar';
-import { getOfferTypeName, getTableDate } from '@/common/helpers';
+import { getFixedDeposit, getOfferTypeName, getTableDate } from '@/common/helpers';
 import { TooltipLink } from '@/common/components/TooltipLink';
 
 export type OrdersColumns = UseTableQueryFetcherResultList<Order>;
@@ -73,8 +71,8 @@ export const getColumns = (): Array<ColumnProps<OrdersColumns>> => [
         isEllipsis: true,
     },
     {
-        Header: 'Cancellable',
-        id: 'cancellable',
+        Header: 'Cancelable',
+        id: 'cancelable',
         Cell: ({ row }) => {
             const { offerInfo } = row.original || {};
             const { cancelable } = offerInfo || {};
@@ -99,9 +97,7 @@ export const getColumns = (): Array<ColumnProps<OrdersColumns>> => [
         id: 'estimatedCost',
         Cell: ({ row }) => {
             const { orderHoldDeposit } = row.original || {};
-            return orderHoldDeposit && typeof orderHoldDeposit === 'string'
-                ? (Math.round(Number(Web3.utils.fromWei(orderHoldDeposit)) * 1000) / 1000).toFixed(3)
-                : '-';
+            return getFixedDeposit(orderHoldDeposit, true);
         },
         width: 'auto',
     },
@@ -110,9 +106,7 @@ export const getColumns = (): Array<ColumnProps<OrdersColumns>> => [
         id: 'actualCost',
         Cell: ({ row }) => {
             const { depositSpent } = row.original || {};
-            return depositSpent && typeof depositSpent === 'string'
-                ? (Math.round(Number(Web3.utils.fromWei(depositSpent)) * 1000) / 1000).toFixed(3)
-                : '-';
+            return getFixedDeposit(depositSpent, true);
         },
         width: 'auto',
     },

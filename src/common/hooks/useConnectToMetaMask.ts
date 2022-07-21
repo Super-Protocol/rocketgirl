@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 import Web3 from 'web3';
+import { useBalanceOfLazyQuery, useTeeBalanceOfLazyQuery } from '@/gql/graphql';
 import { Actions } from '@web3-react/types';
 import { MetaMask } from '@web3-react/metamask';
 import CONFIG from '@/config';
@@ -18,6 +19,7 @@ export const getInitialBalance = (): Balance => ({ matic: null, tee: null });
 export interface UseConnectToMetaMaskResult {
     connect: () => Promise<void>;
     addTeeToken: () => Promise<void>;
+    getBalance: (address: string) => Promise<Balance>;
 }
 
 export const getMaticBalance = async (address?: string): Promise<string | null> => {
@@ -41,6 +43,8 @@ export const getBalance = async (address?: string): Promise<Balance> => {
 };
 
 export const useConnectToMetaMask = (actions: Actions): UseConnectToMetaMaskResult => {
+    const [getBalanceOf] = useBalanceOfLazyQuery();
+    const [getTeeBalanceOf] = useTeeBalanceOfLazyQuery();
     const addTeeToken = useCallback(async () => {
         const success = (window as any).ethereum
             .request({
@@ -72,8 +76,20 @@ export const useConnectToMetaMask = (actions: Actions): UseConnectToMetaMaskResu
         });
     }, [actions]);
 
+    const getBalance = useCallback(async (address: string): Promise<Balance> => {
+        return {
+            matic: await getBalanceOf({ variables: { address } })
+                .then(({ data }) => Web3.utils.fromWei(data?.result || ''))
+                .catch(() => null),
+            tee: await getTeeBalanceOf({ variables: { address } })
+                .then(({ data }) => Web3.utils.fromWei(data?.result || ''))
+                .catch(() => null),
+        };
+    }, [getBalanceOf, getTeeBalanceOf]);
+
     return {
         connect,
         addTeeToken,
+        getBalance,
     };
 };

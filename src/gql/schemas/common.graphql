@@ -3,3 +3,11 @@ fragment PageDataDtoFragment on PageDataDto {
     limit
     offset
 }
+
+query BalanceOf($address: String!) {
+    result: balanceOf(address: $address)
+}
+
+query TeeBalanceOf($address: String!) {
+    result: teeBalanceOf(address: $address)
+}
