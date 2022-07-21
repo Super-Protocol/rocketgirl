@@ -12,7 +12,7 @@ import {
     InputFormik,
     ErrorBox,
 } from '@/uikit';
-import { useAuthCheckerLazyQuery } from '@/gql/graphql';
+import { useCheckAuthTokenLazyQuery } from '@/gql/graphql';
 import { useLocalStorage } from '@/common/hooks/useLocalStorage';
 import { AUTH_TOKEN } from '@/common/constants';
 import { AccessTokenModalProps, FormValues, Fields } from './types';
@@ -20,7 +20,7 @@ import { DEFAULT_TOKEN_ERROR, getValidationSchema } from './helpers';
 import classes from './AccessTokenModal.module.scss';
 
 export const AccessTokenModal: FC<AccessTokenModalProps> = memo(({ onSuccess = () => {} }) => {
-    const [checkAuth] = useAuthCheckerLazyQuery();
+    const [checkAuth] = useCheckAuthTokenLazyQuery();
     const [isValidating, setIsValidating] = useState(false);
     const [loading, setLoading] = useState(false);
     const [, setToken] = useLocalStorage<string>(AUTH_TOKEN, undefined);
@@ -44,11 +44,11 @@ export const AccessTokenModal: FC<AccessTokenModalProps> = memo(({ onSuccess = (
             if (!response?.error) {
                 onSuccess();
             } else {
-                // setToken('');
+                setToken('');
                 setFieldError(Fields.token, response.error?.message || DEFAULT_TOKEN_ERROR);
             }
         } catch (e) {
-            // setToken('');
+            setToken('');
             setFieldError(Fields.token, (e as Error)?.message || DEFAULT_TOKEN_ERROR);
         }
         setLoading(false);

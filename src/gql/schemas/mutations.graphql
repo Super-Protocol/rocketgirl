@@ -1,7 +1,7 @@
-mutation Transfer($address: String!) {
-    transfer(address: $address)
+mutation Transfer {
+    transfer
 }
 
-mutation TeeTransfer($address: String!) {
-    teeTransfer(address: $address)
+mutation TeeTransfer {
+    teeTransfer
 }

@@ -1,11 +1,3 @@
-query AuthChecker {
-    result: providers (pagination: { first: 1 }, filter: {}) {
-        page {
-            edges {
-                node {
-                    _id
-                }
-            }
-        }
-    }
+query CheckAuthToken {
+    checkAuthToken
 }

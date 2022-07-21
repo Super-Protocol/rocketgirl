@@ -21,7 +21,6 @@ export const GetTee: FC<GetTeeProps> = memo(({ className }) => {
         setLoading(true);
         try {
             await transfer({
-                variables: { address: selectedAddress },
                 onCompleted: (data) => {
                     if (data?.teeTransfer) {
                         showSuccessModal('Success');
