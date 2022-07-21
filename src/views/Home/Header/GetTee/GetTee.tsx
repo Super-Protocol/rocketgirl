@@ -23,7 +23,7 @@ export const GetTee: FC<GetTeeProps> = memo(({ className }) => {
             await transfer({
                 onCompleted: (data) => {
                     if (data?.teeTransfer) {
-                        showSuccessModal('Success');
+                        showSuccessModal('Tokens will be transferred to you in 1-2 minutes');
                     } else {
                         throw new Error('Unable to request TEE tokens');
                     }
