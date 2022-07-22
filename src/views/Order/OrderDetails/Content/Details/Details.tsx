@@ -8,13 +8,23 @@ import React, {
 import cn from 'classnames';
 import toastr from '@/services/Toastr/toastr';
 import { Box, CardUi, Spinner } from '@/uikit';
-import { useOrderLazyQuery } from '@/gql/graphql';
+import { useTableQueryFetcher } from '@/common/hooks';
+import { Order, SubOrdersDocument, useOrderLazyQuery } from '@/gql/graphql';
 import { NoAccountBlock } from '@/common/components/NoAccountBlock';
 import { WalletContext } from '@/common/context/WalletProvider';
+import { useTablesSubscriptions } from '@/views/Home/hooks';
+import { Tables } from '@/views/Home/types';
 import { getOrderSdk, GetOrderSdk, onOrdersStatusUpdatedSubscription } from '@/connectors/orders';
 import { DetailsProps, SubOrderInfo } from './types';
 import { Title } from './Title';
-import { getInfo, getTee, getOrdersCancelList } from './helpers';
+import {
+    getInfo,
+    getTee,
+    getOrdersCancelList,
+    getSubOrdersList,
+    getTotalDeposit,
+    getUnspentDeposit,
+} from './helpers';
 import classes from './Details.module.scss';
 import { SubOrdersTable } from './SubOrdersTable';
 
@@ -23,9 +33,15 @@ export const Details = memo<DetailsProps>(({ id = '' }) => {
         isConnected,
         selectedAddress,
     } = useContext(WalletContext);
+    const orders = useTableQueryFetcher<Order>({
+        gql: SubOrdersDocument,
+        queryOptions: { variables: { pagination: { sortBy: 'origins.modifiedDate' }, filter: { parentOrder: id } } },
+        subscriptionKey: 'id',
+        options: { pageSize: 10 },
+        skip: !id ? { type: null } : undefined,
+    });
     const [orderSdk, setOrderSdk] = useState<GetOrderSdk>();
     const [loadingOrderSdk, setLoadingOrderSdk] = useState(false);
-    const [addressSuborders, setAddressSuborders] = useState<SubOrderInfo>();
     const [getOrder, orderResult] = useOrderLazyQuery({ variables: { id } });
     const updateOrderInfo = useCallback(async () => {
         setLoadingOrderSdk(true);
@@ -37,12 +53,31 @@ export const Details = memo<DetailsProps>(({ id = '' }) => {
         }
         setLoadingOrderSdk(false);
     }, [id, getOrder]);
-    const loading = useMemo(() => orderResult?.loading || loadingOrderSdk, [orderResult, loadingOrderSdk]);
+    const subOrdersInfo = useMemo<SubOrderInfo>(() => getSubOrdersList(orders.list), [orders.list]);
     const order = useMemo(() => orderResult.data?.order, [orderResult]);
     const orderId = useMemo(() => order?.id, [order]);
-    const info = useMemo(() => getInfo(order, orderSdk, addressSuborders), [order, orderSdk, addressSuborders]);
+    const unspentDeposit = useMemo(() => getUnspentDeposit({
+        subOrdersInfo,
+        orderHoldDeposit: `${orderSdk?.orderHoldDeposit || 0}`,
+        depositSpent: `${orderSdk?.depositSpent || 0}`,
+    }), [subOrdersInfo, orderSdk]);
+    const totalDeposit = useMemo(() => getTotalDeposit({
+        subOrdersInfo,
+        orderHoldDeposit: `${orderSdk?.orderHoldDeposit || 0}`,
+    }), [subOrdersInfo, orderSdk]);
+    const info = useMemo(() => getInfo({
+        order,
+        orderSdk,
+        unspentDeposit,
+        totalDeposit,
+    }), [order, orderSdk, unspentDeposit, totalDeposit]);
     const tee = useMemo(() => getTee(order, orderSdk), [order, orderSdk]);
-    const subOrdersList = useMemo(() => getOrdersCancelList(addressSuborders), [addressSuborders]);
+    const subOrdersList = useMemo(() => getOrdersCancelList(subOrdersInfo), [subOrdersInfo]);
+    useTablesSubscriptions({ [Tables.Orders]: orders } as any, selectedAddress);
+    const loading = useMemo(
+        () => orderResult?.loading || loadingOrderSdk || orders.loading,
+        [orderResult, loadingOrderSdk, orders.loading],
+    );
     useEffect(() => {
         updateOrderInfo();
     }, [updateOrderInfo]);
@@ -75,7 +110,7 @@ export const Details = memo<DetailsProps>(({ id = '' }) => {
         <Box direction="column">
             {!!order && (
                 <Title {...{
-                    order, orderSdk, updateOrderInfo, subOrdersList,
+                    order, orderSdk, updateOrderInfo, subOrdersList, unspentDeposit,
                 }}
                 />
             )}
@@ -112,14 +147,10 @@ export const Details = memo<DetailsProps>(({ id = '' }) => {
                     </CardUi>
                 )}
             </Box>
-            {!!orderId && (
-                <SubOrdersTable
-                    id={orderId}
-                    classNameWrap={classes.table}
-                    setAddressSuborders={setAddressSuborders}
-                    selectedAddress={selectedAddress}
-                />
-            )}
+            <SubOrdersTable
+                classNameWrap={classes.table}
+                orders={orders}
+            />
         </Box>
     );
 });

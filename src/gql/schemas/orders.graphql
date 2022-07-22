@@ -48,6 +48,8 @@ query Orders($pagination: ConnectionArgs!, $filter: OrdersFilter) {
                             }
                         }
                         offerType
+                        orderHoldDeposit
+                        depositSpent
                     }
                 }
             }

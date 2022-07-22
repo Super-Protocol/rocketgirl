@@ -3,7 +3,13 @@ import { OrderStatus } from '@super-protocol/sp-sdk-js';
 import { CopyToClipboard } from '@/uikit';
 import { StatusBarToolkit } from '@/common/components/';
 import { OrderQuery } from '@/gql/graphql';
-import { getFixedDeposit, getTableDate } from '@/common/helpers';
+import { BigNumber } from 'bignumber.js';
+import {
+    getFixedDeposit,
+    getTableDate,
+    getOrdersHoldDeposit,
+    getOrdersUnspentDeposit,
+} from '@/common/helpers';
 import { GetOrderSdk } from '@/connectors/orders';
 import { SubOrderInfo } from './types';
 
@@ -17,22 +23,62 @@ export interface TableInfo {
     list: TableInfoItem[];
 }
 
-export const getUnspentDeposit = (orderHoldDepositSdk?: string | number, depositSpentSdk?: string): number | null => {
-    const diff = Number(orderHoldDepositSdk) - Number(depositSpentSdk);
-    return Number.isNaN(diff) ? null : diff;
+export interface GetInfoProps {
+    order?: OrderQuery['order'];
+    orderSdk?: GetOrderSdk;
+    subOrdersInfo?: SubOrderInfo;
+    unspentDeposit?: BigNumber;
+    totalDeposit?: BigNumber;
+}
+
+export interface GetUnspentDepositProps {
+    orderHoldDeposit: string;
+    depositSpent: string;
+    subOrdersInfo: SubOrderInfo;
+}
+
+export interface GetTotalDepositProps {
+    orderHoldDeposit: string;
+    subOrdersInfo: SubOrderInfo;
+}
+
+export const getUnspentDeposit = ({ orderHoldDeposit, depositSpent, subOrdersInfo }: GetUnspentDepositProps): BigNumber => {
+    return getOrdersUnspentDeposit(
+        [{ orderHoldDeposit, depositSpent }]
+            .concat(
+                Object
+                    .values(subOrdersInfo || {})
+                    .reduce(
+                        (acc, { orderHoldDeposit, depositSpent }) => {
+                            return acc.concat({ orderHoldDeposit: orderHoldDeposit || '0', depositSpent: depositSpent || '0' });
+                        },
+                        [] as { orderHoldDeposit: string; depositSpent: string }[],
+                    ),
+            ),
+    );
 };
 
-const getSubOrdersDeposit = (addressSuborders?: SubOrderInfo): number => {
-    return addressSuborders
-        ? Object.values(addressSuborders).reduce((acc: number, item) => (acc + item.orderHoldDeposit), 0)
-        : 0;
+export const getTotalDeposit = ({ orderHoldDeposit, subOrdersInfo }: GetTotalDepositProps): BigNumber => {
+    return getOrdersHoldDeposit(
+        [{ orderHoldDeposit: `${orderHoldDeposit || '0'}` }]
+            .concat(
+                Object
+                    .values(subOrdersInfo || {})
+                    .reduce(
+                        (acc, { orderHoldDeposit }) => (orderHoldDeposit ? acc.concat({ orderHoldDeposit }) : acc),
+                        [] as { orderHoldDeposit: string }[],
+                    ),
+            ),
+    );
 };
 
-export const getInfo = (
-    order?: OrderQuery['order'],
-    orderSdk?: GetOrderSdk,
-    addressSuborders?: SubOrderInfo,
-): TableInfo | null => {
+export const getInfo = (props: GetInfoProps): TableInfo | null => {
+    const {
+        order,
+        orderSdk,
+        unspentDeposit,
+        totalDeposit,
+    } = props || {};
     if (!order) return null;
     const {
         id,
@@ -40,16 +86,9 @@ export const getInfo = (
         orderResult,
         orderInfo,
     } = order || {};
-    const {
-        orderInfo: orderInfoSdk,
-        depositSpent: depositSpentSdk,
-        orderHoldDeposit: orderHoldDepositSdk,
-    } = orderSdk || {};
+    const { orderInfo: orderInfoSdk } = orderSdk || {};
     const { status: statusSdk } = orderInfoSdk || {};
     const { encryptedArgs } = orderInfo || {};
-    const unspentDeposit = getUnspentDeposit(orderHoldDepositSdk, depositSpentSdk);
-    const subOrdersDeposit = getSubOrdersDeposit(addressSuborders);
-    const totalDeposit = (orderHoldDepositSdk || 0) + (subOrdersDeposit || 0);
     return {
         list: [
             {
@@ -62,11 +101,11 @@ export const getInfo = (
             },
             {
                 key: 'Total Deposit',
-                value: getFixedDeposit(!Number.isNaN(totalDeposit) ? `${totalDeposit}` : ''),
+                value: getFixedDeposit(totalDeposit),
             },
             {
                 key: 'Unspent Deposit',
-                value: getFixedDeposit(!Number.isNaN(unspentDeposit) ? `${unspentDeposit}` : ''),
+                value: getFixedDeposit(unspentDeposit),
             },
             {
                 key: 'Status',
@@ -117,18 +156,18 @@ export const getTee = (order?: OrderQuery['order'], orderSdk?: GetOrderSdk): Tab
                 key: 'Description',
                 value: description || '-',
             },
-            {
-                key: 'Estimated cost',
-                value: orderHoldDepositSdk
-                    ? (Math.round(orderHoldDepositSdk * 1000) / 1000).toFixed(3)
-                    : '-',
-            },
-            {
-                key: 'Actual cost',
-                value: depositSpentSdk
-                    ? (Math.round(Number(depositSpentSdk) * 1000) / 1000).toFixed(3)
-                    : '-',
-            },
+            // {
+            //     key: 'Estimated cost',
+            //     value: orderHoldDepositSdk
+            //         ? (Math.round(orderHoldDepositSdk * 1000) / 1000).toFixed(3)
+            //         : '-',
+            // },
+            // {
+            //     key: 'Actual cost',
+            //     value: depositSpentSdk
+            //         ? (Math.round(Number(depositSpentSdk) * 1000) / 1000).toFixed(3)
+            //         : '-',
+            // },
         ],
     };
 };
@@ -139,4 +178,29 @@ export const getOrdersCancelList = (addressSuborders?: SubOrderInfo): string[] =
             v.cancelable ? [...acc, k] : acc
         ), [])
         : []
+);
+
+export const getSubOrdersList = (list: any[]): SubOrderInfo => (
+    list
+        ? list.reduce((acc, {
+            id,
+            orderHoldDeposit,
+            orderInfo,
+            depositSpent,
+        }) => {
+            return {
+                ...acc,
+                [id]: {
+                    cancelable: !!orderInfo?.status && ![
+                        OrderStatus.Canceled,
+                        OrderStatus.Done,
+                        OrderStatus.Canceling,
+                        OrderStatus.Error,
+                    ].includes(orderInfo.status as OrderStatus),
+                    orderHoldDeposit,
+                    depositSpent,
+                },
+            };
+        }, {})
+        : {}
 );

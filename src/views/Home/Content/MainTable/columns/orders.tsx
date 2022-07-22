@@ -1,10 +1,14 @@
 import { ColumnProps } from 'react-table';
-import Web3 from 'web3';
 import { Order, TOfferType } from '@/gql/graphql';
 import { CopyToClipboard, TextCounter } from '@/uikit';
 import { UseTableQueryFetcherResultList } from '@/common/hooks/useTableQueryFetcher';
 import { StatusBar } from '@/common/components/StatusBar';
-import { getFixedDeposit, getTableDate } from '@/common/helpers';
+import {
+    getFixedDeposit,
+    getOrdersHoldDeposit,
+    getOrdersUnspentDeposit,
+    getTableDate,
+} from '@/common/helpers';
 
 export type OrdersColumns = UseTableQueryFetcherResultList<Order>;
 export interface GetColumnsProps {
@@ -85,8 +89,12 @@ export const getColumns = ({ urlBack }: GetColumnsProps): Array<ColumnProps<Orde
         Header: 'Total Deposit, TEE',
         id: 'totalDeposit',
         Cell: ({ row }) => {
-            const { orderHoldDeposit } = row.original || {};
-            return getFixedDeposit(orderHoldDeposit, true);
+            const { subOrders, orderHoldDeposit } = row.original || {};
+            return getFixedDeposit(
+                getOrdersHoldDeposit(
+                    [{ orderHoldDeposit }].concat(subOrders.map(({ orderHoldDeposit }) => ({ orderHoldDeposit }))),
+                ),
+            );
         },
         width: 'auto',
     },
@@ -94,15 +102,14 @@ export const getColumns = ({ urlBack }: GetColumnsProps): Array<ColumnProps<Orde
         Header: 'Unspent Deposit, TEE',
         id: 'unspentDeposit',
         Cell: ({ row }) => {
-            const { orderHoldDeposit, depositSpent: depositSpentProps } = row.original || {};
-            const holdDeposit = typeof orderHoldDeposit === 'string'
-                ? Number(Web3.utils.fromWei(orderHoldDeposit))
-                : 0;
-            const depositSpent: number = depositSpentProps && typeof depositSpentProps === 'string'
-                ? Number(Web3.utils.fromWei(depositSpentProps))
-                : 0;
-            const diff = holdDeposit - depositSpent;
-            return getFixedDeposit(!Number.isNaN(diff) ? `${diff}` : '');
+            const { subOrders, depositSpent, orderHoldDeposit } = row.original || {};
+            return getFixedDeposit(
+                getOrdersUnspentDeposit(
+                    [
+                        { orderHoldDeposit, depositSpent },
+                    ].concat(subOrders.map(({ orderHoldDeposit, depositSpent }) => ({ orderHoldDeposit, depositSpent }))),
+                ),
+            );
         },
         width: 'auto',
     },
