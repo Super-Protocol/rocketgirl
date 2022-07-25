@@ -37,7 +37,7 @@ export interface ReplenishOrderProps {
 export interface GetOrderSdk {
     orderInfo: OrderInfo;
     depositSpent: string;
-    orderHoldDeposit: number;
+    orderHoldDeposit: string;
 }
 export interface GetOrderParamsProps {
     offer: string;
@@ -220,7 +220,7 @@ export const getOrderSdk = async (id?: string): Promise<GetOrderSdk> => {
     const order = new Order(id);
     const orderInfo = await order.getOrderInfo();
     const depositSpent = await order.getDepositSpent();
-    const orderHoldDeposit = Number(Web3.utils.fromWei(await OrdersFactory.getOrderHoldDeposit(id)));
+    const orderHoldDeposit = await OrdersFactory.getOrderHoldDeposit(id);
     return {
         orderInfo,
         depositSpent,

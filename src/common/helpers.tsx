@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import dayjs from 'dayjs';
 import { Buffer } from 'buffer';
+import { BigNumber } from 'bignumber.js';
 import {
     OfferType,
     OfferGroup,
@@ -145,9 +146,12 @@ export const sliceWithDot = (str?: string, lenFrom = 6): string => {
 
 export const sleep = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
 
-export const getFixedDeposit = (deposit: string, wei = false): string => (
-    (deposit ? Math.round(Number(wei ? Web3.utils.fromWei(deposit) : deposit) * 1000) / 1000 : 0)
-).toFixed(3);
+export const getFixedDeposit = (deposit?: BigNumber | string, wei = true, count = 3): string => {
+    const DEFAULT_VALUE = 0;
+    if (!deposit) return DEFAULT_VALUE.toFixed(count);
+    const depositStr = typeof deposit === 'string' ? deposit : deposit.toFixed();
+    return Math.round((Number(wei ? Web3.utils.fromWei(depositStr) : deposit) * 1000) / 1000).toFixed(count);
+};
 
 export function parseJwt<T>(token?: string): T | null {
     if (!token) return null;
@@ -157,3 +161,19 @@ export function parseJwt<T>(token?: string): T | null {
         return null;
     }
 }
+
+export const getOrdersDeposit = (list?: string[]): BigNumber => {
+    if (!list?.length) return new BigNumber(0);
+    return BigNumber.sum.apply(null, list);
+};
+
+export const getOrdersUnspentDeposit = (orders?: { orderHoldDeposit: string; depositSpent: string; }[]): BigNumber => {
+    if (!orders) return new BigNumber(0);
+    const sumOrdersHoldDeposit = getOrdersDeposit(orders.map(({ orderHoldDeposit }) => orderHoldDeposit || '0'));
+    const sumOrdersUnspentDeposit = getOrdersDeposit(orders.map(({ depositSpent }) => depositSpent || '0'));
+    return sumOrdersHoldDeposit.minus(sumOrdersUnspentDeposit);
+};
+
+export const getOrdersHoldDeposit = (orders?: { orderHoldDeposit: string; }[]): BigNumber => {
+    return getOrdersDeposit(orders?.map(({ orderHoldDeposit }) => orderHoldDeposit));
+};
