@@ -162,14 +162,18 @@ export function parseJwt<T>(token?: string): T | null {
     }
 }
 
-export const getOrdersHoldDeposit = (orders?: { orderHoldDeposit: string; }[]): BigNumber => {
-    if (!orders) return new BigNumber(0);
-    return BigNumber.sum.apply(null, orders.map(({ orderHoldDeposit }) => orderHoldDeposit));
+export const getOrdersDeposit = (list?: string[]): BigNumber => {
+    if (!list?.length) return new BigNumber(0);
+    return BigNumber.sum.apply(null, list);
 };
 
 export const getOrdersUnspentDeposit = (orders?: { orderHoldDeposit: string; depositSpent: string; }[]): BigNumber => {
     if (!orders) return new BigNumber(0);
-    const sumOrdersHoldDeposit = BigNumber.sum.apply(null, orders.map(({ orderHoldDeposit }) => orderHoldDeposit || '0'));
-    const sumOrdersUnspentDeposit = BigNumber.sum.apply(null, orders.map(({ depositSpent }) => depositSpent || '0'));
+    const sumOrdersHoldDeposit = getOrdersDeposit(orders.map(({ orderHoldDeposit }) => orderHoldDeposit || '0'));
+    const sumOrdersUnspentDeposit = getOrdersDeposit(orders.map(({ depositSpent }) => depositSpent || '0'));
     return sumOrdersHoldDeposit.minus(sumOrdersUnspentDeposit);
+};
+
+export const getOrdersHoldDeposit = (orders?: { orderHoldDeposit: string; }[]): BigNumber => {
+    return getOrdersDeposit(orders?.map(({ orderHoldDeposit }) => orderHoldDeposit));
 };

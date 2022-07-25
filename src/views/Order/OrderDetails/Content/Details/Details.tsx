@@ -23,7 +23,7 @@ import {
     getOrdersCancelList,
     getSubOrdersList,
     getTotalDeposit,
-    getUnspentDeposit,
+    getUnspentDeposit, getActualCost,
 } from './helpers';
 import classes from './Details.module.scss';
 import { SubOrdersTable } from './SubOrdersTable';
@@ -65,13 +65,21 @@ export const Details = memo<DetailsProps>(({ id = '' }) => {
         subOrdersInfo,
         orderHoldDeposit: `${orderSdk?.orderHoldDeposit || 0}`,
     }), [subOrdersInfo, orderSdk]);
+    const actualCost = useMemo(() => getActualCost({
+        depositSpent: `${orderSdk?.depositSpent || 0}`,
+        subOrdersInfo,
+    }), [subOrdersInfo, orderSdk]);
     const info = useMemo(() => getInfo({
         order,
         orderSdk,
         unspentDeposit,
         totalDeposit,
     }), [order, orderSdk, unspentDeposit, totalDeposit]);
-    const tee = useMemo(() => getTee(order, orderSdk), [order, orderSdk]);
+    const tee = useMemo(() => getTee({
+        order,
+        actualCost,
+        estimatedCost: totalDeposit,
+    }), [order, actualCost, totalDeposit]);
     const subOrdersList = useMemo(() => getOrdersCancelList(subOrdersInfo), [subOrdersInfo]);
     useTablesSubscriptions({ [Tables.Orders]: orders } as any, selectedAddress);
     const loading = useMemo(

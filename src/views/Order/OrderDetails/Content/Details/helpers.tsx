@@ -8,7 +8,7 @@ import {
     getFixedDeposit,
     getTableDate,
     getOrdersHoldDeposit,
-    getOrdersUnspentDeposit,
+    getOrdersUnspentDeposit, getOrdersDeposit,
 } from '@/common/helpers';
 import { GetOrderSdk } from '@/connectors/orders';
 import { SubOrderInfo } from './types';
@@ -31,6 +31,12 @@ export interface GetInfoProps {
     totalDeposit?: BigNumber;
 }
 
+export interface GetTeeProps {
+    order?: OrderQuery['order'];
+    actualCost?: BigNumber;
+    estimatedCost?: BigNumber;
+}
+
 export interface GetUnspentDepositProps {
     orderHoldDeposit: string;
     depositSpent: string;
@@ -39,6 +45,11 @@ export interface GetUnspentDepositProps {
 
 export interface GetTotalDepositProps {
     orderHoldDeposit: string;
+    subOrdersInfo: SubOrderInfo;
+}
+
+export interface GetActualCostProps {
+    depositSpent: string;
     subOrdersInfo: SubOrderInfo;
 }
 
@@ -67,6 +78,20 @@ export const getTotalDeposit = ({ orderHoldDeposit, subOrdersInfo }: GetTotalDep
                     .reduce(
                         (acc, { orderHoldDeposit }) => (orderHoldDeposit ? acc.concat({ orderHoldDeposit }) : acc),
                         [] as { orderHoldDeposit: string }[],
+                    ),
+            ),
+    );
+};
+
+export const getActualCost = ({ depositSpent, subOrdersInfo }: GetActualCostProps): BigNumber => {
+    return getOrdersDeposit(
+        [`${depositSpent || '0'}`]
+            .concat(
+                Object
+                    .values(subOrdersInfo || {})
+                    .reduce(
+                        (acc, { depositSpent }) => (depositSpent ? acc.concat(depositSpent) : acc),
+                        [] as string[],
                     ),
             ),
     );
@@ -123,7 +148,8 @@ export const getInfo = (props: GetInfoProps): TableInfo | null => {
     };
 };
 
-export const getTee = (order?: OrderQuery['order'], orderSdk?: GetOrderSdk): TableInfo | null => {
+export const getTee = (props: GetTeeProps): TableInfo | null => {
+    const { order, actualCost, estimatedCost } = props || {};
     if (!order) return null;
     const {
         teeOfferInfo,
@@ -133,10 +159,6 @@ export const getTee = (order?: OrderQuery['order'], orderSdk?: GetOrderSdk): Tab
     if (!teeOfferInfo) return null;
     const { name, description } = teeOfferInfo || {};
     const { offer } = orderInfo || {};
-    const {
-        orderHoldDeposit: orderHoldDepositSdk,
-        depositSpent: depositSpentSdk,
-    } = orderSdk || {};
     return {
         title: 'TEE',
         list: [
@@ -156,18 +178,14 @@ export const getTee = (order?: OrderQuery['order'], orderSdk?: GetOrderSdk): Tab
                 key: 'Description',
                 value: description || '-',
             },
-            // {
-            //     key: 'Estimated cost',
-            //     value: orderHoldDepositSdk
-            //         ? (Math.round(orderHoldDepositSdk * 1000) / 1000).toFixed(3)
-            //         : '-',
-            // },
-            // {
-            //     key: 'Actual cost',
-            //     value: depositSpentSdk
-            //         ? (Math.round(Number(depositSpentSdk) * 1000) / 1000).toFixed(3)
-            //         : '-',
-            // },
+            {
+                key: 'Estimated cost',
+                value: getFixedDeposit(estimatedCost),
+            },
+            {
+                key: 'Actual cost',
+                value: getFixedDeposit(actualCost),
+            },
         ],
     };
 };
