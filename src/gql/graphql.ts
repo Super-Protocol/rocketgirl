@@ -365,7 +365,7 @@ export type OfferInfo = {
   output: Scalars['String'];
   properties: Scalars['String'];
   restrictions?: Maybe<OfferRestrictions>;
-  resultUrl: Scalars['String'];
+  resultResource: Scalars['String'];
 };
 
 export type OfferInfoInput = {
@@ -405,7 +405,7 @@ export type OfferInfoInput = {
   output: Scalars['String'];
   properties: Scalars['String'];
   restrictions?: InputMaybe<OfferRestrictionsInput>;
-  resultUrl: Scalars['String'];
+  resultResource: Scalars['String'];
 };
 
 export type OfferInputType = {
@@ -1242,7 +1242,7 @@ export type OffersQueryVariables = Exact<{
 }>;
 
 
-export type OffersQuery = { __typename?: 'Query', result: { __typename?: 'ListOffersResponse', pageData?: { __typename?: 'PageDataDto', count: number, limit: number, offset: number } | null, page: { __typename?: 'OfferConnection', pageInfo?: { __typename?: 'OfferPageInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } | null, edges?: Array<{ __typename?: 'OfferEdge', cursor?: string | null, node?: { __typename?: 'Offer', _id: string, id: string, authority?: string | null, disabledAfter: number, offerInfo: { __typename?: 'OfferInfo', group: string, offerType: string, allowedAccounts?: Array<string> | null, allowedArgs?: string | null, argsPublicKey: string, cancelable: boolean, description: string, hash: string, holdSum: string, input: string, linkage: string, maxDurationTimeMinutes: number, name: string, output: string, properties: string, resultUrl: string, restrictions?: { __typename?: 'OfferRestrictions', offers?: Array<string> | null, types?: Array<TOfferType> | null } | null }, origins?: { __typename?: 'Origins', createdBy: string, createdDate: number, modifiedBy: string, modifiedDate: number } | null, providerInfo: { __typename?: 'ProviderInformation', actionAccount: string, description: string, metadata: string, name: string, tokenReceiver: string } } | null }> | null } } };
+export type OffersQuery = { __typename?: 'Query', result: { __typename?: 'ListOffersResponse', pageData?: { __typename?: 'PageDataDto', count: number, limit: number, offset: number } | null, page: { __typename?: 'OfferConnection', pageInfo?: { __typename?: 'OfferPageInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } | null, edges?: Array<{ __typename?: 'OfferEdge', cursor?: string | null, node?: { __typename?: 'Offer', _id: string, id: string, authority?: string | null, disabledAfter: number, offerInfo: { __typename?: 'OfferInfo', group: string, offerType: string, allowedAccounts?: Array<string> | null, allowedArgs?: string | null, argsPublicKey: string, cancelable: boolean, description: string, hash: string, holdSum: string, input: string, linkage: string, maxDurationTimeMinutes: number, name: string, output: string, properties: string, resultResource: string, restrictions?: { __typename?: 'OfferRestrictions', offers?: Array<string> | null, types?: Array<TOfferType> | null } | null }, origins?: { __typename?: 'Origins', createdBy: string, createdDate: number, modifiedBy: string, modifiedDate: number } | null, providerInfo: { __typename?: 'ProviderInformation', actionAccount: string, description: string, metadata: string, name: string, tokenReceiver: string } } | null }> | null } } };
 
 export type OffersSelectQueryVariables = Exact<{
   pagination: ConnectionArgs;
@@ -1555,7 +1555,7 @@ export const OffersDocument = gql`
             name
             output
             properties
-            resultUrl
+            resultResource
             restrictions {
               offers
               types
