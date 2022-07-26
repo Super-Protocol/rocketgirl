@@ -97,7 +97,7 @@ export const getColumns = (): Array<ColumnProps<OrdersColumns>> => [
         id: 'estimatedCost',
         Cell: ({ row }) => {
             const { orderHoldDeposit } = row.original || {};
-            return getFixedDeposit(orderHoldDeposit, true);
+            return getFixedDeposit({ deposit: orderHoldDeposit });
         },
         width: 'auto',
     },
@@ -106,7 +106,7 @@ export const getColumns = (): Array<ColumnProps<OrdersColumns>> => [
         id: 'actualCost',
         Cell: ({ row }) => {
             const { depositSpent } = row.original || {};
-            return getFixedDeposit(depositSpent, true);
+            return getFixedDeposit({ deposit: depositSpent });
         },
         width: 'auto',
     },

@@ -126,11 +126,11 @@ export const getInfo = (props: GetInfoProps): TableInfo | null => {
             },
             {
                 key: 'Total Deposit',
-                value: getFixedDeposit(totalDeposit),
+                value: getFixedDeposit({ deposit: totalDeposit }),
             },
             {
                 key: 'Unspent Deposit',
-                value: getFixedDeposit(unspentDeposit),
+                value: getFixedDeposit({ deposit: unspentDeposit }),
             },
             {
                 key: 'Status',
@@ -180,11 +180,11 @@ export const getTee = (props: GetTeeProps): TableInfo | null => {
             },
             {
                 key: 'Estimated cost',
-                value: getFixedDeposit(estimatedCost),
+                value: getFixedDeposit({ deposit: estimatedCost }),
             },
             {
                 key: 'Actual cost',
-                value: getFixedDeposit(actualCost),
+                value: getFixedDeposit({ deposit: actualCost }),
             },
         ],
     };

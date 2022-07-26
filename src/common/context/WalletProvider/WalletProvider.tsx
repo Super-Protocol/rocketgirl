@@ -17,7 +17,7 @@ import {
 } from './types';
 
 export const getInitialWallet = (): Wallet => ({});
-export const getInitialBalance = (): Balance => ({ matic: null, tee: null });
+export const getInitialBalance = (): Balance => ({ matic: undefined, tee: undefined });
 
 export const useWallet = (): UseWalletResult => {
     const [balance, setBalance] = useState(getInitialBalance);

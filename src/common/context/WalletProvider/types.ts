@@ -1,4 +1,5 @@
 import Web3 from 'web3';
+import { BigNumber } from 'bignumber.js';
 
 export interface WalletInfo {
     chainId?: number | null;
@@ -15,7 +16,7 @@ export interface Wallet {
 
 export type SelectedWalletType = WalletType | null;
 export type SelectedWallet = WalletInfo | null;
-export interface Balance { matic: string | null, tee: string | null }
+export interface Balance { matic?: BigNumber, tee?: BigNumber }
 
 export interface UseWalletResult {
     wallet: Wallet;
