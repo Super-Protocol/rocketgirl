@@ -1266,7 +1266,7 @@ export type OrdersQueryVariables = Exact<{
 }>;
 
 
-export type OrdersQuery = { __typename?: 'Query', result: { __typename?: 'ListOrdersResponse', pageData?: { __typename?: 'PageDataDto', count: number, limit: number, offset: number } | null, page: { __typename?: 'OrderConnection', edges?: Array<{ __typename?: 'OrderEdge', cursor?: string | null, node?: { __typename?: 'Order', _id: string, id: string, authority?: string | null, consumer: string, orderHoldDeposit?: string | null, depositSpent?: string | null, offerType: TOfferType, parentOrder?: { __typename?: 'ParentOrder', id: string, offerInfo?: { __typename?: 'OfferInfo', name: string } | null } | null, offerInfo?: { __typename?: 'OfferInfo', name: string, offerType: string } | null, orderInfo: { __typename?: 'OrderInfo', offer: string, status: string }, origins?: { __typename?: 'Origins', createdBy: string, createdDate: number, modifiedBy: string, modifiedDate: number } | null, teeOfferInfo?: { __typename?: 'TeeOfferInfo', name: string } | null, subOrders?: Array<{ __typename?: 'BaseOrder', offerType: TOfferType, orderHoldDeposit?: string | null, depositSpent?: string | null, teeOfferInfo?: { __typename?: 'TeeOfferInfo', name: string } | null, offerInfo?: { __typename?: 'OfferInfo', name: string, restrictions?: { __typename?: 'OfferRestrictions', types?: Array<TOfferType> | null } | null } | null }> | null } | null }> | null, pageInfo?: { __typename?: 'OrderPageInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } | null } } };
+export type OrdersQuery = { __typename?: 'Query', result: { __typename?: 'ListOrdersResponse', pageData?: { __typename?: 'PageDataDto', count: number, limit: number, offset: number } | null, page: { __typename?: 'OrderConnection', edges?: Array<{ __typename?: 'OrderEdge', cursor?: string | null, node?: { __typename?: 'Order', _id: string, id: string, authority?: string | null, consumer: string, orderHoldDeposit?: string | null, depositSpent?: string | null, offerType: TOfferType, parentOrder?: { __typename?: 'ParentOrder', id: string, offerInfo?: { __typename?: 'OfferInfo', name: string } | null } | null, orderResult: { __typename?: 'OrderResult', orderPrice?: string | null }, offerInfo?: { __typename?: 'OfferInfo', name: string, offerType: string } | null, orderInfo: { __typename?: 'OrderInfo', offer: string, status: string }, origins?: { __typename?: 'Origins', createdBy: string, createdDate: number, modifiedBy: string, modifiedDate: number } | null, teeOfferInfo?: { __typename?: 'TeeOfferInfo', name: string } | null, subOrders?: Array<{ __typename?: 'BaseOrder', offerType: TOfferType, orderHoldDeposit?: string | null, depositSpent?: string | null, teeOfferInfo?: { __typename?: 'TeeOfferInfo', name: string } | null, offerInfo?: { __typename?: 'OfferInfo', name: string, restrictions?: { __typename?: 'OfferRestrictions', types?: Array<TOfferType> | null } | null } | null, orderResult: { __typename?: 'OrderResult', orderPrice?: string | null } }> | null } | null }> | null, pageInfo?: { __typename?: 'OrderPageInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } | null } } };
 
 export type OrdersSelectQueryVariables = Exact<{
   pagination: ConnectionArgs;
@@ -1281,7 +1281,7 @@ export type OrderQueryVariables = Exact<{
 }>;
 
 
-export type OrderQuery = { __typename?: 'Query', order: { __typename?: 'Order', id: string, consumer: string, orderHoldDeposit?: string | null, depositSpent?: string | null, offerType: TOfferType, origins?: { __typename?: 'Origins', createdBy: string, createdDate: number, modifiedBy: string, modifiedDate: number } | null, providerInfo: { __typename?: 'ProviderInformation', actionAccount: string, name: string }, orderInfo: { __typename?: 'OrderInfo', status: string, offer: string, encryptedArgs: string }, teeOfferInfo?: { __typename?: 'TeeOfferInfo', name: string, description: string } | null, orderResult: { __typename?: 'OrderResult', encryptedResult?: string | null, encryptedError?: string | null } } };
+export type OrderQuery = { __typename?: 'Query', order: { __typename?: 'Order', id: string, consumer: string, orderHoldDeposit?: string | null, depositSpent?: string | null, offerType: TOfferType, origins?: { __typename?: 'Origins', createdBy: string, createdDate: number, modifiedBy: string, modifiedDate: number } | null, providerInfo: { __typename?: 'ProviderInformation', actionAccount: string, name: string }, orderInfo: { __typename?: 'OrderInfo', status: string, offer: string, encryptedArgs: string }, teeOfferInfo?: { __typename?: 'TeeOfferInfo', name: string, description: string } | null, orderResult: { __typename?: 'OrderResult', encryptedResult?: string | null, encryptedError?: string | null, orderPrice?: string | null } } };
 
 export type SubOrdersQueryVariables = Exact<{
   pagination: ConnectionArgs;
@@ -1289,7 +1289,7 @@ export type SubOrdersQueryVariables = Exact<{
 }>;
 
 
-export type SubOrdersQuery = { __typename?: 'Query', result: { __typename?: 'ListOrdersResponse', pageData?: { __typename?: 'PageDataDto', count: number, limit: number, offset: number } | null, page: { __typename?: 'OrderConnection', edges?: Array<{ __typename?: 'OrderEdge', cursor?: string | null, node?: { __typename?: 'Order', _id: string, id: string, authority?: string | null, consumer: string, orderHoldDeposit?: string | null, depositSpent?: string | null, offerType: TOfferType, offerInfo?: { __typename?: 'OfferInfo', name: string, offerType: string, cancelable: boolean, description: string } | null, providerInfo: { __typename?: 'ProviderInformation', actionAccount: string, name: string }, orderInfo: { __typename?: 'OrderInfo', offer: string, status: string }, origins?: { __typename?: 'Origins', createdBy: string, createdDate: number, modifiedBy: string, modifiedDate: number } | null, teeOfferInfo?: { __typename?: 'TeeOfferInfo', name: string, description: string } | null } | null }> | null, pageInfo?: { __typename?: 'OrderPageInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } | null } } };
+export type SubOrdersQuery = { __typename?: 'Query', result: { __typename?: 'ListOrdersResponse', pageData?: { __typename?: 'PageDataDto', count: number, limit: number, offset: number } | null, page: { __typename?: 'OrderConnection', edges?: Array<{ __typename?: 'OrderEdge', cursor?: string | null, node?: { __typename?: 'Order', _id: string, id: string, authority?: string | null, consumer: string, orderHoldDeposit?: string | null, depositSpent?: string | null, offerType: TOfferType, offerInfo?: { __typename?: 'OfferInfo', name: string, offerType: string, cancelable: boolean, description: string } | null, providerInfo: { __typename?: 'ProviderInformation', actionAccount: string, name: string }, orderInfo: { __typename?: 'OrderInfo', offer: string, status: string }, origins?: { __typename?: 'Origins', createdBy: string, createdDate: number, modifiedBy: string, modifiedDate: number } | null, teeOfferInfo?: { __typename?: 'TeeOfferInfo', name: string, description: string } | null, orderResult: { __typename?: 'OrderResult', orderPrice?: string | null } } | null }> | null, pageInfo?: { __typename?: 'OrderPageInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } | null } } };
 
 export type ProvidersQueryVariables = Exact<{
   pagination: ConnectionArgs;
@@ -1739,6 +1739,9 @@ export const OrdersDocument = gql`
             }
             id
           }
+          orderResult {
+            orderPrice
+          }
           offerInfo {
             name
             offerType
@@ -1770,6 +1773,9 @@ export const OrdersDocument = gql`
             offerType
             orderHoldDeposit
             depositSpent
+            orderResult {
+              orderPrice
+            }
           }
         }
       }
@@ -1897,6 +1903,7 @@ export const OrderDocument = gql`
     orderResult {
       encryptedResult
       encryptedError
+      orderPrice
     }
   }
 }
@@ -1969,6 +1976,9 @@ export const SubOrdersDocument = gql`
           teeOfferInfo {
             name
             description
+          }
+          orderResult {
+            orderPrice
           }
         }
       }

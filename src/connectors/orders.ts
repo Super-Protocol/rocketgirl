@@ -38,6 +38,7 @@ export interface GetOrderSdk {
     orderInfo: OrderInfo;
     depositSpent: string;
     orderHoldDeposit: string;
+    orderPrice: string;
 }
 export interface GetOrderParamsProps {
     offer: string;
@@ -218,12 +219,15 @@ export const getOrderSdk = async (id?: string): Promise<GetOrderSdk> => {
     if (!id) throw new Error('Order address required');
     const order = new Order(id);
     const orderInfo = await order.getOrderInfo();
+    const orderResult = await order.getOrderResult();
+    const orderPrice = orderResult?.orderPrice || '';
     const depositSpent = await order.getDepositSpent();
     const orderHoldDeposit = await OrdersFactory.getOrderHoldDeposit(id);
     return {
         orderInfo,
         depositSpent,
         orderHoldDeposit,
+        orderPrice,
     };
 };
 

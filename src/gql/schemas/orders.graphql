@@ -19,6 +19,9 @@ query Orders($pagination: ConnectionArgs!, $filter: OrdersFilter) {
                         }
                         id
                     }
+                    orderResult {
+                        orderPrice
+                    }
                     offerInfo {
                         name
                         offerType
@@ -50,6 +53,9 @@ query Orders($pagination: ConnectionArgs!, $filter: OrdersFilter) {
                         offerType
                         orderHoldDeposit
                         depositSpent
+                        orderResult {
+                            orderPrice
+                        }
                     }
                 }
             }
@@ -117,6 +123,7 @@ query Order($id: String!) {
         orderResult {
             encryptedResult
             encryptedError
+            orderPrice
         }
     }
 }
@@ -160,6 +167,9 @@ query SubOrders($pagination: ConnectionArgs!, $filter: OrdersFilter) {
                     teeOfferInfo {
                         name
                         description
+                    }
+                    orderResult {
+                        orderPrice
                     }
                 }
             }
