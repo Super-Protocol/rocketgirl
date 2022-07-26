@@ -13,6 +13,12 @@ import { Item } from '@/uikit/Select/types';
 import CONFIG from '@/config';
 import Web3 from 'web3';
 
+export interface GetFixedProps {
+    deposit?: BigNumber | string;
+    wei?: boolean;
+    count?: number;
+}
+
 export function getEnumName(value: string, en: { [key: string]: string | number }): string {
     if (!value) return '';
     return Object.entries(en).find(([, val]) => value === val)?.[0] || '';
@@ -146,7 +152,8 @@ export const sliceWithDot = (str?: string, lenFrom = 6): string => {
 
 export const sleep = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
 
-export const getFixedDeposit = (deposit?: BigNumber | string, wei = true, count = 3): string => {
+export const getFixedDeposit = (props: GetFixedProps): string => {
+    const { deposit, count = 0, wei = true } = props || {};
     const DEFAULT_VALUE = 0;
     if (!deposit) return DEFAULT_VALUE.toFixed(count);
     const depositStr = typeof deposit === 'string' ? deposit : deposit.toFixed();

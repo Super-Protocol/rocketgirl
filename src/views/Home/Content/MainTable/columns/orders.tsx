@@ -90,11 +90,11 @@ export const getColumns = ({ urlBack }: GetColumnsProps): Array<ColumnProps<Orde
         id: 'totalDeposit',
         Cell: ({ row }) => {
             const { subOrders, orderHoldDeposit } = row.original || {};
-            return getFixedDeposit(
-                getOrdersHoldDeposit(
+            return getFixedDeposit({
+                deposit: getOrdersHoldDeposit(
                     [{ orderHoldDeposit }].concat(subOrders.map(({ orderHoldDeposit }) => ({ orderHoldDeposit }))),
                 ),
-            );
+            });
         },
         width: 'auto',
     },
@@ -103,13 +103,13 @@ export const getColumns = ({ urlBack }: GetColumnsProps): Array<ColumnProps<Orde
         id: 'unspentDeposit',
         Cell: ({ row }) => {
             const { subOrders, depositSpent, orderHoldDeposit } = row.original || {};
-            return getFixedDeposit(
-                getOrdersUnspentDeposit(
+            return getFixedDeposit({
+                deposit: getOrdersUnspentDeposit(
                     [
                         { orderHoldDeposit, depositSpent },
                     ].concat(subOrders.map(({ orderHoldDeposit, depositSpent }) => ({ orderHoldDeposit, depositSpent }))),
                 ),
-            );
+            });
         },
         width: 'auto',
     },

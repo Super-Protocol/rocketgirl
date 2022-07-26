@@ -7,20 +7,20 @@ import React, {
 import {
     Box,
 } from '@/uikit';
+import { getFixedDeposit } from '@/common/helpers';
 import { WalletContext } from '@/common/context/WalletProvider';
 import { WalletConnectorBtn } from '@/common/components/WalletConnectorBtn';
 import { AccountDropdown } from './AccountDropdown';
 import { AccountProps } from './types';
 import classes from './Account.module.scss';
-import { getBalanceView } from './helpers';
 
 export const Account: FC<AccountProps> = memo(() => {
     const {
         balance,
         selectedAddress,
     } = useContext(WalletContext);
-    const matic = useMemo(() => getBalanceView(balance.matic), [balance.matic]);
-    const tee = useMemo(() => getBalanceView(balance.tee), [balance.tee]);
+    const matic = useMemo(() => (balance.matic ? getFixedDeposit({ deposit: balance.matic, count: 3 }) : '-'), [balance.matic]);
+    const tee = useMemo(() => (balance.tee ? getFixedDeposit({ deposit: balance.tee }) : '-'), [balance.tee]);
     return (
         <Box>
             {

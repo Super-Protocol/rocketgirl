@@ -1,12 +1,11 @@
 import { useCallback } from 'react';
-import Web3 from 'web3';
 import { useBalanceOfLazyQuery, useTeeBalanceOfLazyQuery } from '@/gql/graphql';
 import { Actions } from '@web3-react/types';
 import { MetaMask } from '@web3-react/metamask';
 import CONFIG from '@/config';
-import { getSuperproTokenCatched } from '@/connectors/superproToken';
+import { BigNumber } from 'bignumber.js';
 
-export interface Balance { matic: string | null, tee: string | null }
+export interface Balance { matic?: BigNumber, tee?: BigNumber }
 
 export interface ConnectResult {
     accounts: string[];
@@ -14,33 +13,13 @@ export interface ConnectResult {
     instance: any | null;
 }
 
-export const getInitialBalance = (): Balance => ({ matic: null, tee: null });
+export const getInitialBalance = (): Balance => ({ matic: undefined, tee: undefined });
 
 export interface UseConnectToMetaMaskResult {
     connect: () => Promise<void>;
     addTeeToken: () => Promise<void>;
     getBalance: (address: string) => Promise<Balance>;
 }
-
-export const getMaticBalance = async (address?: string): Promise<string | null> => {
-    if (!address) return null;
-    try {
-        const response = await (window as any).ethereum.request({
-            method: 'eth_getBalance', params: [address, 'latest'],
-        });
-        return Web3.utils.fromWei(response);
-    } catch (e) {
-        console.error('Error get matic balance');
-        return null;
-    }
-};
-
-export const getBalance = async (address?: string): Promise<Balance> => {
-    return {
-        matic: await getMaticBalance(address),
-        tee: await getSuperproTokenCatched(address),
-    };
-};
 
 export const useConnectToMetaMask = (actions: Actions): UseConnectToMetaMaskResult => {
     const [getBalanceOf] = useBalanceOfLazyQuery();
@@ -79,11 +58,11 @@ export const useConnectToMetaMask = (actions: Actions): UseConnectToMetaMaskResu
     const getBalance = useCallback(async (address: string): Promise<Balance> => {
         return {
             matic: await getBalanceOf({ variables: { address } })
-                .then(({ data }) => Web3.utils.fromWei(data?.result || ''))
-                .catch(() => null),
+                .then(({ data }) => (typeof data?.result === 'string' ? new BigNumber(data?.result || '0') : undefined))
+                .catch(() => undefined),
             tee: await getTeeBalanceOf({ variables: { address } })
-                .then(({ data }) => Web3.utils.fromWei(data?.result || ''))
-                .catch(() => null),
+                .then(({ data }) => (typeof data?.result === 'string' ? new BigNumber(data?.result || '0') : undefined))
+                .catch(() => undefined),
         };
     }, [getBalanceOf, getTeeBalanceOf]);
 
