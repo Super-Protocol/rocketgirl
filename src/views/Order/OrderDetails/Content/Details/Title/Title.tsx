@@ -45,6 +45,7 @@ export const Title = memo<TitleProps>(({
             OrderStatus.Canceled,
             OrderStatus.Done,
             OrderStatus.Error,
+            OrderStatus.Canceling,
         ].includes(status) && !!unspentDeposit?.isGreaterThan?.(0);
     }, [orderSdk, unspentDeposit]);
     const isShowResultBtn = useMemo(
