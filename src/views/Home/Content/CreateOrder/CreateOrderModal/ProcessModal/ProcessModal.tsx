@@ -9,6 +9,7 @@ import { WalletContext } from '@/common/context';
 import { Process } from '@/connectors/orders';
 import { ModalOkCancelContext } from '@/common/context/ModalOkCancelProvider/ModalOkCancelProvider';
 import { useErrorModal } from '@/common/hooks/useErrorModal';
+import { useGoBackUrl } from '@/common/hooks/useGoBackUrl';
 import { ProcessModalProps } from './types';
 import classes from './ProcessModal.module.scss';
 import { useWorkflow } from '../hooks/useWorkflow';
@@ -19,6 +20,7 @@ import { transmittalText } from './helpers';
 
 export const ProcessModal: FC<ProcessModalProps> = memo(({ formValues, initialState }) => {
     const navigate = useNavigate();
+    const urlBack = useGoBackUrl();
     const { selectedAddress, instance } = useContext(WalletContext);
     const { showSuccessModal } = useErrorModal();
     const { showModal } = useContext(ModalOkCancelContext);
@@ -56,7 +58,7 @@ export const ProcessModal: FC<ProcessModalProps> = memo(({ formValues, initialSt
                 'Your order has been successfully created',
                 undefined,
                 'Go to order',
-                () => navigate(`order/${teeOrderAddress}`),
+                () => navigate(`order/${teeOrderAddress}?${urlBack}`),
             );
         } catch (e) {
             console.warn(e);
@@ -64,7 +66,7 @@ export const ProcessModal: FC<ProcessModalProps> = memo(({ formValues, initialSt
         } finally {
             setLoading(false);
         }
-    }, [instance, formValues, selectedAddress, runWorkflow, showSuccessModal, navigate]);
+    }, [instance, formValues, selectedAddress, runWorkflow, showSuccessModal, navigate, urlBack]);
     const getErrorFromMapList = useCallback((process: Process) => {
         return stateProcess[process]?.error?.size
             ? [...stateProcess[process].error as Map<string | null, Error>]?.[0]?.[1]
