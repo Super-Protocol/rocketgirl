@@ -153,7 +153,7 @@ export const sliceWithDot = (str?: string, lenFrom = 6): string => {
 export const sleep = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
 
 export const getFixedDeposit = (props: GetFixedProps): string => {
-    const { deposit, count = 0, wei = true } = props || {};
+    const { deposit, count = 3, wei = true } = props || {};
     const DEFAULT_VALUE = 0;
     if (!deposit) return DEFAULT_VALUE.toFixed(count);
     const depositStr = typeof deposit === 'string' ? deposit : deposit.toFixed();
