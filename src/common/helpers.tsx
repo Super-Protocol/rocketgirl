@@ -51,12 +51,12 @@ export const getTransactionHashLink = (hash?: string): string => {
     return `${CONFIG.REACT_APP_NETWORK_POLYGON_SCAN}/tx/${hash}`;
 };
 
-export const getErrorTransactionsTemplate = (e: Error): string => {
+export const getErrorTransactionsTemplate = (e: Error): string | ReactNode => {
     const parsedError = getParsedErrorTransactions(e);
     if (!parsedError?.transactionHash) return parsedError?.message;
     const link = getTransactionHashLink(parsedError?.transactionHash);
     return parsedError?.transactionHash
-        ? `<a href="${link}" target="_blank" rel="noopener noreferrer">${parsedError?.message}</a>`
+        ? <a href={link} target="_blank" rel="noopener noreferrer">transaction link</a>
         : parsedError?.message;
 };
 

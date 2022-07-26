@@ -1,6 +1,7 @@
 import { memo, FC } from 'react';
 import cn from 'classnames';
 import { Box, Ellipsis, Icon } from '@/uikit';
+import { getErrorTransactionsTemplate } from '@/common/helpers';
 import { ProcessItemProps } from './types';
 import { ProcessStatus } from '../ProcessStatus';
 import classes from './ProcessItem.module.scss';
@@ -23,7 +24,7 @@ export const ProcessItem: FC<ProcessItemProps> = memo(({
                         name="info_fill2"
                         className={classes.iconError}
                     />
-                    <Box className={classes.message}>{error?.message}</Box>
+                    <Box className={classes.message}>{getErrorTransactionsTemplate(error)}</Box>
                 </Box>
             )}
         </Box>
