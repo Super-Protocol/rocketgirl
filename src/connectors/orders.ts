@@ -105,7 +105,6 @@ export enum Process {
     TEE_APPROVE = 'TEE_APPROVE',
     TEE = 'TEE',
     SOLUTION = 'SOLUTION',
-    STORAGE = 'STORAGE',
     DATA = 'DATA',
     ORDER_START = 'ORDER_START'
 }
@@ -547,15 +546,6 @@ export const changeStateSubOrders = ({
         successSubOrders,
         errorSubOrders,
         changeState,
-        offers: storage ? [storage] : [],
-        consumer,
-        previousResultSubOrders: previousResultSubOrders?.get(Process.STORAGE),
-        process: Process.STORAGE,
-    });
-    changeStateSubOrder({
-        successSubOrders,
-        errorSubOrders,
-        changeState,
         offers: data || [],
         consumer,
         previousResultSubOrders: previousResultSubOrders?.get(Process.DATA),
@@ -621,7 +611,6 @@ export const workflow = async (props: WorkflowProps): Promise<string | undefined
     }
     if (
         [
-            state?.[Process.STORAGE]?.status,
             state?.[Process.SOLUTION]?.status,
             state?.[Process.DATA]?.status,
         ].some((status) => status !== Status.DONE)
@@ -632,12 +621,8 @@ export const workflow = async (props: WorkflowProps): Promise<string | undefined
         if (state?.[Process.DATA]?.status !== Status.DONE) {
             changeState({ process: Process.DATA, status: Status.PROGRESS });
         }
-        if (state?.[Process.STORAGE]?.status !== Status.DONE) {
-            changeState({ process: Process.STORAGE, status: Status.PROGRESS });
-        }
         const previousResultSubOrders = new Map();
         if (state?.[Process.SOLUTION]?.result) previousResultSubOrders.set(Process.SOLUTION, state[Process.SOLUTION].result);
-        if (state?.[Process.STORAGE]?.result) previousResultSubOrders.set(Process.STORAGE, state[Process.STORAGE].result);
         if (state?.[Process.DATA]?.result) previousResultSubOrders.set(Process.DATA, state[Process.DATA].result);
         const subOrdersInfo = (solution || [])
             .concat(data || [])

@@ -41,7 +41,6 @@ export const ProcessModal: FC<ProcessModalProps> = memo(({ formValues, initialSt
     const {
         tee,
         solution,
-        storage,
         data,
         file,
     } = useMemo(() => formValues, [formValues]);
@@ -104,14 +103,6 @@ export const ProcessModal: FC<ProcessModalProps> = memo(({ formValues, initialSt
                         className={classes.mrb}
                         status={stateProcess[Process.SOLUTION]?.status}
                         error={getErrorFromMapList(Process.SOLUTION)}
-                    />
-                )}
-                {!!storage && (
-                    <ProcessItem
-                        name="Storage order"
-                        className={classes.mrb}
-                        status={stateProcess[Process.STORAGE]?.status}
-                        error={getErrorFromMapList(Process.STORAGE)}
                     />
                 )}
                 {!!data && (
