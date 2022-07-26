@@ -4,7 +4,6 @@ import { CopyToClipboard } from '@/uikit';
 import { UseTableQueryFetcherResultList } from '@/common/hooks/useTableQueryFetcher';
 import { StatusBar } from '@/common/components/StatusBar';
 import {
-    getBiggerBN,
     getFixedDeposit,
     getOfferTypeName,
     getTableDate,
@@ -110,9 +109,8 @@ export const getColumns = (): Array<ColumnProps<OrdersColumns>> => [
         Header: 'Actual cost, TEE',
         id: 'actualCost',
         Cell: ({ row }) => {
-            const { depositSpent, orderResult } = row.original || {};
-            const { orderPrice } = orderResult || {};
-            return getFixedDeposit({ deposit: getBiggerBN(depositSpent, orderPrice) });
+            const { depositSpent } = row.original || {};
+            return getFixedDeposit({ deposit: depositSpent });
         },
         width: 'auto',
     },

@@ -22,7 +22,6 @@ export interface GetFixedProps {
 export interface GetOrdersUnspentDepositProps {
     orderHoldDeposit: string;
     depositSpent: string;
-    orderPrice: string;
 }
 
 export function getEnumName(value: string, en: { [key: string]: string | number }): string {
@@ -189,9 +188,7 @@ export const getOrdersDeposit = (list?: (string | BigNumber)[]): BigNumber => {
 export const getOrdersUnspentDeposit = (orders?: GetOrdersUnspentDepositProps[]): BigNumber => {
     if (!orders) return new BigNumber(0);
     const sumOrdersHoldDeposit = getOrdersDeposit(orders.map(({ orderHoldDeposit }) => orderHoldDeposit || '0'));
-    const sumOrdersUnspentDeposit = getOrdersDeposit(orders.map(({ depositSpent, orderPrice }) => {
-        return getBiggerBN(depositSpent, orderPrice);
-    }));
+    const sumOrdersUnspentDeposit = getOrdersDeposit(orders.map(({ depositSpent }) => depositSpent));
     return sumOrdersHoldDeposit.minus(sumOrdersUnspentDeposit);
 };
 

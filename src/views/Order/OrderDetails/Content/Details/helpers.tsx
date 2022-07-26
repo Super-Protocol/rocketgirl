@@ -8,7 +8,8 @@ import {
     getFixedDeposit,
     getTableDate,
     getOrdersHoldDeposit,
-    getOrdersUnspentDeposit, getOrdersDeposit, getBiggerBN,
+    getOrdersUnspentDeposit,
+    getOrdersDeposit,
 } from '@/common/helpers';
 import { GetOrderSdk } from '@/connectors/orders';
 import { SubOrderInfo } from './types';
@@ -40,7 +41,6 @@ export interface GetTeeProps {
 export interface GetUnspentDepositProps {
     orderHoldDeposit: string;
     depositSpent: string;
-    orderPrice: string;
     subOrdersInfo: SubOrderInfo;
 }
 
@@ -51,7 +51,6 @@ export interface GetTotalDepositProps {
 
 export interface GetActualCostProps {
     depositSpent: string;
-    orderPrice: string;
     subOrdersInfo: SubOrderInfo;
 }
 
@@ -59,22 +58,20 @@ export const getUnspentDeposit = ({
     orderHoldDeposit,
     depositSpent,
     subOrdersInfo,
-    orderPrice,
 }: GetUnspentDepositProps): BigNumber => {
     return getOrdersUnspentDeposit(
-        [{ orderHoldDeposit, depositSpent, orderPrice }]
+        [{ orderHoldDeposit, depositSpent }]
             .concat(
                 Object
                     .values(subOrdersInfo || {})
                     .reduce(
-                        (acc, { orderHoldDeposit, depositSpent, orderPrice }) => {
+                        (acc, { orderHoldDeposit, depositSpent }) => {
                             return acc.concat({
                                 orderHoldDeposit: orderHoldDeposit || '0',
                                 depositSpent: depositSpent || '0',
-                                orderPrice: orderPrice || '0',
                             });
                         },
-                        [] as { orderHoldDeposit: string; depositSpent: string; orderPrice: string; }[],
+                        [] as { orderHoldDeposit: string; depositSpent: string; }[],
                     ),
             ),
     );
@@ -94,15 +91,15 @@ export const getTotalDeposit = ({ orderHoldDeposit, subOrdersInfo }: GetTotalDep
     );
 };
 
-export const getActualCost = ({ depositSpent, subOrdersInfo, orderPrice }: GetActualCostProps): BigNumber => {
+export const getActualCost = ({ depositSpent, subOrdersInfo }: GetActualCostProps): BigNumber => {
     return getOrdersDeposit(
-        [getBiggerBN(depositSpent, orderPrice)]
+        [`${depositSpent || 0}`]
             .concat(
                 Object
                     .values(subOrdersInfo || {})
                     .reduce(
-                        (acc, { depositSpent, orderPrice }) => acc.concat(getBiggerBN(depositSpent, orderPrice)),
-                        [] as BigNumber[],
+                        (acc, { depositSpent }) => acc.concat(`${depositSpent || 0}`),
+                        [] as string[],
                     ),
             ),
     );
@@ -216,7 +213,6 @@ export const getSubOrdersList = (list: any[]): SubOrderInfo => (
             orderHoldDeposit,
             orderInfo,
             depositSpent,
-            orderResult,
         }) => {
             return {
                 ...acc,
@@ -229,7 +225,6 @@ export const getSubOrdersList = (list: any[]): SubOrderInfo => (
                     ].includes(orderInfo.status as OrderStatus),
                     orderHoldDeposit,
                     depositSpent,
-                    orderPrice: orderResult?.orderPrice,
                 },
             };
         }, {})

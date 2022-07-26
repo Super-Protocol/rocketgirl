@@ -106,17 +106,14 @@ export const getColumns = ({ urlBack }: GetColumnsProps): Array<ColumnProps<Orde
                 subOrders,
                 depositSpent,
                 orderHoldDeposit,
-                orderResult,
             } = row.original || {};
-            const { orderPrice } = orderResult || {};
             return getFixedDeposit({
                 deposit: getOrdersUnspentDeposit(
                     [
-                        { orderHoldDeposit, depositSpent, orderPrice },
-                    ].concat(subOrders.map(({ orderHoldDeposit, depositSpent, orderResult }) => ({
+                        { orderHoldDeposit, depositSpent },
+                    ].concat(subOrders.map(({ orderHoldDeposit, depositSpent }) => ({
                         orderHoldDeposit,
                         depositSpent,
-                        orderPrice: orderResult?.orderPrice,
                     }))),
                 ),
             });

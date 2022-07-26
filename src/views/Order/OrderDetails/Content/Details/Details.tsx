@@ -60,7 +60,6 @@ export const Details = memo<DetailsProps>(({ id = '' }) => {
         subOrdersInfo,
         orderHoldDeposit: `${orderSdk?.orderHoldDeposit || 0}`,
         depositSpent: `${orderSdk?.depositSpent || 0}`,
-        orderPrice: `${orderSdk?.orderPrice || 0}`,
     }), [subOrdersInfo, orderSdk]);
     const totalDeposit = useMemo(() => getTotalDeposit({
         subOrdersInfo,
@@ -68,7 +67,6 @@ export const Details = memo<DetailsProps>(({ id = '' }) => {
     }), [subOrdersInfo, orderSdk]);
     const actualCost = useMemo(() => getActualCost({
         depositSpent: `${orderSdk?.depositSpent || 0}`,
-        orderPrice: `${orderSdk?.orderPrice || 0}`,
         subOrdersInfo,
     }), [subOrdersInfo, orderSdk]);
     const info = useMemo(() => getInfo({
