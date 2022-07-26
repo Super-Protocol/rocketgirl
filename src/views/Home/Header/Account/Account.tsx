@@ -19,7 +19,7 @@ export const Account: FC<AccountProps> = memo(() => {
         balance,
         selectedAddress,
     } = useContext(WalletContext);
-    const matic = useMemo(() => (balance.matic ? getFixedDeposit({ deposit: balance.matic, count: 3 }) : '-'), [balance.matic]);
+    const matic = useMemo(() => (balance.matic ? getFixedDeposit({ deposit: balance.matic }) : '-'), [balance.matic]);
     const tee = useMemo(() => (balance.tee ? getFixedDeposit({ deposit: balance.tee }) : '-'), [balance.tee]);
     return (
         <Box>
