@@ -63,7 +63,7 @@ export const Title = memo<TitleProps>(({
                 web3: instance,
             });
             await updateOrderInfo();
-            showSuccessModal('Order successfully canceled');
+            showSuccessModal('Order cancellation process started');
         } catch (e) {
             showErrorModal(e);
         }
