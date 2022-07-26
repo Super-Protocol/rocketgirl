@@ -19,6 +19,12 @@ export interface GetFixedProps {
     count?: number;
 }
 
+export interface GetOrdersUnspentDepositProps {
+    orderHoldDeposit: string;
+    depositSpent: string;
+    orderPrice: string;
+}
+
 export function getEnumName(value: string, en: { [key: string]: string | number }): string {
     if (!value) return '';
     return Object.entries(en).find(([, val]) => value === val)?.[0] || '';
@@ -169,15 +175,23 @@ export function parseJwt<T>(token?: string): T | null {
     }
 }
 
-export const getOrdersDeposit = (list?: string[]): BigNumber => {
+export const getBiggerBN = (value1: string, value2: string): BigNumber => {
+    const dsBN = new BigNumber(value1 || '0');
+    const opBN = new BigNumber(value2 || '0');
+    return dsBN.isLessThan(opBN) ? opBN : dsBN;
+};
+
+export const getOrdersDeposit = (list?: (string | BigNumber)[]): BigNumber => {
     if (!list?.length) return new BigNumber(0);
     return BigNumber.sum.apply(null, list);
 };
 
-export const getOrdersUnspentDeposit = (orders?: { orderHoldDeposit: string; depositSpent: string; }[]): BigNumber => {
+export const getOrdersUnspentDeposit = (orders?: GetOrdersUnspentDepositProps[]): BigNumber => {
     if (!orders) return new BigNumber(0);
     const sumOrdersHoldDeposit = getOrdersDeposit(orders.map(({ orderHoldDeposit }) => orderHoldDeposit || '0'));
-    const sumOrdersUnspentDeposit = getOrdersDeposit(orders.map(({ depositSpent }) => depositSpent || '0'));
+    const sumOrdersUnspentDeposit = getOrdersDeposit(orders.map(({ depositSpent, orderPrice }) => {
+        return getBiggerBN(depositSpent, orderPrice);
+    }));
     return sumOrdersHoldDeposit.minus(sumOrdersUnspentDeposit);
 };
 

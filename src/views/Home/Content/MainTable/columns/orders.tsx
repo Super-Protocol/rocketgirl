@@ -102,12 +102,22 @@ export const getColumns = ({ urlBack }: GetColumnsProps): Array<ColumnProps<Orde
         Header: 'Unspent Deposit, TEE',
         id: 'unspentDeposit',
         Cell: ({ row }) => {
-            const { subOrders, depositSpent, orderHoldDeposit } = row.original || {};
+            const {
+                subOrders,
+                depositSpent,
+                orderHoldDeposit,
+                orderResult,
+            } = row.original || {};
+            const { orderPrice } = orderResult || {};
             return getFixedDeposit({
                 deposit: getOrdersUnspentDeposit(
                     [
-                        { orderHoldDeposit, depositSpent },
-                    ].concat(subOrders.map(({ orderHoldDeposit, depositSpent }) => ({ orderHoldDeposit, depositSpent }))),
+                        { orderHoldDeposit, depositSpent, orderPrice },
+                    ].concat(subOrders.map(({ orderHoldDeposit, depositSpent, orderResult }) => ({
+                        orderHoldDeposit,
+                        depositSpent,
+                        orderPrice: orderResult?.orderPrice,
+                    }))),
                 ),
             });
         },
