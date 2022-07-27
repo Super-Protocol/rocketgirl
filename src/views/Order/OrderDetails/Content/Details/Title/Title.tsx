@@ -71,8 +71,12 @@ export const Title = memo<TitleProps>(({
     }, [showErrorModal, selectedAddress, instance, order, showSuccessModal, updateOrderInfo, subOrdersList]);
 
     const onSuccessReplenish = useCallback(async () => {
-        await updateOrderInfo();
-    }, [updateOrderInfo]);
+        try {
+            await updateOrderInfo();
+        } catch (e) {
+            showErrorModal(e);
+        }
+    }, [updateOrderInfo, showErrorModal]);
 
     const onReplenishOrder = useCallback(async () => {
         showModal({
@@ -89,16 +93,21 @@ export const Title = memo<TitleProps>(({
         });
     }, [showModal, order, status]);
 
+    const onSuccessWithdrawDeposit = useCallback(async () => {
+        await updateOrderInfo();
+    }, [updateOrderInfo]);
+
     const onWithdrawDeposit = useCallback(async () => {
         setLoading(true);
         try {
             await new Order(order?.id).withdrawChange({ from: selectedAddress, web3: instance });
             showSuccessModal('Withdraw deposit successfully done');
+            await onSuccessWithdrawDeposit();
         } catch (e) {
             showErrorModal(e);
         }
         setLoading(false);
-    }, [instance, order, selectedAddress, showErrorModal, showSuccessModal]);
+    }, [instance, order, selectedAddress, showErrorModal, showSuccessModal, onSuccessWithdrawDeposit]);
 
     return (
         <Box justifyContent="space-between" className={classes.wrap}>
