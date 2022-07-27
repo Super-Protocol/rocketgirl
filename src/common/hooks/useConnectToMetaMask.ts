@@ -57,10 +57,10 @@ export const useConnectToMetaMask = (actions: Actions): UseConnectToMetaMaskResu
 
     const getBalance = useCallback(async (address: string): Promise<Balance> => {
         return {
-            matic: await getBalanceOf({ variables: { address } })
+            matic: await getBalanceOf({ variables: { address }, fetchPolicy: 'network-only' })
                 .then(({ data }) => (typeof data?.result === 'string' ? new BigNumber(data?.result || '0') : undefined))
                 .catch(() => undefined),
-            tee: await getTeeBalanceOf({ variables: { address } })
+            tee: await getTeeBalanceOf({ variables: { address }, fetchPolicy: 'network-only' })
                 .then(({ data }) => (typeof data?.result === 'string' ? new BigNumber(data?.result || '0') : undefined))
                 .catch(() => undefined),
         };
