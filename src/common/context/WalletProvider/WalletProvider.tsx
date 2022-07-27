@@ -2,7 +2,9 @@ import React, {
     useCallback,
     useMemo,
     useState,
-    memo, useEffect,
+    memo,
+    useEffect,
+    useRef,
 } from 'react';
 import Web3 from 'web3';
 import { useDebouncedCallback } from 'use-debounce';
@@ -18,8 +20,10 @@ import {
 
 export const getInitialWallet = (): Wallet => ({});
 export const getInitialBalance = (): Balance => ({ matic: undefined, tee: undefined });
+const INTERVAL_BALANCE_UPDATE = 15000;
 
 export const useWallet = (): UseWalletResult => {
+    const interval = useRef<number | null>();
     const [balance, setBalance] = useState(getInitialBalance);
     const [selectedWalletType, setSelectedWalletType] = useLocalStorage<SelectedWalletType>('wallet', null);
     const [loading, setLoading] = useState(false);
@@ -101,18 +105,37 @@ export const useWallet = (): UseWalletResult => {
     }, [setSelectedWalletType]);
     const isConnected = useMemo(() => !!selectedAddress, [selectedAddress]);
     const debounceUpdateBalance = useDebouncedCallback(updateBalance, 300);
+    const intervalBalanceUpdate = useCallback(() => {
+        if (interval.current) {
+            clearInterval(interval.current);
+        }
+        interval.current = window.setInterval(() => {
+            debounceUpdateBalance();
+        }, INTERVAL_BALANCE_UPDATE);
+    }, [debounceUpdateBalance]);
     useMount(() => {
         onChangeWallet(selectedWalletType);
     });
+
     useEffect(() => {
         debounceUpdateBalance();
     }, [selectedWallet, debounceUpdateBalance]);
+
+    useEffect(() => {
+        intervalBalanceUpdate();
+        return () => {
+            if (interval.current) {
+                clearInterval(interval.current);
+            }
+        };
+    }, [intervalBalanceUpdate]);
 
     return {
         wallet,
         selectedWalletType,
         selectedWallet,
-        loading: loading || loadingBalance,
+        loading,
+        loadingBalance,
         onChangeWallet,
         logout,
         balance,
@@ -126,6 +149,7 @@ export const WalletContext = React.createContext<WalletContextProps>({
     wallet: getInitialWallet(),
     selectedWalletType: null,
     loading: false,
+    loadingBalance: false,
     onChangeWallet: () => Promise.resolve(),
     selectedWallet: null,
     logout: () => {},
