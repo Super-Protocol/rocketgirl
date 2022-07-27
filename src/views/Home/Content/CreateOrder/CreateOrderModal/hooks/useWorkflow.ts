@@ -62,7 +62,6 @@ export const getWorkflowValues = (formValues: FormValues, mnemonic: string, tiiG
 export const getProcessList = (values: FormValues): Process[] => {
     const {
         tee,
-        storage,
         solution,
         data,
         file,
@@ -70,7 +69,6 @@ export const getProcessList = (values: FormValues): Process[] => {
     return ([] as Process[])
         .concat((tee ? [Process.TEE_APPROVE, Process.TEE] : []))
         .concat((solution ? Process.SOLUTION : []))
-        .concat((storage ? Process.STORAGE : []))
         .concat((data?.length ? Process.DATA : []))
         .concat(file ? Process.FILE : [])
         .concat(Process.ORDER_START);

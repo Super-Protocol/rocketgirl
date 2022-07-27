@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import dayjs from 'dayjs';
 import { Buffer } from 'buffer';
+import { BigNumber } from 'bignumber.js';
 import {
     OfferType,
     OfferGroup,
@@ -11,6 +12,17 @@ import { TOfferType } from '@/gql/graphql';
 import { Item } from '@/uikit/Select/types';
 import CONFIG from '@/config';
 import Web3 from 'web3';
+
+export interface GetFixedProps {
+    deposit?: BigNumber | string;
+    wei?: boolean;
+    count?: number;
+}
+
+export interface GetOrdersUnspentDepositProps {
+    orderHoldDeposit: string;
+    depositSpent: string;
+}
 
 export function getEnumName(value: string, en: { [key: string]: string | number }): string {
     if (!value) return '';
@@ -44,12 +56,12 @@ export const getTransactionHashLink = (hash?: string): string => {
     return `${CONFIG.REACT_APP_NETWORK_POLYGON_SCAN}/tx/${hash}`;
 };
 
-export const getErrorTransactionsTemplate = (e: Error): string => {
+export const getErrorTransactionsTemplate = (e: Error): string | ReactNode => {
     const parsedError = getParsedErrorTransactions(e);
     if (!parsedError?.transactionHash) return parsedError?.message;
     const link = getTransactionHashLink(parsedError?.transactionHash);
     return parsedError?.transactionHash
-        ? `<a href="${link}" target="_blank" rel="noopener noreferrer">${parsedError?.message}</a>`
+        ? <a href={link} target="_blank" rel="noopener noreferrer">transaction link</a>
         : parsedError?.message;
 };
 
@@ -145,9 +157,13 @@ export const sliceWithDot = (str?: string, lenFrom = 6): string => {
 
 export const sleep = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
 
-export const getFixedDeposit = (deposit: string, wei = false): string => (
-    (deposit ? Math.round(Number(wei ? Web3.utils.fromWei(deposit) : deposit) * 1000) / 1000 : 0)
-).toFixed(3);
+export const getFixedDeposit = (props: GetFixedProps): string => {
+    const { deposit, count = 3, wei = true } = props || {};
+    const DEFAULT_VALUE = 0;
+    if (!deposit) return DEFAULT_VALUE.toFixed(count);
+    const depositStr = typeof deposit === 'string' ? deposit : deposit.toFixed();
+    return Math.round((Number(wei ? Web3.utils.fromWei(depositStr) : deposit) * 1000) / 1000).toFixed(count);
+};
 
 export function parseJwt<T>(token?: string): T | null {
     if (!token) return null;
@@ -157,3 +173,25 @@ export function parseJwt<T>(token?: string): T | null {
         return null;
     }
 }
+
+export const getBiggerBN = (value1: string, value2: string): BigNumber => {
+    const dsBN = new BigNumber(value1 || '0');
+    const opBN = new BigNumber(value2 || '0');
+    return dsBN.isLessThan(opBN) ? opBN : dsBN;
+};
+
+export const getOrdersDeposit = (list?: (string | BigNumber)[]): BigNumber => {
+    if (!list?.length) return new BigNumber(0);
+    return BigNumber.sum.apply(null, list);
+};
+
+export const getOrdersUnspentDeposit = (orders?: GetOrdersUnspentDepositProps[]): BigNumber => {
+    if (!orders) return new BigNumber(0);
+    const sumOrdersHoldDeposit = getOrdersDeposit(orders.map(({ orderHoldDeposit }) => orderHoldDeposit || '0'));
+    const sumOrdersUnspentDeposit = getOrdersDeposit(orders.map(({ depositSpent }) => depositSpent));
+    return sumOrdersHoldDeposit.minus(sumOrdersUnspentDeposit);
+};
+
+export const getOrdersHoldDeposit = (orders?: { orderHoldDeposit: string; }[]): BigNumber => {
+    return getOrdersDeposit(orders?.map(({ orderHoldDeposit }) => orderHoldDeposit));
+};

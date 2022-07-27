@@ -125,14 +125,6 @@ export const CancellingModal: FC<CancellingModalProps> = memo(({ state }) => {
                         error={getError(Process.SOLUTION)}
                     />
                 )}
-                {!!cancellingState?.[Process.STORAGE] && (
-                    <ProcessItem
-                        name="Storage order"
-                        className={classes.mrb}
-                        status={getStatus(Process.STORAGE)}
-                        error={getError(Process.STORAGE)}
-                    />
-                )}
                 <Box justifyContent="flex-end" className={classes.btns}>
                     {!loading && (
                         <Button

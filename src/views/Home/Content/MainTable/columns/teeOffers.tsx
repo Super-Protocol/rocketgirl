@@ -52,21 +52,33 @@ export const getColumns = (): Array<ColumnProps<TeeOffersColumns>> => [
     {
         Header: 'Total Cores',
         id: 'slots',
-        Cell: ({ row }) => row.original?.teeOfferInfo?.slots || '-',
+        Cell: ({ row }) => {
+            const { teeOfferInfo } = row.original || {};
+            const { slots } = teeOfferInfo || {};
+            return typeof slots === 'number' ? slots : '-';
+        },
         width: 'auto',
         isEllipsis: true,
     },
     {
         Header: 'Free Cores',
         id: 'freeCores',
-        Cell: ({ row }) => row.original?.stats?.freeCores || '-',
+        Cell: ({ row }) => {
+            const { stats } = row.original || {};
+            const { freeCores } = stats || {};
+            return typeof freeCores === 'number' ? freeCores : '-';
+        },
         width: 'auto',
         isEllipsis: true,
     },
     {
         Header: 'Orders in queue',
         id: 'ordersInQueue',
-        Cell: ({ row }) => row.original?.stats?.ordersInQueue || '-',
+        Cell: ({ row }) => {
+            const { stats } = row.original || {};
+            const { ordersInQueue } = stats || {};
+            return typeof ordersInQueue === 'number' ? ordersInQueue : '-';
+        },
         width: 'auto',
         isEllipsis: true,
     },

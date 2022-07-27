@@ -3,7 +3,11 @@ import { Order } from '@/gql/graphql';
 import { CopyToClipboard } from '@/uikit';
 import { UseTableQueryFetcherResultList } from '@/common/hooks/useTableQueryFetcher';
 import { StatusBar } from '@/common/components/StatusBar';
-import { getFixedDeposit, getOfferTypeName, getTableDate } from '@/common/helpers';
+import {
+    getFixedDeposit,
+    getOfferTypeName,
+    getTableDate,
+} from '@/common/helpers';
 import { TooltipLink } from '@/common/components/TooltipLink';
 
 export type OrdersColumns = UseTableQueryFetcherResultList<Order>;
@@ -97,7 +101,7 @@ export const getColumns = (): Array<ColumnProps<OrdersColumns>> => [
         id: 'estimatedCost',
         Cell: ({ row }) => {
             const { orderHoldDeposit } = row.original || {};
-            return getFixedDeposit(orderHoldDeposit, true);
+            return getFixedDeposit({ deposit: orderHoldDeposit });
         },
         width: 'auto',
     },
@@ -106,7 +110,7 @@ export const getColumns = (): Array<ColumnProps<OrdersColumns>> => [
         id: 'actualCost',
         Cell: ({ row }) => {
             const { depositSpent } = row.original || {};
-            return getFixedDeposit(depositSpent, true);
+            return getFixedDeposit({ deposit: depositSpent });
         },
         width: 'auto',
     },

@@ -32,7 +32,7 @@ query Offers($pagination: ConnectionArgs!, $filter: OfferFilter) {
                         name
                         output
                         properties
-                        resultUrl
+                        resultResource
                         restrictions {
                             offers
                             types

@@ -13,12 +13,11 @@ import { useErrorModal } from '@/common/hooks/useErrorModal';
 import { ModalOkCancelContext } from '@/common/context/ModalOkCancelProvider/ModalOkCancelProvider';
 import classes from './Title.module.scss';
 import { TitleProps } from './types';
-import { getUnspentDeposit } from '../helpers';
 import { ReplenishOrderModal } from './ReplenishOrderModal';
 import { GetResultModal } from './GetResultModal';
 
 export const Title = memo<TitleProps>(({
-    order, orderSdk, updateOrderInfo, subOrdersList,
+    order, orderSdk, updateOrderInfo, subOrdersList, unspentDeposit,
 }) => {
     const { showModal } = useContext(ModalOkCancelContext);
     const { selectedAddress, instance } = useContext(WalletContext);
@@ -40,17 +39,15 @@ export const Title = memo<TitleProps>(({
     const isShowWithdrawBtn = useMemo(() => {
         const {
             orderInfo: orderInfoSdk,
-            depositSpent: depositSpentSdk,
-            orderHoldDeposit: orderHoldDepositSdk,
         } = orderSdk || {};
-        const unspentDeposit = getUnspentDeposit(orderHoldDepositSdk, depositSpentSdk);
         const { status } = orderInfoSdk || {};
         return !!status && [
             OrderStatus.Canceled,
             OrderStatus.Done,
             OrderStatus.Error,
-        ].includes(status) && !!unspentDeposit;
-    }, [orderSdk]);
+            OrderStatus.Canceling,
+        ].includes(status) && !!unspentDeposit?.isGreaterThan?.(0);
+    }, [orderSdk, unspentDeposit]);
     const isShowResultBtn = useMemo(
         () => !!status && [OrderStatus.Done, OrderStatus.Error].includes(status),
         [status],
@@ -66,7 +63,7 @@ export const Title = memo<TitleProps>(({
                 web3: instance,
             });
             await updateOrderInfo();
-            showSuccessModal('Order successfully canceled');
+            showSuccessModal('Order cancellation process started');
         } catch (e) {
             showErrorModal(e);
         }

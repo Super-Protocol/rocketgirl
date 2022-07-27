@@ -31,13 +31,13 @@ export const useAccessTokenAndWalletChecker = (): void => {
             // eslint-disable-next-line max-len
             new Error(`Access token connected to account ${addressFromToken}, please connect this account or use another access token.`),
             {
-                messages: { ok: 'Enter token' },
                 classNameMain: classes.body,
                 onContinue,
                 backdrop: 'static',
-            },
-            {
-                classNameMessage: classes.result,
+                messages: {
+                    ok: 'Enter token',
+                },
+                classNameBottom: classes.bottom,
             },
         );
     }, [showErrorModal, onContinue, addressFromToken]);
