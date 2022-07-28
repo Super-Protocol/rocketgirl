@@ -6,6 +6,7 @@ import {
 } from '@super-protocol/sp-sdk-js';
 import sum from 'lodash.sum';
 import { ConvertNode } from '@/common/hooks/useSelectQueryCursorSPFetcher';
+import { Balance } from '@/common/context';
 import { Offer, TeeOffer, TOfferType } from '@/gql/graphql';
 import { validateMnemonic } from '@/utils/crypto';
 import { Item, Value } from '@/uikit/types';
@@ -21,6 +22,7 @@ import {
     Fields,
     GetInitialFiltersResult,
 } from './types';
+import { DepositErrors } from './InputDeposit/ErrorDeposit/types';
 
 export const valueOfferConvertNode: ConvertNode<Offer> = ({ node }): Item<Value, Info> => ({
     value: node?.id,
@@ -69,20 +71,27 @@ export const getPhraseInputSchema = (): Yup.BaseSchema => Yup.string().test(
     },
 ) as Yup.BaseSchema;
 
-export const getDepositSchema = (minDeposit?: number): Yup.BaseSchema => (minDeposit
+export const getDepositSchema = (minDeposit: number | undefined, balance: Balance): Yup.BaseSchema => (minDeposit
     ? Yup.number()
         .required('required')
-        .min(minDeposit, `must be greater than or equal ${minDeposit}`)
+        .min(minDeposit, DepositErrors.MIN)
+        .test(
+            Fields.deposit,
+            DepositErrors.BALANCE,
+            (value) => {
+                return !!value && !!balance?.tee && balance.tee?.isGreaterThan(value || 0);
+            },
+        )
     : Yup.number().required('required'));
 
-export const getValidationSchema = (props?: GetValidationSchemaProps): Yup.SchemaOf<FormValues> => {
-    const { minDeposit } = props || {};
+export const getValidationSchema = (props: GetValidationSchemaProps): Yup.SchemaOf<FormValues> => {
+    const { minDeposit, balance } = props || {};
     return Yup.object({
         [Fields.solution]: getOfferSchema(Fields.solution),
         [Fields.data]: Yup.array().of(getOfferSchema(Fields.data)),
         [Fields.tee]: getOfferSchema(Fields.tee),
         [Fields.storage]: getOfferSchema(Fields.storage),
-        [Fields.deposit]: getDepositSchema(minDeposit),
+        [Fields.deposit]: getDepositSchema(minDeposit, balance),
         [Fields.file]: Yup.mixed(),
         [Fields.phraseGenerated]: getPhraseGeneratedSchema(),
         [Fields.phraseInput]: getPhraseInputSchema(),

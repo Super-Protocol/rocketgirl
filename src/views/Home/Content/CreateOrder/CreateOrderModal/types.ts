@@ -1,5 +1,6 @@
 import { OperationVariables } from '@apollo/client';
 import { Item } from '@/uikit/LazyLoadCheckboxList/types';
+import { Balance } from '@/common/context';
 
 export type Info = {
     description: string;
@@ -44,6 +45,7 @@ export interface CreateOrderModalProps {
 
 export interface GetValidationSchemaProps {
     minDeposit?: number;
+    balance: Balance;
 }
 
 export interface GetMinDepositWorkflow {

@@ -162,7 +162,7 @@ export const getFixedDeposit = (props: GetFixedProps): string => {
     const DEFAULT_VALUE = 0;
     if (!deposit) return DEFAULT_VALUE.toFixed(count);
     const depositStr = typeof deposit === 'string' ? deposit : deposit.toFixed();
-    return Math.round((Number(wei ? Web3.utils.fromWei(depositStr) : deposit) * 1000) / 1000).toFixed(count);
+    return new BigNumber(wei ? Web3.utils.fromWei(depositStr) : depositStr).toFixed(count, 1);
 };
 
 export function parseJwt<T>(token?: string): T | null {
