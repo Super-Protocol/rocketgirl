@@ -29,8 +29,8 @@ export const FileUploader = memo<FileUploaderProps>(({
             onDrop: (acceptedFiles) => {
                 const file = acceptedFiles[0];
                 const { size, name } = file || {};
-                if (size > 67108864) {
-                    setError('File size should not exceed 64MB');
+                if (size > 20971520) {
+                    setError('File size should not exceed 20MB');
                     return;
                 }
                 if (!(name.endsWith('.tar') || name.endsWith('.tar.gz'))) {
