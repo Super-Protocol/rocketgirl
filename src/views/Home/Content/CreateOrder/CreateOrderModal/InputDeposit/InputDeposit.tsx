@@ -5,6 +5,7 @@ import { InputDepositProps } from './types';
 import { Fields } from '../types';
 import classes from './InputDeposit.module.scss';
 import { ErrorDeposit } from './ErrorDeposit';
+import { DepositErrors } from './ErrorDeposit/types';
 
 export const InputDeposit: FC<InputDepositProps> = memo(({ min, classNameWrap }) => {
     const [, { error, touched }, { setValue }] = useField(Fields.deposit);
@@ -22,7 +23,11 @@ export const InputDeposit: FC<InputDepositProps> = memo(({ min, classNameWrap })
                 showError={false}
                 markLabelError={false}
             />
-            {error && touched && min ? <ErrorDeposit onClick={onSetMinDeposit} min={min} /> : <div className={classes.empty} />}
+            {
+                error && touched
+                    ? <ErrorDeposit onClick={onSetMinDeposit} min={min} error={error as DepositErrors} />
+                    : <div className={classes.empty} />
+            }
         </Box>
     );
 });
