@@ -100,8 +100,9 @@ export const getColumns = (): Array<ColumnProps<OrdersColumns>> => [
         Header: 'Estimated cost, TEE',
         id: 'estimatedCost',
         Cell: ({ row }) => {
-            const { orderHoldDeposit } = row.original || {};
-            return getFixedDeposit({ deposit: orderHoldDeposit });
+            const { offerInfo } = row.original || {};
+            const { holdSum } = offerInfo || {};
+            return getFixedDeposit({ deposit: holdSum });
         },
         width: 'auto',
     },
