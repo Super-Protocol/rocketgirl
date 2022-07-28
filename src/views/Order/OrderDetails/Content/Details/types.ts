@@ -7,5 +7,6 @@ export type SubOrderInfo = {
         cancelable: boolean;
         orderHoldDeposit: string;
         depositSpent: string;
+        holdSum: string;
     };
 }

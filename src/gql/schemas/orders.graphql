@@ -141,6 +141,7 @@ query SubOrders($pagination: ConnectionArgs!, $filter: OrdersFilter) {
                         offerType
                         cancelable
                         description
+                        holdSum
                     }
                     providerInfo {
                         actionAccount

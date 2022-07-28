@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 import { OrderStatus } from '@super-protocol/sp-sdk-js';
 import { CopyToClipboard } from '@/uikit';
 import { StatusBarToolkit } from '@/common/components/';
-import { OrderQuery } from '@/gql/graphql';
+import { Order, OrderQuery } from '@/gql/graphql';
 import { BigNumber } from 'bignumber.js';
 import {
     getFixedDeposit,
@@ -54,6 +54,10 @@ export interface GetActualCostProps {
     subOrdersInfo: SubOrderInfo;
 }
 
+export interface GetEstimatedCostProps {
+    subOrdersInfo: SubOrderInfo;
+}
+
 export const getUnspentDeposit = ({
     orderHoldDeposit,
     depositSpent,
@@ -89,6 +93,10 @@ export const getTotalDeposit = ({ orderHoldDeposit, subOrdersInfo }: GetTotalDep
                     ),
             ),
     );
+};
+
+export const getEstimatedCost = ({ subOrdersInfo }: GetEstimatedCostProps): BigNumber => {
+    return getOrdersDeposit(Object.values(subOrdersInfo || {}).map(({ holdSum }) => holdSum || '0'));
 };
 
 export const getActualCost = ({ depositSpent, subOrdersInfo }: GetActualCostProps): BigNumber => {
@@ -206,13 +214,14 @@ export const getOrdersCancelList = (addressSuborders?: SubOrderInfo): string[] =
         : []
 );
 
-export const getSubOrdersList = (list: any[]): SubOrderInfo => (
+export const getSubOrdersList = (list: Order[]): SubOrderInfo => (
     list
         ? list.reduce((acc, {
             id,
             orderHoldDeposit,
             orderInfo,
             depositSpent,
+            offerInfo,
         }) => {
             return {
                 ...acc,
@@ -225,6 +234,7 @@ export const getSubOrdersList = (list: any[]): SubOrderInfo => (
                     ].includes(orderInfo.status as OrderStatus),
                     orderHoldDeposit,
                     depositSpent,
+                    holdSum: offerInfo?.holdSum,
                 },
             };
         }, {})
