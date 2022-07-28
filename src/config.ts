@@ -22,7 +22,6 @@ export type Config = {
     REACT_APP_NETWORK_CHAIN_ID: number;
     REACT_APP_NETWORK_NAME: string;
     REACT_APP_NETWORK_RPC: string;
-    REACT_APP_NETWORK_TEE_TOKEN: string;
     REACT_APP_NETWORK_POLYGON_SCAN: string;
 };
 
@@ -47,7 +46,6 @@ const DEFAULT_CONFIG: Config = {
     REACT_APP_NETWORK_RPC: 'https://matic-mumbai.chainstacklabs.com',
     REACT_APP_NETWORK_CHAIN_ID: 80001,
     REACT_APP_NETWORK_NAME: 'Matic Testnet Mumbai',
-    REACT_APP_NETWORK_TEE_TOKEN: '0x9B8cCA544255c61116513414817A774908925bB1',
 };
 
 const CONFIG: Config = getConfigWithEnv<Config>(

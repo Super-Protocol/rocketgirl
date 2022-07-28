@@ -17,28 +17,12 @@ export const getInitialBalance = (): Balance => ({ matic: undefined, tee: undefi
 
 export interface UseConnectToMetaMaskResult {
     connect: () => Promise<void>;
-    addTeeToken: () => Promise<void>;
     getBalance: (address: string) => Promise<Balance>;
 }
 
 export const useConnectToMetaMask = (actions: Actions): UseConnectToMetaMaskResult => {
     const [getBalanceOf] = useBalanceOfLazyQuery();
     const [getTeeBalanceOf] = useTeeBalanceOfLazyQuery();
-    const addTeeToken = useCallback(async () => {
-        const success = (window as any).ethereum
-            .request({
-                method: 'wallet_watchAsset',
-                params: {
-                    type: 'ERC20',
-                    options: {
-                        address: CONFIG.REACT_APP_NETWORK_TEE_TOKEN,
-                        symbol: 'TEE',
-                        decimals: 18,
-                    },
-                },
-            });
-        if (!success) throw new Error('Add tee token error');
-    }, []);
 
     const connect = useCallback(async () => {
         const metamask = new MetaMask({ actions });
@@ -68,7 +52,6 @@ export const useConnectToMetaMask = (actions: Actions): UseConnectToMetaMaskResu
 
     return {
         connect,
-        addTeeToken,
         getBalance,
     };
 };
