@@ -141,11 +141,11 @@ export const getInfo = (props: GetInfoProps): TableInfo | null => {
                 value: encryptedArgs ? 'Encrypted file' : '-',
             },
             {
-                key: 'Total Deposit',
+                key: 'Total Deposit, TEE',
                 value: getFixedDeposit({ deposit: totalDeposit }),
             },
             {
-                key: 'Unspent Deposit',
+                key: 'Unspent Deposit, TEE',
                 value: getFixedDeposit({ deposit: unspentDeposit }),
             },
             {
@@ -195,11 +195,11 @@ export const getTee = (props: GetTeeProps): TableInfo | null => {
                 value: description || '-',
             },
             {
-                key: 'Estimated cost',
+                key: 'Estimated cost, TEE',
                 value: getFixedDeposit({ deposit: estimatedCost }),
             },
             {
-                key: 'Actual cost',
+                key: 'Actual cost, TEE',
                 value: getFixedDeposit({ deposit: actualCost }),
             },
         ],
