@@ -139,7 +139,7 @@ export const Title = memo<TitleProps>(({
                         loading={loading}
                         onClick={onWithdrawDeposit}
                     >
-                        Withdraw deposit
+                        Withdraw Deposit
                     </Button>
                 )}
                 {isShowResultBtn && (
