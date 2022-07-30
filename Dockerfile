@@ -1,7 +1,6 @@
 FROM node:16-buster AS builder
 
 ARG ENV_FILE="must be base64 content of .env"
-ARG NPM_TOKEN=""
 
 RUN apt update
 
@@ -20,8 +19,6 @@ RUN pip3 install --no-cache --upgrade pip setuptools
 WORKDIR /app
 COPY package*.json /app/
 RUN echo "$ENV_FILE" | base64 --decode > /app/.env
-ADD .npmrc /app/.npmrc
-RUN echo //npm.pkg.github.com/:_authToken=$NPM_TOKEN >> /app/.npmrc
 
 RUN npm ci
 COPY . .

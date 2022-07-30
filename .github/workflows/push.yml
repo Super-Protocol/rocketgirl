@@ -51,7 +51,6 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
-            NPM_TOKEN=${{ secrets.NPM_TOKEN_GH }}
             ENV_FILE=${{ secrets.DEVELOP_ENV_FILE_BASE64 }}
 
       - name: "Master: Build and push Docker image"
@@ -63,5 +62,4 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
-            NPM_TOKEN=${{ secrets.NPM_TOKEN_GH }}
             ENV_FILE=${{ secrets.MASTER_ENV_FILE_BASE64 }}
