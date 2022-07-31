@@ -43,7 +43,8 @@ export const useGenerateTII = (): UsePublishTeeResult => {
                     storageType: StorageType.StorJ,
                     filepath,
                     credentials: {
-                        storageId: 'inputs',
+                        bucket: 'inputs',
+                        prefix: '',
                         token: CONFIG.REACT_APP_ARGS_BUCKET_READ_ACCESS,
                     },
                 } as Resource,
