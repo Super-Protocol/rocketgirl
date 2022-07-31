@@ -25,6 +25,7 @@ import {
 import { ModalOkCancelContext } from '@/common/context/ModalOkCancelProvider/ModalOkCancelProvider';
 import { Modes } from '@/uikit/MnemonicGenerator/types';
 import { generateMnemonic } from '@/utils/crypto';
+import { WalletContext } from '@/common/context';
 import {
     CreateOrderModalProps,
     Fields,
@@ -50,6 +51,7 @@ import { State } from './hooks/useWorkflowProcess';
 
 export const CreateOrderModal: FC<CreateOrderModalProps> = memo(({ initialValues: initialValuesProps }) => {
     const { goBack, showModal } = useContext(ModalOkCancelContext);
+    const { balance } = useContext(WalletContext);
     const [isValidating, setIsValidating] = useState(false);
     const [loading, setLoading] = useState(false);
     const [filters, setFilters] = useState(getInitialFilters);
@@ -96,7 +98,8 @@ export const CreateOrderModal: FC<CreateOrderModalProps> = memo(({ initialValues
     }, [getOffersRestrictions]);
     const validationSchema = useMemo(() => getValidationSchema({
         minDeposit,
-    }), [minDeposit]);
+        balance,
+    }), [minDeposit, balance]);
     const onCancel = useCallback(() => {
         goBack();
     }, [goBack]);

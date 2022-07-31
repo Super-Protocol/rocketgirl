@@ -22,6 +22,7 @@ export interface UseWalletResult {
     wallet: Wallet;
     selectedWalletType?: SelectedWalletType;
     loading: boolean;
+    loadingBalance: boolean;
     onChangeWallet: (wallet: SelectedWalletType) => Promise<void>;
     selectedWallet: SelectedWallet;
     logout: () => void;
