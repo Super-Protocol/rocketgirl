@@ -118,7 +118,7 @@ export const encodingAndDownloadFile = async (
             content: JSON.stringify(decryptedObj, null, 2),
         };
     }
-    const url = await getFileUrlFromS3Storage(filepath, decryptedObj.resource.credentials.storageId);
+    const url = await getFileUrlFromS3Storage(decryptedObj.resource.credentials.prefix + filepath, decryptedObj.resource.credentials.bucket);
     if (!url) {
         throw new Error('Wrong url');
     }
