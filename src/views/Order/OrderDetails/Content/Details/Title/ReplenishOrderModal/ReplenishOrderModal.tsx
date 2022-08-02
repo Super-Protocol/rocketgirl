@@ -15,7 +15,7 @@ import { FormValues, ReplenishOrderModalProps } from './types';
 import { initialValues, getValidationSchema } from './helpers';
 import classes from './ReplenishOrderModal.module.scss';
 
-export const ReplenishOrderModal: FC<ReplenishOrderModalProps> = memo(({ orderAddress, onSuccess }) => {
+export const ReplenishOrderModal: FC<ReplenishOrderModalProps> = memo(({ orderId, onSuccess }) => {
     const { selectedAddress, instance } = useContext(WalletContext);
     const { showErrorModal, showSuccessModal } = useErrorModal();
     const { onClose } = useContext(ModalOkCancelContext);
@@ -28,7 +28,7 @@ export const ReplenishOrderModal: FC<ReplenishOrderModalProps> = memo(({ orderAd
         try {
             const { amount } = values || {};
             await replenishOrder({
-                orderAddress,
+                orderId,
                 amount,
                 instance,
                 accountAddress: selectedAddress,
@@ -40,7 +40,7 @@ export const ReplenishOrderModal: FC<ReplenishOrderModalProps> = memo(({ orderAd
             showErrorModal(e);
         }
         setLoading(false);
-    }, [showSuccessModal, showErrorModal, onClose, orderAddress, instance, selectedAddress, onSuccess]);
+    }, [showSuccessModal, showErrorModal, onClose, orderId, instance, selectedAddress, onSuccess]);
 
     const onReplenish = useCallback((submitForm) => () => {
         setIsValidating(true);

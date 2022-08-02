@@ -47,7 +47,7 @@ export const ProcessModal: FC<ProcessModalProps> = memo(({ formValues, initialSt
     const executeWorkflow = useCallback(async (state?: State) => {
         try {
             setLoading(true);
-            const teeOrderAddress = await runWorkflow({
+            const teeOrderId = await runWorkflow({
                 formValues,
                 actionAccountAddress: selectedAddress,
                 web3: instance,
@@ -57,7 +57,7 @@ export const ProcessModal: FC<ProcessModalProps> = memo(({ formValues, initialSt
                 'Your order has been successfully created',
                 undefined,
                 'Go to order',
-                () => navigate(`order/${teeOrderAddress}?${urlBack}`),
+                () => navigate(`order/${teeOrderId}?${urlBack}`),
             );
         } catch (e) {
             console.warn(e);

@@ -61,12 +61,12 @@ export const getFileUrlFromS3Storage = async (fileName: string, bucket: string):
 };
 
 export const encodingAndDownloadFile = async (
-    orderAddress: string,
+    orderId: string,
     phrase: string,
     status?: OrderStatus,
 ): Promise<{ isFile: boolean, content: string }> => {
     const { privateKeyBase64 } = generateECIESKeys(phrase);
-    const order = new Order(orderAddress);
+    const order = new Order(orderId);
     const { encryptedResult, encryptedError } = await order.getOrderResult();
     if (!encryptedResult && !encryptedError) throw new Error('Order encrypted result is empty');
     const encryptedStr = encryptedResult || encryptedError;
@@ -118,7 +118,9 @@ export const encodingAndDownloadFile = async (
             content: JSON.stringify(decryptedObj, null, 2),
         };
     }
-    const url = await getFileUrlFromS3Storage(decryptedObj.resource.credentials.prefix + filepath, decryptedObj.resource.credentials.bucket);
+    const url = await getFileUrlFromS3Storage(
+        decryptedObj.resource.credentials.prefix + filepath, decryptedObj.resource.credentials.bucket,
+    );
     if (!url) {
         throw new Error('Wrong url');
     }

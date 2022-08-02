@@ -1,5 +1,5 @@
 export interface ReplenishOrderModalProps {
-    orderAddress: string;
+    orderId: string;
     onSuccess: () => void;
 }
 

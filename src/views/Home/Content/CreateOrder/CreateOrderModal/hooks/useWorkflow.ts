@@ -126,7 +126,7 @@ export const useWorkflow = (initState?: State): UseWorkflowResult => {
                     offerId: tee?.value,
                     encryption: tiiEncryption,
                     filepath: fileName,
-                    addresses: (solution || []).map(({ value }) => value),
+                    inputOffers: (solution || []).map(({ value }) => value),
                 });
                 changeState({ process: Process.FILE, status: Status.DONE });
             } catch (e) {
@@ -134,14 +134,14 @@ export const useWorkflow = (initState?: State): UseWorkflowResult => {
                 throw e;
             }
         }
-        const teeOrderAddress = await workflow({
+        const teeOrderId = await workflow({
             values: getWorkflowValues(formValues, phrase as string, tiiGeneratorId),
             actionAccountAddress,
             web3,
             changeState,
             state,
         });
-        return teeOrderAddress;
+        return teeOrderId;
     }, [encryptFile, generateByOffer, uploadFile, changeState, initProcess, stateProcess, rerunNotDone]);
 
     return {

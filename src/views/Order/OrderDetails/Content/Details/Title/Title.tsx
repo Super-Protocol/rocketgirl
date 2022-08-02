@@ -57,7 +57,7 @@ export const Title = memo<TitleProps>(({
         setLoading(true);
         try {
             await cancelOrder({
-                orderAddress: order?.id,
+                orderId: order?.id,
                 subOrdersList,
                 actionAccountAddress: selectedAddress,
                 web3: instance,
@@ -80,7 +80,7 @@ export const Title = memo<TitleProps>(({
 
     const onReplenishOrder = useCallback(async () => {
         showModal({
-            children: <ReplenishOrderModal orderAddress={order?.id} onSuccess={onSuccessReplenish} />,
+            children: <ReplenishOrderModal orderId={order?.id} onSuccess={onSuccessReplenish} />,
             messages: {
                 header: 'Replenish deposit',
             },
@@ -89,7 +89,7 @@ export const Title = memo<TitleProps>(({
 
     const onGetResult = useCallback(async () => {
         showModal({
-            children: <GetResultModal orderAddress={order?.id} status={status} />,
+            children: <GetResultModal orderId={order?.id} status={status} />,
         });
     }, [showModal, order, status]);
 

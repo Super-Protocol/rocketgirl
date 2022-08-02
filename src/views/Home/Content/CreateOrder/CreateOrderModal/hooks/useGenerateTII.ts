@@ -14,7 +14,7 @@ export interface GenerateByOfferProps {
     offerId: string;
     encryption: Encryption;
     filepath: string;
-    addresses: string[];
+    inputOffers: string[];
 }
 
 export interface UsePublishTeeResult {
@@ -31,9 +31,9 @@ export const useGenerateTII = (): UsePublishTeeResult => {
                 offerId,
                 encryption,
                 filepath,
-                addresses,
+                inputOffers,
             } = props;
-            const { hashes, linkage } = await TIIGenerator.getSolutionHashesAndLinkage(addresses);
+            const { hashes, linkage } = await TIIGenerator.getSolutionHashesAndLinkage(inputOffers);
             return TIIGenerator.generateByOffer(
                 offerId,
                 hashes,

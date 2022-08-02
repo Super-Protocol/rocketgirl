@@ -23,13 +23,13 @@ import {
 import { generateECIESKeys } from '@/utils/crypto';
 
 export interface CancelOrderProps {
-    orderAddress?: string;
+    orderId?: string;
     subOrdersList?: string[],
     web3?: Web3;
     actionAccountAddress?: string;
 }
 export interface ReplenishOrderProps {
-    orderAddress?: string;
+    orderId?: string;
     amount?: number;
     instance?: Web3;
     accountAddress?: string;
@@ -78,7 +78,7 @@ export interface GetCalcOrderDepositWorkflow {
     storage?: string;
 }
 export interface StartOrderProps {
-    orderAddress: string;
+    orderId: string;
     actionAccountAddress: string;
     web3: Web3;
 }
@@ -175,12 +175,12 @@ export interface ChangeStateSubOrdersProps {
 }
 
 export const cancelOrder = async ({
-    orderAddress,
+    orderId,
     subOrdersList,
     web3,
     actionAccountAddress,
 }: CancelOrderProps): Promise<void> => {
-    if (!orderAddress) throw new Error('Order address required');
+    if (!orderId) throw new Error('Order id required');
     if (!actionAccountAddress) throw new Error('Account address required');
     if (!web3) throw new Error('Web3 instance required');
     if (subOrdersList) {
@@ -190,16 +190,16 @@ export const cancelOrder = async ({
             }),
         );
     }
-    await new Order(orderAddress).cancelOrder({ from: actionAccountAddress, web3 });
+    await new Order(orderId).cancelOrder({ from: actionAccountAddress, web3 });
 };
 
 export const replenishOrder = async ({
-    orderAddress,
+    orderId,
     amount,
     instance,
     accountAddress,
 }: ReplenishOrderProps): Promise<void> => {
-    if (!orderAddress) throw new Error('Order address required');
+    if (!orderId) throw new Error('Order id required');
     if (!accountAddress) throw new Error('Account address required');
     if (!instance) throw new Error('Web3 instance required');
     if (!amount) throw new Error('Amount required');
@@ -211,11 +211,11 @@ export const replenishOrder = async ({
         amountInWei,
         { from: accountAddress, web3: instance },
     );
-    await OrdersFactory.refillOrderDeposit(orderAddress, amountInWei, { from: accountAddress, web3: instance });
+    await OrdersFactory.refillOrderDeposit(orderId, amountInWei, { from: accountAddress, web3: instance });
 };
 
 export const getOrderSdk = async (id?: string): Promise<GetOrderSdk> => {
-    if (!id) throw new Error('Order address required');
+    if (!id) throw new Error('Order id required');
     const order = new Order(id);
     const orderInfo = await order.getOrderInfo();
     const depositSpent = await order.getDepositSpent();
@@ -386,11 +386,11 @@ export const createOrder = async (props: CreateOrderProps): Promise<string> => {
     const orderMinDeposit = Number(Web3.utils.fromWei(await Superpro.getParam(ParamName.OrderMinimumDeposit) || '0'));
     const offerHoldSum = Number(Web3.utils.fromWei(await getOfferHoldSum(offer)));
     const params = await getOrderParams(values);
-    let orderAddress = '';
+    let orderId = '';
     const requiredDeposit = Math.max(offerHoldSum, orderMinDeposit);
     const deposit = Web3.utils.toWei(Math.max(requiredDeposit, calcOrderDeposit).toString());
     if (parentTeeOrder) {
-        orderAddress = await createOrderSubscription(
+        orderId = await createOrderSubscription(
             async () => new Order(parentTeeOrder).createSubOrder(
                 params,
                 true,
@@ -415,7 +415,7 @@ export const createOrder = async (props: CreateOrderProps): Promise<string> => {
                 throw e;
             }
         }
-        orderAddress = await createOrderSubscription(
+        orderId = await createOrderSubscription(
             async () => OrdersFactory.createOrder(
                 params,
                 deposit,
@@ -427,10 +427,10 @@ export const createOrder = async (props: CreateOrderProps): Promise<string> => {
             externalId,
         );
     }
-    if (!orderAddress) {
-        throw new Error('Order address is not defined');
+    if (!orderId) {
+        throw new Error('Order id is not defined');
     }
-    return orderAddress;
+    return orderId;
 };
 
 export const getSubOrdersParams = (list: GetOrderParamsProps[]): Promise<ExtendedOrderInfo[]> => {
@@ -481,9 +481,9 @@ export const createSubOrders = async (props: CreateSubOrderProps): Promise<Creat
 };
 
 export const startOrder = async (props: StartOrderProps): Promise<void> => {
-    const { orderAddress, actionAccountAddress, web3 } = props || {};
-    if (!orderAddress) throw new Error('Order address required');
-    await new Order(orderAddress).start({ from: actionAccountAddress, web3 });
+    const { orderId, actionAccountAddress, web3 } = props || {};
+    if (!orderId) throw new Error('Order id required');
+    await new Order(orderId).start({ from: actionAccountAddress, web3 });
 };
 
 export const changeStateSubOrder = ({
@@ -577,12 +577,12 @@ export const workflow = async (props: WorkflowProps): Promise<string | undefined
         offerId: tee?.value,
         externalId: tee?.externalId,
     });
-    let teeOrderAddress = state?.[Process.TEE]?.result
+    let teeOrderId = state?.[Process.TEE]?.result
         ? state[Process.TEE].result?.get(teeKey)
         : undefined;
-    if (state?.[Process.TEE]?.status !== Status.DONE || !teeOrderAddress) {
+    if (state?.[Process.TEE]?.status !== Status.DONE || !teeOrderId) {
         changeState({ process: Process.TEE, status: Status.PROGRESS });
-        teeOrderAddress = await createOrder({
+        teeOrderId = await createOrder({
             actionAccountAddress,
             values: {
                 args,
@@ -607,7 +607,7 @@ export const workflow = async (props: WorkflowProps): Promise<string | undefined
             changeState({ process: Process.TEE, status: Status.ERROR, error: new Map().set(null, e as Error) });
             throw e;
         });
-        changeState({ process: Process.TEE, status: Status.DONE, result: new Map().set(teeKey, teeOrderAddress) });
+        changeState({ process: Process.TEE, status: Status.DONE, result: new Map().set(teeKey, teeOrderId) });
     }
     if (
         [
@@ -634,7 +634,7 @@ export const workflow = async (props: WorkflowProps): Promise<string | undefined
                     });
             })
             .map(({ value, externalId }) => ({
-                parentTeeOrder: teeOrderAddress,
+                parentTeeOrder: teeOrderId,
                 keyAlgorithm: CryptoAlgorithm.ECIES,
                 offer: value,
                 inputOffers: [],
@@ -643,7 +643,7 @@ export const workflow = async (props: WorkflowProps): Promise<string | undefined
                 externalId,
             }));
         const { error: errorSubOrders, result: successSubOrders } = await createSubOrders({
-            values: { list: subOrdersInfo, order: teeOrderAddress },
+            values: { list: subOrdersInfo, order: teeOrderId },
             web3,
             actionAccountAddress,
         });
@@ -660,12 +660,12 @@ export const workflow = async (props: WorkflowProps): Promise<string | undefined
         if (errorSubOrders?.size) throw new Error('Workflow sub orders error');
     }
     changeState({ process: Process.ORDER_START, status: Status.PROGRESS });
-    await startOrder({ orderAddress: teeOrderAddress, actionAccountAddress, web3 }).catch((e) => {
+    await startOrder({ orderId: teeOrderId, actionAccountAddress, web3 }).catch((e) => {
         changeState({ process: Process.ORDER_START, status: Status.ERROR, error: new Map().set(null, e as Error) });
         throw e;
     });
     changeState({ process: Process.ORDER_START, status: Status.DONE });
-    return teeOrderAddress;
+    return teeOrderId;
 };
 
 export const cancelOrders = async (props: CancelOrdersProps): Promise<CancelOrdersResult> => {
@@ -676,8 +676,8 @@ export const cancelOrders = async (props: CancelOrdersProps): Promise<CancelOrde
     } = props;
     return Promise
         .allSettled(
-            canceledOrders.map((orderAddress) => {
-                return cancelOrder({ actionAccountAddress, orderAddress, web3 });
+            canceledOrders.map((orderId) => {
+                return cancelOrder({ actionAccountAddress, orderId, web3 });
             }),
         )
         .then((list) => {
