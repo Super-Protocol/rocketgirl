@@ -1,4 +1,4 @@
-import { OrderStatus } from '@super-protocol/sp-sdk-js';
+import { OrderStatus } from '@super-protocol/sdk-js';
 
 export const getTooltipText = (status: OrderStatus): string => {
     if (!status) return '';

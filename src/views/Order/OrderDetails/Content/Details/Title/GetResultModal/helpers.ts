@@ -4,11 +4,11 @@ import {
     Crypto,
     Order,
     OrderStatus,
-} from '@super-protocol/sp-sdk-js';
+} from '@super-protocol/sdk-js';
 import {
     Encryption,
     StorageProviderResource,
-} from '@super-protocol/sp-dto-js';
+} from '@super-protocol/dto-js';
 import {
     getBase64FromBlob,
 } from '@/common/helpers';

@@ -1,4 +1,4 @@
-import { OrderStatus } from '@super-protocol/sp-sdk-js';
+import { OrderStatus } from '@super-protocol/sdk-js';
 
 export interface GetResultModalProps {
     orderId: string;

@@ -3,7 +3,7 @@ import {
     Superpro,
     ParamName,
     OfferType,
-} from '@super-protocol/sp-sdk-js';
+} from '@super-protocol/sdk-js';
 import sum from 'lodash.sum';
 import { ConvertNode } from '@/common/hooks/useSelectQueryCursorSPFetcher';
 import { Balance } from '@/common/context';

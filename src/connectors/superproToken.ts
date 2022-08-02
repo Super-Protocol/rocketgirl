@@ -1,6 +1,6 @@
 import {
     SuperproToken,
-} from '@super-protocol/sp-sdk-js';
+} from '@super-protocol/sdk-js';
 import Web3 from 'web3';
 
 export interface TransferTokenProps {

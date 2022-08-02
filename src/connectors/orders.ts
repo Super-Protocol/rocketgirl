@@ -13,13 +13,13 @@ import {
     OrderInfo,
     TeeOfferInfo,
     ExtendedOrderInfo,
-} from '@super-protocol/sp-sdk-js';
+} from '@super-protocol/sdk-js';
 import Web3 from 'web3';
 import {
     Encoding,
     Encryption,
     CryptoAlgorithm,
-} from '@super-protocol/sp-dto-js';
+} from '@super-protocol/dto-js';
 import { generateECIESKeys } from '@/utils/crypto';
 
 export interface CancelOrderProps {

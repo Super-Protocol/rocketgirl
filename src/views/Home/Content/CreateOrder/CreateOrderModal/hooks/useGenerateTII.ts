@@ -1,12 +1,12 @@
 import {
     TIIGenerator,
-} from '@super-protocol/sp-sdk-js';
+} from '@super-protocol/sdk-js';
 import {
     Encryption,
     ResourceType,
     StorageType,
     Resource,
-} from '@super-protocol/sp-dto-js';
+} from '@super-protocol/dto-js';
 import { useCallback, useState } from 'react';
 import CONFIG from '@/config';
 

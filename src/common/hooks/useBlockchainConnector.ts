@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import BlockchainConnector from '@super-protocol/sp-sdk-js';
+import BlockchainConnector from '@super-protocol/sdk-js';
 import { useMount } from 'react-use';
 import toastr from '@/services/Toastr/toastr';
 import CONFIG from '@/config';

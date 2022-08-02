@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
-import { Crypto } from '@super-protocol/sp-sdk-js';
-import { CryptoAlgorithm, Encoding } from '@super-protocol/sp-dto-js/build/enum';
-import { Encryption, Cipher } from '@super-protocol/sp-dto-js';
+import { Crypto } from '@super-protocol/sdk-js';
+import { CryptoAlgorithm, Encoding } from '@super-protocol/dto-js/build/enum';
+import { Encryption, Cipher } from '@super-protocol/dto-js';
 import { generateRandomKeys } from '@/utils/crypto';
 import { getBinaryStringFromFile } from '@/common/helpers';
 

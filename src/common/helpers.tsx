@@ -7,7 +7,7 @@ import {
     OfferGroup,
     TcbStatus,
     OrderStatus,
-} from '@super-protocol/sp-sdk-js';
+} from '@super-protocol/sdk-js';
 import { TOfferType } from '@/gql/graphql';
 import { Item } from '@/uikit/Select/types';
 import CONFIG from '@/config';

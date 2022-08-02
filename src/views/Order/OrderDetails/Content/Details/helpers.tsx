@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { OrderStatus } from '@super-protocol/sp-sdk-js';
+import { OrderStatus } from '@super-protocol/sdk-js';
 import { CopyToClipboard } from '@/uikit';
 import { StatusBarToolkit } from '@/common/components/';
 import { Order, OrderQuery } from '@/gql/graphql';

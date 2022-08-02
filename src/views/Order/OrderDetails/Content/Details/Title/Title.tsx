@@ -5,7 +5,7 @@ import React, {
     useMemo,
     useState,
 } from 'react';
-import { OrderStatus, Order } from '@super-protocol/sp-sdk-js';
+import { OrderStatus, Order } from '@super-protocol/sdk-js';
 import { Box, Button } from '@/uikit';
 import { cancelOrder } from '@/connectors/orders';
 import { WalletContext } from '@/common/context/WalletProvider';

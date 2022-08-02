@@ -1,4 +1,4 @@
-import { OrderStatus } from '@super-protocol/sp-sdk-js';
+import { OrderStatus } from '@super-protocol/sdk-js';
 import { Color } from '@/uikit/StatusBar/types';
 
 export const getStatusBarColor = (status?: OrderStatus): Color | undefined => {
