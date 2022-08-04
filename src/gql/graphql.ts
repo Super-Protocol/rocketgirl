@@ -278,7 +278,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   /** Transfers specific amount of TEE tokens to specific address */
   teeTransfer: Scalars['Boolean'];
-  /** Transfers specific amount of TEE tokens to specific address */
+  /** Transfers specific amount of coins to specific address */
   transfer: Scalars['Boolean'];
 };
 
