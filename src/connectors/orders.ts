@@ -594,6 +594,7 @@ export const workflow = async (props: WorkflowProps): Promise<string | undefined
                 inputOffers: (data || []).concat(solution || []).map(({ value }) => value),
                 selectedOffers: storage ? [storage?.value] : [],
                 externalId: tee?.externalId,
+                slots: 1,
             },
             web3,
             isNeedApprove: state?.[Process.TEE_APPROVE]?.status !== Status.DONE,
