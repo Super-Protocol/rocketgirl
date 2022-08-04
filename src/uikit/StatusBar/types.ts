@@ -9,4 +9,6 @@ export type Color = 'yellow'
 
 export interface StatusBarProps {
     color?: Color;
+    isSpinner?: boolean;
+    isStatus?: boolean;
 }
