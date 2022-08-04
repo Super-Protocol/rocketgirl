@@ -24,3 +24,16 @@ export const getStatusBarColor = (status?: OrderStatus): Color | undefined => {
             return undefined;
     }
 };
+
+export const getIsSpinner = (status?: OrderStatus): boolean => {
+    switch (status) {
+        case OrderStatus.New:
+        case OrderStatus.Suspended:
+        case OrderStatus.Blocked:
+        case OrderStatus.Processing:
+        case OrderStatus.Canceling:
+            return true;
+        default:
+            return false;
+    }
+};
