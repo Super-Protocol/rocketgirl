@@ -79,7 +79,7 @@ export const getDepositSchema = (minDeposit: number | undefined, balance: Balanc
             Fields.deposit,
             DepositErrors.BALANCE,
             (value) => {
-                return !!value && !!balance?.tee && balance.tee?.isGreaterThan(value || 0);
+                return !!value && !!balance?.tee && balance.tee?.isGreaterThan(Web3.utils.toWei(value.toString()));
             },
         )
     : Yup.number().required('required'));

@@ -6,7 +6,8 @@ export const ErrorDeposit: FC<ErrorDepositProps> = memo(({ min, onClick, error }
     if (error === DepositErrors.BALANCE) {
         return (
             <div className={classes.wrap}>
-                <span className={classes.text}>The calculated transfer amount exceeds the balance</span>
+                {/* eslint-disable-next-line max-len */}
+                <span className={classes.text}>Not enough money on your wallet, please replenish the balance by clicking on the Get TEE button</span>
             </div>
         );
     }

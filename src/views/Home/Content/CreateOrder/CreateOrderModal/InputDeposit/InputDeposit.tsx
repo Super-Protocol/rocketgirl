@@ -22,6 +22,7 @@ export const InputDeposit: FC<InputDepositProps> = memo(({ min, classNameWrap })
                 checkTouched={false}
                 showError={false}
                 markLabelError={false}
+                isNumber
             />
             {
                 error && touched
